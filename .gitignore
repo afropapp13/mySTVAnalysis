@@ -1,0 +1,7 @@
+myEfficiencies/*
+myFiles/*
+myMigrationMatrices/*
+/myPlots/*
+myXSec/*
+*.d
+*.so
