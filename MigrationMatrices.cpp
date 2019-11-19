@@ -90,7 +90,7 @@ void MigrationMatrices() {
 			PlotCanvas[WhichSample][WhichPlot]->cd();
 			gStyle->SetMarkerSize(1.5);
 			gStyle->SetPaintTextFormat("4.2f");
-			Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1p"+PlotNames[WhichPlot]+"2D"));
+			Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
 			Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
 			Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 			Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
