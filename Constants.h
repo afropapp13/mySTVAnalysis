@@ -17,15 +17,10 @@ namespace Constants {
 	// Run Period
 
 	static const TString WhichRun = "Run1";
-//	static const TString WhichRun = "Run3_F";
-//	static const TString WhichRun = "Run3_G";
-
+//	static const TString WhichRun = "Run3";
 
 	// Samples
 
-	//static const TString UBCodeVersion = "v08_00_00_12";
-	//static TString UBCodeVersion = "v08_00_00_14";
-//	static TString UBCodeVersion = "v08_00_00_20";
 	static TString UBCodeVersion = "v08_00_00_22";
 
 	// Labels
@@ -55,35 +50,9 @@ namespace Constants {
 	static const double Flux = 3.601E10; //cm^(-2)
 	static const double NTargets = 1.1782E30;
 
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	// POT Normalization
-
-	// v12
-
-//	static const double tor860_wcut = 4.552e+19; // good runs
-//	static const double E1DCNT_wcut = 10096723.0; // good runs
-
-//	static const double EXT = 64275293.0;
-//	static const double OverlayPOT = 8.37944e+20;
-//	static const double DirtPOT = 3.13433e+20;
-
-	// v14
-
-//	static const double tor860_wcut = 3.748e+19; // high lifetime good runs
-//	static const double E1DCNT_wcut = 8299408.0; // high lifetime good runs
-
-//	static const double EXT = 62847738.0;
-//	static const double OverlayPOT = 1.2982e+21;
-//	static const double DirtPOT = 3.13433e+20;
-
-
-//	// v17 Run 1
-
-//	static const double tor860_wcut = 4.503e+19;
-//	static const double E1DCNT_wcut = 9988143.0;
-
-//	static const double EXT = 43065681.0;
-//	static const double OverlayPOT = 1.23716e+21;
-//	static const double DirtPOT = 3.19485e+20;
 
 	// v20 & v22 Run 1 
 
@@ -91,14 +60,17 @@ namespace Constants {
 	static const double E1DCNT_wcut = 9771236.0;
 
 	static const double EXT = 14675888.0;
-	static const double OverlayPOT = 8.92987e+19; // CV
 	static const double DirtPOT = 3.19485e+20;
+	static const double OverlayPOT = 8.92987e+19; // CV
 
 	// Systematics
+
 	static const double OverlayPOT_SCE = 1.11365e+20; // SCE
 	static const double OverlayPOT_DLdown = 1.03462e+20; // DLdown
 
-	// Kinematics
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	// Binning & XLabels for Selection Cuts & Kinematic Variables
 
 	static const int NBinsECal = 7; static const double ArrayNBinsECal[NBinsECal+1] = { 0.2,0.4,0.6,0.8,1.,1.2,1.4,1.6}; 
 	static TString LabelXAxisECal = ";E^{Cal} (GeV)";
@@ -107,22 +79,22 @@ namespace Constants {
 	static TString LabelXAxisQ2 = ";Q^{2} (GeV^{2}/c^{2})";
 
 	static const int NBinsMuonMomentum = 7; static const double ArrayNBinsMuonMomentum[NBinsMuonMomentum+1] = { 0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5 }; 
-	static TString LabelXAxisMuonMomentum = ";P_{#mu} (GeV/c)";
+	static TString LabelXAxisMuonMomentum = ";P_{#mu} (GeV/c)"; static TString LabelXAxisTrueMuonMomentum = ";True P_{#mu} (GeV/c)";
 
 	static const int NBinsProtonMomentum = 7; static const double ArrayNBinsProtonMomentum[NBinsProtonMomentum+1] = { 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1. }; 
-	static TString LabelXAxisProtonMomentum = ";P_{p} (GeV/c)";
+	static TString LabelXAxisProtonMomentum = ";P_{p} (GeV/c)"; static TString LabelXAxisTrueProtonMomentum = ";True P_{p} (GeV/c)";
 
 	static const int NBinsMuonPhi = 7; static const double ArrayNBinsMuonPhi[NBinsMuonPhi+1] = { -180.,-128.6,-77.1,-25.7,25.7,77.1,128.6,180. }; 
-	static TString LabelXAxisMuonPhi = ";#phi_{#mu} (deg)";
+	static TString LabelXAxisMuonPhi = ";#phi_{#mu} (deg)"; static TString LabelXAxisTrueMuonPhi = ";True #phi_{#mu} (deg)";
 
 	static const int NBinsProtonPhi = 7; static const double ArrayNBinsProtonPhi[NBinsProtonPhi+1] = { -180.,-128.6,-77.1,-25.7,25.7,77.1,128.6,180. }; 
-	static TString LabelXAxisProtonPhi = ";#phi_{p} (deg)";
+	static TString LabelXAxisProtonPhi = ";#phi_{p} (deg)"; static TString LabelXAxisTrueProtonPhi = ";True #phi_{p} (deg)";
 
 	static const int NBinsMuonCosTheta = 7; static const double ArrayNBinsMuonCosTheta[NBinsMuonCosTheta+1] = { -0.6,-0.4,-0.2,-0.0,0.2,0.5,0.8,1. }; 
-	static TString LabelXAxisMuonCosTheta = ";cos(#theta_{#mu})";
+	static TString LabelXAxisMuonCosTheta = ";cos(#theta_{#mu})"; static TString LabelXAxisTrueMuonCosTheta = ";True cos(#theta_{#mu})";
 
 	static const int NBinsProtonCosTheta = 7; static const double ArrayNBinsProtonCosTheta[NBinsProtonCosTheta+1] = { -0.6,-0.3,0.,0.2,0.4,0.6,0.8,1. }; 
-	static TString LabelXAxisProtonCosTheta = ";cos(#theta_{p})";
+	static TString LabelXAxisProtonCosTheta = ";cos(#theta_{p})"; static TString LabelXAxisTrueProtonCosTheta = ";True cos(#theta_{p})";
 
 	static const int NBinsChi2 = 25; TString RecoLabelXAxisChi2 = ";#chi^{2}_{p}";
 	static const double MinChi2 = 0., MaxChi2 = 500.;
@@ -156,7 +128,9 @@ namespace Constants {
 	static const int NBinsFlashScore = 25; TString RecoLabelXAxisFlashScore = ";Flash score";
 	static const double MinFlashScore = 0., MaxFlashScore = 50.;
 
-	// Binning for transverse variables
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	// Binning & XLabels for STV
 
 	static const int NBinsDeltaPT = 10; static const double ArrayNBinsDeltaPT[NBinsDeltaPT+1] = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1. }; 
 	static TString LabelXAxisDeltaPT = ";#deltaP_{T} (GeV/c)";
@@ -184,7 +158,7 @@ namespace Constants {
 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	// Constants
+	// Constants, Cuts & Thresholds
 
 	static const double NPE = 100;
 
@@ -227,70 +201,6 @@ namespace Constants {
 	static const double PurityThreshold = 0.1;
 
 	static const double MinimumNuScore = 0.4;
-
-//      kUnknownInteraction        =   -1, 
-//   81     kQE                        =    0,
-//   82     kRes                       =    1,
-//   83     kDIS                       =    2,
-//   84     kCoh                       =    3,
-//   85     kCohElastic                =    4,
-//   86     kElectronScattering        =    5,
-//   87     kIMDAnnihilation           =    6,
-//   88     kInverseBetaDecay          =    7,
-//   89     kGlashowResonance          =    8,
-//   90     kAMNuGamma                 =    9,
-//   91     kMEC                       =   10,
-//   92     kDiffractive               =   11,
-//   93     kEM                        =   12,
-//   94     kWeakMix                   =   13,
-//   95     kNuanceOffset              = 1000,                
-//   96     kCCQE                      = kNuanceOffset +  1,  
-//   97     kNCQE                      = kNuanceOffset +  2,  
-//   98     kResCCNuProtonPiPlus       = kNuanceOffset +  3,  
-//   99     kResCCNuNeutronPi0         = kNuanceOffset +  4,  
-//  100     kResCCNuNeutronPiPlus      = kNuanceOffset +  5,  
-//  101     kResNCNuProtonPi0          = kNuanceOffset +  6,  
-//  102     kResNCNuProtonPiPlus       = kNuanceOffset +  7,  
-//  103     kResNCNuNeutronPi0         = kNuanceOffset +  8,  
-//  104     kResNCNuNeutronPiMinus     = kNuanceOffset +  9,  
-//  105     kResCCNuBarNeutronPiMinus  = kNuanceOffset + 10,  
-//  106     kResCCNuBarProtonPi0       = kNuanceOffset + 11,  
-//  107     kResCCNuBarProtonPiMinus   = kNuanceOffset + 12,  
-//  108     kResNCNuBarProtonPi0       = kNuanceOffset + 13,  
-//  109     kResNCNuBarProtonPiPlus    = kNuanceOffset + 14,  
-//  110     kResNCNuBarNeutronPi0      = kNuanceOffset + 15,  
-//  111     kResNCNuBarNeutronPiMinus  = kNuanceOffset + 16,  
-//  112     kResCCNuDeltaPlusPiPlus    = kNuanceOffset + 17,
-//  113     kResCCNuDelta2PlusPiMinus  = kNuanceOffset + 21,
-//  114     kResCCNuBarDelta0PiMinus   = kNuanceOffset + 28,
-//  115     kResCCNuBarDeltaMinusPiPlus= kNuanceOffset + 32,
-//  116     kResCCNuProtonRhoPlus      = kNuanceOffset + 39,
-//  117     kResCCNuNeutronRhoPlus     = kNuanceOffset + 41,
-//  118     kResCCNuBarNeutronRhoMinus = kNuanceOffset + 46,
-//  119     kResCCNuBarNeutronRho0     = kNuanceOffset + 48,
-//  120     kResCCNuSigmaPlusKaonPlus  = kNuanceOffset + 53,
-//  121     kResCCNuSigmaPlusKaon0     = kNuanceOffset + 55,
-//  122     kResCCNuBarSigmaMinusKaon0 = kNuanceOffset + 60,
-//  123     kResCCNuBarSigma0Kaon0     = kNuanceOffset + 62,
-//  124     kResCCNuProtonEta          = kNuanceOffset + 67,
-//  125     kResCCNuBarNeutronEta      = kNuanceOffset + 70,
-//  126     kResCCNuKaonPlusLambda0    = kNuanceOffset + 73,
-//  127     kResCCNuBarKaon0Lambda0    = kNuanceOffset + 76,
-//  128     kResCCNuProtonPiPlusPiMinus= kNuanceOffset + 79,
-//  129     kResCCNuProtonPi0Pi0       = kNuanceOffset + 80,
-//  130     kResCCNuBarNeutronPiPlusPiMinus = kNuanceOffset + 85,
-//  131     kResCCNuBarNeutronPi0Pi0   = kNuanceOffset + 86,
-//  132     kResCCNuBarProtonPi0Pi0    = kNuanceOffset + 90,
-//  133     kCCDIS                     = kNuanceOffset + 91,  
-//  134     kNCDIS                     = kNuanceOffset + 92,  
-//  135     kUnUsed1                   = kNuanceOffset + 93,
-//  136     kUnUsed2                   = kNuanceOffset + 94,
-//  137     kCCQEHyperon               = kNuanceOffset + 95,
-//  138     kNCCOH                     = kNuanceOffset + 96,
-//  139     kCCCOH                     = kNuanceOffset + 97,  
-//  140     kNuElectronElastic         = kNuanceOffset + 98,  
-//  141     kInverseMuDecay            = kNuanceOffset + 99,  
-//  142     kMEC2p2h                   = kNuanceOffset + 100  
 
 }
 #endif

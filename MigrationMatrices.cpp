@@ -52,10 +52,10 @@ void MigrationMatrices() {
 	TH2D::SetDefaultSumw2();
 
 	vector<TString> PlotNames;
-	PlotNames.push_back("RecoTrueDeltaPTPlot2D"); PlotNames.push_back("RecoTrueDeltaAlphaTPlot2D"); PlotNames.push_back("RecoTrueDeltaPhiTPlot2D"); 
-	PlotNames.push_back("RecoTrueMuonMomentumPlot2D"); PlotNames.push_back("RecoTrueMuonPhiPlot2D"); PlotNames.push_back("RecoTrueMuonCosThetaPlot2D");
-	PlotNames.push_back("RecoTrueProtonMomentumPlot2D"); PlotNames.push_back("RecoTrueProtonPhiPlot2D"); PlotNames.push_back("RecoTrueProtonCosThetaPlot2D");
-//	PlotNames.push_back("RecoTrueECalPlot2D"); PlotNames.push_back("RecoTrueQ2Plot2D");
+	PlotNames.push_back("DeltaPTPlot"); PlotNames.push_back("DeltaAlphaTPlot"); PlotNames.push_back("DeltaPhiTPlot"); 
+	PlotNames.push_back("MuonMomentumPlot"); PlotNames.push_back("MuonPhiPlot"); PlotNames.push_back("MuonCosThetaPlot");
+	PlotNames.push_back("ProtonMomentumPlot"); PlotNames.push_back("ProtonPhiPlot"); PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("Plot"); PlotNames.push_back("Q2Plot");
 
 	const int N2DPlots = PlotNames.size();
 	cout << "Number of 2D Plots = " << N2DPlots << endl;
@@ -90,7 +90,7 @@ void MigrationMatrices() {
 			PlotCanvas[WhichSample][WhichPlot]->cd();
 			gStyle->SetMarkerSize(1.5);
 			gStyle->SetPaintTextFormat("4.2f");
-			Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1p"+PlotNames[WhichPlot]));
+			Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1p"+PlotNames[WhichPlot]+"2D"));
 			Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
 			Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 			Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);

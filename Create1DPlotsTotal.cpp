@@ -41,16 +41,9 @@ void Create1DPlotsTotal() {
 //	VectorCuts.push_back("_TransImb");
 
 	int NCuts = (int)(VectorCuts.size());	
-
-	for (int i = 0; i < NCuts; i++) {
-
-		CutExtension = CutExtension + VectorCuts[i];
-
-	}
+	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
 
 	// -------------------------------------------------------------------------------------
-
-	int FontStyle = 132;
 
 	PlotNames.push_back("DeltaPTPlot"); 
 	PlotNames.push_back("DeltaAlphaTPlot"); 
@@ -62,195 +55,158 @@ void Create1DPlotsTotal() {
 	PlotNames.push_back("ProtonCosThetaPlot"); 
 	PlotNames.push_back("ProtonPhiPlot");
 
+	// -------------------------------------------------------------------------------------
+
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
-	vector<TCanvas*> PlotEffCanvas; PlotEffCanvas.clear();
-	vector<TH1D*> PlotsTrue; PlotsTrue.clear();
-	vector<TH1D*> PlotsTrueReco; PlotsTrueReco.clear();
-//	vector<TH1D*> PlotsReco; PlotsReco.clear();
+	vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
+	vector<vector<TH1D*> > PlotsTrueReco; PlotsTrueReco.clear();
+
 	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
 
 	vector<TString> LabelsOfSamples;
 	vector<TString> NameOfSamples;
 
-	NameOfSamples.push_back("Overlay9");
-//	NameOfSamples.push_back("Overlay9_SCE");
-//	NameOfSamples.push_back("Overlay9_DLdown");
+	NameOfSamples.push_back("Overlay9"); // CV
 
-	TString Name = "myEfficiencies/"+UBCodeVersion+"/FileEfficiences_"+NameOfSamples[0]+"_"+WhichRun+"_"+UBCodeVersion+".root";
-	TFile* FileEfficiences = new TFile(Name,"recreate");
+	// Detector Systematics
+
+	NameOfSamples.push_back("Overlay9_SCE");
+	NameOfSamples.push_back("Overlay9_DLdown");
 
 	const int NSamples = NameOfSamples.size();
 	vector<TFile*> FileSample; FileSample.clear();
 	vector<TFile*> TruthFileSample; TruthFileSample.clear();
 
-	vector<TEfficiency*> pEff;
-	vector<TH1D*> pEffPlot;
+	TString Name = "";
+	TFile* FileEfficiences;
 
 	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-//		FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/CCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".root"));
 		FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/CCQEStudies_"+NameOfSamples[WhichSample]+CutExtension+".root"));
 		TruthFileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/TruthCCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".root"));
+
+		vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
+		vector<TH1D*> CurrentPlotsTrueReco; CurrentPlotsTrueReco.clear();
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
 			TH1D* histTrue = (TH1D*)(TruthFileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
-			PlotsTrue.push_back(histTrue);
-
-//			TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("RecoTrue"+PlotNames[WhichPlot]));
-//			TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pRecoTrue"+PlotNames[WhichPlot]));
-
-//			TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pTrue"+PlotNames[WhichPlot]));
+			CurrentPlotsTrue.push_back(histTrue);
 
 			TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-
-//			TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
-
-			PlotsTrueReco.push_back(histTrueReco);
-
-//			TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
-//			PlotsReco.push_back(histReco);
+			CurrentPlotsTrueReco.push_back(histTrueReco);
 		
 		}
 
+		PlotsTrue.push_back(CurrentPlotsTrue);
+		PlotsTrueReco.push_back(CurrentPlotsTrueReco);
+
 	}
 
-	// Loop over the plots
+	// Loop over the samples
 
-	for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
+	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+
+		Name = "myEfficiencies/"+UBCodeVersion+"/FileEfficiences_"+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".root";
+		FileEfficiences = new TFile(Name,"recreate");
+
+		// Loop over the plots
+
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 	
-		PlotCanvas.push_back(new TCanvas(PlotNames[WhichPlot],PlotNames[WhichPlot],205,34,1024,768));
-		PlotCanvas[WhichPlot]->cd();
+			TCanvas* PlotCanvas = new TCanvas(NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot],NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot],205,34,1024,768);
+			PlotCanvas->cd();
 
-		TLegend* leg = new TLegend(0.1,0.92,0.9,1.);
-		leg->SetBorderSize(0);
-		leg->SetTextSize(0.07);
-		leg->SetTextFont(FontStyle);
-		leg->SetNColumns(2);
-		leg->SetMargin(0.15);
+			TLegend* leg = new TLegend(0.1,0.92,0.9,1.);
+			leg->SetBorderSize(0);
+			leg->SetTextSize(0.07);
+			leg->SetTextFont(FontStyle);
+			leg->SetNColumns(2);
+			leg->SetMargin(0.15);
 
-		PlotsTrue[WhichPlot]->SetLineColor(kRed);
-		PlotsTrue[WhichPlot]->SetLineWidth(3);
-		PlotsTrue[WhichPlot]->GetXaxis()->CenterTitle();
-		PlotsTrue[WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-		PlotsTrue[WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-		PlotsTrue[WhichPlot]->GetXaxis()->SetTitleSize(0.06);
-		PlotsTrue[WhichPlot]->GetXaxis()->SetLabelSize(0.04);
-		PlotsTrue[WhichPlot]->GetXaxis()->SetTitleOffset(0.7);
-		PlotsTrue[WhichPlot]->GetXaxis()->SetNdivisions(5);
+			PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
+			PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(0.04);
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleOffset(0.7);
+			PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
 
-		PlotsTrue[WhichPlot]->GetYaxis()->CenterTitle();
-		PlotsTrue[WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetTitleSize(0.12);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetRangeUser(0.,1.1*PlotsTrue[WhichPlot]->GetMaximum());
-		PlotsTrue[WhichPlot]->GetYaxis()->SetNdivisions(6);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetTitleOffset(0.8);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetTitleSize(0.06);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetLabelSize(0.04);
-		PlotsTrue[WhichPlot]->GetYaxis()->SetTitle("# events");
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(0.12);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.1*PlotsTrue[WhichSample][WhichPlot]->GetMaximum());
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(6);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleOffset(0.8);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(0.04);
+			PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitle("# events");
 
-		PlotsTrueReco[WhichPlot]->SetLineColor(kBlue);
-		PlotsTrueReco[WhichPlot]->SetLineWidth(3);
+			PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
+			PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
 
-//		PlotsReco[WhichPlot]->SetLineColor(kBlack);
-//		PlotsReco[WhichPlot]->SetLineWidth(3);
+			PlotsTrue[WhichSample][WhichPlot]->Draw();
+			PlotsTrueReco[WhichSample][WhichPlot]->Draw("same");
 
-		PlotsTrue[WhichPlot]->Draw();
-		PlotsTrueReco[WhichPlot]->Draw("same");
-//		PlotsReco[WhichPlot]->Draw("same");
+			leg->AddEntry(PlotsTrue[WhichSample][WhichPlot],"True CC1p");
+			leg->AddEntry(PlotsTrueReco[WhichSample][WhichPlot],"Candidate Reco CC1p");
+			leg->Draw();		
 
-		leg->AddEntry(PlotsTrue[WhichPlot],"True CC1p");
-		leg->AddEntry(PlotsTrueReco[WhichPlot],"Candidate Reco CC1p");
+			if (WhichSample == 0) 
+				{ PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+".pdf"); }
+			delete PlotCanvas;
 
-//		leg->AddEntry(PlotsReco[WhichPlot],"Reco");
-		leg->Draw();		
+			// ---------------------------------------------------------------------------------------------------------------------------
 
-		//PlotCanvas[WhichPlot]->SaveAs("/home/afroditi/Dropbox/Papers_Analyses/2019/TransverseVariables/Support/"+PlotNames[WhichPlot]+".pdf");
-		PlotCanvas[WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+".pdf");
-		PlotCanvas[WhichPlot]->SaveAs("./myPlots/eps/"+UBCodeVersion+"/"+NameOfSamples[0]+"/"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+".eps");
-//		delete PlotCanvas[WhichPlot];
+			TCanvas* PlotEffCanvas = new TCanvas(NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot],NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot],205,34,1024,768);
+			PlotEffCanvas->cd();
 
-		// ---------------------------------------------------------------------------------------------------------------------------
+			PlotsTrueReco[WhichSample][WhichPlot]->Divide(PlotsTrue[WhichSample][WhichPlot]);
+			TH1D* pEffPlot = PlotsTrueReco[WhichSample][WhichPlot];
+			pEffPlot->SetLineWidth(3);
+			pEffPlot->SetLineColor(kBlack);
+			pEffPlot->SetMarkerStyle(20);
 
+			pEffPlot->GetXaxis()->CenterTitle();
+			pEffPlot->GetXaxis()->SetTitleFont(FontStyle);
+			pEffPlot->GetXaxis()->SetLabelFont(FontStyle);
+			pEffPlot->GetXaxis()->SetTitle(PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetTitle());
+			pEffPlot->GetXaxis()->SetTitleSize(0.06);
+			pEffPlot->GetXaxis()->SetLabelSize(0.04);
+			pEffPlot->GetXaxis()->SetTitleOffset(0.7);
+			pEffPlot->GetXaxis()->SetNdivisions(5);
 
-		//if (PlotNames[WhichPlot] == "DeltaPTPlot" || PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "DeltaPhiTPlot") {
+			pEffPlot->GetYaxis()->CenterTitle();
+			pEffPlot->GetYaxis()->SetTitleFont(FontStyle);
+			pEffPlot->GetYaxis()->SetTitleSize(0.12);
+			pEffPlot->GetYaxis()->SetLabelFont(FontStyle);
+			pEffPlot->GetYaxis()->SetNdivisions(6);
+			pEffPlot->GetYaxis()->SetTitleOffset(0.45);
+			pEffPlot->GetYaxis()->SetTitleSize(0.08);
+			pEffPlot->GetYaxis()->SetLabelSize(0.04);
+			pEffPlot->GetYaxis()->SetTitle("Efficiency");
+			pEffPlot->GetYaxis()->SetRangeUser(0.,1.1*pEffPlot->GetMaximum());
 
-			PlotEffCanvas.push_back(new TCanvas("Eff"+PlotNames[WhichPlot],"Eff"+PlotNames[WhichPlot],205,34,1024,768));
-			PlotEffCanvas[WhichPlot]->cd();
-
-/*			pEff.push_back(new TEfficiency(*PlotsTrueReco[WhichPlot],*PlotsTrue[WhichPlot]));
-			pEff[WhichPlot]->SetLineWidth(3);
-
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->CenterTitle();
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetTitleFont(FontStyle);
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetLabelFont(FontStyle);
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetTitle(PlotsTrue[WhichPlot]->GetXaxis()->GetTitle());
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetTitleSize(0.06);
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetLabelSize(0.04);
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetTitleOffset(0.7);
-			pEff[WhichPlot]->GetTotalHistogram()->GetXaxis()->SetNdivisions(5);
-
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->CenterTitle();
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetTitleFont(FontStyle);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetTitleSize(0.12);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetLabelFont(FontStyle);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetRangeUser(0.,25.);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetNdivisions(6);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetTitleOffset(0.45);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetTitleSize(0.08);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetLabelSize(0.04);
-			pEff[WhichPlot]->GetTotalHistogram()->GetYaxis()->SetTitle("Efficiency");
-
-			pEff[WhichPlot]->Draw();
+			pEffPlot->Draw();
 			FileEfficiences->cd();
-			pEff[WhichPlot]->Write();*/
+			pEffPlot->Write();
 
-			PlotsTrueReco[WhichPlot]->Divide(PlotsTrue[WhichPlot]);
-			pEffPlot.push_back(PlotsTrueReco[WhichPlot]);
-			pEffPlot[WhichPlot]->SetLineWidth(3);
-			pEffPlot[WhichPlot]->SetLineColor(kBlack);
-			pEffPlot[WhichPlot]->SetMarkerStyle(20);
+			if (WhichSample == 0) 
+				{ PlotEffCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/Eff"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+".pdf"); }
+			delete PlotEffCanvas;
 
-			pEffPlot[WhichPlot]->GetXaxis()->CenterTitle();
-			pEffPlot[WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-			pEffPlot[WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-			pEffPlot[WhichPlot]->GetXaxis()->SetTitle(PlotsTrue[WhichPlot]->GetXaxis()->GetTitle());
-			pEffPlot[WhichPlot]->GetXaxis()->SetTitleSize(0.06);
-			pEffPlot[WhichPlot]->GetXaxis()->SetLabelSize(0.04);
-			pEffPlot[WhichPlot]->GetXaxis()->SetTitleOffset(0.7);
-			pEffPlot[WhichPlot]->GetXaxis()->SetNdivisions(5);
+		} // End of the loop over the plots
 
-			pEffPlot[WhichPlot]->GetYaxis()->CenterTitle();
-			pEffPlot[WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-			pEffPlot[WhichPlot]->GetYaxis()->SetTitleSize(0.12);
-			pEffPlot[WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-//			pEffPlot[WhichPlot]->GetYaxis()->SetRangeUser(0.,25.);
-			pEffPlot[WhichPlot]->GetYaxis()->SetNdivisions(6);
-			pEffPlot[WhichPlot]->GetYaxis()->SetTitleOffset(0.45);
-			pEffPlot[WhichPlot]->GetYaxis()->SetTitleSize(0.08);
-			pEffPlot[WhichPlot]->GetYaxis()->SetLabelSize(0.04);
-			pEffPlot[WhichPlot]->GetYaxis()->SetTitle("Efficiency");
-			pEffPlot[WhichPlot]->GetYaxis()->SetRangeUser(0.,0.5);
+		FileEfficiences->Close();
 
-			pEffPlot[WhichPlot]->Draw();
-			FileEfficiences->cd();
-			pEffPlot[WhichPlot]->Write();
+		std::cout << std::endl << "Efficiency file " << Name << " created" << std::endl << std::endl;
+		std::cout << std::endl << "--------------------------------------------------------------------------------------------------------------------------" << std::endl << std::endl;
 
-			//PlotEffCanvas[WhichPlot]->SaveAs("/home/afroditi/Dropbox/Papers_Analyses/2019/TransverseVariables/Support/Eff"+PlotNames[WhichPlot]+".pdf");
-			PlotEffCanvas[WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/Eff"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+".pdf");
-			PlotEffCanvas[WhichPlot]->SaveAs("./myPlots/eps/"+UBCodeVersion+"/"+NameOfSamples[0]+"/Eff"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+".eps");
-//			delete PlotEffCanvas[WhichPlot];
-
-		//}
-
-	} // End of the loop over the plots
-
-	FileEfficiences->Close();
-
-	std::cout << std::endl << "Efficiency file " << Name << " created" << std::endl << std::endl;
+	} // End of the loop over the samples
 
 } // End of the program 
