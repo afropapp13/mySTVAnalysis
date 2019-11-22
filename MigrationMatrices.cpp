@@ -117,9 +117,9 @@ void MigrationMatrices() {
 	
 					if (NEventsInColumn > 0) {
 						// CV
-						double CV = Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1)/double(NEventsInColumn);
+						double CV = double(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1))/double(NEventsInColumn);
 						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
-	
+
 						// Error
 						double error = sqrt(
 						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/double(NEventsInColumn),2.) +
