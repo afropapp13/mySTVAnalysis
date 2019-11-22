@@ -14,10 +14,10 @@
 #include <sstream>
 #include <string>
 
-#include  "./SecondaryCode/CenterAxisTitle.cpp"
-#include "./SecondaryCode/SetOffsetAndSize.cpp"
-#include "./SecondaryCode/ToString.cpp"
-#include "./SecondaryCode/MakeMyPlotPretty.cpp"
+#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
+#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
+#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
 #include "./Constants.h"
 
@@ -255,7 +255,7 @@ void Systematics() {
 		legSyst->AddEntry(PlotsReco[0][WhichPlot],"Stat Unc","lep");
 		legSyst->AddEntry(SystDataplot,"Total Unc","lepf");
 		legSyst->AddEntry(PlotsCC1pReco[0][WhichPlot],"CC1p MC","f");
-		legSyst->AddEntry(PlotsTrue[0][WhichPlot],"GENIE","lep");
+		legSyst->AddEntry(PlotsTrue[0][WhichPlot],"GENIE","l");
 		legSyst->Draw();
 
 //		latex.DrawLatexNDC(0.67,0.94, Label);

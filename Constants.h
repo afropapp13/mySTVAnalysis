@@ -132,7 +132,7 @@ namespace Constants {
 
 	// Binning & XLabels for STV
 
-	static const int NBinsDeltaPT = 10; static const double ArrayNBinsDeltaPT[NBinsDeltaPT+1] = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1. }; 
+	static const int NBinsDeltaPT = 9; static const double ArrayNBinsDeltaPT[NBinsDeltaPT+1] = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 }; 
 	static TString LabelXAxisDeltaPT = ";#deltaP_{T} (GeV/c)";
 
 	static const int NBinsDeltaAlphaT = 7; static const double ArrayNBinsDeltaAlphaT[NBinsDeltaAlphaT+1] = { 0.,25.,50.,75.,100.,125.,150.,180. }; 
