@@ -12,37 +12,38 @@ using namespace std;
 
 namespace Constants {
 
+	// Argon 
+
+	static const double A = 40.;
+	static const double Z = 18.;
+
 	static const int FontStyle = 132;
 
-	// Run Period
+	// UBCodeVersion
 
-	static const TString WhichRun = "Run1";
-//	static const TString WhichRun = "Run3";
-
-	// Samples
-
-	static TString UBCodeVersion = "v08_00_00_22";
+	static TString UBCodeVersion = "v08_00_00_33";
 
 	// Labels
 
 	static const TString PlotXAxis[] = {
-	  "#frac{d#sigma}{d#deltaP_{T}} (10^{-38} cm^{2})" 
-	 ,"#frac{d#sigma}{d#delta#alpha_{T}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{d#delta#phi_{T}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{dP_{#mu}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{dcos(#theta_{#mu})} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{d#phi_{#mu}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{dP_{p}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{dcos(#theta_{p})} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{d#phi_{p}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{dE^{Cal}} (10^{-38} cm^{2})"
-	 ,"#frac{d#sigma}{dQ^{2}} (10^{-38} cm^{2})"
+	  "#frac{d#sigma}{d#deltaP_{T}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{d#delta#alpha_{T}} []10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{d#delta#phi_{T}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dP_{#mu}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dcos#theta_{#mu}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{d#phi_{#mu}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dP_{p}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dcos#theta_{p}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{d#phi_{p}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dE^{Cal}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dE^{QE}} [10^{-38} cm^{2}]"
+	 ,"#frac{d#sigma}{dQ^{2}} [10^{-38} cm^{2}]"
 	};
 
 	// Genie Constants
 
 	static const double FluxIntegratedXSection = 26.5736; // e-38 cm^2
-	static const int NGenieEvents = 1E6;
+	static const int NGenieEvents = 1E5;
 
 	// Global Constants
 
@@ -54,47 +55,42 @@ namespace Constants {
 
 	// POT Normalization
 
-	// v20 & v22 Run 1 
+	// v33 Run 1 
 
-	static const double tor860_wcut = 4.405e+19;
-	static const double E1DCNT_wcut = 9771236.0;
-
-	static const double EXT = 14675888.0;
-	static const double DirtPOT = 3.19485e+20;
-	static const double OverlayPOT = 8.92987e+19; // CV
-
-	// Systematics
-
-	static const double OverlayPOT_SCE = 1.11365e+20; // SCE
-	static const double OverlayPOT_DLdown = 1.03462e+20; // DLdown
+	static const double tor860_wcut_Run1 = 4.131e+19;
+	static const double E1DCNT_wcut_Run1 = 9147384.0;
+	static const double EXT_Run1 = 34150796.0;
 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	// Binning & XLabels for Selection Cuts & Kinematic Variables
 
-	static const int NBinsECal = 7; static const double ArrayNBinsECal[NBinsECal+1] = { 0.2,0.4,0.6,0.8,1.,1.2,1.4,1.6}; 
-	static TString LabelXAxisECal = ";E^{Cal} (GeV)";
+	static const int NBinsECal = 8; static const double ArrayNBinsECal[NBinsECal+1] = {0.2,0.4,0.6,0.8,1.,1.2,1.4,1.6,1.8}; 
+	static TString LabelXAxisECal = ";E^{Cal} [GeV]"; static TString LabelXAxisTrueECal = ";True E^{Cal} [GeV]";
 
-	static const int NBinsQ2 = 7; static const double ArrayNBinsQ2[NBinsQ2+1] = { 0.0,0.1,0.2,0.3,0.4,0.5,0.65,0.8}; 
-	static TString LabelXAxisQ2 = ";Q^{2} (GeV^{2}/c^{2})";
+	static const int NBinsEQE = 8; static const double ArrayNBinsEQE[NBinsEQE+1] = {0.2,0.4,0.6,0.8,1.,1.2,1.4,1.6,1.8}; 
+	static TString LabelXAxisEQE = ";E^{QE} [GeV]"; static TString LabelXAxisTrueEQE = ";True E^{QE} [GeV]";
 
-	static const int NBinsMuonMomentum = 7; static const double ArrayNBinsMuonMomentum[NBinsMuonMomentum+1] = { 0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5 }; 
-	static TString LabelXAxisMuonMomentum = ";P_{#mu} (GeV/c)"; static TString LabelXAxisTrueMuonMomentum = ";True P_{#mu} (GeV/c)";
+	static const int NBinsQ2 = 8; static const double ArrayNBinsQ2[NBinsQ2+1] = { 0.0,0.1,0.2,0.3,0.4,0.5,0.65,0.8,1.}; 
+	static TString LabelXAxisQ2 = ";Q^{2} [GeV^{2}/c^{2}]"; static TString LabelXAxisTrueQ2 = ";True Q^{2} [GeV^{2}/c^{2}]";
 
-	static const int NBinsProtonMomentum = 7; static const double ArrayNBinsProtonMomentum[NBinsProtonMomentum+1] = { 0.3,0.4,0.5,0.6,0.7,0.8,0.9,1. }; 
-	static TString LabelXAxisProtonMomentum = ";P_{p} (GeV/c)"; static TString LabelXAxisTrueProtonMomentum = ";True P_{p} (GeV/c)";
+	static const int NBinsMuonMomentum = 8; static const double ArrayNBinsMuonMomentum[NBinsMuonMomentum+1] = { 0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5,1.7}; 
+	static TString LabelXAxisMuonMomentum = ";P_{#mu} [GeV/c]"; static TString LabelXAxisTrueMuonMomentum = ";True P_{#mu} [GeV/c]";
 
-	static const int NBinsMuonPhi = 7; static const double ArrayNBinsMuonPhi[NBinsMuonPhi+1] = { -180.,-128.6,-77.1,-25.7,25.7,77.1,128.6,180. }; 
-	static TString LabelXAxisMuonPhi = ";#phi_{#mu} (deg)"; static TString LabelXAxisTrueMuonPhi = ";True #phi_{#mu} (deg)";
+	static const int NBinsProtonMomentum = 10; static const double ArrayNBinsProtonMomentum[NBinsProtonMomentum+1] = {0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.,1.1,1.2}; 
+	static TString LabelXAxisProtonMomentum = ";P_{p} [GeV/c]"; static TString LabelXAxisTrueProtonMomentum = ";True P_{p} [GeV/c]";
 
-	static const int NBinsProtonPhi = 7; static const double ArrayNBinsProtonPhi[NBinsProtonPhi+1] = { -180.,-128.6,-77.1,-25.7,25.7,77.1,128.6,180. }; 
-	static TString LabelXAxisProtonPhi = ";#phi_{p} (deg)"; static TString LabelXAxisTrueProtonPhi = ";True #phi_{p} (deg)";
+	static const int NBinsMuonPhi = 7; static const double ArrayNBinsMuonPhi[NBinsMuonPhi+1] = { -180.,-128.6,-77.1,-25.7,25.7,77.1,128.6,180.};
+	static TString LabelXAxisMuonPhi = ";#phi_{#mu} [deg]"; static TString LabelXAxisTrueMuonPhi = ";True #phi_{#mu} [deg]";
 
-	static const int NBinsMuonCosTheta = 7; static const double ArrayNBinsMuonCosTheta[NBinsMuonCosTheta+1] = { -0.6,-0.4,-0.2,-0.0,0.2,0.5,0.8,1. }; 
-	static TString LabelXAxisMuonCosTheta = ";cos(#theta_{#mu})"; static TString LabelXAxisTrueMuonCosTheta = ";True cos(#theta_{#mu})";
+	static const int NBinsProtonPhi = 7; static const double ArrayNBinsProtonPhi[NBinsProtonPhi+1] = { -180.,-128.6,-77.1,-25.7,25.7,77.1,128.6,180.};
+	static TString LabelXAxisProtonPhi = ";#phi_{p} [deg]"; static TString LabelXAxisTrueProtonPhi = ";True #phi_{p} [deg]";
 
-	static const int NBinsProtonCosTheta = 7; static const double ArrayNBinsProtonCosTheta[NBinsProtonCosTheta+1] = { -0.6,-0.3,0.,0.2,0.4,0.6,0.8,1. }; 
-	static TString LabelXAxisProtonCosTheta = ";cos(#theta_{p})"; static TString LabelXAxisTrueProtonCosTheta = ";True cos(#theta_{p})";
+	static const int NBinsMuonCosTheta = 9; static const double ArrayNBinsMuonCosTheta[NBinsMuonCosTheta+1] = { -1.,-0.8,-0.6,-0.4,-0.2,-0.0,0.2,0.5,0.8,1.}; 
+	static TString LabelXAxisMuonCosTheta = ";cos#theta_{#mu}"; static TString LabelXAxisTrueMuonCosTheta = ";True cos#theta_{#mu}";
+
+	static const int NBinsProtonCosTheta = 9; static const double ArrayNBinsProtonCosTheta[NBinsProtonCosTheta+1] = { -1.,-0.8, -0.6,-0.3,0.,0.2,0.4,0.6,0.8,1. }; 
+	static TString LabelXAxisProtonCosTheta = ";cos#theta_{p}"; static TString LabelXAxisTrueProtonCosTheta = ";True cos#theta_{p}";
 
 	static const int NBinsChi2 = 25; TString RecoLabelXAxisChi2 = ";#chi^{2}_{p}";
 	static const double MinChi2 = 0., MaxChi2 = 500.;
@@ -102,7 +98,7 @@ namespace Constants {
 	static const int NBinsThreePlaneChi2 = 25; TString RecoLabelXAxisThreePlaneChi2 = ";3-plane #chi^{2}_{p}";
 	static const double MinThreePlaneChi2 = 0., MaxThreePlaneChi2 = 500.;
 
-	static const int NBinsThreePlaneChi2LogLikelihood = 20; TString RecoLabelXAxisThreePlaneChi2LogLikelihood = ";3-Plane LogLikelihood";
+	static const int NBinsThreePlaneChi2LogLikelihood = 40; TString RecoLabelXAxisThreePlaneChi2LogLikelihood = ";3-Plane LogLikelihood";
 	static const double MinThreePlaneChi2LogLikelihood = -5., MaxThreePlaneChi2LogLikelihood = 5.;
 	TString RecoLabelXAxisThreePlaneChi2MuonCandidateLogLikelihood = ";3-Plane LogLikelihood #mu-Candidate";
 	TString RecoLabelXAxisThreePlaneChi2ProtonCandidateLogLikelihood = ";3-Plane LogLikelihood p-Candidate";
@@ -123,7 +119,7 @@ namespace Constants {
 	static const double MinDistance = 0., MaxDistance = 5.;
 
 	static const int NBinsNuScore = 25; TString RecoLabelXAxisNuScore = ";#nu score";
-	static const double MinNuScore = 0., MaxNuScore = 1.;
+	static const double MinNuScore = 0.05, MaxNuScore = 1.;
 
 	static const int NBinsFlashScore = 25; TString RecoLabelXAxisFlashScore = ";Flash score";
 	static const double MinFlashScore = 0., MaxFlashScore = 50.;
@@ -132,41 +128,52 @@ namespace Constants {
 
 	// Binning & XLabels for STV
 
-	static const int NBinsDeltaPT = 9; static const double ArrayNBinsDeltaPT[NBinsDeltaPT+1] = { 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 }; 
-	static TString LabelXAxisDeltaPT = ";#deltaP_{T} (GeV/c)";
+	static const int NBinsDeltaPT = 9; static const double ArrayNBinsDeltaPT[NBinsDeltaPT+1] = {0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9}; 
+	static TString LabelXAxisDeltaPT = ";#deltap_{T} [GeV/c]"; static TString LabelXAxisTrueDeltaPT = ";True #deltap_{T} [GeV/c]";
 
 	static const int NBinsDeltaAlphaT = 7; static const double ArrayNBinsDeltaAlphaT[NBinsDeltaAlphaT+1] = { 0.,25.,50.,75.,100.,125.,150.,180. }; 
-	static TString LabelXAxisDeltaAlphaT = ";#delta#alpha_{T} (deg)";
+	static TString LabelXAxisDeltaAlphaT = ";#delta#alpha_{T} [deg]"; static TString LabelXAxisTrueDeltaAlphaT = ";True #delta#alpha_{T} [deg]";
 
 	static const int NBinsDeltaPhiT = 10; static const double ArrayNBinsDeltaPhiT[NBinsDeltaPhiT+1] = { 0.,12.5,25.,37.5,50.,62.5,75.,90., 105., 120., 135. }; 
-	static TString LabelXAxisDeltaPhiT = ";#delta#phi_{T} (deg)";
+	static TString LabelXAxisDeltaPhiT = ";#delta#phi_{T} [deg]"; static TString LabelXAxisTrueDeltaPhiT = ";True #delta#phi_{T} [deg]";
 
-	static TString LabelXAxisDeltaPT2D = ";True #deltaP_{T} (GeV/c);Reco #deltaP_{T} (GeV/c)";
-	static TString LabelXAxisDeltaAlphaT2D = ";True #delta#alpha_{T} (deg);Reco #delta#alpha_{T} (deg)";
-	static TString LabelXAxisDeltaPhiT2D = ";True #delta#phi_{T} (deg);Reco #delta#phi_{T} (deg)";
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	static TString LabelXAxisMuonMomentum2D = ";True P_{#mu} (GeV/c);Reco P_{#mu} (GeV/c)";
-	static TString LabelXAxisMuonPhi2D = ";True #phi_{#mu} (deg);Reco #phi_{#mu} (deg)";
-	static TString LabelXAxisMuonCosTheta2D = ";True cos(#theta_{#mu});Reco cos(#theta_{#mu})";
+	// Labels for 2D Plots
 
-	static TString LabelXAxisProtonMomentum2D = ";True P_{p} (GeV/c);Reco P_{p} (GeV/c)";
-	static TString LabelXAxisProtonPhi2D = ";True #phi_{p} (deg);Reco #phi_{p} (deg)";
-	static TString LabelXAxisProtonCosTheta2D = ";True cos(#theta_{p});Reco cos(#theta_{p})";
+	static TString LabelXAxisDeltaPT2D = LabelXAxisTrueDeltaPT+";Reco #deltap_{T} [GeV/c]";
+	static TString LabelXAxisDeltaAlphaT2D = LabelXAxisTrueDeltaAlphaT+";Reco #delta#alpha_{T} [deg]";
+	static TString LabelXAxisDeltaPhiT2D = LabelXAxisTrueDeltaPhiT+";Reco #delta#phi_{T} [deg]";
 
-	static TString LabelXAxisECal2D = ";True E^{Cal} (GeV);Reco E^{Cal} (GeV)";
-	static TString LabelXAxisQ22D = ";True Q^{2} (GeV^{2}/c^{2});Reco Q^{2} (GeV^{2}/c^{2})";
+	static TString LabelXAxisMuonMomentum2D = LabelXAxisTrueMuonMomentum+";Reco P_{#mu} [GeV/c]";
+	static TString LabelXAxisMuonPhi2D = LabelXAxisTrueMuonPhi+";Reco #phi_{#mu} [deg]";
+	static TString LabelXAxisMuonCosTheta2D = LabelXAxisTrueMuonCosTheta+";Reco cos#theta_{#mu}";
+
+	static TString LabelXAxisProtonMomentum2D = LabelXAxisTrueProtonMomentum+";Reco P_{p} [GeV/c]";
+	static TString LabelXAxisProtonPhi2D = LabelXAxisTrueProtonPhi+";Reco #phi_{p} [deg]";
+	static TString LabelXAxisProtonCosTheta2D = LabelXAxisTrueProtonCosTheta+";Reco cos#theta_{p}";
+
+	static TString LabelXAxisECal2D = ";True E^{Cal} [GeV];Reco E^{Cal} [GeV]";
+	static TString LabelXAxisEQE2D = ";True E^{QE} [GeV];Reco E^{QE} [GeV]";
+	static TString LabelXAxisQ22D = ";True Q^{2} [GeV^{2}/c^{2}];Reco Q^{2} [GeV^{2}/c^{2}]";
+
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	static int OverlayColor = kAzure-4;
+	static int BeamOnColor = kBlack;
+	static int GenieColor = 610;
 
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	// Constants, Cuts & Thresholds
 
-	static const double NPE = 100;
+	static const double NPE = 10;
 
 	static const double MuonChi2Cut = 100.;
 	static const double ProtonChi2Cut = 80.;
 
 	static const double MuonThreePlaneChi2LogLikelihoodCut = -1.;
-	static const double ProtonThreePlaneChi2LogLikelihoodCut = -2.;
+	static const double ProtonThreePlaneChi2LogLikelihoodCut = -0.5;
 
 	static const int MuonPdg = 13, ProtonPdg = 2212, AbsChargedPionPdg = 211, NeutralPionPdg = 111;
 
@@ -182,10 +189,9 @@ namespace Constants {
 	static const double ThresholdPurity = 0.1; // 10%
 	static const double UBSpaceReso = 0.3; // cm // 3mm spacing between the wires
 
-	static const double DeltaThetaCentralValue = 90.; // deg
-	static const double DeltaThetaOpeningAngle = 70.; // deg
+	static const double DeltaThetaCut = 180.; // deg
 	static const double DeltaPhiCentralValue = 180.; // deg
-	static const double DeltaPhiOpeningAngle = 35.; // deg // default 35
+	static const double DeltaPhiOpeningAngle = 35.; // deg
 	static const double MaxTransMissMomentum = 0.35; // deg
 
 	static const double MaxMuPDistance = 2.; // cm
@@ -200,7 +206,9 @@ namespace Constants {
 
 	static const double PurityThreshold = 0.1;
 
-	static const double MinimumNuScore = 0.4;
+	static const double MinimumNuScore = 0.6;
+
+	// --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 }
 #endif

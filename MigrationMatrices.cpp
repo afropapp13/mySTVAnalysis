@@ -17,10 +17,7 @@
 using namespace std;
 using namespace Constants;
 
-void MigrationMatrices() {
-
-//	TString PathToFiles = "./myFiles/";
-	TString PathToFiles = "../myEvents/OutputFiles";
+void MigrationMatrices(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -28,15 +25,10 @@ void MigrationMatrices() {
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
+	VectorCuts.push_back("");
 	VectorCuts.push_back("_NuScore");
 	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_MatchedFlash");
 	VectorCuts.push_back("_Collinearity");
-
-//	VectorCuts.push_back("_Chi2");
-//	VectorCuts.push_back("_Distance");
-//	VectorCuts.push_back("_Coplanarity");
-//	VectorCuts.push_back("_TransImb");
 
 	int NCuts = (int)(VectorCuts.size());	
 
@@ -45,6 +37,8 @@ void MigrationMatrices() {
 		CutExtension = CutExtension + VectorCuts[i];
 
 	}
+
+	TString PathToFiles = "../myEvents/OutputFiles";
 
 	// -------------------------------------------------------------------------------------
 
@@ -55,7 +49,7 @@ void MigrationMatrices() {
 	PlotNames.push_back("DeltaPTPlot"); PlotNames.push_back("DeltaAlphaTPlot"); PlotNames.push_back("DeltaPhiTPlot"); 
 	PlotNames.push_back("MuonMomentumPlot"); PlotNames.push_back("MuonPhiPlot"); PlotNames.push_back("MuonCosThetaPlot");
 	PlotNames.push_back("ProtonMomentumPlot"); PlotNames.push_back("ProtonPhiPlot"); PlotNames.push_back("ProtonCosThetaPlot");
-//	PlotNames.push_back("Plot"); PlotNames.push_back("Q2Plot");
+	PlotNames.push_back("ECalPlot"); PlotNames.push_back("EQEPlot"); PlotNames.push_back("Q2Plot");
 
 	const int N2DPlots = PlotNames.size();
 	cout << "Number of 2D Plots = " << N2DPlots << endl;
@@ -65,135 +59,158 @@ void MigrationMatrices() {
 	vector<TString> NameOfSamples;
 
 	NameOfSamples.push_back("Overlay9");
-//	NameOfSamples.push_back("Overlay9_SCE");
-//	NameOfSamples.push_back("Overlay9_DLdown");
+
+	// -------------------------------------------------------------------------------------
 
 	const int NSamples = NameOfSamples.size();
 	TCanvas* PlotCanvas[NSamples][N2DPlots] = {}; TFile* FileSample[NSamples] = {};
 	TH2D* Plots[NSamples][N2DPlots] = {};
 
-	TString FileName = "myMigrationMatrices/"+UBCodeVersion+"/FileMigrationMatrices_"+NameOfSamples[0]+"_"+WhichRun+"_"+UBCodeVersion+".root";
-	TFile* FileMigrationMatrices = new TFile(FileName,"recreate");
+	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+	vector<TString> Runs;
+	Runs.push_back("Run1");
 
-		FileSample[WhichSample] = TFile::Open(PathToFiles+"/"+UBCodeVersion+"/CCQEStudies_"+NameOfSamples[WhichSample]+CutExtension+".root");
+	int NRuns = (int)(Runs.size());
+	cout << "Number of Runs = " << NRuns << endl;
 
-	}
+	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
-		for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
+		// -------------------------------------------------------------------------------------
 
-			PlotCanvas[WhichSample][WhichPlot] = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
-					    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
-			PlotCanvas[WhichSample][WhichPlot]->cd();
-			gStyle->SetMarkerSize(1.5);
-			gStyle->SetPaintTextFormat("4.2f");
-			Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
-			Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-			Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-			Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-			Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-			Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-			Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(0.03);
+		TString FileName = "myMigrationMatrices/"+UBCodeVersion+"/FileMigrationMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TFile* FileMigrationMatrices = new TFile(FileName,"recreate");
 
-			CenterAxisTitle(Plots[WhichSample][WhichPlot]);
+		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
-			int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();
+			FileSample[WhichSample] = TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root");
 
-			for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
+		}
 
-				int NEventsInColumn = 0;
+		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-				for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
+			for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
 
-					NEventsInColumn += Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+				PlotCanvas[WhichSample][WhichPlot] = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
+						    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
+				PlotCanvas[WhichSample][WhichPlot]->cd();
+				gStyle->SetMarkerSize(1.5);
+				gStyle->SetPaintTextFormat("4.2f");
+				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
+				Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(0.03);
 
-				}
+				CenterAxisTitle(Plots[WhichSample][WhichPlot]);
 
-				for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
+				int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
+				int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();
+
+				// Normalizing columns to 1
+
+				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
+
+					int NEventsInColumn = 0;
+
+					for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
+
+						NEventsInColumn += Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+
+					}
+
+					for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
 	
-					if (NEventsInColumn > 0) {
-						// CV
-						double CV = double(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1))/double(NEventsInColumn);
-						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
+						if (NEventsInColumn > 0) {
 
-						// Error
-						double error = sqrt(
-						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/double(NEventsInColumn),2.) +
-						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1) * sqrt(NEventsInColumn)/double(NEventsInColumn*NEventsInColumn),2.)
-						);
-						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,error) ; 
+							// CV
+							double CV = double(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1))/double(NEventsInColumn);
+							Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
 
-					} else { 
+							// Error
+							double error = sqrt(
+							TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/double(NEventsInColumn),2.) +
+							TMath::Power(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1) * sqrt(NEventsInColumn)/double(NEventsInColumn*NEventsInColumn),2.)
+							);
+							Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,error) ; 
 
-						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.); 
-						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.); 
+						} else { 
+
+							Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.); 
+							Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.); 
+						}
+
 					}
 
 				}
 
-			}
+				// ------------------------------------------------------------------------------------------------------------------------------
 
-//			for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
+				// Normalizing rows to 1
 
-//				int NEventsInRow = 0;
+	//			for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
 
-//				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
+	//				int NEventsInRow = 0;
 
-//					NEventsInRow += Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+	//				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
 
-//				}
+	//					NEventsInRow += Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
 
-//				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
-//	
-//					if (NEventsInRow > 0) {
-//						// CV
-//						double CV = Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1)/double(NEventsInRow);
-//						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
-//	
-//						// Error
-//						double error = sqrt(
-//						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/double(NEventsInRow),2.) +
-//						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1) * sqrt(NEventsInRow)/double(NEventsInRow*NEventsInRow),2.)
-//						);
-//						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,error) ; 
+	//				}
 
-//					} else { 
+	//				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
+	//	
+	//					if (NEventsInRow > 0) {
+	//						// CV
+	//						double CV = Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1)/double(NEventsInRow);
+	//						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
+	//	
+	//						// Error
+	//						double error = sqrt(
+	//						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/double(NEventsInRow),2.) +
+	//						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1) * sqrt(NEventsInRow)/double(NEventsInRow*NEventsInRow),2.)
+	//						);
+	//						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,error) ; 
 
-//						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.); 
-//						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.); 
-//					}
+	//					} else { 
 
-//				}
+	//						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.); 
+	//						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.); 
+	//					}
 
-//			}
+	//				}
 
-			Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
-			FileMigrationMatrices->cd();
-			Plots[WhichSample][WhichPlot]->Write();
-			Plots[WhichSample][WhichPlot]->Draw("text colz");
+	//			}
 
-			//PlotCanvas[WhichSample][WhichPlot]->SaveAs("/home/afroditi/Dropbox/Papers_Analyses/2019/TransverseVariables/Support/MigrationMatrices_"
-			//	+PlotNames[WhichPlot]+NameOfSamples[WhichSample]+".pdf");
-			PlotCanvas[WhichSample][WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
-				+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".pdf");
-			PlotCanvas[WhichSample][WhichPlot]->SaveAs("./myPlots/eps/"+UBCodeVersion+"/"+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
-				+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".eps");
-			//delete PlotCanvas[WhichSample][WhichPlot];
+				Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
+				FileMigrationMatrices->cd();
+				Plots[WhichSample][WhichPlot]->Write();
+				Plots[WhichSample][WhichPlot]->Draw("text colz");
 
-		} // End of the loop over the plots
+				if (OverlaySample == "") {
+					PlotCanvas[WhichSample][WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
+					+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+				}
 
-	} // End of the loop over the samples
+				delete PlotCanvas[WhichSample][WhichPlot];
 
-//	FileMigrationMatrices->cd();
-//	FileMigrationMatrices->Write();
-	FileMigrationMatrices->Close();
+			} // End of the loop over the plots
 
-	std::cout << "File with migration matrices " << FileName << " has been created" << std::endl;
+		} // End of the loop over the samples
 
-	//delete []PlotNames;
+	//	FileMigrationMatrices->cd();
+	//	FileMigrationMatrices->Write();
+
+		FileMigrationMatrices->Close();
+
+		std::cout << "File with migration matrices " << FileName << " has been created" << std::endl;
+
+		//delete []PlotNames;
+
+	} // End of the loop over the runs	
 
 } // End of the program

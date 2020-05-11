@@ -5,6 +5,7 @@
 #include <TString.h>
 #include <TStyle.h>
 #include <TLegend.h>
+#include <TLegendEntry.h>
 #include <TEfficiency.h>
 #include <TMath.h>
 #include <TLatex.h>
@@ -18,6 +19,7 @@
 #include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+#include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
 #include "./Constants.h"
@@ -25,13 +27,15 @@
 using namespace std;
 using namespace Constants;
 
-void XSection_Extraction() {
+void XSection_Extraction(TString OverlaySample) {
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
 
 	TString Subtract = "";
 //	TString Subtract = "_BUnsubtracted";
+
+	int DecimalAccuracy = 2;
 
 	TString PathToFiles = "../myEvents/OutputFiles/";
 
@@ -43,15 +47,10 @@ void XSection_Extraction() {
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
+	VectorCuts.push_back("");
 	VectorCuts.push_back("_NuScore");
 	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_MatchedFlash");
 	VectorCuts.push_back("_Collinearity");
-
-//	VectorCuts.push_back("_Chi2");
-//	VectorCuts.push_back("_Distance");
-//	VectorCuts.push_back("_Coplanarity");
-//	VectorCuts.push_back("_TransImb");
 
 	int NCuts = (int)(VectorCuts.size());	
 
@@ -63,7 +62,6 @@ void XSection_Extraction() {
 
 	// -------------------------------------------------------------------------------------
 
-
 	PlotNames.push_back("DeltaPTPlot"); 
 	PlotNames.push_back("DeltaAlphaTPlot"); 
 	PlotNames.push_back("DeltaPhiTPlot");
@@ -73,416 +71,387 @@ void XSection_Extraction() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot"); 
-//	PlotNames.push_back("Q2Plot");
+	PlotNames.push_back("ECalPlot");
+	PlotNames.push_back("EQEPlot"); 
+	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
-
-	vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
-	vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
-	vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
-	vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
-	vector<vector<TH1D*> > PlotsTEfficiency; PlotsTEfficiency.clear();
+	// -----------------------------------------------------------------------------------------------------------------------------------------
 
 	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
 
 	vector<TString> LabelsOfSamples;
 	vector<TString> NameOfSamples;
-	
+
 	NameOfSamples.push_back("Overlay9"); 
-//	NameOfSamples.push_back("Overlay9_SCE");
-//	NameOfSamples.push_back("Overlay9_DLdown");
+	NameOfSamples.push_back("BeamOn9"); 
+	NameOfSamples.push_back("ExtBNB9"); 
+	NameOfSamples.push_back("OverlayDirt9"); 
+	NameOfSamples.push_back("Genie");
 
-	NameOfSamples.push_back("Run1Data9"); NameOfSamples.push_back("ExtBNB9"); NameOfSamples.push_back("OverlayDirt9"); NameOfSamples.push_back("Genie");
+	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	TFile* FileEfficiences = new TFile("myEfficiencies/"+UBCodeVersion+"/FileEfficiences_"+NameOfSamples[0]+"_"+WhichRun+"_"+UBCodeVersion+".root","readonly");
+	vector<TString> Runs;
+	Runs.push_back("Run1");
 
-	const int NSamples = NameOfSamples.size();
-	vector<TFile*> FileSample; FileSample.clear();
+	int NRuns = (int)(Runs.size());
+	cout << "Number of Runs = " << NRuns << endl;
 
-	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//		FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/CCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".root"));
-		if (NameOfSamples[WhichSample] != "Genie") { FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/CCQEStudies_"+NameOfSamples[WhichSample]+CutExtension+".root")); }
-		else { FileSample.push_back(TFile::Open("myFiles/"+UBCodeVersion+"/CCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root")); }
+	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
-		vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
-		vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
-		vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
-		vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
-		vector<TH1D*> CurrentPlotsTEfficiency; CurrentPlotsTEfficiency.clear();
+		vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
 
-		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
+		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
+		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
+		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
+		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
+		vector<vector<TH1D*> > PlotsTEfficiency; PlotsTEfficiency.clear();
 
-			TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
-			CurrentPlotsReco.push_back(histReco);
+		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-//			TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("BkgRecoTrue"+PlotNames[WhichPlot]));
-			TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
-			CurrentPlotsBkgReco.push_back(histBkgReco);
 
-			TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-			CurrentPlotsCC1pReco.push_back(histCC1pReco);
+		TFile* FileEfficiences = new TFile("myEfficiencies/"+UBCodeVersion+"/FileEfficiences_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
 
-			TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
-			CurrentPlotsTrue.push_back(histTrue);
+		const int NSamples = NameOfSamples.size();
+		vector<TFile*> FileSample; FileSample.clear();
 
-			TH1D* histTEfficiency = (TH1D*)(FileEfficiences->Get("CC1pReco"+PlotNames[WhichPlot]));
-			CurrentPlotsTEfficiency.push_back(histTEfficiency);
+		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+
+			if (NameOfSamples[WhichSample] == "BeamOn9" || NameOfSamples[WhichSample] == "ExtBNB9" || NameOfSamples[WhichSample] == "OverlayDirt9") 
+				{ FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root")); }
+			if (NameOfSamples[WhichSample] == "Overlay9") 
+				{ FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root")); }
+			if (NameOfSamples[WhichSample] == "Genie") { FileSample.push_back(TFile::Open("myFiles/"+UBCodeVersion+"/CCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root")); }
+
+			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
+			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
+			vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
+			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
+			vector<TH1D*> CurrentPlotsTEfficiency; CurrentPlotsTEfficiency.clear();
+
+			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+				TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
+				CurrentPlotsReco.push_back(histReco);
+
+				TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsBkgReco.push_back(histBkgReco);
+
+				TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsCC1pReco.push_back(histCC1pReco);
+
+				TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
+				CurrentPlotsTrue.push_back(histTrue);
+
+				TH1D* histTEfficiency = (TH1D*)(FileEfficiences->Get("CC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsTEfficiency.push_back(histTEfficiency);
 		
+			}
+
+			PlotsReco.push_back(CurrentPlotsReco);		
+			PlotsTrue.push_back(CurrentPlotsTrue);		
+			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
+			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
+			PlotsTEfficiency.push_back(CurrentPlotsTEfficiency);
+
 		}
-
-		PlotsReco.push_back(CurrentPlotsReco);		
-		PlotsTrue.push_back(CurrentPlotsTrue);		
-		PlotsBkgReco.push_back(CurrentPlotsBkgReco);
-		PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
-		PlotsTEfficiency.push_back(CurrentPlotsTEfficiency);
-
-	}
-
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-	// Loop over the plots
-
-	for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
-	
-		PlotCanvas.push_back(new TCanvas(PlotNames[WhichPlot],PlotNames[WhichPlot],205,34,1024,768));
-		PlotCanvas[WhichPlot]->cd();
-
-		TPad *midPad = new TPad("midPad", "", 0.005, 0.3  , 0.995, 0.995);
-		TPad *botPad = new TPad("botPad", "", 0.005, 0.005, 0.995, 0.3);
-		midPad->SetBottomMargin(0.105);
-		midPad->SetTopMargin(0.1);
-		botPad->SetTopMargin(0.1);
-		botPad->SetBottomMargin(0.05);
-		botPad->SetGridy();
-		midPad->Draw();
-		botPad->Draw();
-
-		TLegend* leg = new TLegend(0.1,0.92,0.65,1.);
-		leg->SetBorderSize(0);
-		leg->SetTextSize(0.08);
-		leg->SetTextFont(FontStyle);
-		leg->SetNColumns(3);
-
-		double NOverlay = (double)(PlotsCC1pReco[0][WhichPlot]->GetEntries());
-		double NGenie = (double)(PlotsTrue[4][WhichPlot]->GetEntries());
-
-		int NBinsX = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
 
 		// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		// Apply the relevant weights
+		// Loop over the plots
 
-		for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
-
-			double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
-
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		
-			// Effective Efficiencies
-
-			double EffectiveEfficiencyXBin = PlotsTEfficiency[0][WhichPlot]->GetBinContent(WhichXBin+1);
-//			double EffectiveEfficiencyXBin = 1.;
-			double EffectiveEfficiencyXBinError = PlotsTEfficiency[0][WhichPlot]->GetBinError(WhichXBin+1);
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 	
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample,PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample,205,34,1024,768);
+			PlotCanvas->cd();
 
-			// Run 1 Data
+			TPad *midPad = new TPad("midPad", "", 0.005,0.0, 0.995, 0.995);
+			midPad->SetBottomMargin(0.14);
+			midPad->SetTopMargin(0.12);
+			midPad->SetLeftMargin(0.16);
+			midPad->Draw();
 
-			double CurrentDataEntry = PlotsReco[1][WhichPlot]->GetBinContent(WhichXBin+1);
-			double CurrentDataError = PlotsReco[1][WhichPlot]->GetBinError(WhichXBin+1);
-			double DataScaledEntry = 0., DataScaledError = 0.;
-			if (EffectiveEfficiencyXBin != 0 ) {  
-				DataScaledEntry = CurrentDataEntry / EffectiveEfficiencyXBin * (Units / (Flux * NTargets * BinWidth)); 
-				DataScaledError = sqrt( 
-							TMath::Power(CurrentDataError / EffectiveEfficiencyXBin,2)  +
-							TMath::Power(CurrentDataEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
-						      ) * (Units / (Flux * NTargets * BinWidth));
-			}
+			TLegend* leg = new TLegend(0.14,0.89,0.8,0.99);
+			leg->SetBorderSize(0);
+			leg->SetTextSize(0.06);
+			leg->SetTextFont(FontStyle);
+			leg->SetNColumns(2);
 
-			PlotsReco[1][WhichPlot]->SetBinContent(WhichXBin+1,DataScaledEntry);
-			PlotsReco[1][WhichPlot]->SetBinError(WhichXBin+1,DataScaledError);
+			int NBinsX = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			// -----------------------------------------------------------------------------------------------------------------------------------------
 
-			// ExtBNB
+			// Apply the relevant weights
 
-			double CurrentExtBNBEntry = PlotsReco[2][WhichPlot]->GetBinContent(WhichXBin+1);
-			double CurrentExtBNBError = PlotsReco[2][WhichPlot]->GetBinError(WhichXBin+1);
-			double ExtBNBScaledEntry = 0., ExtBNBScaledError = 0.;
-			if (EffectiveEfficiencyXBin != 0 ) {  
-				ExtBNBScaledEntry = CurrentExtBNBEntry / EffectiveEfficiencyXBin * (Units / (Flux * NTargets * BinWidth))
-							; 
-				ExtBNBScaledError = sqrt( 
-							TMath::Power(CurrentExtBNBError / EffectiveEfficiencyXBin,2)  +
-							TMath::Power(CurrentExtBNBEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
-						      ) * (Units / (Flux * NTargets * BinWidth))
-							;
-			}
+			for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
 
-			PlotsReco[2][WhichPlot]->SetBinContent(WhichXBin+1,ExtBNBScaledEntry);
-			PlotsReco[2][WhichPlot]->SetBinError(WhichXBin+1,ExtBNBScaledError);
+				double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
+// Put it back !
+				double ScalingFactor = (Units / (Flux * NTargets * BinWidth)) * (A/Z);
+//				double ScalingFactor = (Units / (Flux * NTargets * BinWidth));
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				// ----------------------------------------------------------------------------------------------------------------------------------
+		
+				// Effective Efficiencies
+				double EffectiveEfficiencyXBin = PlotsTEfficiency[0][WhichPlot]->GetBinContent(WhichXBin+1);
+				double EffectiveEfficiencyXBinError = PlotsTEfficiency[0][WhichPlot]->GetBinError(WhichXBin+1);
 
-			// Dirt
+//test	
+//				double EffectiveEfficiencyXBin = 1.;
+//				double EffectiveEfficiencyXBinError = 0.;
 
-			double CurrentDirtEntry = PlotsReco[3][WhichPlot]->GetBinContent(WhichXBin+1);
-			double CurrentDirtError = PlotsReco[3][WhichPlot]->GetBinError(WhichXBin+1);
-			double DirtScaledEntry = 0., DirtScaledError = 0.;
-			if (EffectiveEfficiencyXBin != 0 ) {  
-				DirtScaledEntry = CurrentDirtEntry / EffectiveEfficiencyXBin * (Units / (Flux * NTargets * BinWidth))
-							; 
-				DirtScaledError = sqrt( 
-							TMath::Power(CurrentDirtError / EffectiveEfficiencyXBin,2)  +
-							TMath::Power(CurrentDirtEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
-						      ) * (Units / (Flux * NTargets * BinWidth))
-							;
-			}
+				// -----------------------------------------------------------------------------------------------------------------------------------
 
-			PlotsReco[3][WhichPlot]->SetBinContent(WhichXBin+1,DirtScaledEntry);
-			PlotsReco[3][WhichPlot]->SetBinError(WhichXBin+1,DirtScaledError);
+				// BeamOn
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				double CurrentDataEntry = PlotsReco[1][WhichPlot]->GetBinContent(WhichXBin+1);
+				double CurrentDataError = PlotsReco[1][WhichPlot]->GetBinError(WhichXBin+1);
+				double DataScaledEntry = 0., DataScaledError = 0.;
+				if (EffectiveEfficiencyXBin != 0 ) {  
+					DataScaledEntry = CurrentDataEntry / EffectiveEfficiencyXBin * ScalingFactor; 
+					DataScaledError = sqrt( 
+								TMath::Power(CurrentDataError / EffectiveEfficiencyXBin,2)  +
+								TMath::Power(CurrentDataEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
+							      ) * ScalingFactor;
+				}
+
+				PlotsReco[1][WhichPlot]->SetBinContent(WhichXBin+1,DataScaledEntry);
+				PlotsReco[1][WhichPlot]->SetBinError(WhichXBin+1,DataScaledError);
+
+				// ------------------------------------------------------------------------------------------------------------------------------------------
+
+				// ExtBNB
+
+				double CurrentExtBNBEntry = PlotsReco[2][WhichPlot]->GetBinContent(WhichXBin+1);
+				double CurrentExtBNBError = PlotsReco[2][WhichPlot]->GetBinError(WhichXBin+1);
+				double ExtBNBScaledEntry = 0., ExtBNBScaledError = 0.;
+				if (EffectiveEfficiencyXBin != 0 ) {  
+					ExtBNBScaledEntry = CurrentExtBNBEntry / EffectiveEfficiencyXBin * ScalingFactor; 
+					ExtBNBScaledError = sqrt( 
+								TMath::Power(CurrentExtBNBError / EffectiveEfficiencyXBin,2)  +
+								TMath::Power(CurrentExtBNBEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
+							      ) * ScalingFactor
+								;
+				}
+
+				PlotsReco[2][WhichPlot]->SetBinContent(WhichXBin+1,ExtBNBScaledEntry);
+				PlotsReco[2][WhichPlot]->SetBinError(WhichXBin+1,ExtBNBScaledError);
+
+				// ----------------------------------------------------------------------------------------------------------------------------------------
+
+				// Dirt
+
+				double CurrentDirtEntry = PlotsReco[3][WhichPlot]->GetBinContent(WhichXBin+1);
+				double CurrentDirtError = PlotsReco[3][WhichPlot]->GetBinError(WhichXBin+1);
+				double DirtScaledEntry = 0., DirtScaledError = 0.;
+				if (EffectiveEfficiencyXBin != 0 ) {  
+					DirtScaledEntry = CurrentDirtEntry / EffectiveEfficiencyXBin * ScalingFactor; 
+					DirtScaledError = sqrt( 
+								TMath::Power(CurrentDirtError / EffectiveEfficiencyXBin,2)  +
+								TMath::Power(CurrentDirtEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
+							      ) * ScalingFactor
+								;
+				}
+
+				PlotsReco[3][WhichPlot]->SetBinContent(WhichXBin+1,DirtScaledEntry);
+				PlotsReco[3][WhichPlot]->SetBinError(WhichXBin+1,DirtScaledError);
+
+				// --------------------------------------------------------------------------------------------------------------------------------------------
+
+				// Overlay
+
+				double CurrentOverlayEntry = PlotsCC1pReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
+				double CurrentOverlayError = PlotsCC1pReco[0][WhichPlot]->GetBinError(WhichXBin+1);
+				double OverlayScaledEntry = 0., OverlayScaledError = 0.;
+				if (EffectiveEfficiencyXBin != 0 ) {
+					OverlayScaledEntry = CurrentOverlayEntry / EffectiveEfficiencyXBin * ScalingFactor; 
+					OverlayScaledError = sqrt( 
+								TMath::Power(CurrentOverlayError / EffectiveEfficiencyXBin,2)  +
+								TMath::Power(CurrentOverlayEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
+							      ) * ScalingFactor
+								;
+
+
+				}
+
+				PlotsCC1pReco[0][WhichPlot]->SetBinContent(WhichXBin+1,OverlayScaledEntry);
+				PlotsCC1pReco[0][WhichPlot]->SetBinError(WhichXBin+1,OverlayScaledError);
+
+				// ---------------------------------------------------------------------------------------------------------------------------------------
+
+				// Bkg
+
+				double CurrentBkgEntry = PlotsBkgReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
+				double CurrentBkgError = PlotsBkgReco[0][WhichPlot]->GetBinError(WhichXBin+1);
+				double BkgScaledEntry = 0., BkgScaledError = 0.;
+				if (EffectiveEfficiencyXBin != 0 ) {
+					BkgScaledEntry = CurrentBkgEntry / EffectiveEfficiencyXBin * ScalingFactor; 
+					BkgScaledError = sqrt( 
+								TMath::Power(CurrentBkgError / EffectiveEfficiencyXBin,2)  +
+								TMath::Power(CurrentBkgEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
+							      ) * ScalingFactor
+								;
+
+
+				}
+
+				PlotsBkgReco[0][WhichPlot]->SetBinContent(WhichXBin+1,BkgScaledEntry);
+				PlotsBkgReco[0][WhichPlot]->SetBinError(WhichXBin+1,BkgScaledError);
+
+				// ----------------------------------------------------------------------------------------------------------------------------------------
+
+				// Genie
+
+				double CurrentGenieEntry = PlotsTrue[4][WhichPlot]->GetBinContent(WhichXBin+1);
+				double CurrentGenieError = PlotsTrue[4][WhichPlot]->GetBinError(WhichXBin+1);
+				double GenieScaledEntry = 0., GenieScaledError = 0.;
+
+				GenieScaledEntry = FluxIntegratedXSection * CurrentGenieEntry / BinWidth / NGenieEvents ; 
+				GenieScaledError = FluxIntegratedXSection * CurrentGenieError / BinWidth / NGenieEvents ; 
+
+				PlotsTrue[4][WhichPlot]->SetBinContent(WhichXBin+1,GenieScaledEntry);
+				PlotsTrue[4][WhichPlot]->SetBinError(WhichXBin+1,GenieScaledError);
+
+				// -----------------------------------------------------------------------------------------------------------------------------------------
+
+				// Samples for systematics
+
+			} // End of the loop over the bins
+
+			// ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+			// Plotting the xsections
 
 			// Overlay
 
-			double CurrentOverlayEntry = PlotsCC1pReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
-			double CurrentOverlayError = PlotsCC1pReco[0][WhichPlot]->GetBinError(WhichXBin+1);
-			double OverlayScaledEntry = 0., OverlayScaledError = 0.;
-			if (EffectiveEfficiencyXBin != 0 ) {
-				OverlayScaledEntry = CurrentOverlayEntry / EffectiveEfficiencyXBin * (Units/(Flux * NTargets * BinWidth)) 
-							; 
-				OverlayScaledError = sqrt( 
-							TMath::Power(CurrentOverlayError / EffectiveEfficiencyXBin,2)  +
-							TMath::Power(CurrentOverlayEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
-						      ) * (Units / (Flux * NTargets * BinWidth))
-							;
+			MakeMyPlotPretty(PlotsCC1pReco[0][WhichPlot]);
+			PlotsCC1pReco[0][WhichPlot]->SetLineColor(OverlayColor);
+			PlotsCC1pReco[0][WhichPlot]->SetFillColor(OverlayColor);
 
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleOffset(1.05);
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.06);
 
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.2);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
+
+			midPad->cd();
+
+			// BeamOn
+
+			MakeMyPlotPretty(PlotsReco[1][WhichPlot]);
+			PlotsReco[1][WhichPlot]->SetLineColor(BeamOnColor);
+			PlotsReco[1][WhichPlot]->SetMarkerColor(BeamOnColor);
+			PlotsReco[1][WhichPlot]->SetMarkerStyle(20);
+			PlotsReco[1][WhichPlot]->SetMarkerSize(1.5);
+			// Subtract ExtBNB
+			PlotsReco[1][WhichPlot]->Add(PlotsReco[2][WhichPlot],-1); 
+			// Subtract Dirt
+			PlotsReco[1][WhichPlot]->Add(PlotsReco[3][WhichPlot],-1); 
+			// Subtract MC Bkg Subtraction
+			if (Subtract == "") { PlotsReco[1][WhichPlot]->Add(PlotsBkgReco[0][WhichPlot],-1); }
+
+			// GENIE
+
+			MakeMyPlotPretty(PlotsTrue[4][WhichPlot]);
+			PlotsTrue[4][WhichPlot]->SetLineColor(GenieColor);
+			PlotsTrue[4][WhichPlot]->SetFillColor(GenieColor);
+
+			// Max on plot so that we can include the integrated xsecs
+			double max = TMath::Max(PlotsCC1pReco[0][WhichPlot]->GetMaximum(),PlotsReco[1][WhichPlot]->GetMaximum());
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.8 * max);
+
+			// Plot MC
+			PlotsCC1pReco[0][WhichPlot]->Draw("e2");
+
+			// Plot GENIE
+			PlotsTrue[4][WhichPlot]->Draw("e same");
+
+			// Plot BeamOn
+			PlotsReco[1][WhichPlot]->Draw("ex0 same");
+
+			// --------------------------------------------------------------------------------------------------------------------------------------------------
+
+			// Integrated cross-sections & chi2
+
+			double IntegratedGenieXSection = round(IntegratedXSec(PlotsTrue[4][WhichPlot]),DecimalAccuracy);
+			double IntegratedGenieXSectionError = round(IntegratedXSecError(PlotsTrue[4][WhichPlot]),DecimalAccuracy);
+
+			double IntegratedOverlayXSection = round(IntegratedXSec(PlotsCC1pReco[0][WhichPlot]),DecimalAccuracy);
+			double IntegratedOverlayXSectionError = round(IntegratedXSecError(PlotsCC1pReco[0][WhichPlot]),DecimalAccuracy);
+
+			double IntegratedDataXSection = round(IntegratedXSec(PlotsReco[1][WhichPlot]),DecimalAccuracy);
+			double IntegratedDataXSectionError = round(IntegratedXSecError(PlotsReco[1][WhichPlot]),DecimalAccuracy);
+
+			double chi2 = Chi2(PlotsReco[1][WhichPlot],PlotsCC1pReco[0][WhichPlot]);
+
+			TString LabelData = "#splitline{#splitline{#color["+ToString(BeamOnColor)+"]{#sigma_{Data} = (" +ToString(IntegratedDataXSection)+" #pm "+
+					    ToString(IntegratedDataXSectionError)+") #upoint 10^{-38} cm^{2}}}{#color["+ToString(OverlayColor)+"]{#sigma_{MC} = (" +
+					    ToString(IntegratedOverlayXSection)+" #pm "+
+					    ToString(IntegratedOverlayXSectionError)+") #upoint 10^{-38} cm^{2}}}}{#color["+ToString(GenieColor)+"]{#sigma_{GENIE} = (" +
+					    ToString(IntegratedGenieXSection)+" #pm "+ToString(IntegratedGenieXSectionError)+") #upoint 10^{-38} cm^{2}}}";
+
+			TLatex latexSigma;
+			latexSigma.SetTextFont(FontStyle);
+			latexSigma.SetTextSize(0.06);
+			latexSigma.DrawLatexNDC(0.27,0.67, LabelData);
+
+			// ---------------------------------------------------------------------------------------------------------------------------------------------
+
+			// Legend & POT Normalization
+
+			double tor860_wcut = -99.;
+			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
+
+			TString Label = ToString(tor860_wcut)+" POT";
+//			latex.DrawLatexNDC(0.47,0.9, Label);
+
+			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
+			lMC->SetTextColor(OverlayColor);
+
+			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE","l");
+			lGenie->SetTextColor(GenieColor);
+
+			leg->AddEntry(PlotsReco[1][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
+			leg->Draw();	
+
+			// ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+			if (OverlaySample == "") {
+				PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".pdf");
 			}
 
-			PlotsCC1pReco[0][WhichPlot]->SetBinContent(WhichXBin+1,OverlayScaledEntry);
-			PlotsCC1pReco[0][WhichPlot]->SetBinError(WhichXBin+1,OverlayScaledError);
+			if (OverlaySample != "") { delete PlotCanvas; }
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		} // End of the loop over the plots
 
-			// Bkg
+		FileEfficiences->Close();
 
-			double CurrentBkgEntry = PlotsBkgReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
-			double CurrentBkgError = PlotsBkgReco[0][WhichPlot]->GetBinError(WhichXBin+1);
-			double BkgScaledEntry = 0., BkgScaledError = 0.;
-			if (EffectiveEfficiencyXBin != 0 ) {
-				BkgScaledEntry = CurrentBkgEntry / EffectiveEfficiencyXBin * (Units / (Flux * NTargets * BinWidth)) 
-							; 
-				BkgScaledError = sqrt( 
-							TMath::Power(CurrentBkgError / EffectiveEfficiencyXBin,2)  +
-							TMath::Power(CurrentBkgEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2)
-						      ) * (Units / (Flux * NTargets * BinWidth))
-							;
+		// -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+		// Store the extracted xsections
 
-			}
+		TString NameExtractedXSec = PathToExtractedXSec+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
-			PlotsBkgReco[0][WhichPlot]->SetBinContent(WhichXBin+1,BkgScaledEntry);
-			PlotsBkgReco[0][WhichPlot]->SetBinError(WhichXBin+1,BkgScaledError);
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-			// Genie
-
-			double CurrentGenieEntry = PlotsTrue[4][WhichPlot]->GetBinContent(WhichXBin+1);
-			double CurrentGenieError = PlotsTrue[4][WhichPlot]->GetBinError(WhichXBin+1);
-			double GenieScaledEntry = 0., GenieScaledError = 0.;
-
-			GenieScaledEntry = FluxIntegratedXSection * CurrentGenieEntry / BinWidth / NGenieEvents ; 
-			GenieScaledError = FluxIntegratedXSection * CurrentGenieError / BinWidth / NGenieEvents ; 
-
-			PlotsTrue[4][WhichPlot]->SetBinContent(WhichXBin+1,GenieScaledEntry);
-			PlotsTrue[4][WhichPlot]->SetBinError(WhichXBin+1,GenieScaledError);
-
-			// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-			// Samples for systematics
-
-		} // End of the loop over the bins
-
-		// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// Plotting the xsections
-
-		//Overlay
-
-		MakeMyPlotPretty(PlotsCC1pReco[0][WhichPlot]);
-		PlotsCC1pReco[0][WhichPlot]->SetLineColor(kBlue);
-		PlotsCC1pReco[0][WhichPlot]->SetFillColor(kBlue);
-		PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(0.63);
-		PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
-		midPad->cd();
-
-		//Run 1 Data
-
-		MakeMyPlotPretty(PlotsReco[1][WhichPlot]);
-		PlotsReco[1][WhichPlot]->SetLineColor(kOrange+7);
-		PlotsReco[1][WhichPlot]->SetMarkerColor(kOrange+7);
-		PlotsReco[1][WhichPlot]->SetMarkerStyle(20);
-		PlotsReco[1][WhichPlot]->SetMarkerSize(1.5);
-		// Subtract ExtBNB
-		PlotsReco[1][WhichPlot]->Add(PlotsReco[2][WhichPlot],-1); 
-		// Subtract Dirt
-		PlotsReco[1][WhichPlot]->Add(PlotsReco[3][WhichPlot],-1); 
-		// Subtract MC Bkg Subtraction
-		if (Subtract == "") { PlotsReco[1][WhichPlot]->Add(PlotsBkgReco[0][WhichPlot],-1); }
-
-		//Genie
-
-		MakeMyPlotPretty(PlotsTrue[4][WhichPlot]);
-		PlotsTrue[4][WhichPlot]->SetLineColor(kBlack);
-		PlotsTrue[4][WhichPlot]->SetFillColor(kBlack);
-
-		double max = TMath::Max(PlotsCC1pReco[0][WhichPlot]->GetMaximum(),PlotsReco[1][WhichPlot]->GetMaximum());
-		PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.8 * max);
-		PlotsCC1pReco[0][WhichPlot]->Draw("e2");
-		PlotsTrue[4][WhichPlot]->Draw("e same");
-		PlotsReco[1][WhichPlot]->Draw("e same");
-
-		// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// Integrated cross-sections & chi2
-
-		double IntegratedGenieXSection = 0., IntegratedGenieXSectionErrorSquared = 0., IntegratedGenieXSectionError = 0.;
-		double IntegratedOverlayXSection = 0., IntegratedOverlayXSectionErrorSquared = 0., IntegratedOverlayXSectionError = 0.;
-		double IntegratedDataXSection = 0., IntegratedDataXSectionErrorSquared = 0., IntegratedDataXSectionError = 0.;
-
-		double chi2 = 0, num = 0, den = 0;
-
-		for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
-
-			double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
-
-			double GenieBinEntry = PlotsTrue[4][WhichPlot]->GetBinContent(WhichXBin+1);
-			double GenieBinError = PlotsTrue[4][WhichPlot]->GetBinError(WhichXBin+1);
-			IntegratedGenieXSection += GenieBinEntry * BinWidth;
-			IntegratedGenieXSectionErrorSquared += TMath::Power(GenieBinError * BinWidth,2.);
-
-			double OverlayBinEntry = PlotsCC1pReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
-			double OverlayBinError = PlotsCC1pReco[0][WhichPlot]->GetBinError(WhichXBin+1);
-			IntegratedOverlayXSection += OverlayBinEntry * BinWidth;
-			IntegratedOverlayXSectionErrorSquared += TMath::Power(OverlayBinError * BinWidth,2.);
-
-			double DataBinEntry = PlotsReco[1][WhichPlot]->GetBinContent(WhichXBin+1);
-			double DataBinError = PlotsReco[1][WhichPlot]->GetBinError(WhichXBin+1);
-			IntegratedDataXSection += DataBinEntry * BinWidth;
-			IntegratedDataXSectionErrorSquared += TMath::Power(DataBinError * BinWidth,2.);
-
-			num = TMath::Power(DataBinEntry - OverlayBinEntry,2.);
-			den = TMath::Power(DataBinError,2.) + TMath::Power(OverlayBinError,2.);
-			if (num != 0 && den != 0) {chi2 += (num / den); }
+			PlotsReco[1][WhichPlot]->Write();
+			PlotsCC1pReco[0][WhichPlot]->Write();
+			PlotsTrue[4][WhichPlot]->Write();
 
 		}
 
-		int accuracy = 100;
+		ExtractedXSec->Close();
 
-		IntegratedGenieXSection = roundf(IntegratedGenieXSection * accuracy) / accuracy;
-		IntegratedGenieXSectionError = sqrt(IntegratedGenieXSectionErrorSquared);
-		IntegratedGenieXSectionError = roundf(IntegratedGenieXSectionError * accuracy) / accuracy;
+		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
 
-		IntegratedOverlayXSection = roundf(IntegratedOverlayXSection * accuracy) / accuracy;
-		IntegratedOverlayXSectionError = sqrt(IntegratedOverlayXSectionErrorSquared);
-		IntegratedOverlayXSectionError = roundf(IntegratedOverlayXSectionError * accuracy) / accuracy;
-
-		IntegratedDataXSection = roundf(IntegratedDataXSection * accuracy) / accuracy;
-		IntegratedDataXSectionError = sqrt(IntegratedDataXSectionErrorSquared);
-		IntegratedDataXSectionError = roundf(IntegratedDataXSectionError * accuracy) / accuracy;
-
-		TLatex latexSigma;
-		latexSigma.SetTextFont(FontStyle);
-		latexSigma.SetTextSize(0.07);
-		TString LabelData = "#splitline{#splitline{#color[807]{#sigma_{Data} = (" +ToString(IntegratedDataXSection)+" #pm "+
-				    ToString(IntegratedDataXSectionError)+") #upoint 10^{-38} cm^{2}}}{#color[600]{#sigma_{MC} = (" +
-				    ToString(IntegratedOverlayXSection)+" #pm "+ToString(IntegratedOverlayXSectionError)+") #upoint 10^{-38} cm^{2}}}}{#color[1]{#sigma_{Genie} = (" +
-				    ToString(IntegratedGenieXSection)+" #pm "+ToString(IntegratedGenieXSectionError)+") #upoint 10^{-38} cm^{2}}}";
-		latexSigma.DrawLatexNDC(0.3,0.67, LabelData);
-
-		// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// Legend & POT Normalization
-
-		leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"CC1p MC","f");
-		leg->AddEntry(PlotsTrue[4][WhichPlot],"Genie","l");
-		leg->AddEntry(PlotsReco[1][WhichPlot],"Data","lep");
-		leg->Draw();	
-
-		TLatex latex;
-		latex.SetTextFont(FontStyle);
-		latex.SetTextSize(0.07);
-		TString Label = ToString(tor860_wcut)+" POT";
-		latex.DrawLatexNDC(0.67,0.94, Label);
-
-		// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// Residual plot
-
-		botPad->cd();
-		TH1D* PlotsRecoClone = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
-		PlotsRecoClone->Add(PlotsCC1pReco[0][WhichPlot],-1);
-		PlotsRecoClone->Divide(PlotsReco[1][WhichPlot]);
-
-		PlotsRecoClone->SetLineColor(kBlack);
-		PlotsRecoClone->SetMarkerColor(kBlack);
-		PlotsRecoClone->GetXaxis()->SetTitle();
-		PlotsRecoClone->GetXaxis()->SetLabelSize(0);
-		PlotsRecoClone->GetYaxis()->SetTitle("#frac{Data-MC}{Data}");
-		PlotsRecoClone->GetYaxis()->SetLabelSize(0.1);
-		PlotsRecoClone->GetYaxis()->SetRangeUser(-1,1);
-		PlotsRecoClone->GetYaxis()->SetTitleSize(0.15);
-		PlotsRecoClone->GetYaxis()->SetTitleOffset(0.25);
-		PlotsRecoClone->GetYaxis()->SetTitleFont(132);
-
-		PlotsRecoClone->Draw("e same");
-
-		TLatex latexChi2;
-		latexChi2.SetTextFont(FontStyle);
-		latexChi2.SetTextSize(0.15);
-		TString LabelChi2 = "#chi^{2} = " + ToString(chi2) + " / " + ToString(NBinsX-1);
-		latexChi2.DrawLatexNDC(0.4,0.3, LabelChi2);
-
-		double RatioMin = PlotsRecoClone->GetXaxis()->GetXmin();
-		double RatioMax = PlotsRecoClone->GetXaxis()->GetXmax();
-		double YRatioCoord = 0.25;
-		TLine* RatioLine = new TLine(RatioMin,YRatioCoord,RatioMax,YRatioCoord);
-		RatioLine->SetLineWidth(4);
-		RatioLine->SetLineColor(kPink+8);
-		RatioLine->SetLineStyle(4);
-		RatioLine->Draw("same");
-
-		PlotCanvas[WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/XSections_"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+Subtract+".pdf");
-		PlotCanvas[WhichPlot]->SaveAs("./myPlots/eps/"+UBCodeVersion+"/"+NameOfSamples[0]+"/XSections_"+PlotNames[WhichPlot]+"_"+WhichRun+"_"+UBCodeVersion+Subtract+".eps");
-		//delete PlotCanvas[WhichPlot];
-
-	} // End of the loop over the plots
-
-	FileEfficiences->Close();
-
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-	// Store the extracted xsections
-
-	TString NameExtractedXSec = PathToExtractedXSec+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[0]+"_"+WhichRun+"_"+UBCodeVersion+".root";
-	TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
-
-	for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
-
-		PlotsReco[1][WhichPlot]->Write();
-		PlotsCC1pReco[0][WhichPlot]->Write();
-		PlotsTrue[4][WhichPlot]->Write();
-
-	}
-
-	std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
+	} // End of the loop over the runs	
 
 } // End of the program 
