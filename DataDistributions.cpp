@@ -9,11 +9,11 @@
 #include <iostream>
 #include <vector>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
-#include "./Constants.h"
+//#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -22,6 +22,7 @@ void DataDistributions(TString BeamOnSample) {
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
+	gStyle->SetOptStat(0);	
 
 	TString PathToFiles = "../myEvents/OutputFiles";
 
@@ -77,7 +78,7 @@ void DataDistributions(TString BeamOnSample) {
 
 
 		vector<TH1D*> PlotsReco; PlotsReco.clear();
-		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
+		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t");// SetOffsetAndSize();
 
 		vector<TString> LabelsOfSamples;
 		vector<TString> NameOfSamples;
@@ -115,7 +116,7 @@ void DataDistributions(TString BeamOnSample) {
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(3);
 
-			MakeMyPlotPretty(PlotsReco[WhichPlot]);
+//			MakeMyPlotPretty(PlotsReco[WhichPlot]);
 			PlotsReco[WhichPlot]->SetLineColor(kBlack);
 			PlotsReco[WhichPlot]->SetMarkerStyle(20);
 			PlotsReco[WhichPlot]->SetMarkerSize(2.);

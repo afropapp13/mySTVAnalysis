@@ -16,13 +16,13 @@
 #include <sstream>
 #include <string>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+//#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
-#include "./Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -31,6 +31,7 @@ void XSection_Extraction(TString OverlaySample) {
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
+	gStyle->SetOptStat(0);
 
 	TString Subtract = "";
 //	TString Subtract = "_BUnsubtracted";
@@ -80,7 +81,7 @@ void XSection_Extraction(TString OverlaySample) {
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
-	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
+	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t");// SetOffsetAndSize();
 
 	vector<TString> LabelsOfSamples;
 	vector<TString> NameOfSamples;
@@ -91,7 +92,7 @@ void XSection_Extraction(TString OverlaySample) {
 	NameOfSamples.push_back("OverlayDirt9"); 
 	NameOfSamples.push_back("Genie");
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
@@ -99,7 +100,7 @@ void XSection_Extraction(TString OverlaySample) {
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
@@ -175,7 +176,7 @@ void XSection_Extraction(TString OverlaySample) {
 			midPad->SetLeftMargin(0.16);
 			midPad->Draw();
 
-			TLegend* leg = new TLegend(0.14,0.89,0.8,0.99);
+			TLegend* leg = new TLegend(0.15,0.89,0.8,0.99);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.06);
 			leg->SetTextFont(FontStyle);
@@ -183,18 +184,40 @@ void XSection_Extraction(TString OverlaySample) {
 
 			int NBinsX = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
 
-			// -----------------------------------------------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------------------------------
 
 			// Apply the relevant weights
 
 			for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
 
 				double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
-// Put it back !
-				double ScalingFactor = (Units / (Flux * NTargets * BinWidth)) * (A/Z);
-//				double ScalingFactor = (Units / (Flux * NTargets * BinWidth));
 
-				// ----------------------------------------------------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------------------------------------
+
+				double FluxWeight = 1.;
+
+				// New Integrated Flux			
+
+// Fix it !!!!
+//				if (string(fWhichSample).find("FluxUnisim") != std::string::npos || string(fWhichSample).find("Primary") != std::string::npos) {
+//
+//					double POT = -99.;
+//					if (string(OverlaySample).find("Run1") != std::string::npos) { POT = tor860_wcut_Run1 ; }
+//
+//					TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root");
+//					TH1D* FluxHisto = (TH1D*)(FluxFile->Get("numu_ms_"+fWhichSample+"/hEnumu_"+fWhichSample+"_"+fUniverse)); // have to specify the universe
+//					double FluxIntegral = FluxHisto->Integral() * POT / (2.43e11 * 256.35 * 233.);
+//
+//					FluxWeight = Flux / FluxIntegral;
+//				}
+
+				// -----------------------------------------------------------------------------------------------------------------
+
+// Put it back !
+				double ScalingFactor = (Units / (Flux * NTargets * BinWidth)) * FluxWeight * (A/Z);
+//				double ScalingFactor = (Units / (Flux * NTargets * BinWidth)) * FluxWeight;
+
+				// -----------------------------------------------------------------------------------------------------------------
 		
 				// Effective Efficiencies
 				double EffectiveEfficiencyXBin = PlotsTEfficiency[0][WhichPlot]->GetBinContent(WhichXBin+1);
@@ -204,7 +227,7 @@ void XSection_Extraction(TString OverlaySample) {
 //				double EffectiveEfficiencyXBin = 1.;
 //				double EffectiveEfficiencyXBinError = 0.;
 
-				// -----------------------------------------------------------------------------------------------------------------------------------
+				// --------------------------------------------------------------------------------------------------------------------
 
 				// BeamOn
 
@@ -260,7 +283,7 @@ void XSection_Extraction(TString OverlaySample) {
 				PlotsReco[3][WhichPlot]->SetBinContent(WhichXBin+1,DirtScaledEntry);
 				PlotsReco[3][WhichPlot]->SetBinError(WhichXBin+1,DirtScaledError);
 
-				// --------------------------------------------------------------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------------------------------------
 
 				// Overlay
 
@@ -281,7 +304,7 @@ void XSection_Extraction(TString OverlaySample) {
 				PlotsCC1pReco[0][WhichPlot]->SetBinContent(WhichXBin+1,OverlayScaledEntry);
 				PlotsCC1pReco[0][WhichPlot]->SetBinError(WhichXBin+1,OverlayScaledError);
 
-				// ---------------------------------------------------------------------------------------------------------------------------------------
+				// ----------------------------------------------------------------------------------------------------------------
 
 				// Bkg
 
@@ -302,7 +325,7 @@ void XSection_Extraction(TString OverlaySample) {
 				PlotsBkgReco[0][WhichPlot]->SetBinContent(WhichXBin+1,BkgScaledEntry);
 				PlotsBkgReco[0][WhichPlot]->SetBinError(WhichXBin+1,BkgScaledError);
 
-				// ----------------------------------------------------------------------------------------------------------------------------------------
+				// --------------------------------------------------------------------------------------------------------
 
 				// Genie
 
@@ -316,36 +339,45 @@ void XSection_Extraction(TString OverlaySample) {
 				PlotsTrue[4][WhichPlot]->SetBinContent(WhichXBin+1,GenieScaledEntry);
 				PlotsTrue[4][WhichPlot]->SetBinError(WhichXBin+1,GenieScaledError);
 
-				// -----------------------------------------------------------------------------------------------------------------------------------------
+				// --------------------------------------------------------------------------------------------------------------
 
 				// Samples for systematics
 
 			} // End of the loop over the bins
 
-			// ---------------------------------------------------------------------------------------------------------------------------------------------------
+			// --------------------------------------------------------------------------------------------------------------------
 
 			// Plotting the xsections
 
 			// Overlay
 
-			MakeMyPlotPretty(PlotsCC1pReco[0][WhichPlot]);
+//			MakeMyPlotPretty(PlotsCC1pReco[0][WhichPlot]);
 			PlotsCC1pReco[0][WhichPlot]->SetLineColor(OverlayColor);
 			PlotsCC1pReco[0][WhichPlot]->SetFillColor(OverlayColor);
 
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->CenterTitle();
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleOffset(1.05);
 			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.06);
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.06);		
+			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetNdivisions(5);			
 
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->CenterTitle();
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.2);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(5);			
 
 			midPad->cd();
 
 			// BeamOn
 
-			MakeMyPlotPretty(PlotsReco[1][WhichPlot]);
+//			MakeMyPlotPretty(PlotsReco[1][WhichPlot]);
+			PlotsReco[1][WhichPlot]->SetLineWidth(3);
 			PlotsReco[1][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[1][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[1][WhichPlot]->SetMarkerStyle(20);
@@ -359,7 +391,8 @@ void XSection_Extraction(TString OverlaySample) {
 
 			// GENIE
 
-			MakeMyPlotPretty(PlotsTrue[4][WhichPlot]);
+//			MakeMyPlotPretty(PlotsTrue[4][WhichPlot]);
+			PlotsTrue[4][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[4][WhichPlot]->SetLineColor(GenieColor);
 			PlotsTrue[4][WhichPlot]->SetFillColor(GenieColor);
 
@@ -376,7 +409,7 @@ void XSection_Extraction(TString OverlaySample) {
 			// Plot BeamOn
 			PlotsReco[1][WhichPlot]->Draw("ex0 same");
 
-			// --------------------------------------------------------------------------------------------------------------------------------------------------
+			// -------------------------------------------------------------------------------------------------------------------------
 
 			// Integrated cross-sections & chi2
 
@@ -402,7 +435,7 @@ void XSection_Extraction(TString OverlaySample) {
 			latexSigma.SetTextSize(0.06);
 			latexSigma.DrawLatexNDC(0.27,0.67, LabelData);
 
-			// ---------------------------------------------------------------------------------------------------------------------------------------------
+			// ----------------------------------------------------------------------------------------------------------------
 
 			// Legend & POT Normalization
 
@@ -421,7 +454,7 @@ void XSection_Extraction(TString OverlaySample) {
 			leg->AddEntry(PlotsReco[1][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->Draw();	
 
-			// ----------------------------------------------------------------------------------------------------------------------------------------------------
+			// -----------------------------------------------------------------------------------------------------------------------
 
 			if (OverlaySample == "") {
 				PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".pdf");

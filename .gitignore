@@ -5,3 +5,5 @@ myMigrationMatrices/*
 myXSec/*
 *.d
 *.so
+*.pcm
+MCC9*.root

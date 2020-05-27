@@ -6,18 +6,24 @@
 #include <TString.h>
 #include <TStyle.h>
 
-#include <iostream>
-#include <vector>
+//#include <iostream>
+//#include <vector>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
-#include "./Constants.h"
+//#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
 void MigrationMatrices(TString OverlaySample) {
+
+	TH2D::SetDefaultSumw2();
+	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); 
+	gStyle->SetTitleFont(FontStyle,"t"); //SetOffsetAndSize();
+	TString PathToFiles = "../myEvents/OutputFiles";
+	gStyle->SetOptStat(0);
 
 	// -------------------------------------------------------------------------------------
 
@@ -38,12 +44,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 	}
 
-	TString PathToFiles = "../myEvents/OutputFiles";
-
 	// -------------------------------------------------------------------------------------
-
-
-	TH2D::SetDefaultSumw2();
 
 	vector<TString> PlotNames;
 	PlotNames.push_back("DeltaPTPlot"); PlotNames.push_back("DeltaAlphaTPlot"); PlotNames.push_back("DeltaPhiTPlot"); 
@@ -54,27 +55,27 @@ void MigrationMatrices(TString OverlaySample) {
 	const int N2DPlots = PlotNames.size();
 	cout << "Number of 2D Plots = " << N2DPlots << endl;
 
-	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); gStyle->SetTitleFont(FontStyle,"t"); SetOffsetAndSize();
-
+	// -------------------------------------------------------------------------------------------------------------------------------------
+	
 	vector<TString> NameOfSamples;
-
 	NameOfSamples.push_back("Overlay9");
-
-	// -------------------------------------------------------------------------------------
-
 	const int NSamples = NameOfSamples.size();
-	TCanvas* PlotCanvas[NSamples][N2DPlots] = {}; TFile* FileSample[NSamples] = {};
-	TH2D* Plots[NSamples][N2DPlots] = {};
-
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		
+	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
 
 	int NRuns = (int)(Runs.size());
-	cout << "Number of Runs = " << NRuns << endl;
+	cout << "Number of Runs = " << NRuns << endl;	
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------
+
+	vector<TFile*> FileSample;
+	vector< vector <TH2D*> > Plots;
+	Plots.resize(NSamples, vector<TH2D*>(N2DPlots));
+
+	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
@@ -85,7 +86,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample[WhichSample] = TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root");
+			FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root"));
 
 		}
 
@@ -93,20 +94,26 @@ void MigrationMatrices(TString OverlaySample) {
 
 			for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
 
-				PlotCanvas[WhichSample][WhichPlot] = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
+				TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
 						    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
-				PlotCanvas[WhichSample][WhichPlot]->cd();
+				PlotCanvas->cd();
+				
 				gStyle->SetMarkerSize(1.5);
 				gStyle->SetPaintTextFormat("4.2f");
 				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
+				
 				Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 				Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
+				
 				Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+				Plots[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
+								
 				Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
 				Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(0.03);
 
-				CenterAxisTitle(Plots[WhichSample][WhichPlot]);
+//				CenterAxisTitle(Plots[WhichSample][WhichPlot]);
 
 				int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
 				int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();
@@ -148,7 +155,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 				}
 
-				// ------------------------------------------------------------------------------------------------------------------------------
+				// ---------------------------------------------------------------------------------------------
 
 				// Normalizing rows to 1
 
@@ -192,11 +199,11 @@ void MigrationMatrices(TString OverlaySample) {
 				Plots[WhichSample][WhichPlot]->Draw("text colz");
 
 				if (OverlaySample == "") {
-					PlotCanvas[WhichSample][WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
+					PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
 					+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 				}
 
-				delete PlotCanvas[WhichSample][WhichPlot];
+				delete PlotCanvas;
 
 			} // End of the loop over the plots
 

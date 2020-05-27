@@ -10,10 +10,10 @@
 #include <iostream>
 #include <vector>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
-#include "./Constants.h"
+//#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -22,6 +22,7 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
+	gStyle->SetOptStat(0);	
 
 	TString PathToFiles = "../myEvents/OutputFiles";
 
@@ -58,7 +59,7 @@ void Create1DPlotsTotal(TString OverlaySample) {
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
@@ -66,14 +67,14 @@ void Create1DPlotsTotal(TString OverlaySample) {
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 		vector<vector<TH1D*> > PlotsTrueReco; PlotsTrueReco.clear();
 
-		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
+		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); //SetOffsetAndSize();
 
 		vector<TString> LabelsOfSamples;
 		vector<TString> NameOfSamples;
