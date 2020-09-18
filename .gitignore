@@ -1,9 +1,6 @@
-myEfficiencies/*
 myFiles/*
-myMigrationMatrices/*
-/myPlots/*
-myXSec/*
 *.d
 *.so
 *.pcm
-MCC9*.root
+*.root
+*__.cxx

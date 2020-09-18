@@ -6,13 +6,11 @@
 #include <TLegend.h>
 #include <TEfficiency.h>
 #include <TLatex.h>
+#include <TGaxis.h>
 
 #include <iostream>
 #include <vector>
 
-//#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
 #include "../myClasses/Constants.h"
 
 using namespace std;
@@ -23,6 +21,10 @@ void Create1DPlotsTotal(TString OverlaySample) {
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
 	gStyle->SetOptStat(0);	
+	TGaxis::SetMaxDigits(3);
+	TGaxis::SetExponentOffset(-0.05, 0., "y");	
+	
+	double TextSize = 0.07;
 
 	TString PathToFiles = "../myEvents/OutputFiles";
 
@@ -63,18 +65,22 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
+//	Runs.push_back("Run2");
+//	Runs.push_back("Run3");
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// ----------------------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 		vector<vector<TH1D*> > PlotsTrueReco; PlotsTrueReco.clear();
 
-		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); //SetOffsetAndSize();
+		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t");
 
 		vector<TString> LabelsOfSamples;
 		vector<TString> NameOfSamples;
@@ -89,8 +95,13 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root"));
-			TruthFileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"));
+			TString STVPath = PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/";
+			TString STVName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+			FileSample.push_back(TFile::Open(STVPath+STVName));
+			
+			TString TrueSTVPath = PathToFiles+"/"+UBCodeVersion+"/";
+			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+			TruthFileSample.push_back(TFile::Open(TrueSTVPath+TrueSTVName));
 
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
 			vector<TH1D*> CurrentPlotsTrueReco; CurrentPlotsTrueReco.clear();
@@ -114,19 +125,24 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			Name = "myEfficiencies/"+UBCodeVersion+"/FileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+			TString EfficiencyPath = "myEfficiencies/"+UBCodeVersion+"/"; 
+			TString EfficiencyName = "FileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
+			Name = EfficiencyPath + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
 
 			// Loop over the plots
 
-			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
+			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 	
-				TCanvas* PlotCanvas = new TCanvas(NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot],NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot],205,34,1024,768);
+				TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];
+				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 				PlotCanvas->cd();
+				PlotCanvas->SetBottomMargin(0.16);
+				PlotCanvas->SetLeftMargin(0.15);								
 
-				TLegend* leg = new TLegend(0.15,0.92,0.9,1.);
+				TLegend* leg = new TLegend(0.25,0.92,0.9,1.);
 				leg->SetBorderSize(0);
-				leg->SetTextSize(0.07);
+				leg->SetTextSize(TextSize);
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(2);
 				leg->SetMargin(0.15);
@@ -136,47 +152,22 @@ void Create1DPlotsTotal(TString OverlaySample) {
 				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
 				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
 				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(0.04);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleOffset(0.7);
+				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
+				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);
 				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
 
 				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
 				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(0.12);
+				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
 				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.2*PlotsTrue[WhichSample][WhichPlot]->GetMaximum());
 				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(6);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleOffset(0.8);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(0.04);
+				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);
 				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitle("# events");
 
 				PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
 				PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
-
-				// ----------------------------------------------------------------------------------------
-
-				// We need the raw number of events, not the POT normalized one
-				double tor860_wcut = -99.;
-				if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-//				if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
-//				if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
-//				if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
-//				if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
-
-				double OverlayPOT = -99.;
-
-				if (string(NameOfSamples[WhichSample]).find("Overlay") != std::string::npos) {
-
-						TString PathToPOTFile = "../myEvents/mySamples/"+UBCodeVersion+"/PreSelection_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+"_POT.root";
-						TFile* POTFile = TFile::Open(PathToPOTFile,"readonly");
-						TH1D* POTCountHist = (TH1D*)(POTFile->Get("POTCountHist"));
-						OverlayPOT = POTCountHist->GetBinContent(1);
-						POTFile->Close();
-				}
-
-				PlotsTrueReco[WhichSample][WhichPlot]->Scale(OverlayPOT/tor860_wcut);
 
 				// ----------------------------------------------------------------------------------------
 
@@ -190,16 +181,25 @@ void Create1DPlotsTotal(TString OverlaySample) {
 				TLatex *text = new TLatex();
 				text->SetTextFont(FontStyle);
 				text->SetTextSize(0.08);
-				text->DrawTextNDC(0.14, 0.8, Runs[WhichRun]);		
+				text->DrawTextNDC(0.18, 0.8, Runs[WhichRun]);		
 
-				if (WhichSample == 0 && OverlaySample == "") 
-					{ PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf"); }
+				if (WhichSample == 0 && OverlaySample == "") {
+				
+					TString CanvasPath = "./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/";
+					TString CanvasPdfName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
+					
+				}
+				
 				delete PlotCanvas;
 
 				// ---------------------------------------------------------------------------------------------------------------------------
 
-				TCanvas* PlotEffCanvas = new TCanvas(NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot],NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot],205,34,1024,768);
+				TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot];
+				TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 				PlotEffCanvas->cd();
+				PlotEffCanvas->SetBottomMargin(0.16);
+				PlotEffCanvas->SetLeftMargin(0.18);				
 
 				TH1D* pEffPlot = (TH1D*)PlotsTrueReco[WhichSample][WhichPlot]->Clone();
 				pEffPlot->Divide(PlotsTrue[WhichSample][WhichPlot]);
@@ -211,34 +211,39 @@ void Create1DPlotsTotal(TString OverlaySample) {
 				pEffPlot->GetXaxis()->SetTitleFont(FontStyle);
 				pEffPlot->GetXaxis()->SetLabelFont(FontStyle);
 				pEffPlot->GetXaxis()->SetTitle(PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetTitle());
-				pEffPlot->GetXaxis()->SetTitleSize(0.06);
-				pEffPlot->GetXaxis()->SetLabelSize(0.04);
-				pEffPlot->GetXaxis()->SetTitleOffset(0.7);
+				pEffPlot->GetXaxis()->SetTitleSize(TextSize);
+				pEffPlot->GetXaxis()->SetLabelSize(TextSize);
 				pEffPlot->GetXaxis()->SetNdivisions(5);
 
 				pEffPlot->GetYaxis()->CenterTitle();
 				pEffPlot->GetYaxis()->SetTitleFont(FontStyle);
-				pEffPlot->GetYaxis()->SetTitleSize(0.12);
+				pEffPlot->GetYaxis()->SetTitleSize(TextSize);
 				pEffPlot->GetYaxis()->SetLabelFont(FontStyle);
 				pEffPlot->GetYaxis()->SetNdivisions(6);
-				pEffPlot->GetYaxis()->SetTitleOffset(0.45);
-				pEffPlot->GetYaxis()->SetTitleSize(0.08);
-				pEffPlot->GetYaxis()->SetLabelSize(0.04);
+				pEffPlot->GetYaxis()->SetTitleSize(TextSize);
+				pEffPlot->GetYaxis()->SetLabelSize(TextSize);
 				pEffPlot->GetYaxis()->SetTitle("Efficiency");
 				pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
+				PlotEffCanvas->cd();
 				pEffPlot->Draw();
 
 				TLatex *textEff = new TLatex();
 				textEff->SetTextFont(FontStyle);
-				textEff->SetTextSize(0.08);
-				textEff->DrawTextNDC(0.14, 0.8, Runs[WhichRun]);
+				textEff->SetTextSize(TextSize);
+				textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
 
+				if (WhichSample == 0 && OverlaySample == "") { 
+				
+					TString CanvasEffPath = "./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/";
+					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
+									
+				}
+				
 				FileEfficiences->cd();
-				pEffPlot->Write();
-
-				if (WhichSample == 0 && OverlaySample == "") 
-					{ PlotEffCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf"); }
+				pEffPlot->Write();				
+					
 				delete PlotEffCanvas;
 
 			} // End of the loop over the plots
@@ -246,7 +251,7 @@ void Create1DPlotsTotal(TString OverlaySample) {
 			FileEfficiences->Close();
 
 			std::cout << std::endl << "Efficiency file " << Name << " created" << std::endl << std::endl;
-			std::cout << std::endl << "---------------------------------------------------------------------------------------------------------" << std::endl << std::endl;
+			std::cout << std::endl << "-----------------------------------------------------------------------" << std::endl << std::endl;
 
 		} // End of the loop over the samples
 

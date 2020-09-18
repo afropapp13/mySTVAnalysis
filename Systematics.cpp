@@ -14,15 +14,15 @@
 #include <vector>
 #include <sstream>
 #include <string>
-#include <math>
+//#include <math>
 
 #include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
-#include "./Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -37,7 +37,7 @@ void Systematics() {
 	TString PathToFiles = "myXSec/";
 	TString PathToSystematics = "mySystematics/";
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------------
 
 	PlotNames.push_back("DeltaPTPlot"); 
 	PlotNames.push_back("DeltaAlphaTPlot"); 
@@ -55,7 +55,7 @@ void Systematics() {
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
@@ -63,7 +63,7 @@ void Systematics() {
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
@@ -81,14 +81,17 @@ void Systematics() {
 
 		// Systematics
 
-		NameOfSamples.push_back("Detector_Systematics");
-//		NameOfSamples.push_back("SCE");
-//		NameOfSamples.push_back("DLdown");
+		NameOfSamples.push_back("Detector_Systematics_LY");
+		NameOfSamples.push_back("Detector_Systematics_TPC");
+		NameOfSamples.push_back("POT_Systematics");
+		NameOfSamples.push_back("G4_Systematics");
+		NameOfSamples.push_back("Genie_Systematics");
+		NameOfSamples.push_back("Flux_Systematics");		
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		// ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------------
 
 		// Open the files and grap the relevant plots
 
@@ -146,7 +149,7 @@ void Systematics() {
 
 		}
 
-		// ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------------------------------------------------------
 
 		// Loop over the plots
 
@@ -169,7 +172,7 @@ void Systematics() {
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------
+			// --------------------------------------------------------------------------------------------------------------------
 
 			int NBinsX = PlotsReco[0][WhichPlot]->GetNbinsX();
 
@@ -192,6 +195,10 @@ void Systematics() {
 					SystUncertaintySquared += TMath::Power(CurrentSystDataEntry,2.);
 
 				}
+				
+
+// Safety check
+if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySquared = 0.; }			
 
 				double TotalUncertainty = sqrt(SystUncertaintySquared + CurrentDataErrorSquared); // Total Uncertainty
 
@@ -200,7 +207,7 @@ void Systematics() {
 
 			} // End of the loop over the bins
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------------------------------------
 
 			// Make the canvas/plots pretty
 
@@ -221,7 +228,7 @@ void Systematics() {
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------
+			// -----------------------------------------------------------------------------------------------------------------
 
 			// Overlay
 
@@ -251,7 +258,7 @@ void Systematics() {
 			PlotsTrue[0][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[0][WhichPlot]->Draw("e same");
 
-			// ---------------------------------------------------------------------------------------------------------------------------------------------------
+			// -------------------------------------------------------------------------------------------------------------------------
 
 			// Integrated cross-sections & chi2
 
@@ -278,9 +285,12 @@ void Systematics() {
 						+ToString(IntegratedOverlayXSection)+" #pm "+ToString(IntegratedOverlayXSectionError)
 						+") #upoint 10^{-38} cm^{2}}}}{#color["+ToString(GenieColor)+"]{#sigma_{GENIE} = ("
 						+ToString(IntegratedGenieXSection)+" #pm "+ToString(IntegratedGenieXSectionError)+") #upoint 10^{-38} cm^{2}}}";
-			latexSigma.DrawLatexNDC(0.27,0.67, LabelData);
+			
+			// To draw the integrated xsecs
+			
+			//latexSigma.DrawLatexNDC(0.27,0.67, LabelData);
 
-			// ---------------------------------------------------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------------
 
 			// Legend & Run / POT
 
@@ -297,13 +307,13 @@ void Systematics() {
 			leg->AddEntry(SystDataplot,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->Draw();
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------
+			// ----------------------------------------------------------------------------------------------
 
 			// Saving the canvas with the data (total uncertainties) vs overlay predictions
 
 			PlotCanvasSyst->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------------------------------------------
 
 			// Print the total uncertainty contribution only for one plots
 

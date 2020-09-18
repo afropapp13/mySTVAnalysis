@@ -19,7 +19,7 @@
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
-#include "./Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;

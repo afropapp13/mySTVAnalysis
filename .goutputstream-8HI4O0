@@ -106,7 +106,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 //	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
-	//cout << "Number of Runs = " << NRuns << endl;
+	cout << "Number of Runs = " << NRuns << endl;
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -116,17 +116,9 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 	double DataPOT = -99.;
 	
-	if ( Universe != -1 ) {
+	if ( string(OverlaySample).find("FluxUnisim") != std::string::npos ) {
 	
-		TString DublicateOverlaySample = OverlaySample;
-		TString ReducedOverlaySample = DublicateOverlaySample.ReplaceAll("m_","m");
-		if ( !(string(OverlaySample).find("expskin") != std::string::npos) ) { ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("n_","n"); }
-		ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("g_","g");				
-		
-		for (int i = 0; i < 10;i++) { ReducedOverlaySample.ReplaceAll(TString(std::to_string(i)),""); }
-		
-		TString FluxHistoName = "numu_ms"+ReducedOverlaySample+"/hEnumu"+ReducedOverlaySample+"_ms_"+TString(std::to_string(Universe));
-		HistoFlux = (TH1D*)(FluxFile->Get(FluxHistoName));
+		HistoFlux = (TH1D*)(FluxFile->Get("numu_ms"+OverlaySample+"/hEnumu"+OverlaySample+"_ms_"+TString(std::string(Universe))));
 	
 	}
 
@@ -234,7 +226,6 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
 			PlotsTEfficiency.push_back(CurrentPlotsTEfficiency);
-
 
 		}
 
@@ -639,7 +630,7 @@ if (PlotNames[WhichPlot] == "DeltaPTPlot"  && WhichXBin == 0) { GENIEv2ScaledEnt
 			// Max on plot so that we can include the integrated xsecs
 			
 			double max = TMath::Max(PlotsCC1pReco[0][WhichPlot]->GetMaximum(),PlotsReco[1][WhichPlot]->GetMaximum());
-			double YmaxScaleFactor = 1.35;
+			double YmaxScaleFactor = 1.2;
 //			if (PlotNames[WhichPlot] == "MuonMomentumPlot" ) { YmaxScaleFactor = 1.4; }
 			double min = TMath::Min(0.,1.5*PlotsReco[1][WhichPlot]->GetMinimum());
 //			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,1.8 * max);
@@ -791,8 +782,7 @@ if (PlotNames[WhichPlot] == "DeltaPTPlot"  && WhichXBin == 0) { GENIEv2ScaledEnt
 						int NBinsTrue = PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
 						double chi2 = Chi2(PlotsReco[DataIndex][WhichPlot],PlotsTrue[WhichSample][WhichPlot]);
 							
-						cout << PlotNames[WhichPlot] << "  " << NameOfSamples[WhichSample] << "  chi2/d.o.f = ";
-						cout << round(chi2,DecimalAccuracy) << "/" << NBinsTrue << endl; 		
+						cout << PlotNames[WhichPlot] << "  " << NameOfSamples[WhichSample] << "  chi2/d.o.f = " << round(chi2,DecimalAccuracy) << "/" << NBinsTrue << endl; 		
 		
 					} // End of the simulation predictions 
 				
@@ -814,8 +804,7 @@ if (PlotNames[WhichPlot] == "DeltaPTPlot"  && WhichXBin == 0) { GENIEv2ScaledEnt
 
 		// Store the extracted xsections
 
-		TString NameExtractedXSec = PathToExtractedXSec+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[0]+"_"\
-			+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString NameExtractedXSec = PathToExtractedXSec+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){

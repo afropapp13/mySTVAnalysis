@@ -8,6 +8,7 @@
 #include <TEfficiency.h>
 #include <TMath.h>
 #include <TLatex.h>
+#include <TGaxis.h>
 
 #include <iostream>
 #include <vector>
@@ -19,7 +20,7 @@
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
-#include "./Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -27,6 +28,9 @@ using namespace Constants;
 void Detector_Systematics() {
 
 	TH1D::SetDefaultSumw2();
+	TGaxis::SetMaxDigits(3);
+	TGaxis::SetExponentOffset(-0.1, 1., "y");	
+	
 	vector<TString> PlotNames;
 
 	TString PathToFiles = "myXSec/";
@@ -47,15 +51,19 @@ void Detector_Systematics() {
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
+//	Runs.push_back("Run2");
+//	Runs.push_back("Run3");
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
@@ -76,10 +84,21 @@ void Detector_Systematics() {
 
 		// Detector Variations
 
-		NameOfSamples.push_back("X"); Colors.push_back(kOrange+7); Markers.push_back(21);
-		NameOfSamples.push_back("YZ"); Colors.push_back(kGreen+2); Markers.push_back(22);
-		NameOfSamples.push_back("LY"); Colors.push_back(kBlue); Markers.push_back(23);
+		// Runs 1 & 3
+
+		NameOfSamples.push_back("LYAttenuation"); Colors.push_back(kGreen+2); Markers.push_back(22);
+		NameOfSamples.push_back("LYDown"); Colors.push_back(kBlue); Markers.push_back(23);
 		NameOfSamples.push_back("LYRayleigh"); Colors.push_back(kMagenta); Markers.push_back(29);
+		
+		// Run 3	
+
+//		NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
+//		NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
+//		NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
+//		NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
+//		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
+//		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
+//		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);					
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -111,13 +130,13 @@ void Detector_Systematics() {
 
 		}
 
-		// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// ----------------------------------------------------------------------------------------------------------------------------
 
 		// Loop over the plots
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-			// ------------------------------------------------------------------------------------------------------------------------------------------------------
+			// ----------------------------------------------------------------------------------------------------------------
 
 			// Clone the reference plot
 
@@ -131,24 +150,24 @@ void Detector_Systematics() {
 
 			}
 
-			// ------------------------------------------------------------------------------------------------------------------------------------------------------
+			// ----------------------------------------------------------------------------------------------------------------------
 	
 			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+Runs[WhichRun],PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
 			PlotCanvas->cd();
 
 			TPad *midPad = new TPad("midPad", "", 0.005, 0., 0.995, 0.995);
-			midPad->SetTopMargin(0.12);
+			midPad->SetTopMargin(0.16);
 			midPad->SetBottomMargin(0.13);
 			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
 
-			TLegend* leg = new TLegend(0.03,0.89,0.57,0.99);
+			TLegend* leg = new TLegend(0.0,0.85,0.98,0.98);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.06);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(3);
 
-			// ----------------------------------------------------------------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------------------------------------
 
 			double max = -99.; 
 
@@ -181,10 +200,11 @@ void Detector_Systematics() {
 				PlotsReco[WhichSample][WhichPlot]->Draw("hist p0 same");
 				leg->AddEntry(PlotsReco[WhichSample][WhichPlot],NameOfSamples[WhichSample],"p");
 
-				// Take differences to CV, store them and add them in quadrature
+				// Take differences/2 to CV, store them and add them in quadrature
 
 				TH1D* ClonePlot = (TH1D*)PlotsReco[0][WhichPlot]->Clone();
 				ClonePlot->Add(PlotsReco[WhichSample][WhichPlot],-1);
+				ClonePlot->Scale(0.5);
 
 				for (int WhichBin = 1; WhichBin <= NBins; WhichBin++){
 
@@ -209,23 +229,24 @@ void Detector_Systematics() {
 
 			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
 //			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
-//			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
+			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
 //			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
 //			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 
 			TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" POT";
 
-			latex.DrawLatexNDC(0.63,0.94, Label);	
+//			latex.DrawLatexNDC(0.63,0.94, Label);	
+			latex.DrawLatexNDC(0.53,0.78, Label);				
 
-			// -----------------------------------------------------------------------------------------------------------------------------------
+			// -------------------------------------------------------------------------------------------------
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
 			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
-			delete PlotCanvas;
+			//delete PlotCanvas;
 
-			// -------------------------------------------------------------------------------------------------------------------------------------------------
+			// -----------------------------------------------------------------------------------------------------------
 
 			// Store the extracted systematic uncertainty
 

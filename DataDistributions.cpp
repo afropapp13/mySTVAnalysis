@@ -9,10 +9,6 @@
 #include <iostream>
 #include <vector>
 
-//#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
-//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 #include "../myClasses/Constants.h"
 
 using namespace std;
@@ -64,7 +60,7 @@ void DataDistributions(TString BeamOnSample) {
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
@@ -72,7 +68,7 @@ void DataDistributions(TString BeamOnSample) {
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
@@ -121,8 +117,19 @@ void DataDistributions(TString BeamOnSample) {
 			PlotsReco[WhichPlot]->SetMarkerStyle(20);
 			PlotsReco[WhichPlot]->SetMarkerSize(2.);
 			PlotsReco[WhichPlot]->SetMarkerColor(kBlack);
+
+			PlotsReco[WhichPlot]->GetXaxis()->CenterTitle();
+			PlotsReco[WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+			PlotsReco[WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+			PlotsReco[WhichPlot]->GetXaxis()->SetNdivisions(6);									
+			
 			PlotsReco[WhichPlot]->GetYaxis()->SetRangeUser(0.,1.2*PlotsReco[WhichPlot]->GetMaximum());
 			PlotsReco[WhichPlot]->GetYaxis()->SetTitle("# events");
+			PlotsReco[WhichPlot]->GetYaxis()->CenterTitle();	
+			PlotsReco[WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+			PlotsReco[WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);			
+			PlotsReco[WhichPlot]->GetYaxis()->SetNdivisions(6);			
+			
 			PlotsReco[WhichPlot]->Draw("ex0 same");
 
 			TString DataLabel = "MicroBooNE "+Runs[WhichRun]+" Data";
