@@ -11,12 +11,14 @@
 #include <iostream>
 #include <vector>
 
-#include "../myClasses/Constants.h"
+#include "ubana/myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
-void Create1DPlotsTotal(TString OverlaySample) {
+void Efficiencies(TString OverlaySample) {
+
+	// -------------------------------------------------------------------------------------
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
@@ -26,7 +28,12 @@ void Create1DPlotsTotal(TString OverlaySample) {
 	
 	double TextSize = 0.07;
 
-	TString PathToFiles = "../myEvents/OutputFiles";
+	// -------------------------------------------------------------------------------------
+
+	TString PathToFiles = "/uboone/data/users/"+UserID+"/myEvents/OutputFiles/"+UBCodeVersion;
+	TString TrueSTVPath = PathToFiles+"/";
+	TString EfficiencyPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myEfficiencies/"+UBCodeVersion+"/"; 
+	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
 
 	// -------------------------------------------------------------------------------------
 
@@ -95,11 +102,10 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString STVPath = PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/";
+			TString STVPath = PathToFiles+"/"+CutExtension+"/";
 			TString STVName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
 			FileSample.push_back(TFile::Open(STVPath+STVName));
 			
-			TString TrueSTVPath = PathToFiles+"/"+UBCodeVersion+"/";
 			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 			TruthFileSample.push_back(TFile::Open(TrueSTVPath+TrueSTVName));
 
@@ -125,7 +131,6 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString EfficiencyPath = "myEfficiencies/"+UBCodeVersion+"/"; 
 			TString EfficiencyName = "FileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
 			Name = EfficiencyPath + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
@@ -185,7 +190,7 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 				if (WhichSample == 0 && OverlaySample == "") {
 				
-					TString CanvasPath = "./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/";
+					TString CanvasPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasPdfName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
 					
@@ -235,7 +240,7 @@ void Create1DPlotsTotal(TString OverlaySample) {
 
 				if (WhichSample == 0 && OverlaySample == "") { 
 				
-					TString CanvasEffPath = "./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"/";
+					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 									

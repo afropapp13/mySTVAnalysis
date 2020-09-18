@@ -6,12 +6,20 @@
 #include <TString.h>
 #include <TStyle.h>
 
-#include "../myClasses/Constants.h"
+#include "ubana/myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
 void MigrationMatrices(TString OverlaySample) {
+
+	// -------------------------------------------------------------------------------------
+
+	TString PathToFiles = "/uboone/data/users/"+UserID+"/myEvents/OutputFiles/"+UBCodeVersion+"/";
+	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
+	TString MigrationMatrixPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myMigrationMatrices/"+UBCodeVersion+"/"; 
+
+	// -------------------------------------------------------------------------------------
 
 	TH2D::SetDefaultSumw2();
 	
@@ -19,7 +27,6 @@ void MigrationMatrices(TString OverlaySample) {
 	
 	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t"); 
 	gStyle->SetTitleFont(FontStyle,"t");
-	TString PathToFiles = "../myEvents/OutputFiles";
 	gStyle->SetOptStat(0);
 
 	// -------------------------------------------------------------------------------------
@@ -90,13 +97,13 @@ void MigrationMatrices(TString OverlaySample) {
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = "myMigrationMatrices/"+UBCodeVersion+"/FileMigrationMatrices_"+\
+		TString FileName = MigrationMatrixPath+"FileMigrationMatrices_"+\
 				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileMigrationMatrices = new TFile(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 		
-			TString ExactFileLocation = PathToFiles+"/"+UBCodeVersion+"/"+CutExtension;
+			TString ExactFileLocation = PathToFiles+CutExtension;
 
 			FileSample.push_back(TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+CutExtension+".root"));
@@ -227,7 +234,7 @@ void MigrationMatrices(TString OverlaySample) {
 				Plots[WhichSample][WhichPlot]->Draw("text colz");
 
 				if (OverlaySample == "") {
-					PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
+					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
 					+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 				}
 

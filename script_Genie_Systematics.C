@@ -22,17 +22,17 @@
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L Create1DPlotsTotal.cpp++");
+	gROOT->ProcessLine(".L Efficiencies.cpp++");
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
 
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 	
-		//for (int k = 0; k < Universes[i]; k++) {
-		for (int k = 39; k < Universes[i]; k++) {				
+		for (int k = 0; k < Universes[i]; k++) {
+		//for (int k = 39; k < Universes[i]; k++) {				
 
-			gROOT->ProcessLine("Create1DPlotsTotal(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
+			gROOT->ProcessLine("Efficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
 			gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 

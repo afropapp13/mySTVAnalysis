@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-void script(){
+void script_CV(){
 
 	vector<TString> WhichSampleArray;
 
@@ -13,7 +13,7 @@ void script(){
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L Create1DPlotsTotal.cpp++");
+	gROOT->ProcessLine(".L myEfficiencies.cpp++");
 
 	gROOT->ProcessLine(".L MigrationMatrices.cpp++");
 
@@ -24,7 +24,7 @@ void script(){
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("Create1DPlotsTotal(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("myEfficiencies(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 

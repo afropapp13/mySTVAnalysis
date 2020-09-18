@@ -9,18 +9,27 @@
 #include <iostream>
 #include <vector>
 
-#include "../myClasses/Constants.h"
+#include "ubana/myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
 void DataDistributions(TString BeamOnSample) {
 
+	// -------------------------------------------------------------------------------------
+
+	TString UserID = "apapadop";
+
+	// -------------------------------------------------------------------------------------
+
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
 	gStyle->SetOptStat(0);	
 
-	TString PathToFiles = "../myEvents/OutputFiles";
+	// -------------------------------------------------------------------------------------
+
+	TString PathToFiles = "/uboone/data/users/"+UserID+"/myEvents/OutputFiles/"+UBCodeVersion+"/";
+	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
 
 	// -------------------------------------------------------------------------------------
 
@@ -88,7 +97,7 @@ void DataDistributions(TString BeamOnSample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToFiles+"/"+UBCodeVersion+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root"));
+			FileSample.push_back(TFile::Open(PathToFiles+"/"+CutExtension+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root"));
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
@@ -136,7 +145,7 @@ void DataDistributions(TString BeamOnSample) {
 			leg->AddEntry(PlotsReco[WhichPlot],DataLabel,"ep");
 			leg->Draw();		
 
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+NameOfSamples[0]+"/DataDistributions_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"/"+NameOfSamples[0]+"/DataDistributions_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			delete PlotCanvas;
 

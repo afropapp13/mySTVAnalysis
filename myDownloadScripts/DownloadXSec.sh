@@ -2,7 +2,7 @@ export UserID=apapadop
 
 export UBCode=v08_00_00_43
 
-export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myPlots/$UBCode
+export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myXSec/$UBCode
 
 declare -a arrRun=("Run1")
 
@@ -13,8 +13,7 @@ do
 
 	##############################################################################
 
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/BeamOn9/*.pdf ./myPlots/pdf/$UBCode/BeamOn9
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/Overlay9/*.pdf ./myPlots/pdf/$UBCode/Overlay9
+	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/*.root ./myXSec/$UBCode/
 
 	##############################################################################
 
