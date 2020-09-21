@@ -30,7 +30,6 @@
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 	
 		for (int k = 0; k < Universes[i]; k++) {
-		//for (int k = 39; k < Universes[i]; k++) {				
 
 			gROOT->ProcessLine("Efficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 

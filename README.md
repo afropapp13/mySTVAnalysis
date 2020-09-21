@@ -1,26 +1,3 @@
-# myEvents
-
-# Extracting the nominal xsec predictions with statistical uncertainties
-
-root -l script.C
-
-# Extracting the detector variations xsecs
-
-root -l script_Detector_Systematics.C
-
-# Extracting the GEANT4 variations xsecs
-
-root -l script_G4_Systematics.C
-
-# Extracting the Genie variations xsecs
-
-root -l script_Genie_Systematics.C
-
-# Extracting the Flux variations xsecs
-
-root -l script_Flux_Systematics.C
-
-
 #################################################################################################################################
 
 
@@ -51,5 +28,3 @@ root -l Flux_Systematics.cpp
 # Plotting the final results / total uncertainties / putting everything together
 
 root -l Systematics.cpp
-
-

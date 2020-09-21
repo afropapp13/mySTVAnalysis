@@ -13,7 +13,7 @@ void script_CV(){
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L myEfficiencies.cpp++");
+	gROOT->ProcessLine(".L Efficiencies.cpp++");
 
 	gROOT->ProcessLine(".L MigrationMatrices.cpp++");
 
@@ -24,7 +24,7 @@ void script_CV(){
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("myEfficiencies(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("Efficiencies(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 

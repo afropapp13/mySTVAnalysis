@@ -86,22 +86,26 @@ void Detector_Systematics() {
 
 		// Runs 1 & 3
 
-		NameOfSamples.push_back("LYAttenuation"); Colors.push_back(kGreen+2); Markers.push_back(22);
 		NameOfSamples.push_back("LYDown"); Colors.push_back(kBlue); Markers.push_back(23);
 		NameOfSamples.push_back("LYRayleigh"); Colors.push_back(kMagenta); Markers.push_back(29);
 		
 		// Run 3	
 
-//		NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
-//		NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
-//		NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
-//		NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
+/*
+		NameOfSamples.push_back("LYAttenuation"); Colors.push_back(kGreen+2); Markers.push_back(22);
+		NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
+		NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
+		NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
+		NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
 //		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
-//		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
-//		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);					
+		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
+		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);					
+*/
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
+
+//		TFile* NominalFile = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
@@ -137,6 +141,10 @@ void Detector_Systematics() {
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
 			// ----------------------------------------------------------------------------------------------------------------
+
+			// Nominal Plot
+
+//			TH1D* NominalPlot = (TH1D*)(NominalFile->Get("Reco"+PlotNames[WhichPlot]));
 
 			// Clone the reference plot
 
@@ -218,6 +226,15 @@ void Detector_Systematics() {
 				}
 
 			} // End of the loop over the detector variation samples 
+
+//			midPad->cd();
+//			MakeMyPlotPretty(NominalPlot);
+//			NominalPlot->SetLineColor(kRed);
+//			NominalPlot->SetMarkerStyle(22);
+//			NominalPlot->SetMarkerColor(kRed);
+//			NominalPlot->SetMarkerSize(2.);
+//			NominalPlot->Draw("hist p0 same");
+//			leg->AddEntry(NominalPlot,"Nominal","p");
 
 			leg->Draw();	
 

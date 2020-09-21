@@ -66,7 +66,7 @@ void Efficiencies(TString OverlaySample) {
 	// -------------------------------------------------------------------------------------
 
 	const int N1DPlots = PlotNames.size();
-	cout << "Number of 1D Plots = " << N1DPlots << endl;
+	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ void Efficiencies(TString OverlaySample) {
 //	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
-	cout << "Number of Runs = " << NRuns << endl;
+	//cout << "Number of Runs = " << NRuns << endl;
 
 	// -------------------------------------------------------------------------------------------------------------------------------
 
@@ -138,20 +138,9 @@ void Efficiencies(TString OverlaySample) {
 			// Loop over the plots
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+				// Number of event distributions for True CC1p and Reco CC1p
 	
-				TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];
-				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-				PlotCanvas->cd();
-				PlotCanvas->SetBottomMargin(0.16);
-				PlotCanvas->SetLeftMargin(0.15);								
-
-				TLegend* leg = new TLegend(0.25,0.92,0.9,1.);
-				leg->SetBorderSize(0);
-				leg->SetTextSize(TextSize);
-				leg->SetTextFont(FontStyle);
-				leg->SetNColumns(2);
-				leg->SetMargin(0.15);
-
 				PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
 				PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
 				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
@@ -174,37 +163,49 @@ void Efficiencies(TString OverlaySample) {
 				PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
 				PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
 
-				// ----------------------------------------------------------------------------------------
-
-				PlotsTrue[WhichSample][WhichPlot]->Draw();
-				PlotsTrueReco[WhichSample][WhichPlot]->Draw("same");
-
-				leg->AddEntry(PlotsTrue[WhichSample][WhichPlot],"True CC1p");
-				leg->AddEntry(PlotsTrueReco[WhichSample][WhichPlot],"Reco CC1p");
-				leg->Draw();
-
-				TLatex *text = new TLatex();
-				text->SetTextFont(FontStyle);
-				text->SetTextSize(0.08);
-				text->DrawTextNDC(0.18, 0.8, Runs[WhichRun]);		
 
 				if (WhichSample == 0 && OverlaySample == "") {
+
+					TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];
+					TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+					PlotCanvas->cd();
+					PlotCanvas->SetBottomMargin(0.16);
+					PlotCanvas->SetLeftMargin(0.15);								
+
+					TLegend* leg = new TLegend(0.25,0.92,0.9,1.);
+					leg->SetBorderSize(0);
+					leg->SetTextSize(TextSize);
+					leg->SetTextFont(FontStyle);
+					leg->SetNColumns(2);
+					leg->SetMargin(0.15);
+
+					// ----------------------------------------------------------------------------------------
+
+					PlotsTrue[WhichSample][WhichPlot]->Draw();
+					PlotsTrueReco[WhichSample][WhichPlot]->Draw("same");
+
+					leg->AddEntry(PlotsTrue[WhichSample][WhichPlot],"True CC1p");
+					leg->AddEntry(PlotsTrueReco[WhichSample][WhichPlot],"Reco CC1p");
+					leg->Draw();
+
+					TLatex *text = new TLatex();
+					text->SetTextFont(FontStyle);
+					text->SetTextSize(0.08);
+					text->DrawTextNDC(0.18, 0.8, Runs[WhichRun]);
+
+					// ----------------------------------------------------------------------------------------
 				
 					TString CanvasPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasPdfName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
+
+					delete PlotCanvas;
 					
 				}
-				
-				delete PlotCanvas;
 
-				// ---------------------------------------------------------------------------------------------------------------------------
+				// ---------------------------------------------------------------------------------------------------------------------------	
 
-				TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot];
-				TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
-				PlotEffCanvas->cd();
-				PlotEffCanvas->SetBottomMargin(0.16);
-				PlotEffCanvas->SetLeftMargin(0.18);				
+				// Ratios to extract the effective efficiencies			
 
 				TH1D* pEffPlot = (TH1D*)PlotsTrueReco[WhichSample][WhichPlot]->Clone();
 				pEffPlot->Divide(PlotsTrue[WhichSample][WhichPlot]);
@@ -230,26 +231,32 @@ void Efficiencies(TString OverlaySample) {
 				pEffPlot->GetYaxis()->SetTitle("Efficiency");
 				pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
-				PlotEffCanvas->cd();
-				pEffPlot->Draw();
-
-				TLatex *textEff = new TLatex();
-				textEff->SetTextFont(FontStyle);
-				textEff->SetTextSize(TextSize);
-				textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
-
 				if (WhichSample == 0 && OverlaySample == "") { 
+
+					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot];
+					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
+					PlotEffCanvas->cd();
+					PlotEffCanvas->SetBottomMargin(0.16);
+					PlotEffCanvas->SetLeftMargin(0.18);
+
+					PlotEffCanvas->cd();
+					pEffPlot->Draw();
+
+					TLatex *textEff = new TLatex();
+					textEff->SetTextFont(FontStyle);
+					textEff->SetTextSize(TextSize);
+					textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
+
+					delete PlotEffCanvas;
 									
 				}
 				
 				FileEfficiences->cd();
 				pEffPlot->Write();				
-					
-				delete PlotEffCanvas;
 
 			} // End of the loop over the plots
 
@@ -257,6 +264,9 @@ void Efficiencies(TString OverlaySample) {
 
 			std::cout << std::endl << "Efficiency file " << Name << " created" << std::endl << std::endl;
 			std::cout << std::endl << "-----------------------------------------------------------------------" << std::endl << std::endl;
+
+			FileSample[WhichSample]->Close();
+			TruthFileSample[WhichSample]->Close();
 
 		} // End of the loop over the samples
 

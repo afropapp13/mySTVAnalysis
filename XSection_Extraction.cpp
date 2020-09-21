@@ -85,7 +85,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
-	cout << "Number of 1D Plots = " << N1DPlots << endl;
+	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,6 +172,8 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 		
 		TString PathToFilesUBCodeExtension = PathToFiles+CutExtension;
 
+		// Loop over the samples
+
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 		
 			if (NameOfSamples[WhichSample] == "BeamOn9") { DataIndex = WhichSample; }
@@ -206,6 +208,8 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
 			vector<TH1D*> CurrentPlotsTEfficiency; CurrentPlotsTEfficiency.clear();
 
+			// Loop over the plots
+
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
 				TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
@@ -223,7 +227,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				TH1D* histTEfficiency = (TH1D*)(FileEfficiences->Get("CC1pReco"+PlotNames[WhichPlot]));
 				CurrentPlotsTEfficiency.push_back(histTEfficiency);
 		
-			}
+			} // End of the loop over the plots
 
 			PlotsReco.push_back(CurrentPlotsReco);		
 			PlotsTrue.push_back(CurrentPlotsTrue);		
@@ -232,36 +236,13 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 			PlotsTEfficiency.push_back(CurrentPlotsTEfficiency);
 
 
-		}
+		} // End of the loop over the samples
 
 		// ----------------------------------------------------------------------------------------------------------------------------------
 
 		// Loop over the plots
 
-		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
-	
-			TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample;
-			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-			PlotCanvas->cd();
-
-			TPad *midPad = new TPad("midPad", "", 0.005,0.0, 0.995, 0.995);
-			midPad->SetBottomMargin(0.14);
-			midPad->SetTopMargin(0.17);
-			midPad->SetLeftMargin(0.16);
-			midPad->Draw();
-
-			TLegend* leg = new TLegend(0.15,0.89,0.85,0.99);
-			leg->SetBorderSize(0);
-			leg->SetTextSize(0.05);
-			leg->SetTextFont(FontStyle);
-			leg->SetNColumns(4);
-			leg->SetColumnSeparation(0.33);			
-			
-			TLegend* legData = new TLegend(0.15,0.84,0.9,0.88);
-			legData->SetBorderSize(0);
-			legData->SetTextSize(0.06);
-			legData->SetTextFont(FontStyle);
-			legData->SetNColumns(3);			
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {			
 
 			int NBinsX = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
 
@@ -456,9 +437,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(5);			
-
-			midPad->cd();
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(5);
 
 			// BeamOn
 
@@ -471,56 +450,82 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 			PlotsTrue[4][WhichPlot]->SetLineWidth(3);	
 			PlotsTrue[4][WhichPlot]->SetLineColor(GenieColor);
 			PlotsTrue[4][WhichPlot]->SetFillColor(GenieColor);
-			
-			// -----------------------------------------------------------------------------------------------------------------------		
-
-			// Max on plot so that we can include the integrated xsecs
-			
-			double max = TMath::Max(PlotsCC1pReco[0][WhichPlot]->GetMaximum(),PlotsReco[1][WhichPlot]->GetMaximum());
-			double YmaxScaleFactor = 1.35;
-			double min = TMath::Min(0.,1.5*PlotsReco[1][WhichPlot]->GetMinimum());
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,YmaxScaleFactor * max);
-
-			// Plot MC
-			PlotsCC1pReco[0][WhichPlot]->Draw("e2");
-			
-			// Plot GENIE Overlay // Closure test
-			if (Subtract == "") { PlotsTrue[4][WhichPlot]->Draw("e same"); }												
-
-			// Plot BeamOn
-			PlotsReco[1][WhichPlot]->Draw("ex0 same");
-		
-			// ----------------------------------------------------------------------------------------------------------------
-
-			// Legend & POT Normalization
-
-			double tor860_wcut = -99.;
-			
-			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-
-			TString Label = ToString(tor860_wcut)+" POT";
-
-			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
-			lMC->SetTextColor(OverlayColor);
-
-			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune 1)","l");			
-			lGenie->SetTextColor(GenieColor);
-
-			leg->Draw();	
-
-			legData->AddEntry(PlotsReco[1][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
-			legData->Draw();
-			
+					
 			// -----------------------------------------------------------------------------------------------------------------------
 
 			if (OverlaySample == "") {
+
+				// -----------------------------------------------------------------------------------------------------------------------	
+
+				TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample;
+				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+				PlotCanvas->cd();
+
+				TPad *midPad = new TPad("midPad", "", 0.005,0.0, 0.995, 0.995);
+				midPad->SetBottomMargin(0.14);
+				midPad->SetTopMargin(0.17);
+				midPad->SetLeftMargin(0.16);
+				midPad->Draw();
+
+				TLegend* leg = new TLegend(0.15,0.89,0.85,0.99);
+				leg->SetBorderSize(0);
+				leg->SetTextSize(0.05);
+				leg->SetTextFont(FontStyle);
+				leg->SetNColumns(4);
+				leg->SetColumnSeparation(0.33);			
+				
+				TLegend* legData = new TLegend(0.15,0.84,0.9,0.88);
+				legData->SetBorderSize(0);
+				legData->SetTextSize(0.06);
+				legData->SetTextFont(FontStyle);
+				legData->SetNColumns(3);	
+
+				// Max on plot so that we can include the integrated xsecs
+				
+				double max = TMath::Max(PlotsCC1pReco[0][WhichPlot]->GetMaximum(),PlotsReco[1][WhichPlot]->GetMaximum());
+				double YmaxScaleFactor = 1.35;
+				double min = TMath::Min(0.,1.5*PlotsReco[1][WhichPlot]->GetMinimum());
+				PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,YmaxScaleFactor * max);
+
+				midPad->cd();
+
+				// Plot MC
+				PlotsCC1pReco[0][WhichPlot]->Draw("e2");
+				
+				// Plot GENIE Overlay // Closure test
+				if (Subtract == "") { PlotsTrue[4][WhichPlot]->Draw("e same"); }												
+
+				// Plot BeamOn
+				PlotsReco[1][WhichPlot]->Draw("ex0 same");
+			
+				// ----------------------------------------------------------------------------------------------------------------
+
+				// Legend & POT Normalization
+
+				double tor860_wcut = -99.;
+				
+				if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
+
+				TString Label = ToString(tor860_wcut)+" POT";
+
+				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
+				lMC->SetTextColor(OverlayColor);
+
+				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune 1)","l");			
+				lGenie->SetTextColor(GenieColor);
+
+				leg->Draw();	
+
+				legData->AddEntry(PlotsReco[1][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
+				legData->Draw();
 			
 				TString CanvasPath = PlotPath+NameOfSamples[0];
-				TString CanvasName = "/XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".pdf";
-				PlotCanvas->SaveAs(CanvasPath+CanvasName);
-			}
+				TString FullCanvasName = "/XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				PlotCanvas->SaveAs(CanvasPath+FullCanvasName);
 
-			if (OverlaySample != "") { delete PlotCanvas; }
+				delete PlotCanvas;
+
+			} // End of the CV case where we plot & store the canvases
 			
 			// --------------------------------------------------------------------------------------------------------------------------------
 
@@ -550,6 +555,8 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 		FluxFile->Close();
 
 		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
+
+		for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }
 
 	} // End of the loop over the runs	
 

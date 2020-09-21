@@ -3,7 +3,6 @@
 	vector<TString> WhichSampleArray;
 	vector<int> Universes;
 	int NFluxUniverses = 100;
-	//int NFluxUniverses = 1;	
 	
 	// -----------------------------------------------------------------------------------------
 	
@@ -21,20 +20,18 @@
 	WhichSampleArray.push_back("_pionqexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
 	WhichSampleArray.push_back("_piontotxsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
 	WhichSampleArray.push_back("_piplus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_expskin_FluxUnisim"); Universes.push_back(10);  Watch out, different models			
+	WhichSampleArray.push_back("_expskin_FluxUnisim"); Universes.push_back(10); // Watch out, different models			
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L Efficiencies.cpp++");
+	gROOT->ProcessLine(".L zEfficiencies.cpp++");
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
 
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 	
-		for (int k = 0; k < Universes[i]; k++) {
-		//for (int k = 0; k < 50; k++) {		
-		//for (int k = 50; k < Universes[i]; k++) {		
+		for (int k = 0; k < Universes[i]; k++) {		
 
 			gROOT->ProcessLine("Efficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
