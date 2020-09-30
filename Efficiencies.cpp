@@ -63,6 +63,10 @@ void Efficiencies(TString OverlaySample) {
 	PlotNames.push_back("EQEPlot");
 	PlotNames.push_back("Q2Plot");
 
+	PlotNames.push_back("kMissPlot");
+	PlotNames.push_back("PMissPlot");
+	PlotNames.push_back("PMissMinusPlot");
+
 	// -------------------------------------------------------------------------------------
 
 	const int N1DPlots = PlotNames.size();
@@ -72,10 +76,10 @@ void Efficiencies(TString OverlaySample) {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4");
+	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -83,6 +87,23 @@ void Efficiencies(TString OverlaySample) {
 	// -------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
+
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		// To be removed when all the runs / systematics will be ready to process
+
+		if (Runs[WhichRun] == "Run2") { continue; }
+		if (Runs[WhichRun] == "Run4") { continue; }
+		if (Runs[WhichRun] == "Run5") { continue; }
+
+		if (Runs[WhichRun] == "Run1" && 
+			(OverlaySample == "_LYAttenuation" || OverlaySample == "_WireModX" || OverlaySample == "_WireModYZ" || 
+			OverlaySample == "_WireModThetaYZ" || OverlaySample == "_WireModThetaXZ" || OverlaySample == "_dEdx" || 
+			OverlaySample == "_Recombination2" || OverlaySample == "_SCE" ) ) { continue; }
+
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 		vector<vector<TH1D*> > PlotsTrueReco; PlotsTrueReco.clear();

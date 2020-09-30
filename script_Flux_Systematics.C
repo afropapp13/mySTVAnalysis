@@ -24,7 +24,7 @@
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L zEfficiencies.cpp++");
+	gROOT->ProcessLine(".L Efficiencies.cpp++");
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 

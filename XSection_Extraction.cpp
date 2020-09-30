@@ -83,6 +83,9 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 	PlotNames.push_back("ECalPlot");
 	PlotNames.push_back("EQEPlot"); 
 	PlotNames.push_back("Q2Plot");
+	PlotNames.push_back("kMissPlot");
+	PlotNames.push_back("PMissPlot");
+	PlotNames.push_back("PMissMinusPlot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -106,10 +109,10 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4");
+	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -140,15 +143,29 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 	
-		// -------------------------------------------------------------------------------------			
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		// To be removed when all the runs / systematics will be ready to process
+
+		if (Runs[WhichRun] == "Run2") { continue; }
+		if (Runs[WhichRun] == "Run4") { continue; }
+		if (Runs[WhichRun] == "Run5") { continue; }
+
+		if (Runs[WhichRun] == "Run1" && 
+			(OverlaySample == "_LYAttenuation" || OverlaySample == "_WireModX" || OverlaySample == "_WireModYZ" || 
+			OverlaySample == "_WireModThetaYZ" || OverlaySample == "_WireModThetaXZ" || OverlaySample == "_dEdx" || 
+			OverlaySample == "_Recombination2" || OverlaySample == "_SCE" ) ) { continue; }
+
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 		if (Runs[WhichRun] == "Run1") { DataPOT = tor860_wcut_Run1 ; }
-//		if (Runs[WhichRun] == "Run2") { DataPOT = tor860_wcut_Run2 ; }
+		if (Runs[WhichRun] == "Run2") { DataPOT = tor860_wcut_Run2 ; }
 		if (Runs[WhichRun] == "Run3") { DataPOT = tor860_wcut_Run3 ; }
-//		if (Runs[WhichRun] == "Run4") { DataPOT = tor860_wcut_Run4 ; }
-//		if (Runs[WhichRun] == "Run5") { DataPOT = tor860_wcut_Run5 ; }								
+		if (Runs[WhichRun] == "Run4") { DataPOT = tor860_wcut_Run4 ; }
+		if (Runs[WhichRun] == "Run5") { DataPOT = tor860_wcut_Run5 ; }								
 		
-			
 		// Zarko Pavlovic, Jun 22 2020
 		double IntegratedFlux = HistoFlux->Integral() * DataPOT / (4997.*5e8) / (256.35*233.);			
 
@@ -316,6 +333,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				double CurrentBkgEntry = PlotsBkgReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
 				double CurrentBkgError = PlotsBkgReco[0][WhichPlot]->GetBinError(WhichXBin+1);
 				double BkgScaledEntry = 0., BkgScaledError = 0.;
+
 				if (EffectiveEfficiencyXBin != 0 ) {
 				
 					BkgScaledEntry = CurrentBkgEntry / EffectiveEfficiencyXBin * ScalingFactor; 
@@ -545,19 +563,20 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
-			PlotsReco[1][WhichPlot]->Write();
-			PlotsCC1pReco[0][WhichPlot]->Write();		
+			PlotsReco[1][WhichPlot]->Write(); // Data Reco
+			PlotsCC1pReco[0][WhichPlot]->Write(); // Overlay MC		
 			PlotsTrue[4][WhichPlot]->Write(); // Genie Overlay // Closure test			
 
 		}
 
 		ExtractedXSec->Close();
-		FluxFile->Close();
 
 		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
 
 		for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }
 
 	} // End of the loop over the runs	
+
+	FluxFile->Close();
 
 } // End of the program 

@@ -105,7 +105,7 @@ void Detector_Systematics() {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-//		TFile* NominalFile = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+		TFile* NominalFile = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
@@ -144,7 +144,7 @@ void Detector_Systematics() {
 
 			// Nominal Plot
 
-//			TH1D* NominalPlot = (TH1D*)(NominalFile->Get("Reco"+PlotNames[WhichPlot]));
+			TH1D* NominalPlot = (TH1D*)(NominalFile->Get("Reco"+PlotNames[WhichPlot]));
 
 			// Clone the reference plot
 
@@ -206,6 +206,7 @@ void Detector_Systematics() {
 
 				midPad->cd();
 				PlotsReco[WhichSample][WhichPlot]->Draw("hist p0 same");
+//				PlotsReco[WhichSample][WhichPlot]->Draw("e same");
 				leg->AddEntry(PlotsReco[WhichSample][WhichPlot],NameOfSamples[WhichSample],"p");
 
 				// Take differences/2 to CV, store them and add them in quadrature
@@ -234,6 +235,7 @@ void Detector_Systematics() {
 //			NominalPlot->SetMarkerColor(kRed);
 //			NominalPlot->SetMarkerSize(2.);
 //			NominalPlot->Draw("hist p0 same");
+////			NominalPlot->Draw("e same");
 //			leg->AddEntry(NominalPlot,"Nominal","p");
 
 			leg->Draw();	
