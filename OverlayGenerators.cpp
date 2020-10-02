@@ -46,13 +46,12 @@ void OverlayGenerators() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-	PlotNames.push_back("ECalPlot"); 
-	PlotNames.push_back("EQEPlot"); 
-	PlotNames.push_back("Q2Plot");
-
-	PlotNames.push_back("kMissPlot");
-	PlotNames.push_back("PMissPlot");
-	PlotNames.push_back("PMissMinusPlot");
+//	PlotNames.push_back("ECalPlot"); 
+//	PlotNames.push_back("EQEPlot"); 
+//	PlotNames.push_back("Q2Plot");
+//	PlotNames.push_back("kMissPlot");
+//	PlotNames.push_back("PMissPlot");
+//	PlotNames.push_back("PMissMinusPlot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;

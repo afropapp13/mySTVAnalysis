@@ -6,8 +6,6 @@
 	
 	// -----------------------------------------------------------------------------------------
 	
-	// Run 1
-	
 	WhichSampleArray.push_back("_horncurrent_FluxUnisim"); Universes.push_back(NFluxUniverses);
 	WhichSampleArray.push_back("_kminus_PrimaryHadronNormalization"); Universes.push_back(NFluxUniverses);
 	WhichSampleArray.push_back("_kplus_PrimaryHadronFeynmanScaling"); Universes.push_back(NFluxUniverses);

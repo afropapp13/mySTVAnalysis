@@ -33,7 +33,13 @@ void Detector_Systematics() {
 	
 	vector<TString> PlotNames;
 
-	TString PathToFiles = "myXSec/";
+	// ---------------------------------------------------------------------------------------------------------------------------------------	
+
+	TString PathToSystematics = "/uboone/data/users/"+UserID+"/mySTVAnalysis/mySystematics/"+UBCodeVersion+"/";
+	TString PathToFiles = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myXSec/"+UBCodeVersion+"/";
+	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
+
+	// ---------------------------------------------------------------------------------------------------------------------------------------	
 
 	PlotNames.push_back("DeltaPTPlot"); 
 	PlotNames.push_back("DeltaAlphaTPlot"); 
@@ -44,9 +50,9 @@ void Detector_Systematics() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-	PlotNames.push_back("ECalPlot");
-	PlotNames.push_back("EQEPlot"); 
-	PlotNames.push_back("Q2Plot");
+//	PlotNames.push_back("ECalPlot");
+//	PlotNames.push_back("EQEPlot"); 
+//	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -55,10 +61,10 @@ void Detector_Systematics() {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4");
+	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -66,6 +72,18 @@ void Detector_Systematics() {
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
+
+		// ------------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------------
+
+		// To be removed when the resi of the runs are ready
+
+		if (Runs[WhichRun] == "Run2") { continue; }
+		if (Runs[WhichRun] == "Run4") { continue; }
+		if (Runs[WhichRun] == "Run5") { continue; }
+
+		// ------------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------------
 
 		TFile* file = new TFile("mySystematics/"+UBCodeVersion+"/Detector_Systematics_"+Runs[WhichRun]+".root","recreate");
 
@@ -78,6 +96,8 @@ void Detector_Systematics() {
 		vector<TString> NameOfSamples; NameOfSamples.clear();
 		std::vector<int> Colors; Colors.clear();
 		std::vector<int> Markers; Markers.clear();
+
+		// ------------------------------------------------------------------------------------------------------------------
 	
 		NameOfSamples.push_back("CV"); // Reference plot
 		Colors.push_back(kBlack); Markers.push_back(20);
@@ -89,18 +109,22 @@ void Detector_Systematics() {
 		NameOfSamples.push_back("LYDown"); Colors.push_back(kBlue); Markers.push_back(23);
 		NameOfSamples.push_back("LYRayleigh"); Colors.push_back(kMagenta); Markers.push_back(29);
 		
-		// Run 3	
+		// Run 3
 
-/*
-		NameOfSamples.push_back("LYAttenuation"); Colors.push_back(kGreen+2); Markers.push_back(22);
-		NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
-		NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
-		NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
-		NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
-//		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
-		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
-		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);					
-*/
+		if (Runs[WhichRun] == "Run3") {	
+
+			NameOfSamples.push_back("LYAttenuation"); Colors.push_back(kGreen+2); Markers.push_back(22);
+			NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
+			NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
+			NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
+			NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
+	//		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
+			NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
+			NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);
+
+		}	
+
+		// ------------------------------------------------------------------------------------------------------------------				
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -261,7 +285,7 @@ void Detector_Systematics() {
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"BeamOn9/Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			//delete PlotCanvas;
 

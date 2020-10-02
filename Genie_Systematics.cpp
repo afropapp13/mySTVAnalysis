@@ -17,12 +17,12 @@
 #include <numeric>
 #include <functional>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
+#include "../Secondary_Code/CenterAxisTitle.cpp"
+#include "../Secondary_Code/SetOffsetAndSize.cpp"
+#include "../Secondary_Code/MakeMyPlotPretty.cpp"
+#include "../Secondary_Code/myFunctions.cpp"
 
-#include "../myClasses/Constants.h"
+#include "../../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -42,7 +42,11 @@ void Genie_Systematics() {
 	
 	// ---------------------------------------------------------------------------------------------------------------------------------------	
 
-	TString PathToFiles = "myXSec/";
+	TString PathToSystematics = "/uboone/data/users/"+UserID+"/mySTVAnalysis/mySystematics/"+UBCodeVersion+"/";
+	TString PathToFiles = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myXSec/"+UBCodeVersion+"/";
+	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
+
+	// ---------------------------------------------------------------------------------------------------------------------------------------
 
 	PlotNames.push_back("DeltaPTPlot"); 
 	PlotNames.push_back("DeltaAlphaTPlot"); 
@@ -53,9 +57,9 @@ void Genie_Systematics() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-	PlotNames.push_back("ECalPlot");
-	PlotNames.push_back("EQEPlot"); 
-	PlotNames.push_back("Q2Plot");
+//	PlotNames.push_back("ECalPlot");
+//	PlotNames.push_back("EQEPlot"); 
+//	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -64,10 +68,10 @@ void Genie_Systematics() {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4");
+	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -99,7 +103,19 @@ void Genie_Systematics() {
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
-		TString SystFileName = "mySystematics/"+UBCodeVersion+"/Genie_Systematics_"+Runs[WhichRun]+".root";
+		// ------------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------------
+
+		// To be removed when the resi of the runs are ready
+
+		if (Runs[WhichRun] == "Run2") { continue; }
+		if (Runs[WhichRun] == "Run4") { continue; }
+		if (Runs[WhichRun] == "Run5") { continue; }
+
+		// ------------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------------
+
+		TString SystFileName = PathToSystematics+"Genie_Systematics_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(SystFileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco;
@@ -135,7 +151,7 @@ void Genie_Systematics() {
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
 
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_Overlay9_"+\
+				FileSample.push_back(TFile::Open(PathToFiles+"/ExtractedXSec_Overlay9_"+\
 						      Runs[WhichRun]+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 				vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
@@ -269,7 +285,7 @@ void Genie_Systematics() {
 
 				// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-				PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
+				PlotCanvas->SaveAs(PlotPath+"BeamOn9/Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
 						   +Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+UBCodeVersion+".pdf");
 
 				delete PlotCanvas;
@@ -324,7 +340,7 @@ void Genie_Systematics() {
 				
 				MeanStdleg->Draw("same");
 				
-				MeanStdPlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/MeanSt_Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
+				MeanStdPlotCanvas->SaveAs(PlotPath+"BeamOn9/MeanSt_Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
 						   +Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+UBCodeVersion+".pdf");
 						   
 				delete MeanStdPlotCanvas;		   
@@ -373,19 +389,22 @@ void Genie_Systematics() {
 				} // End of loop over plot bins
 
 			} // End of the loop over the plots
+
+			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
 		
 		} // End of the loop over the EventWeight Label
 		
 		// ----------------------------------------------------------------------------------------------------------------------------
 			
 		// Loop over the plots to store the relevant uncertainties in the file
-		
-		SystFile->cd();
+
+		TFile* OverlayFile = TFile::Open(PathToFiles+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[0]+"_"+UBCodeVersion+".root","readonly");
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
-		
-			TH1D* SystPlot = (TH1D*)PlotsReco[0][WhichPlot]->Clone();
-			int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();	
+
+			TH1D* PlotsReco = (TH1D*)(OverlayFile->Get("Reco"+PlotNames[WhichPlot]));
+			TH1D* SystPlot = (TH1D*)PlotsReco->Clone();
+			int NBins = PlotsReco->GetXaxis()->GetNbins();	
 
 			for (int WhichBin = 1; WhichBin <= NBins; WhichBin++){
 
@@ -394,6 +413,7 @@ void Genie_Systematics() {
 
 			}
 			
+			SystFile->cd();
 			SystPlot->Write(PlotNames[WhichPlot]);							
 		
 		}
