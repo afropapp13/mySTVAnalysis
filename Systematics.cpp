@@ -48,9 +48,9 @@ void Systematics() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-	PlotNames.push_back("ECalPlot"); 
-	PlotNames.push_back("EQEPlot"); 
-	PlotNames.push_back("Q2Plot");
+//	PlotNames.push_back("ECalPlot"); 
+//	PlotNames.push_back("EQEPlot"); 
+//	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -105,7 +105,7 @@ void Systematics() {
 
 			if (WhichSample == 0) { // CV with statistical uncertainties
 
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root")); 
+				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","update")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
@@ -176,7 +176,7 @@ void Systematics() {
 
 			int NBinsX = PlotsReco[0][WhichPlot]->GetNbinsX();
 
-			TH1D* SystDataplot = (TH1D*)(PlotsReco[0][WhichPlot]->Clone());
+			TH1D* SystDataplot = (TH1D*)(PlotsReco[0][WhichPlot]->Clone("TotalReco"+PlotNames[WhichPlot]));
 
 			// Loop over bins to get the total uncertainty
 
@@ -252,43 +252,11 @@ if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySqua
 			SystDataplot->SetMarkerStyle(20);
 			SystDataplot->Draw("e1x0 same");
 
-			// Genie
+			// Genie Overlay for closure test
 
 			PlotsTrue[0][WhichPlot]->SetLineColor(GenieColor);
 			PlotsTrue[0][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[0][WhichPlot]->Draw("e same");
-
-			// -------------------------------------------------------------------------------------------------------------------------
-
-			// Integrated cross-sections & chi2
-
-			double IntegratedGenieXSection = round(IntegratedXSec(PlotsTrue[0][WhichPlot]),DecimalAccuracy);
-			double IntegratedGenieXSectionError = round(IntegratedXSecError(PlotsTrue[0][WhichPlot]),DecimalAccuracy);
-
-			double IntegratedOverlayXSection = round(IntegratedXSec(PlotsCC1pReco[0][WhichPlot]),DecimalAccuracy);
-			double IntegratedOverlayXSectionError = round(IntegratedXSecError(PlotsCC1pReco[0][WhichPlot]),DecimalAccuracy);
-
-			double IntegratedStatDataXSection = round(IntegratedXSec(PlotsReco[0][WhichPlot]),DecimalAccuracy);
-			double IntegratedStatDataXSectionError = round(IntegratedXSecError(PlotsReco[0][WhichPlot]),DecimalAccuracy);
-
-			double IntegratedDataXSection = round(IntegratedXSec(SystDataplot),DecimalAccuracy);
-			double IntegratedDataXSectionError = round(IntegratedXSecError(SystDataplot),DecimalAccuracy);
-
-			double chi2 = Chi2(PlotsReco[1][WhichPlot],PlotsCC1pReco[0][WhichPlot]);
-
-			TLatex latexSigma;
-			latexSigma.SetTextFont(FontStyle);
-			latexSigma.SetTextSize(0.06);
-			TString LabelData = "#splitline{#splitline{#color["+ToString(BeamOnColor)+"]{#sigma_{Data} = (" 
-						+ToString(IntegratedDataXSection)+" #pm "+ ToString(IntegratedDataXSectionError)+") #upoint 10^{-38} cm^{2}}}{#color["
-						+ToString(OverlayColor)+"]{#sigma_{MC} = (" 
-						+ToString(IntegratedOverlayXSection)+" #pm "+ToString(IntegratedOverlayXSectionError)
-						+") #upoint 10^{-38} cm^{2}}}}{#color["+ToString(GenieColor)+"]{#sigma_{GENIE} = ("
-						+ToString(IntegratedGenieXSection)+" #pm "+ToString(IntegratedGenieXSectionError)+") #upoint 10^{-38} cm^{2}}}";
-			
-			// To draw the integrated xsecs
-			
-			//latexSigma.DrawLatexNDC(0.27,0.67, LabelData);
 
 			// ---------------------------------------------------------------------------------------------------------
 
@@ -307,28 +275,25 @@ if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySqua
 			leg->AddEntry(SystDataplot,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->Draw();
 
+			// Add the total xsec (sta + syst) in root file
+
+			FileSample[0]->cd();
+			SystDataplot->Write();
+			//FileSample[0]->Write("",TObject::kOverwrite);
+
 			// ----------------------------------------------------------------------------------------------
 
 			// Saving the canvas with the data (total uncertainties) vs overlay predictions
 
 			PlotCanvasSyst->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
+			delete PlotCanvasSyst;
+
 			// ------------------------------------------------------------------------------------------------------------------------
 
-			// Print the total uncertainty contribution only for one plots
-
-			if (WhichPlot == 0) {
-
-				cout << "Total cross section = " << IntegratedDataXSection << endl;
-				cout << "Total cross section error = " << IntegratedDataXSectionError << endl;
-
-				cout << endl;
-
-				cout << "Statistical cross section error = " << IntegratedStatDataXSectionError << endl;
-
-			}
-
 		} // End of the loop over the plots
+
+		FileSample[0]->Close();
 
 	} // End of the loop over the runs	
 

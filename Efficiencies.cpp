@@ -160,31 +160,31 @@ void Efficiencies(TString OverlaySample) {
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
 				// Number of event distributions for True CC1p and Reco CC1p
-	
-				PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
-				PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);
-				PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
-
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.2*PlotsTrue[WhichSample][WhichPlot]->GetMaximum());
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(6);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);
-				PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitle("# events");
-
-				PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
-				PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
 
 
 				if (WhichSample == 0 && OverlaySample == "") {
+
+					PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
+					PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
+					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
+					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
+					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);
+					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
+
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.2*PlotsTrue[WhichSample][WhichPlot]->GetMaximum());
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(6);
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);
+					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitle("# events");
+
+					PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
+					PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
 
 					TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];
 					TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
@@ -229,29 +229,33 @@ void Efficiencies(TString OverlaySample) {
 
 				TH1D* pEffPlot = (TH1D*)PlotsTrueReco[WhichSample][WhichPlot]->Clone();
 				pEffPlot->Divide(PlotsTrue[WhichSample][WhichPlot]);
-				pEffPlot->SetLineWidth(3);
-				pEffPlot->SetLineColor(kBlack);
-				pEffPlot->SetMarkerStyle(20);
 
-				pEffPlot->GetXaxis()->CenterTitle();
-				pEffPlot->GetXaxis()->SetTitleFont(FontStyle);
-				pEffPlot->GetXaxis()->SetLabelFont(FontStyle);
-				pEffPlot->GetXaxis()->SetTitle(PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetTitle());
-				pEffPlot->GetXaxis()->SetTitleSize(TextSize);
-				pEffPlot->GetXaxis()->SetLabelSize(TextSize);
-				pEffPlot->GetXaxis()->SetNdivisions(5);
-
-				pEffPlot->GetYaxis()->CenterTitle();
-				pEffPlot->GetYaxis()->SetTitleFont(FontStyle);
-				pEffPlot->GetYaxis()->SetTitleSize(TextSize);
-				pEffPlot->GetYaxis()->SetLabelFont(FontStyle);
-				pEffPlot->GetYaxis()->SetNdivisions(6);
-				pEffPlot->GetYaxis()->SetTitleSize(TextSize);
-				pEffPlot->GetYaxis()->SetLabelSize(TextSize);
-				pEffPlot->GetYaxis()->SetTitle("Efficiency");
-				pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
+				FileEfficiences->cd();
+				pEffPlot->Write();
 
 				if (WhichSample == 0 && OverlaySample == "") { 
+
+					pEffPlot->SetLineWidth(3);
+					pEffPlot->SetLineColor(kBlack);
+					pEffPlot->SetMarkerStyle(20);
+
+					pEffPlot->GetXaxis()->CenterTitle();
+					pEffPlot->GetXaxis()->SetTitleFont(FontStyle);
+					pEffPlot->GetXaxis()->SetLabelFont(FontStyle);
+					pEffPlot->GetXaxis()->SetTitle(PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetTitle());
+					pEffPlot->GetXaxis()->SetTitleSize(TextSize);
+					pEffPlot->GetXaxis()->SetLabelSize(TextSize);
+					pEffPlot->GetXaxis()->SetNdivisions(5);
+
+					pEffPlot->GetYaxis()->CenterTitle();
+					pEffPlot->GetYaxis()->SetTitleFont(FontStyle);
+					pEffPlot->GetYaxis()->SetTitleSize(TextSize);
+					pEffPlot->GetYaxis()->SetLabelFont(FontStyle);
+					pEffPlot->GetYaxis()->SetNdivisions(6);
+					pEffPlot->GetYaxis()->SetTitleSize(TextSize);
+					pEffPlot->GetYaxis()->SetLabelSize(TextSize);
+					pEffPlot->GetYaxis()->SetTitle("Efficiency");
+					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
 					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
@@ -273,15 +277,13 @@ void Efficiencies(TString OverlaySample) {
 
 					delete PlotEffCanvas;
 									
-				}
-				
-				FileEfficiences->cd();
-				pEffPlot->Write();				
+				}				
 
 			} // End of the loop over the plots
 
 			FileEfficiences->Close();
 
+			std::cout << std::endl << "-----------------------------------------------------------------------" << std::endl << std::endl;
 			std::cout << std::endl << "Efficiency file " << Name << " created" << std::endl << std::endl;
 			std::cout << std::endl << "-----------------------------------------------------------------------" << std::endl << std::endl;
 

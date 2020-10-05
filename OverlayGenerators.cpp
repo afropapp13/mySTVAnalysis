@@ -68,6 +68,7 @@ void OverlayGenerators() {
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
+		vector<vector<TH1D*> > PlotsTotalReco; PlotsTotalReco.clear();
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
@@ -98,6 +99,7 @@ void OverlayGenerators() {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
+			vector<TH1D*> CurrentPlotsTotalReco; CurrentPlotsTotalReco.clear();
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
@@ -106,9 +108,12 @@ void OverlayGenerators() {
 
 			if (NameOfSamples[WhichSample] == "Overlay9") { // CV with statistical uncertainties only for now
 
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root")); 
+				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+					TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("TotalReco"+PlotNames[WhichPlot]));
+					CurrentPlotsTotalReco.push_back(histTotalReco);
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
@@ -146,6 +151,9 @@ void OverlayGenerators() {
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
+					TH1D* histTotalReco = nullptr;
+					CurrentPlotsTotalReco.push_back(histTotalReco);
+
 					TH1D* histReco = nullptr;
 					CurrentPlotsReco.push_back(histReco);
 
@@ -159,6 +167,7 @@ void OverlayGenerators() {
 
 			}
 
+			PlotsTotalReco.push_back(CurrentPlotsTotalReco);		
 			PlotsReco.push_back(CurrentPlotsReco);		
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
 			PlotsTrue.push_back(CurrentPlotsTrue);		
@@ -213,15 +222,28 @@ void OverlayGenerators() {
 
 			PlotsCC1pReco[0][WhichPlot]->SetLineColor(OverlayColor);
 			PlotsCC1pReco[0][WhichPlot]->SetFillColor(OverlayColor);
-			PlotsCC1pReco[0][WhichPlot]->Draw("e2 same");
+			PlotsCC1pReco[0][WhichPlot]->Draw("e2 same");		
+
+			// -----------------------------------------------------------------------------------------------------------------
 
 			// BeamOn Statistical Uncertainty
 
+			PlotsReco[0][WhichPlot]->SetLineWidth(3);
 			PlotsReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.5);
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
 //			PlotsReco[0][WhichPlot]->Draw("e1x0 same");
+
+			// -----------------------------------------------------------------------------------------------------------------
+
+			// BeamOn Total Uncertainty
+
+			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);
+			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
+			PlotsTotalReco[0][WhichPlot]->SetMarkerSize(1.5);
+			PlotsTotalReco[0][WhichPlot]->SetMarkerStyle(20);
+//			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -297,7 +319,8 @@ void OverlayGenerators() {
 
 			// ---------------------------------------------------------------------------------------------------------
 
-			PlotsReco[0][WhichPlot]->Draw("e1x0 same");
+//			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Total Unc
+			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Unc Only
 
 			// ---------------------------------------------------------------------------------------------------------
 

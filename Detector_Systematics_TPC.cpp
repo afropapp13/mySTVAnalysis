@@ -15,21 +15,21 @@
 #include <sstream>
 #include <string>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
+#include "../Secondary_Code/CenterAxisTitle.cpp"
+#include "../Secondary_Code/SetOffsetAndSize.cpp"
+#include "../Secondary_Code/MakeMyPlotPretty.cpp"
+#include "../Secondary_Code/myFunctions.cpp"
 
-#include "../myClasses/Constants.h"
+#include "../../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
-void Detector_Systematics() {
+void Detector_Systematics_TPC() {
 
 	TH1D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);
-	TGaxis::SetExponentOffset(-0.1, 1., "y");	
+//	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
 	vector<TString> PlotNames;
 
@@ -76,8 +76,9 @@ void Detector_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		// To be removed when the resi of the runs are ready
+		// To be removed when the rest of the runs are ready
 
+		if (Runs[WhichRun] == "Run1") { continue; }
 		if (Runs[WhichRun] == "Run2") { continue; }
 		if (Runs[WhichRun] == "Run4") { continue; }
 		if (Runs[WhichRun] == "Run5") { continue; }
@@ -85,7 +86,9 @@ void Detector_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TFile* file = new TFile("mySystematics/"+UBCodeVersion+"/Detector_Systematics_"+Runs[WhichRun]+".root","recreate");
+		TFile* file = new TFile(PathToSystematics+"/Detector_Systematics_TPC_"+Runs[WhichRun]+".root","recreate");
+		TFile* fileCopy = nullptr;
+		if (Runs[WhichRun] == "Run3") { fileCopy = new TFile(PathToSystematics+"/Detector_Systematics_TPC_Run1.root","recreate");	}
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
@@ -106,8 +109,8 @@ void Detector_Systematics() {
 
 		// Runs 1 & 3
 
-		NameOfSamples.push_back("LYDown"); Colors.push_back(kBlue); Markers.push_back(23);
-		NameOfSamples.push_back("LYRayleigh"); Colors.push_back(kMagenta); Markers.push_back(29);
+//		NameOfSamples.push_back("LYDown"); Colors.push_back(kBlue); Markers.push_back(23);
+//		NameOfSamples.push_back("LYRayleigh"); Colors.push_back(kMagenta); Markers.push_back(29);
 		
 		// Run 3
 
@@ -129,11 +132,11 @@ void Detector_Systematics() {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		TFile* NominalFile = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+		TFile* NominalFile = TFile::Open(PathToFiles+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
+			FileSample.push_back(TFile::Open(PathToFiles+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
@@ -188,14 +191,14 @@ void Detector_Systematics() {
 			PlotCanvas->cd();
 
 			TPad *midPad = new TPad("midPad", "", 0.005, 0., 0.995, 0.995);
-			midPad->SetTopMargin(0.16);
+			midPad->SetTopMargin(0.13);
 			midPad->SetBottomMargin(0.13);
 			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
 
-			TLegend* leg = new TLegend(0.0,0.85,0.98,0.98);
+			TLegend* leg = new TLegend(0.0,0.87,0.98,0.98);
 			leg->SetBorderSize(0);
-			leg->SetTextSize(0.06);
+			leg->SetTextSize(0.05);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(3);
 
@@ -271,10 +274,10 @@ void Detector_Systematics() {
 			double tor860_wcut = -99.;
 
 			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-//			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
+			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
 			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
-//			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
-//			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
+			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
+			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 
 			TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" POT";
 
@@ -295,6 +298,7 @@ void Detector_Systematics() {
 
 			file->cd();
 			SystPlot->Write(PlotNames[WhichPlot]);
+			if (Runs[WhichRun] == "Run3") { fileCopy->cd(); SystPlot->Write(PlotNames[WhichPlot]); }
 
 		} // End of the loop over the plots
 
