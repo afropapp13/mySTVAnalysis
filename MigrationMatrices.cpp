@@ -60,9 +60,9 @@ void MigrationMatrices(TString OverlaySample) {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonPhiPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
-	PlotNames.push_back("ECalPlot"); 
-	PlotNames.push_back("EQEPlot"); 
-	PlotNames.push_back("Q2Plot");
+//	PlotNames.push_back("ECalPlot"); 
+//	PlotNames.push_back("EQEPlot"); 
+//	PlotNames.push_back("Q2Plot");
 
 	const int N2DPlots = PlotNames.size();
 	cout << "Number of 2D Plots = " << N2DPlots << endl;

@@ -24,14 +24,14 @@
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L Efficiencies.cpp++");
+	gROOT->ProcessLine(".L EffectiveEfficiencies.cpp++");
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("Efficiencies(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"\")");
 

@@ -191,7 +191,7 @@ void Detector_Systematics_TPC() {
 			PlotCanvas->cd();
 
 			TPad *midPad = new TPad("midPad", "", 0.005, 0., 0.995, 0.995);
-			midPad->SetTopMargin(0.13);
+			midPad->SetTopMargin(0.17);
 			midPad->SetBottomMargin(0.13);
 			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
@@ -204,7 +204,7 @@ void Detector_Systematics_TPC() {
 
 			// ------------------------------------------------------------------------------------------------------------------
 
-			double max = -99.; 
+			double max = -99., min = -99.; 
 
 			// Drawing data plots using the efficiencies from CV & files for systematics
 
@@ -228,8 +228,10 @@ void Detector_Systematics_TPC() {
 				PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(3);
 
 				double LocalMax = PlotsReco[WhichSample][WhichPlot]->GetMaximum();
+				double LocalMin = PlotsReco[WhichSample][WhichPlot]->GetMinimum();
 				max = TMath::Max(LocalMax,max);
-				PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(0,1.2*max);
+				min = TMath::Min(LocalMin,0.);
+				PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(1.2*min,1.2*max);
 
 				midPad->cd();
 				PlotsReco[WhichSample][WhichPlot]->Draw("hist p0 same");
@@ -282,7 +284,7 @@ void Detector_Systematics_TPC() {
 			TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" POT";
 
 //			latex.DrawLatexNDC(0.63,0.94, Label);	
-			latex.DrawLatexNDC(0.53,0.78, Label);				
+			latex.DrawLatexNDC(0.53,0.77, Label);				
 
 			// -------------------------------------------------------------------------------------------------
 

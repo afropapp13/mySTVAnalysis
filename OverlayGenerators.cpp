@@ -228,7 +228,7 @@ void OverlayGenerators() {
 
 			// BeamOn Statistical Uncertainty
 
-			PlotsReco[0][WhichPlot]->SetLineWidth(3);
+			PlotsReco[0][WhichPlot]->SetLineWidth(5);
 			PlotsReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.5);
@@ -319,7 +319,6 @@ void OverlayGenerators() {
 
 			// ---------------------------------------------------------------------------------------------------------
 
-//			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Total Unc
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Unc Only
 
 			// ---------------------------------------------------------------------------------------------------------
@@ -368,9 +367,18 @@ void OverlayGenerators() {
 
 			// ----------------------------------------------------------------------------------------------
 
-			// Saving the canvas with the data (total uncertainties) vs overlay predictions
+			// Saving the canvas with the data (stat uncertainties) vs overlay & generator predictions
 
-//			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Generator_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+
+			// ----------------------------------------------------------------------------------------------
+
+			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions
+
+			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Total Unc
+			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Generator_TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+
+			// ----------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots
 

@@ -22,7 +22,7 @@
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L Efficiencies.cpp++");
+	gROOT->ProcessLine(".L EffectiveEfficiencies.cpp++");
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
@@ -31,7 +31,7 @@
 	
 		for (int k = 0; k < Universes[i]; k++) {		
 
-			gROOT->ProcessLine("Efficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
+			gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
 			gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\","+TString(std::to_string(k))+")");
 

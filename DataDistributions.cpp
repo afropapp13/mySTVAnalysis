@@ -62,9 +62,9 @@ void DataDistributions(TString BeamOnSample) {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot"); 
 	PlotNames.push_back("ProtonPhiPlot");
-	PlotNames.push_back("ECalPlot");
-	PlotNames.push_back("EQEPlot");
-	PlotNames.push_back("Q2Plot");
+//	PlotNames.push_back("ECalPlot");
+//	PlotNames.push_back("EQEPlot");
+//	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;

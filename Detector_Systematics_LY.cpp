@@ -188,12 +188,12 @@ void Detector_Systematics_LY() {
 			PlotCanvas->cd();
 
 			TPad *midPad = new TPad("midPad", "", 0.005, 0., 0.995, 0.995);
-			midPad->SetTopMargin(0.13);
+			midPad->SetTopMargin(0.15);
 			midPad->SetBottomMargin(0.13);
 			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
 
-			TLegend* leg = new TLegend(0.0,0.87,0.98,0.98);
+			TLegend* leg = new TLegend(0.0,0.89,0.98,0.98);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.06);
 			leg->SetTextFont(FontStyle);

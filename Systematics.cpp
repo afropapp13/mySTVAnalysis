@@ -85,8 +85,8 @@ void Systematics() {
 		NameOfSamples.push_back("Detector_Systematics_TPC");
 		NameOfSamples.push_back("POT_Systematics");
 		NameOfSamples.push_back("G4_Systematics");
-		NameOfSamples.push_back("Genie_Systematics");
-		NameOfSamples.push_back("Flux_Systematics");		
+		NameOfSamples.push_back("Flux_Systematics");
+		NameOfSamples.push_back("Genie_Systematics");		
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -163,10 +163,10 @@ void Systematics() {
 			TPad *midPadSyst = new TPad("midPadSyst", "",0.005, 0., 0.995, 0.995);
 			midPadSyst->SetBottomMargin(0.14);
 			midPadSyst->SetTopMargin(0.12);
-			midPadSyst->SetLeftMargin(0.16);
+			midPadSyst->SetLeftMargin(0.18);
 			midPadSyst->Draw();
 
-			TLegend* leg = new TLegend(0.14,0.89,0.8,0.99);
+			TLegend* leg = new TLegend(0.17,0.89,0.55,0.99);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.06);
 			leg->SetTextFont(FontStyle);
@@ -198,7 +198,7 @@ void Systematics() {
 				
 
 // Safety check
-if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySquared = 0.; }			
+//if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySquared = 0.; }			
 
 				double TotalUncertainty = sqrt(SystUncertaintySquared + CurrentDataErrorSquared); // Total Uncertainty
 
@@ -224,7 +224,7 @@ if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySqua
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(4);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.2);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.3);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
 
@@ -269,7 +269,7 @@ if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySqua
 			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
 			lMC->SetTextColor(OverlayColor);
 
-			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[0][WhichPlot],"GENIE","l");
+			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[0][WhichPlot],"GENIE Overlay (uB Tune v1)","l");
 			lGenie->SetTextColor(GenieColor);
 
 			leg->AddEntry(SystDataplot,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
@@ -287,13 +287,13 @@ if (SystUncertaintySquared > 10 * CurrentDataErrorSquared) { SystUncertaintySqua
 
 			PlotCanvasSyst->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
-			delete PlotCanvasSyst;
+			//delete PlotCanvasSyst;
 
 			// ------------------------------------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots
 
-		FileSample[0]->Close();
+		//FileSample[0]->Close();
 
 	} // End of the loop over the runs	
 

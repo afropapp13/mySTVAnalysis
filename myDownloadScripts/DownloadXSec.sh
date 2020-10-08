@@ -13,7 +13,11 @@ do
 
 	##############################################################################
 
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/*.root ./myXSec/$UBCode/
+	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/ExtractedXSec_Overlay9_Run1_${UBCode}.root ./myXSec/$UBCode/
+	#scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/ExtractedXSec_Overlay9_Run2_${UBCode}.root ./myXSec/$UBCode/
+	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/ExtractedXSec_Overlay9_Run3_${UBCode}.root ./myXSec/$UBCode/
+	#scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/ExtractedXSec_Overlay9_Run4_${UBCode}.root ./myXSec/$UBCode/
+	#scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/ExtractedXSec_Overlay9_Run5_${UBCode}.root ./myXSec/$UBCode/
 
 	##############################################################################
 

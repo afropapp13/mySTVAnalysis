@@ -16,7 +16,7 @@
 using namespace std;
 using namespace Constants;
 
-void Efficiencies(TString OverlaySample) {
+void EffectiveEfficiencies(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
