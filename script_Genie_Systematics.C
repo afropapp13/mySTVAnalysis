@@ -26,12 +26,16 @@
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
+	gROOT->ProcessLine(".L MigrationMatrices.cpp++");
+
 
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 	
 		for (int k = 0; k < Universes[i]; k++) {
 
 			gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
+
+			gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 
 			gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 

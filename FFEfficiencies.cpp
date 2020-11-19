@@ -16,7 +16,7 @@
 using namespace std;
 using namespace Constants;
 
-void EffectiveEfficiencies(TString OverlaySample) {
+void FFEfficiencies(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -117,6 +117,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 		vector<TFile*> TruthFileSample; TruthFileSample.clear();
+		vector<TFile*> MigrationMatricesFile; MigrationMatricesFile.clear();
 
 		TString Name = "";
 
@@ -129,8 +130,12 @@ void EffectiveEfficiencies(TString OverlaySample) {
 			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 			TruthFileSample.push_back(TFile::Open(TrueSTVPath+TrueSTVName));
 
+			TString MigrationMatrixName = "FileMigrationMatrices_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+			MigrationMatricesFile.push_back(TFile::Open(MigrationMatrixPath+MigrationMatrixName));
+
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
 			vector<TH1D*> CurrentPlotsTrueReco; CurrentPlotsTrueReco.clear();
+			vector<TH2D*> CurrentMigrationMatrix; CurrentMigrationMatrix.clear();
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
@@ -139,6 +144,9 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
 				CurrentPlotsTrueReco.push_back(histTrueReco);
+
+				TH2D* histMigrationMatrix = (TH2D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
+				CurrentMigrationMatrix.push_back(histMigrationMatrix);
 		
 			}
 
@@ -151,7 +159,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString EfficiencyName = "FileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
+			TString EfficiencyName = "ForwardFoldEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
 			Name = FileEfficienciesPath + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
 
@@ -159,80 +167,17 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-				// Number of event distributions for True CC1p and Reco CC1p
-
-
-				if (WhichSample == 0 && OverlaySample == "") {
-
-					PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
-					PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
-					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
-					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);
-					PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
-
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetRangeUser(0.,1.2*PlotsTrue[WhichSample][WhichPlot]->GetMaximum());
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(6);
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);
-					PlotsTrue[WhichSample][WhichPlot]->GetYaxis()->SetTitle("# events");
-
-					PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
-					PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
-
-					TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];
-					TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-					PlotCanvas->cd();
-					PlotCanvas->SetBottomMargin(0.16);
-					PlotCanvas->SetLeftMargin(0.15);								
-
-					TLegend* leg = new TLegend(0.25,0.92,0.9,1.);
-					leg->SetBorderSize(0);
-					leg->SetTextSize(TextSize);
-					leg->SetTextFont(FontStyle);
-					leg->SetNColumns(2);
-					leg->SetMargin(0.15);
-
-					// ----------------------------------------------------------------------------------------
-
-					PlotsTrue[WhichSample][WhichPlot]->Draw();
-					PlotsTrueReco[WhichSample][WhichPlot]->Draw("same");
-
-					leg->AddEntry(PlotsTrue[WhichSample][WhichPlot],"True CC1p");
-					leg->AddEntry(PlotsTrueReco[WhichSample][WhichPlot],"Reco CC1p");
-					leg->Draw();
-
-					TLatex *text = new TLatex();
-					text->SetTextFont(FontStyle);
-					text->SetTextSize(0.08);
-					text->DrawTextNDC(0.18, 0.8, Runs[WhichRun]);
-
-					// ----------------------------------------------------------------------------------------
-				
-					TString CanvasPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasPdfName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
-					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
-
-					delete PlotCanvas;
-					
-				}
-
 				// ---------------------------------------------------------------------------------------------------------------------------	
 
-				// Ratios to extract the effective efficiencies			
+				// Ratios to extract the forward folded efficiencies			
 
-				TH1D* pEffPlot = (TH1D*)PlotsTrueReco[WhichSample][WhichPlot]->Clone();
-				pEffPlot->Divide(PlotsTrue[WhichSample][WhichPlot]);
+				// this is the line that has to be replaced by the relevant new function
+				TH1D* pEffPlot = ForwardFold(PlotsTrue[WhichSample][WhichPlot],PlotsTrue[WhichSample][WhichPlot]);
 
 				FileEfficiences->cd();
 				pEffPlot->Write();
 
+				// Plotting only for the nominal overlay sample
 				if (WhichSample == 0 && OverlaySample == "") { 
 
 					pEffPlot->SetLineWidth(3);

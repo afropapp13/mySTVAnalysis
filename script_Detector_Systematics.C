@@ -28,10 +28,14 @@
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
+	gROOT->ProcessLine(".L MigrationMatrices.cpp++");
+
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
 		gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"\")");
+
+		gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"\")");
 
