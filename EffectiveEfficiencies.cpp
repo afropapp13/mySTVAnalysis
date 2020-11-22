@@ -66,6 +66,10 @@ void EffectiveEfficiencies(TString OverlaySample) {
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
 
+	PlotNames.push_back("VertexXPlot");
+	PlotNames.push_back("VertexYPlot");
+	PlotNames.push_back("VertexZPlot");
+
 	// -------------------------------------------------------------------------------------
 
 	const int N1DPlots = PlotNames.size();
