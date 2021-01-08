@@ -95,7 +95,7 @@ void IntegratedXSecs() {
 
 		// -------------------------------------------------------------------------------------------------------------------
 
-		// Open the files and grap the relevant plots
+		// Open the files and grab the relevant plots
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 

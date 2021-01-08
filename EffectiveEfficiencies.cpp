@@ -70,6 +70,8 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	PlotNames.push_back("VertexYPlot");
 	PlotNames.push_back("VertexZPlot");
 
+	PlotNames.push_back("EvPlot");
+
 	// -------------------------------------------------------------------------------------
 
 	const int N1DPlots = PlotNames.size();

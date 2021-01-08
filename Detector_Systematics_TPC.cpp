@@ -132,11 +132,11 @@ void Detector_Systematics_TPC() {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		TFile* NominalFile = TFile::Open(PathToFiles+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToFiles+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
+			FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();

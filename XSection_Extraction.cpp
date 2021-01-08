@@ -282,6 +282,8 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				double EffectiveEfficiencyXBin = PlotsTEfficiency[0][WhichPlot]->GetBinContent(WhichXBin+1);
 				double EffectiveEfficiencyXBinError = PlotsTEfficiency[0][WhichPlot]->GetBinError(WhichXBin+1);
 
+				if (EffectiveEfficiencyXBin == 0) { cout << "Bin with 0 efficiency" << endl; }
+
 				// -----------------------------------------------------------------------------------------------------------------
 
 				// ExtBNB
@@ -299,7 +301,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							     ) * ScalingFactor;
 							     
-				} else { cout << "ExtBNB bin with 0 efficiency" << endl; }
+				}
 
 				PlotsReco[2][WhichPlot]->SetBinContent(WhichXBin+1,ExtBNBScaledEntry);
 				PlotsReco[2][WhichPlot]->SetBinError(WhichXBin+1,ExtBNBScaledError);
@@ -321,7 +323,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							   ) * ScalingFactor;
 							   
-				} else { cout << "Dirt bin with 0 efficiency" << endl; }
+				}
 
 				PlotsReco[3][WhichPlot]->SetBinContent(WhichXBin+1,DirtScaledEntry);
 				PlotsReco[3][WhichPlot]->SetBinError(WhichXBin+1,DirtScaledError);
@@ -343,7 +345,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							  ) * ScalingFactor;
 
-				} else { cout << "Beam related Overlay Bkg bin with 0 efficiency" << endl; }
+				}
 
 				PlotsBkgReco[0][WhichPlot]->SetBinContent(WhichXBin+1,BkgScaledEntry);
 				PlotsBkgReco[0][WhichPlot]->SetBinError(WhichXBin+1,BkgScaledError);
@@ -365,7 +367,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							      ) * ScalingFactor;
 
-				}  else { cout << "Overlay bin with 0 efficiency" << endl; }
+				}
 
 				if (Subtract == "_BUnsubtracted") {
 
@@ -408,7 +410,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							   ) * ScalingFactor;
 							   
-				}  else { cout << "Beam On bin with 0 efficiency" << endl; }
+				}
 
 				double TotalDataScaledEntry = DataScaledEntry - ExtBNBScaledEntry - BkgScaledEntry - DirtScaledEntry; 
 				if (Subtract == "_BUnsubtracted") { TotalDataScaledEntry = DataScaledEntry - ExtBNBScaledEntry - DirtScaledEntry; }

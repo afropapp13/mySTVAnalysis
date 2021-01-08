@@ -59,7 +59,8 @@ void OverlayGenerators() {
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+//	Runs.push_back("Run1");
+	Runs.push_back("Run3");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -327,6 +328,10 @@ void OverlayGenerators() {
 
 			double tor860_wcut = -99.;
 			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
+			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
+			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
+			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
+			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 			TString Label = ToString(tor860_wcut)+" POT";
 
 			TLegendEntry* lGenie_GENIEv2 = leg->AddEntry(PlotsTrue[6][WhichPlot],"v2.12.10","l");

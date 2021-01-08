@@ -1,6 +1,6 @@
 export UserID=apapadop
 
-export UBCode=v08_00_00_43
+export UBCode=v08_00_00_52
 
 export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myXSec/$UBCode
 

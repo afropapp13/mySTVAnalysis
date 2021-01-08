@@ -163,18 +163,19 @@ void MigrationMatrices(TString OverlaySample) {
 	
 						if (NEventsInColumn > 0) {
 
+							double FracErr = Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1) /\
+									 Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+
 							// CV
+
 							double CV = double(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1))/\
 								    double(NEventsInColumn);
+
 							Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
 
 							// Error
-							double error = sqrt(
-							             TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/\
-							             double(NEventsInColumn),2.) +
-							             TMath::Power(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1) *\
-							             sqrt(NEventsInColumn)/double(NEventsInColumn*NEventsInColumn),2.)
-							);
+
+							double error = CV * TMath::Sqrt( TMath::Power(FracErr,2.) + 1./double(NEventsInColumn) );
 							
 							Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,error) ; 
 
@@ -227,11 +228,11 @@ void MigrationMatrices(TString OverlaySample) {
 	//			}
 
 				Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
-				FileMigrationMatrices->cd();
-				Plots[WhichSample][WhichPlot]->Write();
 				Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 				Plots[WhichSample][WhichPlot]->SetMarkerSize(1.5);
-				Plots[WhichSample][WhichPlot]->Draw("text colz");
+				Plots[WhichSample][WhichPlot]->Draw("text colz e");
+				FileMigrationMatrices->cd();
+				Plots[WhichSample][WhichPlot]->Write();
 
 				if (OverlaySample == "") {
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]

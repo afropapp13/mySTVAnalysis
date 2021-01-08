@@ -59,6 +59,10 @@ void Systematics() {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
+//	Runs.push_back("Run2");
+//	Runs.push_back("Run3");
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -157,7 +161,7 @@ void Systematics() {
 
 			// Systematic Uncertainties
 
-			TCanvas* PlotCanvasSyst = new TCanvas("Syst"+PlotNames[WhichPlot],"Syst"+PlotNames[WhichPlot],205,34,1024,768);
+			TCanvas* PlotCanvasSyst = new TCanvas("Syst"+PlotNames[WhichPlot]+Runs[WhichRun],"Syst"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
 			PlotCanvasSyst->cd();
 
 			TPad *midPadSyst = new TPad("midPadSyst", "",0.005, 0., 0.995, 0.995);
@@ -264,6 +268,10 @@ void Systematics() {
 
 			double tor860_wcut = -99.;
 			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
+			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
+			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
+			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
+			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 			TString Label = ToString(tor860_wcut)+" POT";
 
 			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
