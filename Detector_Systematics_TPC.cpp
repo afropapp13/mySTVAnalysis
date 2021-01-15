@@ -78,7 +78,6 @@ void Detector_Systematics_TPC() {
 
 		// To be removed when the rest of the runs are ready
 
-		if (Runs[WhichRun] == "Run1") { continue; }
 		if (Runs[WhichRun] == "Run2") { continue; }
 		if (Runs[WhichRun] == "Run4") { continue; }
 		if (Runs[WhichRun] == "Run5") { continue; }

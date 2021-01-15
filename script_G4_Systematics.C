@@ -16,10 +16,13 @@
 
 	gROOT->ProcessLine(".L EffectiveEfficiencies.cpp++");
 
-	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
-
 	gROOT->ProcessLine(".L MigrationMatrices.cpp++");
 
+	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
+
+//	gROOT->ProcessLine(".L FFEfficiencies.cpp++");
+
+//	gROOT->ProcessLine(".L FFXSection_Extraction.cpp++");
 
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 	
@@ -29,7 +32,11 @@
 
 			gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 
+//			gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
+
 			gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
+
+//			gROOT->ProcessLine("FFXSection_Extraction(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
 		}
 

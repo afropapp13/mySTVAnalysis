@@ -1,6 +1,4 @@
-export UserID=apapadop
-
-export UBCode=v08_00_00_52
+. ../myClasses/Constants.sh
 
 export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myEfficiencies/$UBCode
 
@@ -13,11 +11,7 @@ do
 
 	##############################################################################
 
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_Run1_${UBCode}.root ./myEfficiencies/$UBCode/
-	#scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_Run2_All_UBGenie_0_v08_00_00_43.root ./myEfficiencies/$UBCode/
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_Run3_${UBCode}.root ./myEfficiencies/$UBCode/
-	#scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_Run4_All_UBGenie_0_v08_00_00_43.root ./myEfficiencies/$UBCode/
-	#scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_Run5_All_UBGenie_0_v08_00_00_43.root ./myEfficiencies/$UBCode/
+	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_${RunNumber}_${UBCode}.root ./myEfficiencies/$UBCode/
 
 	##############################################################################
 

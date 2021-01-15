@@ -35,10 +35,18 @@ void MigrationMatrices(TString OverlaySample) {
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
+	// v52
+	VectorCuts.push_back("");
+	VectorCuts.push_back("_PID");
+	VectorCuts.push_back("_NuScore");
+
+	/*
+	// up to v43
 	VectorCuts.push_back("");
 	VectorCuts.push_back("_NuScore");
 	VectorCuts.push_back("_ThreePlaneLogChi2");
 	VectorCuts.push_back("_Collinearity");
+	*/
 
 	int NCuts = (int)(VectorCuts.size());	
 
@@ -78,7 +86,7 @@ void MigrationMatrices(TString OverlaySample) {
 	vector<TString> Runs;
 	Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
+	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
 

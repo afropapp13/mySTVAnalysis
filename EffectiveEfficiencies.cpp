@@ -41,9 +41,19 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
+
+	// v52
+	VectorCuts.push_back("");
+	VectorCuts.push_back("_PID");
+	VectorCuts.push_back("_NuScore");
+
+	/*
+	// up to v43
+	VectorCuts.push_back("");
 	VectorCuts.push_back("_NuScore");
 	VectorCuts.push_back("_ThreePlaneLogChi2");
 	VectorCuts.push_back("_Collinearity");
+	*/
 
 	int NCuts = (int)(VectorCuts.size());	
 	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
@@ -71,6 +81,11 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	PlotNames.push_back("VertexZPlot");
 
 	PlotNames.push_back("EvPlot");
+
+	PlotNames.push_back("MuonTrueMomentumLongitudinalRatio");
+	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
+	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
+	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
 
 	// -------------------------------------------------------------------------------------
 
@@ -101,11 +116,6 @@ void EffectiveEfficiencies(TString OverlaySample) {
 		if (Runs[WhichRun] == "Run2") { continue; }
 		if (Runs[WhichRun] == "Run4") { continue; }
 		if (Runs[WhichRun] == "Run5") { continue; }
-
-		if (Runs[WhichRun] == "Run1" && 
-			(OverlaySample == "_LYAttenuation" || OverlaySample == "_WireModX" || OverlaySample == "_WireModYZ" || 
-			OverlaySample == "_WireModThetaYZ" || OverlaySample == "_WireModThetaXZ" || OverlaySample == "_dEdx" || 
-			OverlaySample == "_Recombination2" || OverlaySample == "_SCE" ) ) { continue; }
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------

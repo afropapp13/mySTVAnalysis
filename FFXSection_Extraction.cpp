@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Constants;
 
-TString ToStringDouble(double num) {
+TString ToStringDoubleFF(double num) {
 
 	std::ostringstream start;
 	start << num;
@@ -30,7 +30,7 @@ TString ToStringDouble(double num) {
 
 }
 
-void XSection_Extraction(TString OverlaySample,int Universe = -1) {
+void FFXSection_Extraction(TString OverlaySample,int Universe = -1) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -178,7 +178,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileEfficienciesName = "FileEfficiences_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileEfficienciesName = "ForwardFoldEfficiences_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileEfficiences = new TFile(FileEfficienciesPath+FileEfficienciesName,"readonly");
 
 		const int NSamples = NameOfSamples.size();
@@ -512,7 +512,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				PlotsCC1pReco[0][WhichPlot]->Draw("e2");
 				
 				// Plot GENIE Overlay // Closure test
-				if (Subtract == "") { PlotsTrue[4][WhichPlot]->Draw("e same"); }												
+				//if (Subtract == "") { PlotsTrue[4][WhichPlot]->Draw("e same"); }												
 
 				// Plot BeamOn
 				PlotsReco[1][WhichPlot]->Draw("ex0 same");
@@ -525,13 +525,13 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				
 				if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
 
-				TString Label = ToStringDouble(tor860_wcut)+" POT";
+				TString Label = ToStringDoubleFF(tor860_wcut)+" POT";
 
 				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
 				lMC->SetTextColor(OverlayColor);
 
-				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune v1)","l");			
-				lGenie->SetTextColor(GenieColor);
+//				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune v1)","l");			
+//				lGenie->SetTextColor(GenieColor);
 
 				leg->Draw();	
 
@@ -539,7 +539,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				legData->Draw();
 			
 				TString CanvasPath = PlotPath+NameOfSamples[0];
-				TString FullCanvasName = "/XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				TString FullCanvasName = "/FFXSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				PlotCanvas->SaveAs(CanvasPath+FullCanvasName);
 
 				delete PlotCanvas;
@@ -558,7 +558,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 
 		// Store the extracted xsections
 
-		TString NameExtractedXSec = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[0]+"_"\
+		TString NameExtractedXSec = PathToExtractedXSec+"FFExtractedXSec_"+NameOfSamples[0]+"_"\
 			+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 

@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "ubana/myClasses/Constants.h"
+#include "../Secondary_Code/myFunctions.cpp"
 
 using namespace std;
 using namespace Constants;
@@ -30,20 +31,23 @@ void FFEfficiencies(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
-//	TString PathToFiles = "/uboone/data/users/"+UserID+"/myEvents/OutputFiles/"+UBCodeVersion;
-//	TString TrueSTVPath = PathToFiles+"/";
-//	TString EfficiencyPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myEfficiencies/"+UBCodeVersion+"/"; 
-//	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
-
-	// -------------------------------------------------------------------------------------
-
 	int NEventsPassingSelectionCuts = 0;
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
+
+	// v52
+	VectorCuts.push_back("");
+	VectorCuts.push_back("_PID");
+	VectorCuts.push_back("_NuScore");
+
+	/*
+	// up to v43
+	VectorCuts.push_back("");
 	VectorCuts.push_back("_NuScore");
 	VectorCuts.push_back("_ThreePlaneLogChi2");
 	VectorCuts.push_back("_Collinearity");
+	*/
 
 	int NCuts = (int)(VectorCuts.size());	
 	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
@@ -65,6 +69,12 @@ void FFEfficiencies(TString OverlaySample) {
 //	PlotNames.push_back("kMissPlot");
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
+
+//	PlotNames.push_back("VertexXPlot");
+//	PlotNames.push_back("VertexYPlot");
+//	PlotNames.push_back("VertexZPlot");
+
+//	PlotNames.push_back("EvPlot");
 
 	// -------------------------------------------------------------------------------------
 
@@ -96,16 +106,12 @@ void FFEfficiencies(TString OverlaySample) {
 		if (Runs[WhichRun] == "Run4") { continue; }
 		if (Runs[WhichRun] == "Run5") { continue; }
 
-		if (Runs[WhichRun] == "Run1" && 
-			(OverlaySample == "_LYAttenuation" || OverlaySample == "_WireModX" || OverlaySample == "_WireModYZ" || 
-			OverlaySample == "_WireModThetaYZ" || OverlaySample == "_WireModThetaXZ" || OverlaySample == "_dEdx" || 
-			OverlaySample == "_Recombination2" || OverlaySample == "_SCE" ) ) { continue; }
-
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 		vector<vector<TH1D*> > PlotsTrueReco; PlotsTrueReco.clear();
+		vector<vector<TH2D*> > PlotsMigrationMatrix; PlotsMigrationMatrix.clear();
 
 		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t");
 
@@ -152,6 +158,7 @@ void FFEfficiencies(TString OverlaySample) {
 
 			PlotsTrue.push_back(CurrentPlotsTrue);
 			PlotsTrueReco.push_back(CurrentPlotsTrueReco);
+			PlotsMigrationMatrix.push_back(CurrentMigrationMatrix);
 
 		}
 
@@ -171,8 +178,7 @@ void FFEfficiencies(TString OverlaySample) {
 
 				// Ratios to extract the forward folded efficiencies			
 
-				// this is the line that has to be replaced by the relevant new function
-				TH1D* pEffPlot = ForwardFold(PlotsTrue[WhichSample][WhichPlot],PlotsTrue[WhichSample][WhichPlot]);
+				TH1D* pEffPlot = ForwardFold(PlotsTrue[WhichSample][WhichPlot],PlotsTrueReco[WhichSample][WhichPlot],PlotsMigrationMatrix[WhichSample][WhichPlot]);
 
 				FileEfficiences->cd();
 				pEffPlot->Write();
@@ -199,10 +205,10 @@ void FFEfficiencies(TString OverlaySample) {
 					pEffPlot->GetYaxis()->SetNdivisions(6);
 					pEffPlot->GetYaxis()->SetTitleSize(TextSize);
 					pEffPlot->GetYaxis()->SetLabelSize(TextSize);
-					pEffPlot->GetYaxis()->SetTitle("Efficiency");
+					pEffPlot->GetYaxis()->SetTitle("FF Efficiency");
 					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
-					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot];
+					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"FFEff"+PlotNames[WhichPlot];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 					PlotEffCanvas->cd();
 					PlotEffCanvas->SetBottomMargin(0.16);
@@ -217,7 +223,7 @@ void FFEfficiencies(TString OverlaySample) {
 					textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasEffRatioName = "FFEff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 
 					delete PlotEffCanvas;
@@ -229,7 +235,7 @@ void FFEfficiencies(TString OverlaySample) {
 			FileEfficiences->Close();
 
 			std::cout << std::endl << "-----------------------------------------------------------------------" << std::endl << std::endl;
-			std::cout << std::endl << "Efficiency file " << Name << " created" << std::endl << std::endl;
+			std::cout << std::endl << "FF Efficiency file " << Name << " created" << std::endl << std::endl;
 			std::cout << std::endl << "-----------------------------------------------------------------------" << std::endl << std::endl;
 
 			FileSample[WhichSample]->Close();

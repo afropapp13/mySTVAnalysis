@@ -50,7 +50,7 @@ void Create2DPlots() {
 
 	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-		FileSample[WhichSample] = TFile::Open(PathToFiles+"/"+UBCodeVersion+"/CCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".root");
+		FileSample[WhichSample] = TFile::Open(PathToFiles+"/"+UBCodeVersion+"/STVAnalysis_"+NameOfSamples[WhichSample]+"_"+WhichRun+"_"+UBCodeVersion+".root");
 
 	}
 
@@ -81,7 +81,6 @@ void Create2DPlots() {
 			//PlotCanvas[WhichSample][WhichPlot]->SaveAs("/home/afroditi/Dropbox/Papers_Analyses/2019/TransverseVariables/Support/"
 			//	+PlotNames[WhichPlot]+NameOfSamples[WhichSample]+".pdf");
 			PlotCanvas[WhichSample][WhichPlot]->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/"+PlotNames[WhichPlot]+NameOfSamples[WhichSample]+LogScale+"_"+WhichRun+"_"+UBCodeVersion+".pdf");
-			PlotCanvas[WhichSample][WhichPlot]->SaveAs("./myPlots/eps/"+UBCodeVersion+"/"+PlotNames[WhichPlot]+NameOfSamples[WhichSample]+LogScale+"_"+WhichRun+"_"+UBCodeVersion+".eps");
 			//delete PlotCanvas[WhichSample][WhichPlot];
 
 		} // End of the loop over the plots
