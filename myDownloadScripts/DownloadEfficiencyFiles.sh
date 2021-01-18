@@ -2,7 +2,7 @@
 
 export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myEfficiencies/$UBCode
 
-declare -a arrRun=("Run1")
+declare -a arrRun=("Run1" "Run3")
 
 # Loop over the run numbers
 

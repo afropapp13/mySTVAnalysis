@@ -90,12 +90,13 @@ void MigrationMatrices(TString OverlaySample) {
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
 
-	int NRuns = (int)(Runs.size());
+	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	
 
 	// -------------------------------------------------------------------------------------
 
-	vector<TFile*> FileSample;
+	vector< vector<TFile*>> FileSample;
+	FileSample.resize(NSamples, vector<TFile*>(NRuns));
 	vector< vector <TH2D*> > Plots;
 	Plots.resize(NSamples, vector<TH2D*>(N2DPlots));
 
@@ -113,8 +114,8 @@ void MigrationMatrices(TString OverlaySample) {
 		
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
-			FileSample.push_back(TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+CutExtension+".root"));
+			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
+							  Runs[WhichRun]+OverlaySample+CutExtension+".root");
 
 		}
 
@@ -131,7 +132,7 @@ void MigrationMatrices(TString OverlaySample) {
 				
 				gStyle->SetMarkerSize(1.5);
 				gStyle->SetPaintTextFormat("4.2f");
-				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
+				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample][WhichRun]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
 				
 				Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
 				Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
@@ -154,6 +155,8 @@ void MigrationMatrices(TString OverlaySample) {
 
 				int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
 				int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();
+
+				Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);				
 
 				// Normalizing columns to 1
 

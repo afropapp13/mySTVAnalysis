@@ -14,6 +14,15 @@
 using namespace std;
 using namespace Constants;
 
+TString ToStringDouble(double num) {
+
+	std::ostringstream start;
+	start << num;
+	string start1 = start.str();
+	return start1;
+
+}
+
 void DataDistributions(TString BeamOnSample) {
 
 	// -------------------------------------------------------------------------------------
@@ -119,7 +128,7 @@ void DataDistributions(TString BeamOnSample) {
 			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot],PlotNames[WhichPlot],205,34,1024,768);
 			PlotCanvas->cd();
 
-			TLegend* leg = new TLegend(0.2,0.92,0.85,1.);
+			TLegend* leg = new TLegend(0.12,0.92,0.85,1.);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.07);
 			leg->SetTextFont(FontStyle);
@@ -145,11 +154,21 @@ void DataDistributions(TString BeamOnSample) {
 			
 			PlotsReco[WhichPlot]->Draw("ex0 same");
 
-			TString DataLabel = "MicroBooNE "+Runs[WhichRun]+" Data";
+			double tor860_wcut = -99.;
+				
+			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
+			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
+			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
+			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
+			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
+
+			TString Label = ToStringDouble(tor860_wcut)+" POT";
+
+			TString DataLabel = "MicroBooNE " + Runs[WhichRun] + " " + Label;
 			leg->AddEntry(PlotsReco[WhichPlot],DataLabel,"ep");
 			leg->Draw();		
 
-			PlotCanvas->SaveAs(PlotPath+"/"+NameOfSamples[0]+"/DataDistributions_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/DataDistributions_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			delete PlotCanvas;
 

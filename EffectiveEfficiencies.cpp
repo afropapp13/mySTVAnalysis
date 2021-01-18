@@ -23,7 +23,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
 	gStyle->SetOptStat(0);	
-	TGaxis::SetMaxDigits(3);
+	TGaxis::SetMaxDigits(4);
 	TGaxis::SetExponentOffset(-0.05, 0., "y");	
 	
 	double TextSize = 0.07;
@@ -96,10 +96,10 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-	Runs.push_back("Run2");
+//	Runs.push_back("Run2");
 	Runs.push_back("Run3");
-	Runs.push_back("Run4");
-	Runs.push_back("Run5");				
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -107,15 +107,6 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	// -------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
-
-		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
-		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// To be removed when all the runs / systematics will be ready to process
-
-		if (Runs[WhichRun] == "Run2") { continue; }
-		if (Runs[WhichRun] == "Run4") { continue; }
-		if (Runs[WhichRun] == "Run5") { continue; }
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -177,8 +168,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 				// Number of event distributions for True CC1p and Reco CC1p
 
-
-				if (WhichSample == 0 && OverlaySample == "") {
+/*				if (WhichSample == 0 && OverlaySample == "") {
 
 					PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
 					PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
@@ -238,6 +228,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					delete PlotCanvas;
 					
 				}
+*/
 
 				// ---------------------------------------------------------------------------------------------------------------------------	
 
@@ -261,7 +252,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					pEffPlot->GetXaxis()->SetTitle(PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetTitle());
 					pEffPlot->GetXaxis()->SetTitleSize(TextSize);
 					pEffPlot->GetXaxis()->SetLabelSize(TextSize);
-					pEffPlot->GetXaxis()->SetNdivisions(5);
+					pEffPlot->GetXaxis()->SetNdivisions(9);
 
 					pEffPlot->GetYaxis()->CenterTitle();
 					pEffPlot->GetYaxis()->SetTitleFont(FontStyle);
@@ -273,7 +264,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					pEffPlot->GetYaxis()->SetTitle("Efficiency");
 					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
-					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot];
+					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 					PlotEffCanvas->cd();
 					PlotEffCanvas->SetBottomMargin(0.16);

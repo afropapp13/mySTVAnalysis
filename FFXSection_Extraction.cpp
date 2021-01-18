@@ -524,13 +524,17 @@ void FFXSection_Extraction(TString OverlaySample,int Universe = -1) {
 				double tor860_wcut = -99.;
 				
 				if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
+				if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
+				if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
+				if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
+				if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 
 				TString Label = ToStringDoubleFF(tor860_wcut)+" POT";
 
 				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
 				lMC->SetTextColor(OverlayColor);
 
-//				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune v1)","l");			
+//				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune v2)","l");			
 //				lGenie->SetTextColor(GenieColor);
 
 				leg->Draw();	
