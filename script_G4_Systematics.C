@@ -30,7 +30,7 @@
 
 			gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
-			gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
+			gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
 //			gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 

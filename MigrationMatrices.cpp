@@ -123,40 +123,11 @@ void MigrationMatrices(TString OverlaySample) {
 
 			for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
 
-				TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
-						    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
-				PlotCanvas->cd();
-				PlotCanvas->SetBottomMargin(0.16);
-				PlotCanvas->SetLeftMargin(0.15);
-				PlotCanvas->SetRightMargin(0.12);				
-				
-				gStyle->SetMarkerSize(1.5);
-				gStyle->SetPaintTextFormat("4.2f");
+
 				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample][WhichRun]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
 				
-				Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-				Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-				Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-				Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);				
-				Plots[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
-				Plots[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
-				
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);				
-				Plots[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(5);
-				Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleOffset(1.);				
-								
-				Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-				Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
-				Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(5);				
-
 				int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
-				int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();
-
-				Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);				
+				int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();								
 
 				// Normalizing columns to 1
 
@@ -199,60 +170,60 @@ void MigrationMatrices(TString OverlaySample) {
 					}
 
 				}
-
-				// ---------------------------------------------------------------------------------------------
-
-				// Normalizing rows to 1
-
-	//			for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) {
-
-	//				int NEventsInRow = 0;
-
-	//				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
-
-	//					NEventsInRow += Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
-
-	//				}
-
-	//				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) {
-	//	
-	//					if (NEventsInRow > 0) {
-	//						// CV
-	//						double CV = Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1)/double(NEventsInRow);
-	//						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CV);
-	//	
-	//						// Error
-	//						double error = sqrt(
-	//						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1)/double(NEventsInRow),2.) +
-	//						TMath::Power(Plots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1) * sqrt(NEventsInRow)/double(NEventsInRow*NEventsInRow),2.)
-	//						);
-	//						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,error) ; 
-
-	//					} else { 
-
-	//						Plots[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.); 
-	//						Plots[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.); 
-	//					}
-
-	//				}
-
-	//			}
-
-				Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
-				Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
-				Plots[WhichSample][WhichPlot]->SetMarkerSize(1.5);
-				Plots[WhichSample][WhichPlot]->Draw("text colz e");
+				
 				FileMigrationMatrices->cd();
 				Plots[WhichSample][WhichPlot]->Write();
-
+				
+				// ---------------------------------------------------------------------------------------				
+	
 				if (OverlaySample == "") {
+		
+					TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
+							    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
+					PlotCanvas->cd();
+					PlotCanvas->SetBottomMargin(0.16);
+					PlotCanvas->SetLeftMargin(0.15);
+					PlotCanvas->SetRightMargin(0.12);				
+					
+					gStyle->SetMarkerSize(1.5);
+					gStyle->SetPaintTextFormat("4.2f");				
+					
+					Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+					Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+					Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
+					Plots[WhichSample][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);				
+					Plots[WhichSample][WhichPlot]->GetXaxis()->CenterTitle();
+					Plots[WhichSample][WhichPlot]->GetXaxis()->SetNdivisions(5);
+					
+					Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+					Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+					Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+					Plots[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);				
+					Plots[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
+					Plots[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(5);
+					Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleOffset(1.);				
+									
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(5);				
+
+					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
+
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
+					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
+					Plots[WhichSample][WhichPlot]->SetMarkerSize(1.5);
+					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
+					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
-					+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+					
+					delete PlotCanvas;				
+				 
 				}
 
-				delete PlotCanvas;
-
 			} // End of the loop over the plots
+			
+			FileSample[WhichSample][WhichRun]->Close();
 
 		} // End of the loop over the samples
 

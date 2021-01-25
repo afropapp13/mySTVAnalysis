@@ -11,7 +11,7 @@ do
 
 	##############################################################################
 
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/FileEfficiences_Overlay9_${RunNumber}_${UBCode}.root ./myEfficiencies/$UBCode/
+	scp $UserID@$UBgpvm:$OutPutDir/FileEfficiences_Overlay9_${RunNumber}_${UBCode}.root ./myEfficiencies/$UBCode/
 
 	##############################################################################
 

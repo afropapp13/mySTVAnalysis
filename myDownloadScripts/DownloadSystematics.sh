@@ -1,10 +1,8 @@
-export UserID=apapadop
-
-export UBCode=v08_00_00_52
+. ../myClasses/Constants.sh
 
 export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/mySystematics/$UBCode
 
-declare -a arrRun=("Run1")
+declare -a arrRun=("Run1" "Run3")
 
 # Loop over the run numbers
 
@@ -13,7 +11,7 @@ do
 
 	##############################################################################
 
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/*.root ./mySystematics/$UBCode/
+	scp $UserID@$UBgpvm:$OutPutDir/*.root ./mySystematics/$UBCode/
 
 	##############################################################################
 

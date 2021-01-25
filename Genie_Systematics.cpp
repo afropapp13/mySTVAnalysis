@@ -30,7 +30,7 @@ using namespace Constants;
 void Genie_Systematics() {
 
 	TH1D::SetDefaultSumw2();
-	TGaxis::SetMaxDigits(3);
+	TGaxis::SetMaxDigits(4);
 	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
 	vector<TString> PlotNames;
@@ -39,12 +39,6 @@ void Genie_Systematics() {
 	double TextSize = 0.07;
 	
 	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t");	
-	
-	// ---------------------------------------------------------------------------------------------------------------------------------------	
-
-//	TString PathToSystematics = "/uboone/data/users/"+UserID+"/mySTVAnalysis/mySystematics/"+UBCodeVersion+"/";
-//	TString PathToFiles = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myXSec/"+UBCodeVersion+"/";
-//	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -68,10 +62,10 @@ void Genie_Systematics() {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-	Runs.push_back("Run2");
+//	Runs.push_back("Run2");
 	Runs.push_back("Run3");
-	Runs.push_back("Run4");
-	Runs.push_back("Run5");				
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -92,7 +86,7 @@ void Genie_Systematics() {
 	EventWeightLabels.push_back("ThetaDelta2NRad_UBGenie"); NUniverses.push_back(LocalNUniverses);
 	EventWeightLabels.push_back("Theta_Delta2Npi_UBGenie"); NUniverses.push_back(LocalNUniverses);
 	EventWeightLabels.push_back("VecFFCCQEshape_UBGenie"); NUniverses.push_back(LocalNUniverses);
-//	EventWeightLabels.push_back("XSecShape_CCMEC_UBGenie"); NUniverses.push_back(LocalNUniverses); // buggy, to be added when the new tune arrives
+	EventWeightLabels.push_back("XSecShape_CCMEC_UBGenie"); NUniverses.push_back(LocalNUniverses);
 	EventWeightLabels.push_back("All_UBGenie"); NUniverses.push_back(100);		
 		
 	int NEventWeightLabels = EventWeightLabels.size();
@@ -102,15 +96,6 @@ void Genie_Systematics() {
 	cout << endl;
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
-
-		// ------------------------------------------------------------------------------------------------------------------
-		// ------------------------------------------------------------------------------------------------------------------
-
-		// To be removed when the resi of the runs are ready
-
-		if (Runs[WhichRun] == "Run2") { continue; }
-		if (Runs[WhichRun] == "Run4") { continue; }
-		if (Runs[WhichRun] == "Run5") { continue; }
 
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
@@ -151,7 +136,7 @@ void Genie_Systematics() {
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
 
-				FileSample.push_back(TFile::Open(PathToFiles+"/ExtractedXSec_Overlay9_"+\
+				FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+\
 						      Runs[WhichRun]+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 				vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
@@ -239,8 +224,8 @@ void Genie_Systematics() {
 					double LocalMax = PlotsReco[WhichSample][WhichPlot]->GetMaximum();
 					double LocalMin = PlotsReco[WhichSample][WhichPlot]->GetMinimum();				
 					max = TMath::Max(LocalMax,max);
-					min = TMath::Min(LocalMin,min);				
-					PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(0.7*min,1.2*max);
+					min = TMath::Min(LocalMin,0.);				
+					PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,1.2*max);
 
 					midPad->cd();
 					PlotsReco[WhichSample][WhichPlot]->Draw("hist p0 same");
@@ -279,7 +264,7 @@ void Genie_Systematics() {
 				if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 
 				TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" POT";
-				latex.DrawLatexNDC(0.45,0.78, Label);				
+				latex.DrawLatexNDC(0.45,0.75, "#splitline{"+Label+"}{"+ToString(NUniverses[WhichEventWeightLabel])+" Universes}");				
 
 				// -------------------------------------------------------------------------------------------------
 
@@ -340,6 +325,8 @@ void Genie_Systematics() {
 				
 				MeanStdleg->Draw("same");
 				
+				latex.DrawLatexNDC(0.45,0.75, "#splitline{"+Label+"}{#mu & #sigma Of Universes}");						
+				
 				MeanStdPlotCanvas->SaveAs(PlotPath+"BeamOn9/MeanSt_Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
 						   +Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+UBCodeVersion+".pdf");
 						   
@@ -398,7 +385,7 @@ void Genie_Systematics() {
 			
 		// Loop over the plots to store the relevant uncertainties in the file
 
-		TFile* OverlayFile = TFile::Open(PathToFiles+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[0]+"_"+UBCodeVersion+".root","readonly");
+		TFile* OverlayFile = TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[0]+"_"+UBCodeVersion+".root","readonly");
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 

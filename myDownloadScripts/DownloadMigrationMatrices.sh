@@ -2,7 +2,7 @@
 
 export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myMigrationMatrices/$UBCode
 
-declare -a arrRun=("Run1")
+declare -a arrRun=("Run1" "Run3")
 
 # Loop over the run numbers
 
@@ -11,7 +11,7 @@ do
 
 	##############################################################################
 
-	scp $UserID@uboonegpvm05.fnal.gov:$OutPutDir/*.root ./myMigrationMatrices/$UBCode/
+	scp $UserID@$UBgpvm:$OutPutDir/FileMigrationMatrices_Overlay9_${RunNumber}_${UBCode}.root ./myMigrationMatrices/$UBCode/
 
 	##############################################################################
 

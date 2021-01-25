@@ -204,7 +204,7 @@ void IntegratedXSecs() {
 
 			// GENIE v3.0.6 MicroBooNE Tune v1
 
-			cout << "    GENIE v3.0.6 MicroBooNE Tune v1 = " << IntegratedXSec(PlotsTrue[2][WhichPlot]) << endl;
+			cout << "    GENIE v3.0.6 MicroBooNE Tune v2 = " << IntegratedXSec(PlotsTrue[2][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
