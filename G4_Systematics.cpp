@@ -84,6 +84,12 @@ void G4_Systematics() {
 		
 	int NEventWeightLabels = EventWeightLabels.size();
 
+	// ------------------------------------------------------------------------------------------------------------------------------
+
+	// Covariance matrices for each run / EventWeight label / plot
+
+	std::vector< std::vector< std::vector<TH2D*> > > G4CovarianceMatrix; G4CovarianceMatrix.clear(); 
+
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
 	cout << endl;
@@ -104,6 +110,14 @@ void G4_Systematics() {
 		
 		std::vector< std::vector<double> > TotalSystXsecs;
 		TotalSystXsecs.resize(N1DPlots);
+
+		// ------------------------------------------------------------------------------------------------------------------
+
+		// Covariance matrices
+
+		std::vector< std::vector<TH2D*> > RunG4CovarianceMatrix; RunG4CovarianceMatrix.clear();
+
+		// ------------------------------------------------------------------------------------------------------------------
 		
 		for (int WhichEventWeightLabel = 0; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {
 		
@@ -145,6 +159,12 @@ void G4_Systematics() {
 
 			}
 
+			// ------------------------------------------------------------------------------------------------------------
+
+			// Covariance matrices
+
+			std::vector<TH2D*> LabelRunG4CovarianceMatrix; LabelRunG4CovarianceMatrix.clear();
+
 			// ----------------------------------------------------------------------------------------------------------------------------
 
 			// Loop over the plots
@@ -154,6 +174,17 @@ void G4_Systematics() {
 				// ----------------------------------------------------------------------------------------------------------------
 
 				int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
+
+				// ------------------------------------------------------------------------------------------------------
+
+				// Covariance matrix array for specific run / EventWeightLabel / plot
+
+				double ArrayXSecDiff[NBins][NBins];
+				// initialize 2D array to 0
+				// https://stackoverflow.com/questions/3082914/c-compile-error-variable-sized-object-may-not-be-initialized
+				memset( ArrayXSecDiff, 0, NBins*NBins*sizeof(double) );
+
+				// -----------------------------------------------------------------------------------------------------
 				
 				if (WhichEventWeightLabel == 0) { 
 					
@@ -231,15 +262,62 @@ void G4_Systematics() {
 					
 					if (WhichSample != 0) { 
 					
-						for (int WhichBin = 0; WhichBin < NBins; WhichBin++){
+						for (int WhichBin = 0; WhichBin < NBins; WhichBin++) {
+
+							// Covariance matrix elements
+							// MicroBooNE-doc-27009-v5
+
+							double CVSampleBin = PlotsReco[0][WhichPlot]->GetBinContent(WhichBin+1);
+							double VariationSampleBin = PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichBin+1);
+							double XSecDiffBin = CVSampleBin - VariationSampleBin;
 
 							ArrayBinXsecs[WhichBin].push_back(PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichBin+1));
 
+							// Covariance matrix
+							// Loop over all the other bin entries & take the relevant differences 
+
+							for (int WhichOtherBin = 0; WhichOtherBin < NBins; WhichOtherBin++) {
+
+								// Covariance Matrix
+								// Take the xsec difference in loop over other bins
+
+								double CVSampleOtherBin = PlotsReco[0][WhichPlot]->GetBinContent(WhichOtherBin+1);
+								double VariationSampleOtherBin = PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichOtherBin+1);
+								double XSecDiffOtherBin = CVSampleOtherBin - VariationSampleOtherBin;
+
+								// Multisim approach, don't forget to divide by the number of universes
+								double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin / double(LocalNUniverses);
+
+								ArrayXSecDiff[WhichBin][WhichOtherBin] += ArrayXSecDiffEntry;
+
+							}
+
 						}
 						
-					}
+					}  // 0th element is the reference plot, should not be included in the systematics
 
 				} // End of the loop over the variation samples 
+
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+
+				TString TMatrixName = "G4CoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
+				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,"",NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
+
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {
+
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
+
+						LocalMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,ArrayXSecDiff[WhichXBin][WhichYBin]);
+				
+					}
+
+				}	
+
+				LabelRunG4CovarianceMatrix.push_back( LocalMatrix );		
+
+				// -------------------------------------------------------------------------------------------
 
 				PlotsReco[0][WhichPlot]->Draw("hist p0 same");
 				leg->Draw();	
@@ -347,11 +425,24 @@ void G4_Systematics() {
 
 				}
 
+				// Covariance matrices
+
+				SystFile->cd();
+				LabelRunG4CovarianceMatrix[WhichPlot]->Write(TMatrixName);
+
 			} // End of the loop over the plots
+
+			// Covariance matrices
+			
+			RunG4CovarianceMatrix.push_back(LabelRunG4CovarianceMatrix);
 
 			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
 		
 		} // End of the loop over the EventWeight Label
+
+		// Covariance matrices		
+
+		G4CovarianceMatrix.push_back(RunG4CovarianceMatrix);
 		
 		// ----------------------------------------------------------------------------------------------------------------------------
 			
@@ -373,7 +464,18 @@ void G4_Systematics() {
 			}
 				
 			SystFile->cd();
-			SystPlot->Write(PlotNames[WhichPlot]);							
+			SystPlot->Write(PlotNames[WhichPlot]);	
+
+			// Covariance matrices	
+			// Sum of EventWeight labels
+
+			TH2D* OverallEventWeightCovMatrix = G4CovarianceMatrix[WhichRun][0][WhichPlot];
+
+			for (int WhichEventWeightLabel = 1; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {	
+
+				OverallEventWeightCovMatrix->Add(G4CovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot]) );
+
+			}						
 		
 		}
 		

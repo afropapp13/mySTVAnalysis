@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Constants;
 
-TString ToStringDouble(double num) {
+TString ToStringPOT(double num) {
 
 	std::ostringstream start;
 	start << num;
@@ -520,7 +520,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) {
 				if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
 				if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 
-				TString Label = ToStringDouble(tor860_wcut)+" POT";
+				TString Label = ToStringPOT(tor860_wcut)+" POT";
 
 				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
 				lMC->SetTextColor(OverlayColor);

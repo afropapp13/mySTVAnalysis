@@ -9,7 +9,7 @@
 #include <TMath.h>
 #include <TLatex.h>
 #include <TGaxis.h>
-#include <TMatrixD.h>
+#include <TMatrix.h>
 
 #include <iostream>
 #include <vector>
@@ -94,15 +94,13 @@ void Flux_Systematics() {
 		
 	const int NEventWeightLabels = EventWeightLabels.size();
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------------------
 
 	// Covariance matrices for each run / EventWeight label / plot
-	// Resize to number of runs
 
-	std::vector< std::vector< std::vector<TMatrixD*> > > FluxCovarianceMatrix; FluxCovarianceMatrix.clear(); 
-	FluxCovarianceMatrix.resize(NRuns);
+	std::vector< std::vector< std::vector<TH2D*> > > FluxCovarianceMatrix; FluxCovarianceMatrix.clear(); 
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------------------
 
 	cout << endl;
 
@@ -126,15 +124,14 @@ void Flux_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 
 		// Covariance matrices
-		// Resize to number of EventWeight labels
 
-		FluxCovarianceMatrix[WhichRun].resize(NEventWeightLabels);
+		std::vector< std::vector<TH2D*> > RunFluxCovarianceMatrix; RunFluxCovarianceMatrix.clear();
 
 		// ------------------------------------------------------------------------------------------------------------------
 		
 		for (int WhichEventWeightLabel = 0; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {
 
-			// ------------------------------------------------------------------------------------------------------------------
+			// -------------------------------------------------------------------------------------------------------------
 		
 			PlotsReco.clear();
 			NameOfSamples.clear();
@@ -174,28 +171,30 @@ void Flux_Systematics() {
 
 			}
 
-			// ------------------------------------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------------------------------
 
 			// Covariance matrices
-			// Resize to number of plots
 
-			FluxCovarianceMatrix[WhichRun][WhichEventWeightLabel].resize(N1DPlots);
+			std::vector<TH2D*> LabelRunFluxCovarianceMatrix; LabelRunFluxCovarianceMatrix.clear();
 
-			// ----------------------------------------------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------------------------------------------------------
 
 			// Loop over the plots
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-				const int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
+				int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
 
-				// ----------------------------------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------------------------
 
 				// Covariance matrix array for specific run / EventWeightLabel / plot
 
-				double ArrayXSecDiff[NBins][NBins] = {0.};
+				double ArrayXSecDiff[NBins][NBins];
+				// initialize 2D array to 0
+				// https://stackoverflow.com/questions/3082914/c-compile-error-variable-sized-object-may-not-be-initialized
+				memset( ArrayXSecDiff, 0, NBins*NBins*sizeof(double) );
 
-				// ----------------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------------
 				
 				if (WhichEventWeightLabel == 0) { 
 					
@@ -212,7 +211,7 @@ void Flux_Systematics() {
 				std::vector< std::vector<double> > ArrayBinXsecs;
 				ArrayBinXsecs.resize(NBins);
 
-				// ----------------------------------------------------------------------------------------------------------------------
+				// -------------------------------------------------------------------------------------------------------
 		
 				TString CanvasName = EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot]+Runs[WhichRun];
 				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
@@ -230,7 +229,7 @@ void Flux_Systematics() {
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(1);
 
-				// ------------------------------------------------------------------------------------------------------------------
+				// -------------------------------------------------------------------------------------------------
 
 				double max = -99.; 
 				double min = 1E3; 			
@@ -309,14 +308,26 @@ void Flux_Systematics() {
 
 				} // End of the loop over the variation samples 
 
-				// --------------------------------------------------------------------------------------------------------------------------------------------
+				// ----------------------------------------------------------------------------------------------------
 
 				// Covariance matrices
 
-				TString TMatrixDName = "FluxCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];
-				FluxCovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot] = new TMatrixD(NBins,NBins,ArrayXSecDiff);				
+				TString TMatrixName = "FluxCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
+				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,"",NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
 
-				// --------------------------------------------------------------------------------------------------------------------------------------------
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {
+
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
+
+						LocalMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,ArrayXSecDiff[WhichXBin][WhichYBin]);
+				
+					}
+
+				}	
+
+				LabelRunFluxCovarianceMatrix.push_back( LocalMatrix );		
+
+				// -------------------------------------------------------------------------------------------
 
 				PlotsReco[0][WhichPlot]->Draw("hist p0 same");
 				leg->Draw();	
@@ -345,7 +356,7 @@ void Flux_Systematics() {
 
 				delete PlotCanvas;
 
-				// -----------------------------------------------------------------------------------------------------------
+				// -------------------------------------------------------------------------------------------------
 				
 				// Now plot it using the mean and sigma on a bin by bin basis
 				
@@ -402,7 +413,7 @@ void Flux_Systematics() {
 						   
 				delete MeanStdPlotCanvas;		   
 						   
-				// -----------------------------------------------------------------------------------------------------------		
+				// --------------------------------------------------------------------------------------		
 
 				// Store the extracted systematic uncertainty for a given plot & for a given label
 				// by using the expression
@@ -424,18 +435,26 @@ void Flux_Systematics() {
 
 				}
 
+				// Covariance matrices
+
+				SystFile->cd();
+				LabelRunFluxCovarianceMatrix[WhichPlot]->Write(TMatrixName);
+
 			} // End of the loop over the plots
 
-			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
-
 			// Covariance matrices
+			
+			RunFluxCovarianceMatrix.push_back(LabelRunFluxCovarianceMatrix);
 
-			SystFile->cd();
-			FluxCovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot]->Write(TMatrixDName);
+			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
 		
 		} // End of the loop over the EventWeight Label
 		
-		// ----------------------------------------------------------------------------------------------------------------------------
+		// Covariance matrices		
+
+		FluxCovarianceMatrix.push_back(RunFluxCovarianceMatrix);		
+		
+		// -------------------------------------------------------------------------------------------------------------------
 			
 		// Loop over the plots to store the relevant uncertainties in the file
 
@@ -460,11 +479,12 @@ void Flux_Systematics() {
 			// Covariance matrices	
 			// Sum of EventWeight labels
 
-			TMatrixD* OverallEventWeightCovMatrix = FluxCovarianceMatrix[WhichRun][0][WhichPlot];
+			TH2D* OverallEventWeightCovMatrix = FluxCovarianceMatrix[WhichRun][0][WhichPlot];
 
 			for (int WhichEventWeightLabel = 1; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {	
 
-				OverallEventWeightCovMatrix += FluxCovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot];
+				OverallEventWeightCovMatrix->Add(FluxCovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot]) );
+
 			}							
 		
 		}
