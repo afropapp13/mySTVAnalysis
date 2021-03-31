@@ -31,15 +31,9 @@ void Detector_Systematics_TPC() {
 	TGaxis::SetMaxDigits(3);
 //	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
-	vector<TString> PlotNames;
+	vector<TString> PlotNames; 
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------	
-
-//	TString PathToSystematics = "/uboone/data/users/"+UserID+"/mySTVAnalysis/mySystematics/"+UBCodeVersion+"/";
-//	TString PathToFiles = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myXSec/"+UBCodeVersion+"/";
-//	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
-
-	// ---------------------------------------------------------------------------------------------------------------------------------------	
+	// -------------------------------------------------------------------------------------------------------------------------	
 
 	PlotNames.push_back("DeltaPTPlot"); 
 	PlotNames.push_back("DeltaAlphaTPlot"); 
@@ -57,37 +51,37 @@ void Detector_Systematics_TPC() {
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-	Runs.push_back("Run2");
+//	Runs.push_back("Run2");
 	Runs.push_back("Run3");
-	Runs.push_back("Run4");
-	Runs.push_back("Run5");				
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------
+
+	// Covariance matrices for each run / detector variation sample / plot
+
+	std::vector< std::vector< std::vector<TH2D*> > > DetTPCCovarianceMatrix; DetTPCCovarianceMatrix.clear(); 
+
+	// -----------------------------------------------------------------------------------------------------------------------
+
+	cout << endl;
+
+	// ----------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		// To be removed when the rest of the runs are ready
-
-		if (Runs[WhichRun] == "Run2") { continue; }
-		if (Runs[WhichRun] == "Run4") { continue; }
-		if (Runs[WhichRun] == "Run5") { continue; }
-
-		// ------------------------------------------------------------------------------------------------------------------
-		// ------------------------------------------------------------------------------------------------------------------
-
-		TFile* file = new TFile(PathToSystematics+"/Detector_Systematics_TPC_"+Runs[WhichRun]+".root","recreate");
-		TFile* fileCopy = nullptr;
-		if (Runs[WhichRun] == "Run3") { fileCopy = new TFile(PathToSystematics+"/Detector_Systematics_TPC_Run1.root","recreate");	}
+		TString FileName = PathToSystematics+"Detector_Systematics_TPC_"+Runs[WhichRun]+".root";
+		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
@@ -104,29 +98,25 @@ void Detector_Systematics_TPC() {
 		NameOfSamples.push_back("CV"); // Reference plot
 		Colors.push_back(kBlack); Markers.push_back(20);
 
-		// Detector Variations
+		// -------------------------------------------------------------------------------------------				
 
-		// Runs 1 & 3
+		// TPC Detector Variations
 
-//		NameOfSamples.push_back("LYDown"); Colors.push_back(kBlue); Markers.push_back(23);
-//		NameOfSamples.push_back("LYRayleigh"); Colors.push_back(kMagenta); Markers.push_back(29);
-		
-		// Run 3
+		NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
+		NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
+		NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
+		NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
+		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
+		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
+		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);
 
-		if (Runs[WhichRun] == "Run3") {	
+		// ----------------------------------------------------------------------------------------
 
-			NameOfSamples.push_back("LYAttenuation"); Colors.push_back(kGreen+2); Markers.push_back(22);
-			NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
-			NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
-			NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
-			NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
-	//		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
-			NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
-			NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);
+		// Covariance matrices
 
-		}	
+		std::vector< std::vector<TH2D*> > RunDetTPCCovarianceMatrix; RunDetTPCCovarianceMatrix.clear();
 
-		// ------------------------------------------------------------------------------------------------------------------				
+		// --------------------------------------------------------------------------------------------				
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -165,6 +155,12 @@ void Detector_Systematics_TPC() {
 		// Loop over the plots
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+			// -------------------------------------------------------------------------------------------------------
+
+			// Covariance matrices
+
+			std::vector<TH2D*> PlotRunDetTPCCovarianceMatrix; PlotRunDetTPCCovarianceMatrix.clear();
 
 			// ----------------------------------------------------------------------------------------------------------------
 
@@ -209,6 +205,17 @@ void Detector_Systematics_TPC() {
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
+				// ------------------------------------------------------------------------------------------------
+
+				// Covariance matrix array for specific run / detector variation sample / plot
+
+				double ArrayXSecDiff[NBins][NBins];
+				// initialize 2D array to 0
+				// https://stackoverflow.com/questions/3082914/c-compile-error-variable-sized-object-may-not-be-initialized
+				memset( ArrayXSecDiff, 0, NBins*NBins*sizeof(double) );
+
+				// -----------------------------------------------------------------------------------------------
+
 				MakeMyPlotPretty(PlotsReco[WhichSample][WhichPlot]);
 				PlotsReco[WhichSample][WhichPlot]->SetLineColor(Colors[WhichSample]);
 				PlotsReco[WhichSample][WhichPlot]->SetMarkerStyle(Markers[WhichSample]);
@@ -252,7 +259,69 @@ void Detector_Systematics_TPC() {
 					SystPlot->SetBinContent(WhichBin,CombinedBinContent);
 					SystPlot->SetBinError(WhichBin,0.);
 
+					// Covariance matrix
+					// Loop over all the other bin entries & take the relevant differences 
+
+					double XSecDiffBin = ( PlotsReco[0][WhichPlot]->GetBinContent(WhichBin) - PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichBin) ) / 2.;
+
+					for (int WhichOtherBin = 0; WhichOtherBin < NBins; WhichOtherBin++) {
+
+						// Covariance Matrix
+						// Take the xsec difference in loop over other bins
+
+						double CVSampleOtherBin = PlotsReco[0][WhichPlot]->GetBinContent(WhichOtherBin+1);
+						double VariationSampleOtherBin = PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichOtherBin+1);
+						double XSecDiffOtherBin = (CVSampleOtherBin - VariationSampleOtherBin) / 2.;
+
+						// Multisim approach, don't forget to divide by the number of universes
+						double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin;
+
+						ArrayXSecDiff[WhichBin-1][WhichOtherBin] += ArrayXSecDiffEntry;
+
+					}
+
 				}
+
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+
+				TString TMatrixName = "DetTPCCoveriantMatrix_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];	
+				TString CovTitleAndLabels = TString(PlotsReco[0][WhichPlot]->GetXaxis()->GetTitle())+" "+Runs[WhichRun]+";Bin # ;Bin #";
+				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
+
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {
+
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
+
+						LocalMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,ArrayXSecDiff[WhichXBin][WhichYBin]);
+					
+					}
+
+				}	
+
+				PlotRunDetTPCCovarianceMatrix.push_back( LocalMatrix );
+
+				SystFile->cd();
+				PlotRunDetTPCCovarianceMatrix[WhichSample]->Write(TMatrixName);
+
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+				// Store them in pdf format
+
+				TCanvas* PlotCov = new TCanvas("Cov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+				PlotCov->cd();
+				PlotCov->SetRightMargin(0.15);
+				PlotRunDetTPCCovarianceMatrix[WhichSample]->GetXaxis()->CenterTitle();
+				PlotRunDetTPCCovarianceMatrix[WhichSample]->GetYaxis()->CenterTitle();
+				PlotRunDetTPCCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
+				PlotRunDetTPCCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
+				PlotRunDetTPCCovarianceMatrix[WhichSample]->Draw("text coltz");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_DetTPC_"+PlotNames[WhichPlot]+"_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				delete PlotCov;
+
+				// -------------------------------------------------------------------------------------------
 
 			} // End of the loop over the detector variation samples 
 
@@ -289,19 +358,71 @@ void Detector_Systematics_TPC() {
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-			PlotCanvas->SaveAs(PlotPath+"BeamOn9/Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"BeamOn9/TPC_Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
-			//delete PlotCanvas;
+			delete PlotCanvas;
 
 			// -----------------------------------------------------------------------------------------------------------
 
 			// Store the extracted systematic uncertainty
 
-			file->cd();
+			SystFile->cd();
 			SystPlot->Write(PlotNames[WhichPlot]);
-			if (Runs[WhichRun] == "Run3") { fileCopy->cd(); SystPlot->Write(PlotNames[WhichPlot]); }
+
+			// ----------------------------------------------------------------------------------
+
+			// Covariance matrices
+
+			RunDetTPCCovarianceMatrix.push_back( PlotRunDetTPCCovarianceMatrix );
+
+			// Covariance matrices	
+			// Sum of detector variation contributions
+			// To obtain total covariance matrix
+
+			TString TMatrixName = "DetTPCCoveriantMatrix_"+Runs[WhichRun]+"_"+NameOfSamples[0]+"_"+PlotNames[WhichPlot];
+			TH2D* OverallTPCDetCovMatrix = (TH2D*)(SystFile->Get(TMatrixName));
+
+			for (int WhichSample = 1; WhichSample < NSamples; WhichSample ++) {	
+
+				TString LocalTMatrixName = "DetTPCCoveriantMatrix_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];	
+				TH2D* LocalDetTPCCovMatrix = (TH2D*)(SystFile->Get(LocalTMatrixName));
+				OverallTPCDetCovMatrix->Add(LocalDetTPCCovMatrix);
+
+			}	
+
+			OverallTPCDetCovMatrix->Write("OverallDetTPCCovMatrix_"+PlotNames[WhichPlot]);
+
+			// ----------------------------------------------------------------------------------------------------
+
+			// Overall Covariance matrix
+			// Store them in pdf format
+
+			TCanvas* OverallPlotCov = new TCanvas("OverallCov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+			OverallPlotCov->cd();
+			OverallPlotCov->SetRightMargin(0.15);
+			OverallTPCDetCovMatrix->GetXaxis()->CenterTitle();
+			OverallTPCDetCovMatrix->GetYaxis()->CenterTitle();
+			OverallTPCDetCovMatrix->SetMarkerColor(kWhite);
+			OverallTPCDetCovMatrix->SetMarkerSize(1.2);
+			OverallTPCDetCovMatrix->Draw("text coltz");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_DetTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			delete OverallPlotCov;
+
+			// ----------------------------------------------------------------------------------
 
 		} // End of the loop over the plots
+
+		// --------------------------------------------------------------------------------------------------------
+
+		// Covariance matrices
+			
+		DetTPCCovarianceMatrix.push_back(RunDetTPCCovarianceMatrix);
+
+		// ----------------------------------------------------------------------------------------------------
+
+		cout << endl << "Systematics file " << FileName << " has been created" << endl << endl;
+
+		// ----------------------------------------------------------------------------------------------------
 
 	} // End of the loop over the runs	
 

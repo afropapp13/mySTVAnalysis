@@ -22,6 +22,8 @@
 
 	// -----------------------------------------------------------------------------------------
 
+	gROOT->ProcessLine(".L StandardEfficiencies.cpp++");
+
 	gROOT->ProcessLine(".L EffectiveEfficiencies.cpp++");
 
 	gROOT->ProcessLine(".L MigrationMatrices.cpp++");

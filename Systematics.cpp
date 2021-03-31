@@ -277,7 +277,7 @@ void Systematics() {
 			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
 			lMC->SetTextColor(OverlayColor);
 
-			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[0][WhichPlot],"GENIE Overlay (uB Tune v1)","l");
+			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[0][WhichPlot],"GENIE Overlay (uB Tune v2)","l");
 			lGenie->SetTextColor(GenieColor);
 
 			leg->AddEntry(SystDataplot,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");

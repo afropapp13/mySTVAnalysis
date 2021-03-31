@@ -9,6 +9,14 @@ root -l Detector_Systematics.cpp
 
 root -l POT_Systematics.cpp
 
+# Plotting the nominal xsecs, adding the 1% NTarget uncertainty and storing the relevant systematics with respect to the CV sample
+
+root -l NTarget_Systematics.cpp
+
+# Covariance matrices only with diagonal elements filled with stat uncertainties
+
+root -l Stat_Systematics.cpp
+
 # Storing the GEANT4 uncertainties
 
 root -l G4_Systematics.cpp

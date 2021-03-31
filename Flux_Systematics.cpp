@@ -58,7 +58,7 @@ void Flux_Systematics() {
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
@@ -70,7 +70,7 @@ void Flux_Systematics() {
 	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 	
-	// ---------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------
 	
 	std::vector<int> NUniverses; NUniverses.clear();	
 		
@@ -182,6 +182,8 @@ void Flux_Systematics() {
 			// Loop over the plots
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+				// -----------------------------------------------------------------------------------------------------
 
 				int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
 
@@ -296,7 +298,7 @@ void Flux_Systematics() {
 								double XSecDiffOtherBin = CVSampleOtherBin - VariationSampleOtherBin;
 
 								// Multisim approach, don't forget to divide by the number of universes
-								double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin / double(LocalNUniverses);
+								double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin / double(NUniverses[WhichEventWeightLabel]);
 
 								ArrayXSecDiff[WhichBin][WhichOtherBin] += ArrayXSecDiffEntry;
 
@@ -313,7 +315,8 @@ void Flux_Systematics() {
 				// Covariance matrices
 
 				TString TMatrixName = "FluxCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
-				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,"",NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
+				TString CovTitleAndLabels = TString(PlotsReco[0][WhichPlot]->GetXaxis()->GetTitle())+" "+Runs[WhichRun]+";Bin # ;Bin #";
+				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
 
 				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {
 
@@ -435,24 +438,50 @@ void Flux_Systematics() {
 
 				}
 
+				// ----------------------------------------------------------------------------------
+
 				// Covariance matrices
 
 				SystFile->cd();
 				LabelRunFluxCovarianceMatrix[WhichPlot]->Write(TMatrixName);
 
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+				// Store them in pdf format
+
+				TCanvas* PlotCov = new TCanvas("Cov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+				PlotCov->cd();
+				PlotCov->SetRightMargin(0.15);
+				LabelRunFluxCovarianceMatrix[WhichPlot]->GetXaxis()->CenterTitle();
+				LabelRunFluxCovarianceMatrix[WhichPlot]->GetYaxis()->CenterTitle();
+				LabelRunFluxCovarianceMatrix[WhichPlot]->SetMarkerColor(kWhite);				
+				LabelRunFluxCovarianceMatrix[WhichPlot]->SetMarkerSize(1.2);
+				LabelRunFluxCovarianceMatrix[WhichPlot]->Draw("text coltz");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_Flux_"+PlotNames[WhichPlot]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				delete PlotCov;
+
+				// ----------------------------------------------------------------------------------
+
 			} // End of the loop over the plots
+
+			// --------------------------------------------------------------------------------------------------------
 
 			// Covariance matrices
 			
 			RunFluxCovarianceMatrix.push_back(LabelRunFluxCovarianceMatrix);
 
+			// ----------------------------------------------------------------------------------------------------
+
 			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
 		
 		} // End of the loop over the EventWeight Label
+
+		// -------------------------------------------------------------------------------------------------------------------
 		
 		// Covariance matrices		
 
-		FluxCovarianceMatrix.push_back(RunFluxCovarianceMatrix);		
+		FluxCovarianceMatrix.push_back(RunFluxCovarianceMatrix);	
 		
 		// -------------------------------------------------------------------------------------------------------------------
 			
@@ -468,7 +497,7 @@ void Flux_Systematics() {
 
 			for (int WhichBin = 1; WhichBin <= NBins; WhichBin++){
 
-				SystPlot->SetBinContent(WhichBin,TotalSystXsecs[WhichPlot][WhichBin]);
+				SystPlot->SetBinContent(WhichBin,TotalSystXsecs[WhichPlot][WhichBin-1]);
 				SystPlot->SetBinError(WhichBin,0);			
 
 			}
@@ -476,16 +505,42 @@ void Flux_Systematics() {
 			SystFile->cd();
 			SystPlot->Write(PlotNames[WhichPlot]);	
 
+			// ----------------------------------------------------------------------------------------------------
+
 			// Covariance matrices	
 			// Sum of EventWeight labels
+			// To obtain total covariance matrix
 
-			TH2D* OverallEventWeightCovMatrix = FluxCovarianceMatrix[WhichRun][0][WhichPlot];
+			TString TMatrixName = "FluxCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[0]+"_"+PlotNames[WhichPlot];	
+			TH2D* OverallEventWeightCovMatrix = (TH2D*)(SystFile->Get(TMatrixName));
 
 			for (int WhichEventWeightLabel = 1; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {	
 
-				OverallEventWeightCovMatrix->Add(FluxCovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot]) );
+				TString LocalTMatrixName = "FluxCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
+				TH2D* LocalEventWeightCovMatrix = (TH2D*)(SystFile->Get(LocalTMatrixName));
+				OverallEventWeightCovMatrix->Add(LocalEventWeightCovMatrix);
 
-			}							
+			}	
+
+			OverallEventWeightCovMatrix->Write("OverallFluxEventWeightCovMatrix_"+PlotNames[WhichPlot]);	
+
+			// ----------------------------------------------------------------------------------------------------
+
+			// Overall Covariance matrix
+			// Store them in pdf format
+
+			TCanvas* OverallPlotCov = new TCanvas("OverallCov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+			OverallPlotCov->cd();
+			OverallPlotCov->SetRightMargin(0.15);
+			OverallEventWeightCovMatrix->GetXaxis()->CenterTitle();
+			OverallEventWeightCovMatrix->GetYaxis()->CenterTitle();
+			OverallEventWeightCovMatrix->SetMarkerColor(kWhite);
+			OverallEventWeightCovMatrix->SetMarkerSize(1.2);
+			OverallEventWeightCovMatrix->Draw("text coltz");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_Flux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			delete OverallPlotCov;
+
+			// -------------------------------------------------------------------------					
 		
 		}
 		

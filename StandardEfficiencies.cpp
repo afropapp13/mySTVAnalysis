@@ -16,7 +16,7 @@
 using namespace std;
 using namespace Constants;
 
-void EffectiveEfficiencies(TString OverlaySample) {
+void StandardEfficiencies(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -39,6 +39,14 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	VectorCuts.push_back("");
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
+
+	/*
+	// up to v43
+	VectorCuts.push_back("");
+	VectorCuts.push_back("_NuScore");
+	VectorCuts.push_back("_ThreePlaneLogChi2");
+	VectorCuts.push_back("_Collinearity");
+	*/
 
 	int NCuts = (int)(VectorCuts.size());	
 	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
@@ -66,11 +74,12 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	PlotNames.push_back("VertexZPlot");
 
 	PlotNames.push_back("EvPlot");
+	PlotNames.push_back("NuPlot");
 
-	PlotNames.push_back("MuonTrueMomentumLongitudinalRatio");
-	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
-	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
-	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
+//	PlotNames.push_back("MuonTrueMomentumLongitudinalRatio");
+//	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
+//	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
+//	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
 
 	// -------------------------------------------------------------------------------------
 
@@ -129,7 +138,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 				TH1D* histTrue = (TH1D*)(TruthFileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 				CurrentPlotsTrue.push_back(histTrue);
 
-				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
+				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pTrue"+PlotNames[WhichPlot]));
 				CurrentPlotsTrueReco.push_back(histTrueReco);
 		
 			}
@@ -143,7 +152,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString EfficiencyName = "FileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
+			TString EfficiencyName = "FileStandardEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
 			Name = FileEfficienciesPath + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
 
@@ -246,10 +255,10 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					pEffPlot->GetYaxis()->SetNdivisions(6);
 					pEffPlot->GetYaxis()->SetTitleSize(TextSize);
 					pEffPlot->GetYaxis()->SetLabelSize(TextSize);
-					pEffPlot->GetYaxis()->SetTitle("Effective Efficiency");
+					pEffPlot->GetYaxis()->SetTitle("Efficiency");
 					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
-					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"StandardEff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 					PlotEffCanvas->cd();
 					PlotEffCanvas->SetBottomMargin(0.16);
@@ -264,7 +273,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasEffRatioName = "StandardEff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 
 					delete PlotEffCanvas;

@@ -59,7 +59,7 @@ void OverlayGenerators() {
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-//	Runs.push_back("Run1");
+	Runs.push_back("Run1");
 	Runs.push_back("Run3");
 
 	int NRuns = (int)(Runs.size());
@@ -229,7 +229,7 @@ void OverlayGenerators() {
 
 			// BeamOn Statistical Uncertainty
 
-			PlotsReco[0][WhichPlot]->SetLineWidth(5);
+			PlotsReco[0][WhichPlot]->SetLineWidth(2);
 			PlotsReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.5);

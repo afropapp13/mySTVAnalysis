@@ -24,7 +24,7 @@
 using namespace std;
 using namespace Constants;
 
-void POT_Systematics() {
+void NTarget_Systematics() {
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
@@ -63,7 +63,7 @@ void POT_Systematics() {
 
 	// Covariance matrices for each run / sample / plot
 
-	std::vector< std::vector< std::vector<TH2D*> > > POTCovarianceMatrix; POTCovarianceMatrix.clear(); 
+	std::vector< std::vector< std::vector<TH2D*> > > NTargetCovarianceMatrix; NTargetCovarianceMatrix.clear(); 
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ void POT_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = PathToSystematics+"POT_Systematics_"+Runs[WhichRun]+".root";
+		TString FileName = PathToSystematics+"NTarget_Systematics_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -116,7 +116,7 @@ void POT_Systematics() {
 
 		// Covariance matrices
 
-		std::vector< std::vector<TH2D*> > RunPOTCovarianceMatrix; RunPOTCovarianceMatrix.clear();
+		std::vector< std::vector<TH2D*> > RunNTargetCovarianceMatrix; RunNTargetCovarianceMatrix.clear();
 
 		// -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ void POT_Systematics() {
 
 			// Covariance matrices
 
-			std::vector<TH2D*> PlotRunPOTCovarianceMatrix; PlotRunPOTCovarianceMatrix.clear();
+			std::vector<TH2D*> PlotRunNTargetCovarianceMatrix; PlotRunNTargetCovarianceMatrix.clear();
 
 			// ----------------------------------------------------------------------------------------------------------------------------	
 
@@ -202,7 +202,7 @@ void POT_Systematics() {
 				max = TMath::Max(LocalMax,max);
 				PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(0,1.2*max);
 
-				// Add POT Uncertainty to the statistical one in quadrature
+				// Add NTarget Uncertainty to the statistical one in quadrature
 
 				TH1D* ClonePlot = (TH1D*)PlotsReco[0][WhichPlot]->Clone();
 
@@ -210,18 +210,18 @@ void POT_Systematics() {
 
 					double CurrentBinContent = PlotsReco[0][WhichPlot]->GetBinContent(WhichBin);
 					double CurrentBinError = PlotsReco[0][WhichPlot]->GetBinError(WhichBin);
-					double POTError = POTUncertainty*CurrentBinContent;
-					double TotalError = TMath::Sqrt( POTError*POTError + CurrentBinError*CurrentBinError );
+					double NTargetError = NTargetUncertainty*CurrentBinContent;
+					double TotalError = TMath::Sqrt( NTargetError*NTargetError + CurrentBinError*CurrentBinError );
 
 					ClonePlot->SetBinError(WhichBin,TotalError);
 
-					SystPlot->SetBinContent(WhichBin,POTError);
+					SystPlot->SetBinContent(WhichBin,NTargetError);
 					SystPlot->SetBinError(WhichBin,0.);
 
 					// Covariance matrix
-					// Uncorrelated POT systematic errors
+					// Uncorrelated NTarget systematic errors
 
-					ArrayXSecDiff[WhichBin-1][WhichBin-1] = TMath::Power(POTError,2.);
+					ArrayXSecDiff[WhichBin-1][WhichBin-1] = TMath::Power(NTargetError,2.);
 
 				}
 
@@ -237,7 +237,7 @@ void POT_Systematics() {
 
 				// Covariance matrices
 
-				TString TMatrixName = "POTCoveriantMatrix_"+Runs[WhichRun]+"_"+PlotNames[WhichPlot];	
+				TString TMatrixName = "NTargetCoveriantMatrix_"+Runs[WhichRun]+"_"+PlotNames[WhichPlot];	
 				TString CovTitleAndLabels = TString(PlotsReco[WhichSample][WhichPlot]->GetXaxis()->GetTitle())+" "+Runs[WhichRun]+";Bin # ;Bin #";
 				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
 
@@ -251,10 +251,10 @@ void POT_Systematics() {
 
 				}	
 
-				PlotRunPOTCovarianceMatrix.push_back( LocalMatrix );	
+				PlotRunNTargetCovarianceMatrix.push_back( LocalMatrix );	
 			
 				SystFile->cd();
-				PlotRunPOTCovarianceMatrix[WhichSample]->Write(TMatrixName);
+				PlotRunNTargetCovarianceMatrix[WhichSample]->Write(TMatrixName);
 
 				// ----------------------------------------------------------------------------------------------------
 
@@ -265,12 +265,12 @@ void POT_Systematics() {
 				PlotCov->cd();
 				gStyle->SetTitleFont(FontStyle,"t");
 				PlotCov->SetRightMargin(0.15);
-				PlotRunPOTCovarianceMatrix[WhichSample]->GetXaxis()->CenterTitle();
-				PlotRunPOTCovarianceMatrix[WhichSample]->GetYaxis()->CenterTitle();
-				PlotRunPOTCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
-				PlotRunPOTCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
-				PlotRunPOTCovarianceMatrix[WhichSample]->Draw("text coltz");
-				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_POT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				PlotRunNTargetCovarianceMatrix[WhichSample]->GetXaxis()->CenterTitle();
+				PlotRunNTargetCovarianceMatrix[WhichSample]->GetYaxis()->CenterTitle();
+				PlotRunNTargetCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
+				PlotRunNTargetCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
+				PlotRunNTargetCovarianceMatrix[WhichSample]->Draw("text coltz");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_NTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCov;
 
 				// ----------------------------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ void POT_Systematics() {
 			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
 			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
 
-			TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" POT";
+			TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" NTarget";
 
 			latex.DrawLatexNDC(0.63,0.94, Label);	
 
@@ -299,7 +299,7 @@ void POT_Systematics() {
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-			PlotCanvas->SaveAs(PlotPath+"BeamOn9/POT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"BeamOn9/NTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			delete PlotCanvas;
 
 			// ---------------------------------------------------------------------------------------------------------------------
@@ -313,7 +313,7 @@ void POT_Systematics() {
 
 			// Covariance matrices
 
-			RunPOTCovarianceMatrix.push_back(PlotRunPOTCovarianceMatrix);
+			RunNTargetCovarianceMatrix.push_back(PlotRunNTargetCovarianceMatrix);
 
 		} // End of the loop over the plots
 
@@ -325,7 +325,7 @@ void POT_Systematics() {
 
 		// Covariance matrices		
 
-		POTCovarianceMatrix.push_back(RunPOTCovarianceMatrix);	
+		NTargetCovarianceMatrix.push_back(RunNTargetCovarianceMatrix);	
 
 		// ----------------------------------------------------------------------------------
 

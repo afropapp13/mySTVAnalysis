@@ -91,6 +91,12 @@ void Genie_Systematics() {
 		
 	int NEventWeightLabels = EventWeightLabels.size();
 
+	// ------------------------------------------------------------------------------------------------------------------------------
+
+	// Covariance matrices for each run / EventWeight label / plot
+
+	std::vector< std::vector< std::vector<TH2D*> > > GenieCovarianceMatrix; GenieCovarianceMatrix.clear();
+
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
 	cout << endl;
@@ -111,6 +117,14 @@ void Genie_Systematics() {
 		
 		std::vector< std::vector<double> > TotalSystXsecs;
 		TotalSystXsecs.resize(N1DPlots);
+
+		// ------------------------------------------------------------------------------------------------------------------
+
+		// Covariance matrices
+
+		std::vector< std::vector<TH2D*> > RunGenieCovarianceMatrix; RunGenieCovarianceMatrix.clear();
+
+		// ------------------------------------------------------------------------------------------------------------------
 		
 		for (int WhichEventWeightLabel = 0; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {
 		
@@ -152,6 +166,12 @@ void Genie_Systematics() {
 
 			}
 
+			// ------------------------------------------------------------------------------------------------------------
+
+			// Covariance matrices
+
+			std::vector<TH2D*> LabelRunGenieCovarianceMatrix; LabelRunGenieCovarianceMatrix.clear();
+
 			// ----------------------------------------------------------------------------------------------------------------------------
 
 			// Loop over the plots
@@ -161,6 +181,17 @@ void Genie_Systematics() {
 				// ----------------------------------------------------------------------------------------------------------------
 
 				int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
+
+				// ------------------------------------------------------------------------------------------------------
+
+				// Covariance matrix array for specific run / EventWeightLabel / plot
+
+				double ArrayXSecDiff[NBins][NBins];
+				// initialize 2D array to 0
+				// https://stackoverflow.com/questions/3082914/c-compile-error-variable-sized-object-may-not-be-initialized
+				memset( ArrayXSecDiff, 0, NBins*NBins*sizeof(double) );
+
+				// ----------------------------------------------------------------------------------------------------------------
 				
 				if (WhichEventWeightLabel == 0) { 
 					
@@ -238,15 +269,91 @@ void Genie_Systematics() {
 					
 					if (WhichSample != 0) { 
 					
-						for (int WhichBin = 0; WhichBin < NBins; WhichBin++){
+						for (int WhichBin = 0; WhichBin < NBins; WhichBin++) {
 
-							ArrayBinXsecs[WhichBin].push_back(PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichBin+1));
+							// Covariance matrix elements
+							// MicroBooNE-doc-27009-v5
 
+							double CVSampleBin = PlotsReco[0][WhichPlot]->GetBinContent(WhichBin+1);
+							double VariationSampleBin = PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichBin+1);
+							double XSecDiffBin = CVSampleBin - VariationSampleBin;
+
+							ArrayBinXsecs[WhichBin].push_back(VariationSampleBin);
+
+							// Covariance matrix
+							// Loop over all the other bin entries & take the relevant differences 
+
+							// Multisim Technique
+							
+							if (EventWeightLabels[WhichEventWeightLabel] == "All_UBGenie") {
+
+								for (int WhichOtherBin = 0; WhichOtherBin < NBins; WhichOtherBin++) {
+
+									// Covariance Matrix
+									// Take the xsec difference in loop over other bins
+
+									double CVSampleOtherBin = PlotsReco[0][WhichPlot]->GetBinContent(WhichOtherBin+1);
+									double VariationSampleOtherBin = PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichOtherBin+1);
+									double XSecDiffOtherBin = CVSampleOtherBin - VariationSampleOtherBin;
+
+									// Multisim approach, don't forget to divide by the number of universes
+									double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin / double(NUniverses[WhichEventWeightLabel]);
+
+									ArrayXSecDiff[WhichBin][WhichOtherBin] += ArrayXSecDiffEntry;
+
+								}
+
+							} // End of multisim technique
+
+							// Unisim technique
+
+							else {
+
+								for (int WhichOtherBin = 0; WhichOtherBin < NBins; WhichOtherBin++) {
+
+									// Covariance Matrix
+									// Take the xsec difference in loop over other bins
+
+									double CVSampleOtherBin = PlotsReco[0][WhichPlot]->GetBinContent(WhichOtherBin+1);
+									double VariationSampleOtherBin = PlotsReco[WhichSample][WhichPlot]->GetBinContent(WhichOtherBin+1);
+									double XSecDiffOtherBin = CVSampleOtherBin - VariationSampleOtherBin;
+
+									// Multisim approach, don't forget to divide by the number of universes
+									double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin;
+
+									ArrayXSecDiff[WhichBin][WhichOtherBin] += ArrayXSecDiffEntry;
+
+								}
+
+							} // End of unisim technique
+						
 						}
 						
-					}
+					} // 0th element is the reference plot, should not be included in the systematics
 
 				} // End of the loop over the variation samples 
+
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+
+				TString TMatrixName = "GenieCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
+				TString CovTitleAndLabels = TString(PlotsReco[0][WhichPlot]->GetXaxis()->GetTitle())+" "+Runs[WhichRun]+";Bin # ;Bin #";
+				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
+
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {
+
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
+
+						LocalMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,ArrayXSecDiff[WhichXBin][WhichYBin]);
+				
+					}
+
+				}	
+
+				LabelRunGenieCovarianceMatrix.push_back( LocalMatrix );		
+
+				// -------------------------------------------------------------------------------------------
 
 				PlotsReco[0][WhichPlot]->Draw("hist p0 same");
 				leg->Draw();	
@@ -375,13 +482,52 @@ void Genie_Systematics() {
 
 				} // End of loop over plot bins
 
+				// ----------------------------------------------------------------------------------
+
+				// Covariance matrices
+
+				SystFile->cd();
+				LabelRunGenieCovarianceMatrix[WhichPlot]->Write(TMatrixName);
+
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+				// Store them in pdf format
+
+				TCanvas* PlotCov = new TCanvas("Cov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+				PlotCov->cd();
+				PlotCov->SetRightMargin(0.15);
+				LabelRunGenieCovarianceMatrix[WhichPlot]->GetXaxis()->CenterTitle();
+				LabelRunGenieCovarianceMatrix[WhichPlot]->GetYaxis()->CenterTitle();
+				LabelRunGenieCovarianceMatrix[WhichPlot]->SetMarkerColor(kWhite);				
+				LabelRunGenieCovarianceMatrix[WhichPlot]->SetMarkerSize(1.2);
+				LabelRunGenieCovarianceMatrix[WhichPlot]->Draw("text coltz");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_Genie_"+PlotNames[WhichPlot]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				delete PlotCov;
+
+				// ----------------------------------------------------------------------------------
+
 			} // End of the loop over the plots
+
+			// --------------------------------------------------------------------------------------------------------------
+
+			// Covariance matrices
+			
+			RunGenieCovarianceMatrix.push_back(LabelRunGenieCovarianceMatrix);
+
+			// -------------------------------------------------------------------------------------------------------------
 
 			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
 		
 		} // End of the loop over the EventWeight Label
 		
-		// ----------------------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------------
+		
+		// Covariance matrices		
+
+		GenieCovarianceMatrix.push_back(RunGenieCovarianceMatrix);	
+		
+		// -------------------------------------------------------------------------------------------------------------------
 			
 		// Loop over the plots to store the relevant uncertainties in the file
 
@@ -395,13 +541,50 @@ void Genie_Systematics() {
 
 			for (int WhichBin = 1; WhichBin <= NBins; WhichBin++){
 
-				SystPlot->SetBinContent(WhichBin,TotalSystXsecs[WhichPlot][WhichBin]);
+				SystPlot->SetBinContent(WhichBin,TotalSystXsecs[WhichPlot][WhichBin-1]);
 				SystPlot->SetBinError(WhichBin,0);			
 
 			}
 			
 			SystFile->cd();
-			SystPlot->Write(PlotNames[WhichPlot]);							
+			SystPlot->Write(PlotNames[WhichPlot]);	
+
+			// ----------------------------------------------------------------------------------------------------
+
+			// Covariance matrices	
+			// Sum of EventWeight labels
+			// To obtain total covariance matrix
+
+			TString TMatrixName = "GenieCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[0]+"_"+PlotNames[WhichPlot];	
+			TH2D* OverallEventWeightCovMatrix = (TH2D*)(SystFile->Get(TMatrixName));
+
+			for (int WhichEventWeightLabel = 1; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {	
+
+				TString LocalTMatrixName = "GenieCoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
+				TH2D* LocalEventWeightCovMatrix = (TH2D*)(SystFile->Get(LocalTMatrixName));
+				OverallEventWeightCovMatrix->Add(LocalEventWeightCovMatrix);
+
+			}	
+
+			OverallEventWeightCovMatrix->Write("OverallGenieEventWeightCovMatrix_"+PlotNames[WhichPlot]);	
+
+			// ----------------------------------------------------------------------------------------------------
+
+			// Overall Covariance matrix
+			// Store them in pdf format
+
+			TCanvas* OverallPlotCov = new TCanvas("OverallCov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+			OverallPlotCov->cd();
+			OverallPlotCov->SetRightMargin(0.15);
+			OverallEventWeightCovMatrix->GetXaxis()->CenterTitle();
+			OverallEventWeightCovMatrix->GetYaxis()->CenterTitle();
+			OverallEventWeightCovMatrix->SetMarkerColor(kWhite);
+			OverallEventWeightCovMatrix->SetMarkerSize(1.2);
+			OverallEventWeightCovMatrix->Draw("text coltz");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_Genie_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			delete OverallPlotCov;
+
+			// -------------------------------------------------------------------------
 		
 		}
 		

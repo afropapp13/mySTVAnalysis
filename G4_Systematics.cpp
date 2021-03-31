@@ -90,7 +90,7 @@ void G4_Systematics() {
 
 	std::vector< std::vector< std::vector<TH2D*> > > G4CovarianceMatrix; G4CovarianceMatrix.clear(); 
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------------
 
 	cout << endl;
 
@@ -165,17 +165,17 @@ void G4_Systematics() {
 
 			std::vector<TH2D*> LabelRunG4CovarianceMatrix; LabelRunG4CovarianceMatrix.clear();
 
-			// ----------------------------------------------------------------------------------------------------------------------------
+			// -------------------------------------------------------------------------------------------------------
 
 			// Loop over the plots
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-				// ----------------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------
 
 				int NBins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
 
-				// ------------------------------------------------------------------------------------------------------
+				// -------------------------------------------------------------------------------------------------
 
 				// Covariance matrix array for specific run / EventWeightLabel / plot
 
@@ -184,7 +184,7 @@ void G4_Systematics() {
 				// https://stackoverflow.com/questions/3082914/c-compile-error-variable-sized-object-may-not-be-initialized
 				memset( ArrayXSecDiff, 0, NBins*NBins*sizeof(double) );
 
-				// -----------------------------------------------------------------------------------------------------
+				// ---------------------------------------------------------------------------------------------------
 				
 				if (WhichEventWeightLabel == 0) { 
 					
@@ -201,7 +201,7 @@ void G4_Systematics() {
 				std::vector< std::vector<double> > ArrayBinXsecs;
 				ArrayBinXsecs.resize(NBins);
 
-				// ----------------------------------------------------------------------------------------------------------------------
+				// ---------------------------------------------------------------------------------------------
 		
 				TCanvas* PlotCanvas = new TCanvas(EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot]+Runs[WhichRun],\
 							EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
@@ -219,7 +219,7 @@ void G4_Systematics() {
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(1);
 
-				// ------------------------------------------------------------------------------------------------------------------
+				// -----------------------------------------------------------------------------------------------
 
 				double max = -99.; 
 				double min = 1E3; 			
@@ -286,7 +286,7 @@ void G4_Systematics() {
 								double XSecDiffOtherBin = CVSampleOtherBin - VariationSampleOtherBin;
 
 								// Multisim approach, don't forget to divide by the number of universes
-								double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin / double(LocalNUniverses);
+								double ArrayXSecDiffEntry = XSecDiffBin * XSecDiffOtherBin / double(NUniverses[WhichEventWeightLabel]);
 
 								ArrayXSecDiff[WhichBin][WhichOtherBin] += ArrayXSecDiffEntry;
 
@@ -303,7 +303,9 @@ void G4_Systematics() {
 				// Covariance matrices
 
 				TString TMatrixName = "G4CoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
-				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,"",NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
+				TString CovTitleAndLabels = TString(PlotsReco[0][WhichPlot]->GetXaxis()->GetTitle())+" "+Runs[WhichRun]+";Bin # ;Bin #";
+				TH2D* LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5);
+
 
 				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {
 
@@ -346,7 +348,7 @@ void G4_Systematics() {
 
 				delete PlotCanvas;
 
-				// -----------------------------------------------------------------------------------------------------------
+				// ---------------------------------------------------------------------------------------------------
 				
 				// Now plot it using the mean and sigma on a bin by bin basis
 				
@@ -403,7 +405,7 @@ void G4_Systematics() {
 						   
 				delete MeanStdPlotCanvas;		   
 						   
-				// -----------------------------------------------------------------------------------------------------------		
+				// ---------------------------------------------------------------------------------------		
 
 				// Store the extracted systematic uncertainty for a given plot & for a given label
 				// by using the expression
@@ -425,26 +427,50 @@ void G4_Systematics() {
 
 				}
 
+				// ----------------------------------------------------------------------------------
+
 				// Covariance matrices
 
 				SystFile->cd();
 				LabelRunG4CovarianceMatrix[WhichPlot]->Write(TMatrixName);
 
+				// ----------------------------------------------------------------------------------------------------
+
+				// Covariance matrices
+				// Store them in pdf format
+
+				TCanvas* PlotCov = new TCanvas("Cov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+				PlotCov->cd();
+				PlotCov->SetRightMargin(0.15);
+				LabelRunG4CovarianceMatrix[WhichPlot]->GetXaxis()->CenterTitle();
+				LabelRunG4CovarianceMatrix[WhichPlot]->GetYaxis()->CenterTitle();
+				LabelRunG4CovarianceMatrix[WhichPlot]->SetMarkerColor(kWhite);				
+				LabelRunG4CovarianceMatrix[WhichPlot]->SetMarkerSize(1.2);
+				LabelRunG4CovarianceMatrix[WhichPlot]->Draw("text coltz");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_G4_"+PlotNames[WhichPlot]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				delete PlotCov;
+
 			} // End of the loop over the plots
+
+			// ----------------------------------------------------------------------------------
 
 			// Covariance matrices
 			
 			RunG4CovarianceMatrix.push_back(LabelRunG4CovarianceMatrix);
 
 			for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }	
+
+			// ----------------------------------------------------------------------------------
 		
 		} // End of the loop over the EventWeight Label
+
+		// ----------------------------------------------------------------------------------------------------------------
 
 		// Covariance matrices		
 
 		G4CovarianceMatrix.push_back(RunG4CovarianceMatrix);
 		
-		// ----------------------------------------------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------
 			
 		// Loop over the plots to store the relevant uncertainties in the file
 
@@ -458,7 +484,7 @@ void G4_Systematics() {
 
 			for (int WhichBin = 1; WhichBin <= NBins; WhichBin++){
 
-				SystPlot->SetBinContent(WhichBin,TotalSystXsecs[WhichPlot][WhichBin]);
+				SystPlot->SetBinContent(WhichBin,TotalSystXsecs[WhichPlot][WhichBin-1]);
 				SystPlot->SetBinError(WhichBin,0);			
 
 			}
@@ -466,16 +492,42 @@ void G4_Systematics() {
 			SystFile->cd();
 			SystPlot->Write(PlotNames[WhichPlot]);	
 
+			// ----------------------------------------------------------------------------------------------------
+
 			// Covariance matrices	
 			// Sum of EventWeight labels
+			// To obtain total covariance matrix
 
-			TH2D* OverallEventWeightCovMatrix = G4CovarianceMatrix[WhichRun][0][WhichPlot];
+			TString TMatrixName = "G4CoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[0]+"_"+PlotNames[WhichPlot];	
+			TH2D* OverallEventWeightCovMatrix = (TH2D*)(SystFile->Get(TMatrixName));
 
 			for (int WhichEventWeightLabel = 1; WhichEventWeightLabel < NEventWeightLabels; WhichEventWeightLabel ++) {	
 
-				OverallEventWeightCovMatrix->Add(G4CovarianceMatrix[WhichRun][WhichEventWeightLabel][WhichPlot]) );
+				TString LocalTMatrixName = "G4CoveriantMatrix_"+Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+PlotNames[WhichPlot];	
+				TH2D* LocalEventWeightCovMatrix = (TH2D*)(SystFile->Get(LocalTMatrixName));
+				OverallEventWeightCovMatrix->Add(LocalEventWeightCovMatrix);
 
-			}						
+			}	
+
+			OverallEventWeightCovMatrix->Write("OverallG4EventWeightCovMatrix_"+PlotNames[WhichPlot]);
+
+			// ----------------------------------------------------------------------------------------------------
+
+			// Overall Covariance matrix
+			// Store them in pdf format
+
+			TCanvas* OverallPlotCov = new TCanvas("OverallCov"+PlotNames[WhichPlot]+Runs[WhichRun],"Cov"+PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+			OverallPlotCov->cd();
+			OverallPlotCov->SetRightMargin(0.15);
+			OverallEventWeightCovMatrix->GetXaxis()->CenterTitle();
+			OverallEventWeightCovMatrix->GetYaxis()->CenterTitle();
+			OverallEventWeightCovMatrix->SetMarkerColor(kWhite);
+			OverallEventWeightCovMatrix->SetMarkerSize(1.2);
+			OverallEventWeightCovMatrix->Draw("text coltz");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_G4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			delete OverallPlotCov;
+
+			// --------------------------------------------------------------------------------			
 		
 		}
 		
