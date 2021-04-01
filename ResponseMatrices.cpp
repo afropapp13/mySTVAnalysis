@@ -34,14 +34,6 @@ void ResponseMatrices(TString OverlaySample) {
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
 
-	/*
-	// up to v43
-	VectorCuts.push_back("");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_Collinearity");
-	*/
-
 	int NCuts = (int)(VectorCuts.size());	
 
 	for (int i = 0; i < NCuts; i++) {
@@ -204,7 +196,7 @@ void ResponseMatrices(TString OverlaySample) {
 
 					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
 
-					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,0.5);
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,0.3);
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(1.5);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 

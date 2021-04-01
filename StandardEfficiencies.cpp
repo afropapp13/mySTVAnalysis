@@ -76,10 +76,10 @@ void StandardEfficiencies(TString OverlaySample) {
 	PlotNames.push_back("EvPlot");
 	PlotNames.push_back("NuPlot");
 
-//	PlotNames.push_back("MuonTrueMomentumLongitudinalRatio");
-//	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
-//	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
-//	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
+	PlotNames.push_back("MuonTrueMomentumLongitudinalRatio");
+	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
+	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
+	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
 
 	// -------------------------------------------------------------------------------------
 
@@ -270,7 +270,7 @@ void StandardEfficiencies(TString OverlaySample) {
 					TLatex *textEff = new TLatex();
 					textEff->SetTextFont(FontStyle);
 					textEff->SetTextSize(TextSize);
-					textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
+					textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "StandardEff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";

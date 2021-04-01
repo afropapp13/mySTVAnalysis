@@ -21,6 +21,8 @@ void script_CV() {
 
 	gROOT->ProcessLine(".L ResponseMatrices.cpp++");
 
+	gROOT->ProcessLine(".L CovarianceMatrices.cpp++");
+
 //	gROOT->ProcessLine(".L FFEfficiencies.cpp++");
 
 	gROOT->ProcessLine(".L DataDistributions.cpp++");
@@ -31,13 +33,15 @@ void script_CV() {
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("StarndardEfficiencies(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("StandardEfficiencies(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\")");
+
+		gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
 //		gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"\")");
 

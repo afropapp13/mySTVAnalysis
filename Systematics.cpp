@@ -88,6 +88,7 @@ void Systematics() {
 		NameOfSamples.push_back("Detector_Systematics_LY");
 		NameOfSamples.push_back("Detector_Systematics_TPC");
 		NameOfSamples.push_back("POT_Systematics");
+		NameOfSamples.push_back("NTarget_Systematics");
 		NameOfSamples.push_back("G4_Systematics");
 		NameOfSamples.push_back("Flux_Systematics");
 		NameOfSamples.push_back("Genie_Systematics");		

@@ -20,6 +20,10 @@
 
 	gROOT->ProcessLine(".L MigrationMatrices.cpp++");
 
+	gROOT->ProcessLine(".L ResponseMatrices.cpp++");
+
+	gROOT->ProcessLine(".L CovarianceMatrices.cpp++");
+
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
 //	gROOT->ProcessLine(".L FFEfficiencies.cpp++");
@@ -28,11 +32,17 @@
 
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 	
-		for (int k = 0; k < Universes[i]; k++) {		
+		for (int k = 0; k < Universes[i]; k++) {
+
+			gROOT->ProcessLine("StandardEfficiencies(\""+WhichSampleArray[i]+"\")");		
 
 			gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
 			gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
+
+			gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\")");
+
+			gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
 //			gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 

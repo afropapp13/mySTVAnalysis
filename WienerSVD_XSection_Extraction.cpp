@@ -30,7 +30,7 @@ TString ToStringPOT(double num) {
 
 }
 
-void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe != -1 ONLY for the flux systematics
+void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe != -1 ONLY for the flux systematics
 
 	// -------------------------------------------------------------------------------------
 

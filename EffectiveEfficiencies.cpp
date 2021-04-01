@@ -261,7 +261,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					TLatex *textEff = new TLatex();
 					textEff->SetTextFont(FontStyle);
 					textEff->SetTextSize(TextSize);
-					textEff->DrawTextNDC(0.2, 0.8, Runs[WhichRun]);
+					textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
