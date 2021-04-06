@@ -10,6 +10,8 @@
 #include <TMath.h>
 #include <TLatex.h>
 #include <TLine.h>
+#include <TMatrixD.h>
+#include <TVectorD.h>
 
 #include <iostream>
 #include <vector>
@@ -17,9 +19,13 @@
 #include <string>
 
 #include "ubana/myClasses/Constants.h"
+#include "ubana/myClasses/Util.h"
+#include "ubana/myClasses/WienerSVD.h"
 
 using namespace std;
 using namespace Constants;
+
+// -------------------------------------------------------------------------------------------------------------------------------------
 
 TString ToStringPOT(double num) {
 
@@ -30,7 +36,31 @@ TString ToStringPOT(double num) {
 
 }
 
-void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe != -1 ONLY for the flux systematics
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+void Reweight(TH1D* h, double SF = 1.) {
+
+	int NBins = h->GetXaxis()->GetNbins();
+
+	for (int i = 0; i < NBins; i++) {
+
+		double CurrentEntry = h->GetBinContent(i+1);
+		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1);
+
+		double CurrentError = h->GetBinError(i+1);
+		double NewError = CurrentError * SF / h->GetBinWidth(i+1);
+
+		h->SetBinContent(i+1,NewEntry); 
+		h->SetBinError(i+1,NewError); 
+//		h->SetBinError(i+1,0.000001); 
+
+	}
+
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+void WienerSVD_XSection_Extraction(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -55,14 +85,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
 
-	/*
-	// up to v43
-	VectorCuts.push_back("");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_Collinearity");
-	*/
-
 	int NCuts = (int)(VectorCuts.size());	
 
 	for (int i = 0; i < NCuts; i++) {
@@ -74,20 +96,20 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 	// -------------------------------------------------------------------------------------
 
 	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
-	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
-	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot");
-//	PlotNames.push_back("EQEPlot"); 
-//	PlotNames.push_back("Q2Plot");
-//	PlotNames.push_back("kMissPlot");
-//	PlotNames.push_back("PMissPlot");
-//	PlotNames.push_back("PMissMinusPlot");
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonCosThetaPlot"); 
+//	PlotNames.push_back("MuonPhiPlot");
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("ProtonPhiPlot");
+////	PlotNames.push_back("ECalPlot");
+////	PlotNames.push_back("EQEPlot"); 
+////	PlotNames.push_back("Q2Plot");
+////	PlotNames.push_back("kMissPlot");
+////	PlotNames.push_back("PMissPlot");
+////	PlotNames.push_back("PMissMinusPlot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -103,43 +125,28 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 	NameOfSamples.push_back("BeamOn9"); 
 	NameOfSamples.push_back("ExtBNB9"); 
 	NameOfSamples.push_back("OverlayDirt9"); 
-	NameOfSamples.push_back("GenieOverlay");	
 	
 	int DataIndex = -1.;
+	double DataPOT = -99.;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+////	Runs.push_back("Run2");
+//	Runs.push_back("Run3");
+////	Runs.push_back("Run4");
+////	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
-	
+
 	// CV Flux File
 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
-	double DataPOT = -99.;
-	
-	if ( Universe != -1 ) {
-	
-		TString DublicateOverlaySample = OverlaySample;
-		TString ReducedOverlaySample = DublicateOverlaySample.ReplaceAll("m_","m");
-		if ( !(string(OverlaySample).find("expskin") != std::string::npos) ) { ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("n_","n"); }
-		ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("g_","g");				
-		
-		for (int i = 0; i < 10;i++) { ReducedOverlaySample.ReplaceAll(TString(std::to_string(i)),""); }
-		
-		TString FluxHistoName = "numu_ms"+ReducedOverlaySample+"/hEnumu"+ReducedOverlaySample+"_ms_"+TString(std::to_string(Universe));
-		HistoFlux = (TH1D*)(FluxFile->Get(FluxHistoName));
-	
-	}
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -151,9 +158,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 		if (Runs[WhichRun] == "Run2") { DataPOT = tor860_wcut_Run2 ; }
 		if (Runs[WhichRun] == "Run3") { DataPOT = tor860_wcut_Run3 ; }
 		if (Runs[WhichRun] == "Run4") { DataPOT = tor860_wcut_Run4 ; }
-		if (Runs[WhichRun] == "Run5") { DataPOT = tor860_wcut_Run5 ; }								
-		
-		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);			
+		if (Runs[WhichRun] == "Run5") { DataPOT = tor860_wcut_Run5 ; }	
+
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);					
 
 		// -------------------------------------------------------------------------------------		
 
@@ -163,17 +170,27 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
-		vector<vector<TH1D*> > PlotsTEfficiency; PlotsTEfficiency.clear();
+
+		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
+		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileEfficienciesName = "FileEfficiences_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-		TFile* FileEfficiences = new TFile(FileEfficienciesPath+FileEfficienciesName,"readonly");
+		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
+
+//		TString FileCovarianceName = MigrationMatrixPath+"WienerSVDCovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Stat_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
+
+		// -----------------------------------------------------------------------------------------------------------------------------------------
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 		
 		TString PathToFilesUBCodeExtension = PathToFiles+CutExtension;
+
+		// -----------------------------------------------------------------------------------------------------------------------------------------
 
 		// Loop over the samples
 
@@ -197,19 +214,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 				
 			}
-			
-			if (NameOfSamples[WhichSample] == "GenieOverlay") { 
-			
-				TString FileName = "TruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
-				
-			}			
+						
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
 			vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
-			vector<TH1D*> CurrentPlotsTEfficiency; CurrentPlotsTEfficiency.clear();
 
 			// Loop over the plots
 
@@ -226,9 +236,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 
 				TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 				CurrentPlotsTrue.push_back(histTrue);
-
-				TH1D* histTEfficiency = (TH1D*)(FileEfficiences->Get("CC1pReco"+PlotNames[WhichPlot]));
-				CurrentPlotsTEfficiency.push_back(histTEfficiency);
 		
 			} // End of the loop over the plots
 
@@ -236,8 +243,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 			PlotsTrue.push_back(CurrentPlotsTrue);		
 			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
-			PlotsTEfficiency.push_back(CurrentPlotsTEfficiency);
-
 
 		} // End of the loop over the samples
 
@@ -245,8 +250,70 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 
 		// Loop over the plots
 
-		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {			
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
 
+			// ---------------------------------------------------------------------------------------------------------------------------
+
+			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
+			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("Covariance_"+PlotNames[WhichPlot]+OverlaySample));
+
+			// ---------------------------------------------------------------------------------------------------------------------------
+
+			// CC1p Signal MC
+
+			int n = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
+			double Nuedges[n+1];
+			    
+			for (int i = 0; i < n+1; i++) { Nuedges[i] = PlotsCC1pReco[0][WhichPlot]->GetBinLowEdge(i+1); }
+
+			// ---------------------------------------------------------------------------------------------------------------------------
+
+			// BeamOn
+
+			PlotsReco[1][WhichPlot]->Add(PlotsReco[2][WhichPlot],-1); // Subtract ExtBNB
+			PlotsReco[1][WhichPlot]->Add(PlotsReco[3][WhichPlot],-1); // Subtract Dirt
+			PlotsReco[1][WhichPlot]->Add(PlotsBkgReco[0][WhichPlot],-1); // Subtract NonCC1p Beam Related Background
+
+			int m = PlotsReco[1][WhichPlot]->GetNbinsX();
+
+			// ---------------------------------------------------------------------------------------------------------------------------
+
+			// Construct vectors (for 1D histogram) and matrices (for 2D histogram) for input
+
+			TVectorD signal(n);
+			TVectorD measure(m);
+			TMatrixD response(m, n);
+			TMatrixD covariance(m, m);
+
+			// Convert input into mathematical formats, easy and clean to be processed. 
+			// Converted defined/implemented in source files, see include/Util.h
+
+			H2V(PlotsCC1pReco[0][WhichPlot], signal);
+			H2V(PlotsReco[1][WhichPlot], measure);
+			H2M(ResponseMatrices[WhichPlot], response, kTRUE);
+			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE);
+
+			// Construct to record additinal smearing matrix and wiener filter (diagomal matrix) elements. 
+    
+			TMatrixD AddSmear(n,n);    
+			TVectorD WF(n);
+			TMatrixD UnfoldCov(n,n);
+			TH2D* smear = new TH2D("smear","Additional Smearing Matirx",n,Nuedges,n,Nuedges);
+			TH1D* wiener = new TH1D("wiener","Wiener Filter Vector",n,0,n);
+			TH2D* unfcov = new TH2D("unfcov","Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+
+			// Core implementation of Wiener-SVD
+			// Input as names read. AddSmear and WF to record the core information in the unfolding.
+			TVectorD unfold = WienerSVD(response, signal, measure, covariance, 2, 0, AddSmear, WF, UnfoldCov);
+			TH1D* unf = new TH1D("unf","unfolded spectrum",n,Nuedges);
+			V2H(unfold, unf);
+			Reweight(unf);
+			unf->Scale(Units/(IntegratedFlux*NTargets));
+unf->Draw("e");
+
+			// ---------------------------------------------------------------------------------------------------------------------------
+		
+/*
 			int NBinsX = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
 
 			// ---------------------------------------------------------------------------------------------------------------------------
@@ -540,37 +607,37 @@ void WienerSVD_XSection_Extraction(TString OverlaySample,int Universe = -1) { //
 			} // End of the CV case where we plot & store the canvases
 			
 			// --------------------------------------------------------------------------------------------------------------------------------
-
+*/
 		} // End of the loop over the plots
 					
 		// --------------------------------------------------------------------------------------------------------------------------------
 		
-		FileEfficiences->Close();
+//		FileResponseMatrices->Close();
+//		FileCovarianceMatrices->Close();
 
 		// --------------------------------------------------------------------------------------------------------------------------------
 
 		// Store the extracted xsections
 
-		TString NameExtractedXSec = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[0]+"_"\
+		TString NameExtractedXSec = PathToExtractedXSec+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"\
 			+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
 			PlotsReco[1][WhichPlot]->Write(); // Data Reco
-			PlotsCC1pReco[0][WhichPlot]->Write(); // Overlay MC		
+/*			PlotsCC1pReco[0][WhichPlot]->Write(); // Overlay MC		
 			PlotsTrue[4][WhichPlot]->Write(); // Genie Overlay // Closure test			
-
+*/
 		}
 
-		ExtractedXSec->Close();
+//		ExtractedXSec->Close();
+
 
 		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
 
-		for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }
+//		for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }
 
 	} // End of the loop over the runs	
-
-	FluxFile->Close();
 
 } // End of the program 

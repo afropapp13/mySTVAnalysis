@@ -12,10 +12,11 @@
 using namespace std;
 using namespace Constants;
 
-void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
+void WienerSVD_Stat_CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
 
 	// -------------------------------------------------------------------------------------
 
+	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();
 	
 	double TextSize = 0.07;
@@ -26,7 +27,6 @@ void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSa
 
 	// -------------------------------------------------------------------------------------
 
-	int NEventsPassingSelectionCuts = 0;
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
@@ -121,20 +121,6 @@ void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSa
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 	double DataPOT = -99.;
-	
-	if ( Universe != -1 ) {
-	
-		TString DublicateOverlaySample = OverlaySample;
-		TString ReducedOverlaySample = DublicateOverlaySample.ReplaceAll("m_","m");
-		if ( !(string(OverlaySample).find("expskin") != std::string::npos) ) { ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("n_","n"); }
-		ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("g_","g");				
-		
-		for (int i = 0; i < 10;i++) { ReducedOverlaySample.ReplaceAll(TString(std::to_string(i)),""); }
-		
-		TString FluxHistoName = "numu_ms"+ReducedOverlaySample+"/hEnumu"+ReducedOverlaySample+"_ms_"+TString(std::to_string(Universe));
-		HistoFlux = (TH1D*)(FluxFile->Get(FluxHistoName));
-	
-	}
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -152,7 +138,7 @@ void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSa
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"WienerSVDCovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileName = MigrationMatrixPath+"WienerSVD_Stat_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
@@ -199,56 +185,56 @@ void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSa
 
 				// -------------------------------------------------------------------------------------------------------
 				
-				int NBinsX = CC1pPlots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
-				int NBinsY = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();	
+				int NBinsX = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
+				int NBinsY = NBinsX;	
 
-				double XLow = CC1pPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(1);
-				double YLow = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(1);
+				double XLow = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(1);
+				double YLow = XLow;
 
-				double XHigh = CC1pPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(NBinsX) + CC1pPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinWidth(NBinsX);
-				double YHigh = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(NBinsY) + BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinWidth(NBinsY);
+				double XHigh = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(NBinsY) + BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinWidth(NBinsY);
+				double YHigh = XHigh;
 
-				TString XTitle = CC1pPlots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
-				TString YTitle = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
+				TString XTitle = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
+				TString YTitle = XTitle;
 
 				Covariances[WhichSample][WhichPlot] = new TH2D("Covariance_"+PlotNames[WhichPlot]+OverlaySample,";i bin "+XTitle+";j bin "+YTitle,NBinsX,XLow,XHigh,NBinsY,YLow,YHigh);
 
 				// -------------------------------------------------------------------------------------------------------
 
-				// Normalizing columns to Nj: Number of true events in the true bin j
-				// Effectively creating a 2D efficiency map
-
 				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) { // MC bins
 
 					// X Bin entry / error
 
-					double DataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+//					double DataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 					double DataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 
-					double MCEntryX = CC1pPlots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-					double MCErrorX = CC1pPlots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units; 
+//					double MCEntryX = CC1pPlots[WhichSample][WhichPlot]->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+//					double MCErrorX = CC1pPlots[WhichSample][WhichPlot]->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units; 
 
 					for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) { // Data bins
 
 						// Y Bin entry / error
 
-						double DataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+//						double DataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						double DataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						double MCEntryY = CC1pPlots[WhichSample][WhichPlot]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-						double MCErrorY = CC1pPlots[WhichSample][WhichPlot]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units; 
+//						double MCEntryY = CC1pPlots[WhichSample][WhichPlot]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+//						double MCErrorY = CC1pPlots[WhichSample][WhichPlot]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units; 
 
 						// CV
 
-						double CovEntry = (DataEntryX - MCEntryX) * (DataEntryY - MCEntryY);
-						Covariances[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
+						//double CovEntry = (DataEntryX - MCEntryX) * (DataEntryY - MCEntryY);
+						if (WhichXBin == WhichYBin) { Covariances[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,DataErrorX * DataErrorY); }
+						else { Covariances[WhichSample][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,1E-10); }
 
 						// Error
 
-						double CovError = TMath::Sqrt( 
-									TMath::Power(DataEntryY - MCEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(MCErrorX,2.) ) +
-									TMath::Power(DataEntryX - MCEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(MCErrorY,2.) )
-								);
+//						double CovError = TMath::Sqrt( 
+//									TMath::Power(DataEntryY - MCEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(MCErrorX,2.) ) +
+//									TMath::Power(DataEntryX - MCEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(MCErrorY,2.) )
+//								);
+
+						double CovError = 0.000001;
 
 						Covariances[WhichSample][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
 
@@ -295,17 +281,18 @@ void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSa
 					Covariances[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
 
 //					Covariances[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(-0.015,0.015);
-					Covariances[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(-0.05,0.05);
+					Covariances[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0.,0.005);
 					Covariances[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Covariances[WhichSample][WhichPlot]->SetMarkerSize(1.5);
-					Covariances[WhichSample][WhichPlot]->Draw("text colz e"); 
+//					Covariances[WhichSample][WhichPlot]->Draw("text colz e"); 
+					Covariances[WhichSample][WhichPlot]->Draw("colz"); 
 
 					TLatex* lat = new TLatex();
 					lat->SetTextFont(FontStyle);
 					lat->SetTextSize(TextSize);
-					lat->DrawLatexNDC(0.8,0.93,"x10^{-76} cm^{4}");
+					lat->DrawLatexNDC(0.6,0.93,"x10^{-76} cm^{4}");
 					
-					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/WienerSVDCovarianceMatrices_"+PlotNames[WhichPlot]
+					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/WienerSVD_Stat_CovarianceMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				
@@ -323,7 +310,7 @@ void CovarianceMatrices(TString OverlaySample,int Universe = -1,TString BeamOnSa
 
 		FileCovarianceMatrices->Close();
 
-		std::cout << "File with Covariance matrices " << FileName << " has been created" << std::endl;
+		std::cout << "File with Stat Covariance matrices " << FileName << " has been created" << std::endl;
 
 	} // End of the loop over the runs	
 
