@@ -196,7 +196,7 @@ void ResponseMatrices(TString OverlaySample) {
 
 					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
 
-					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,0.3);
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.1*Plots[WhichSample][WhichPlot]->GetMaximum());
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(1.5);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 

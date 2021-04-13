@@ -179,8 +179,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample) {
 		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
-//		TString FileCovarianceName = MigrationMatrixPath+"WienerSVDCovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Stat_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -255,7 +255,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample) {
 			// ---------------------------------------------------------------------------------------------------------------------------
 
 			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
-			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("Covariance_"+PlotNames[WhichPlot]+OverlaySample));
+			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 

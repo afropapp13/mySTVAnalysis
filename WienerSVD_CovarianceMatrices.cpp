@@ -6,42 +6,28 @@
 #include <TString.h>
 #include <TStyle.h>
 #include <TLatex.h>
+#include <TGaxis.h>
 
 #include "ubana/myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
+#include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
+#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
+
 // TString Syst = "NTarget"
 
-void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
+void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
 
 	// -------------------------------------------------------------------------------------
 
-	TH1D::SetDefaultSumw2();
-	TH2D::SetDefaultSumw2();
-	
-	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t"); 
-	gStyle->SetTitleFont(FontStyle,"t");
-	gStyle->SetOptStat(0);
+	if (Syst == "None") { cout << "What the heck are you doing ? Specify the systematic uncertainty that you want to obtain!" << endl; return ;}
 
 	// -------------------------------------------------------------------------------------
 
-	int NEventsPassingSelectionCuts = 0;
-	TString CutExtension = "_NoCuts";
-
-	vector<TString> VectorCuts; VectorCuts.clear();
-	VectorCuts.push_back("");
-	VectorCuts.push_back("_PID");
-	VectorCuts.push_back("_NuScore");
-
-	int NCuts = (int)(VectorCuts.size());	
-
-	for (int i = 0; i < NCuts; i++) {
-
-		CutExtension = CutExtension + VectorCuts[i];
-
-	}
+	GlobalSettings();
+	TGaxis::SetMaxDigits(3);
 
 	// -------------------------------------------------------------------------------------
 
@@ -55,12 +41,8 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonPhiPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
-//	PlotNames.push_back("ECalPlot"); 
-//	PlotNames.push_back("EQEPlot"); 
-//	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
-	cout << "Number of 1D Plots = " << N1DPlots << endl;
 		
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -72,19 +54,19 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 //	Runs.push_back("Run5");			
 
 	const int NRuns = (int)(Runs.size());
-	cout << "Number of Runs = " << NRuns << endl;	
 
 	// -------------------------------------------------------------------------------------
 
+	// Base Samples
+
 	vector<TFile*> MCFileSample; MCFileSample.resize(NRuns);
-
 	vector<TFile*> BeamOnFileSample; BeamOnFileSample.resize(NRuns);
-
 	vector<TFile*> BeamOffFileSample; BeamOffFileSample.resize(NRuns);
-
 	vector<TFile*> DirtFileSample; DirtFileSample.resize(NRuns);
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
+
+	// Base Plots
 
 	vector <TH1D*> CC1pPlots; CC1pPlots.resize(N1DPlots); 
 	vector <TH1D*> NonCC1pPlots; NonCC1pPlots.resize(N1DPlots);
@@ -99,7 +81,6 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
-	double DataPOT = -99.;
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -107,32 +88,28 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		if (Runs[WhichRun] == "Run1") { DataPOT = tor860_wcut_Run1 ; }
-		if (Runs[WhichRun] == "Run2") { DataPOT = tor860_wcut_Run2 ; }
-		if (Runs[WhichRun] == "Run3") { DataPOT = tor860_wcut_Run3 ; }
-		if (Runs[WhichRun] == "Run4") { DataPOT = tor860_wcut_Run4 ; }
-		if (Runs[WhichRun] == "Run5") { DataPOT = tor860_wcut_Run5 ; }						
+		double DataPOT = ReturnBeamOnRunPOT(Runs[WhichRun]);						
 		
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);
 
-		// -------------------------------------------------------------------------------------
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		TString FileName = MigrationMatrixPath+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
+		// Open base files
+
 		TString ExactFileLocation = PathToFiles+CutExtension;
-
 		MCFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BaseMC+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
-
 		BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
-
 		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
-
 		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+DirtSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
 
 		// -------------------------------------------------------------------------------------
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+			// Grab base plots
 
 			CC1pPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("CC1pReco"+PlotNames[WhichPlot]));
 			NonCC1pPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
@@ -162,56 +139,122 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 			const double* ArrayBins = BeamOnPlots[WhichPlot]->GetXaxis()->GetXbins()->GetArray();
 			TString XTitle = BeamOnPlots[WhichPlot]->GetXaxis()->GetTitle();
 
+			// Declare the matrix & initialize the entries to 0
+
 			Covariances[WhichPlot] = new TH2D("Covariance_"+PlotNames[WhichPlot],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+
+			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
+
+				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
+
+					Covariances[WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
+					Covariances[WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
+
+				}  // end of the loop over bin Y
+
+			} // end of the loop over bin X
 
 			// -------------------------------------------------------------------------------------------------------
 
-			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { // MC bins
+			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 
-				// X Bin entry / error
+				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
 
-				double DataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-				double DataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					// X Bin entry / error
 
-				double NTargetDataEntryX = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-				double NTargetDataErrorX = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double DataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double DataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 
-				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) { // Data bins
+					double AltDataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double AltDataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 
 					// Y Bin entry / error
 
 					double DataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 					double DataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-					double NTargetDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-					double NTargetDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+					double AltDataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+					double AltDataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					// -------------------------------------------------------------------------------------------------------
+					// -------------------------------------------------------------------------------------------------------
+
+					// Based on the type of systematic unceratainty, choose how to handle it
+
+					if (Syst == "NTarget") {
+
+						AltDataEntryX = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataErrorX = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					} else if (Syst == "POT") {
+
+						AltDataEntryX = (1+POTUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataErrorX = (1+POTUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					} else if (Syst == "Stat") {
+
+						if (WhichXBin == WhichYBin) {
+
+							DataEntryX = DataErrorX;
+							DataEntryY = DataErrorY;
+
+							AltDataEntryX = 0.;
+							AltDataErrorX = 0.;
+
+							AltDataEntryY = 0.;
+							AltDataErrorY = 0.;
+
+						} else {
+
+							DataEntryX = 0.;
+							DataEntryY = 0.;
+
+							AltDataEntryX = 0.;
+							AltDataErrorX = 0.;
+
+							AltDataEntryY = 0.;
+							AltDataErrorY = 0.;
+
+						}
+
+					}
+
+					else { cout << "Don't know how to handle this systematic uncentainty! Abort !"<< endl << endl; return; }
+
+					// -------------------------------------------------------------------------------------------------------
+					// -------------------------------------------------------------------------------------------------------
 
 					// CV
 
-					double CovEntry = TMath::Max((NTargetDataEntryX - DataEntryX) * (NTargetDataEntryY - DataEntryY),1E-8);
+					double CovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 					Covariances[WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 
 					// Error
 
-//					double CovError = TMath::Sqrt( 
-//							TMath::Power(DataEntryY - NTargetDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(NTargetDataErrorX,2.) ) +
-//							TMath::Power(DataEntryX - NTargetDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(NTargetDataErrorY,2.) )
-//						);
-
-					double CovError = 1E-10;
+					double CovError = TMath::Max( TMath::Sqrt( 
+							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
 					Covariances[WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
 
-				}
+				}  // end of the loop over bin Y
 
-			}
+			} // end of the loop over bin X
 			
 			FileCovarianceMatrices->cd();
 			Covariances[WhichPlot]->Write();
 			
-			// ---------------------------------------------------------------------------------------			
+			// ---------------------------------------------------------------------------------------	
+
+			// Plot the total covariance matrix		
 		
-			TString CanvasName = PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun];
+			TString CanvasName = Syst+"_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun];
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.16);
@@ -234,13 +277,9 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 			Covariances[WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
 			Covariances[WhichPlot]->GetYaxis()->CenterTitle();
 			Covariances[WhichPlot]->GetYaxis()->SetNdivisions(5);
-			Covariances[WhichPlot]->GetYaxis()->SetTitleOffset(1.);			
-						
-			Covariances[WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
-			Covariances[WhichPlot]->GetZaxis()->SetNdivisions(5);			
+			Covariances[WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
 
-			Covariances[WhichPlot]->SetTitle(Runs[WhichRun]);	
+			Covariances[WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
 
 			double CovMax = 1.05*Covariances[WhichPlot]->GetMaximum();
 			double CovMin = TMath::Min(0.,1.05*Covariances[WhichPlot]->GetMinimum());
@@ -249,7 +288,9 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 			Covariances[WhichPlot]->GetZaxis()->CenterTitle();
 			Covariances[WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
 			Covariances[WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
-
+			Covariances[WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
+			Covariances[WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
+			Covariances[WhichPlot]->GetZaxis()->SetNdivisions(5);
 
 			Covariances[WhichPlot]->SetMarkerColor(kWhite);			
 			Covariances[WhichPlot]->SetMarkerSize(1.5);
@@ -262,6 +303,10 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 
 		} // End of the loop over the plots
 
+		// ---------------------------------------------------------------------------------------	
+
+		// Close covariance matrix file & base files
+
 		FileCovarianceMatrices->Close();
 
 		MCFileSample[WhichRun]->Close();
@@ -269,7 +314,9 @@ void WienerSVD_NTargets_CovarianceMatrices(TString Syst = "",TString BaseMC = "O
 		BeamOffFileSample[WhichRun]->Close();
 		DirtFileSample[WhichRun]->Close();
 
-		std::cout << "File with "+Syst+" Covariance matrices " << FileName << " has been created" << std::endl;
+		cout << endl << "File with "+Syst+" Covariance matrices " << FileName << " has been created" << endl << endl;
+
+		// ---------------------------------------------------------------------------------------	
 
 	} // End of the loop over the runs	
 

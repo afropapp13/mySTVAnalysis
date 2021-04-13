@@ -26,7 +26,7 @@
 using namespace std;
 using namespace Constants;
 
-void WienerSVD_Detector_Systematics_LY_Covariances(TString NomOverlaySample = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
+void WienerSVD_Detector_Systematics_TPC_Covariances(TString NomOverlaySample = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
 
 	TH2D::SetDefaultSumw2();
 	TH1D::SetDefaultSumw2();
@@ -95,11 +95,15 @@ void WienerSVD_Detector_Systematics_LY_Covariances(TString NomOverlaySample = "O
 	vector<TString> NameOfSamples;
 	NameOfSamples.push_back("CV"); // Reference plot
 
-	// LY Detector Variations
+	// TPC Detector Variations
 
-	NameOfSamples.push_back("LYDown");
-	NameOfSamples.push_back("LYRayleigh");
-	NameOfSamples.push_back("LYAttenuation");
+	NameOfSamples.push_back("WireModX");
+	NameOfSamples.push_back("WireModYZ");
+	NameOfSamples.push_back("WireModThetaYZ");
+	NameOfSamples.push_back("WireModThetaXZ");
+	NameOfSamples.push_back("dEdx");
+	NameOfSamples.push_back("Recombination2");
+	NameOfSamples.push_back("SCE");
 
 	const int NSamples = NameOfSamples.size();	
 	
@@ -175,7 +179,7 @@ void WienerSVD_Detector_Systematics_LY_Covariances(TString NomOverlaySample = "O
 		
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"WienerSVD_Detector_Systematics_LY_"+NomOverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString FileName = MigrationMatrixPath+"WienerSVD_Detector_Systematics_TPC_"+NomOverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		// -----------------------------------------------------------------------------------------				
@@ -323,7 +327,7 @@ void WienerSVD_Detector_Systematics_LY_Covariances(TString NomOverlaySample = "O
 			lat->DrawLatexNDC(0.6,0.94,"x10^{-76} cm^{4}");
 
 			TotalCovariances[WhichPlot]->Draw("coltz");
-			PlotCanvas->SaveAs(PlotPath+NomOverlaySample+"/WienerSVD_Detector_Systematics_LY_CovarianceMatrices_"+PlotNames[WhichPlot]
+			PlotCanvas->SaveAs(PlotPath+NomOverlaySample+"/WienerSVD_Detector_Systematics_TPC_CovarianceMatrices_"+PlotNames[WhichPlot]
 						+NomOverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			delete 	PlotCanvas;	
 
@@ -331,7 +335,7 @@ void WienerSVD_Detector_Systematics_LY_Covariances(TString NomOverlaySample = "O
 
 		// ----------------------------------------------------------------------------------------------------
 
-		cout << endl << "LY Detector Systematics file " << FileName << " has been created" << endl << endl;
+		cout << endl << "TPC Detector Systematics file " << FileName << " has been created" << endl << endl;
 
 		// ----------------------------------------------------------------------------------------------------
 

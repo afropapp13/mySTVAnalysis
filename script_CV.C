@@ -36,7 +36,7 @@ void script_CV() {
 
 //	gROOT->ProcessLine(".L FFEfficiencies.cpp++");
 
-	gROOT->ProcessLine(".L DataDistributions.cpp++");
+//	gROOT->ProcessLine(".L DataDistributions.cpp++");
 
 	gROOT->ProcessLine(".L XSection_Extraction.cpp++");
 
@@ -64,7 +64,7 @@ void script_CV() {
 
 //		gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("DataDistributions(\""+WhichSampleArray[i]+"\")");
+//		gROOT->ProcessLine("DataDistributions(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"\")");
 

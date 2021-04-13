@@ -186,23 +186,15 @@ void WienerSVD_POT_CovarianceMatrices(TString OverlaySample,int Universe = -1,TS
 
 				// -------------------------------------------------------------------------------------------------------
 				
-				int NBinsX = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
-				int NBinsY = NBinsX;	
-
-				double XLow = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(1);
-				double YLow = XLow;
-
-				double XHigh = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinLowEdge(NBinsY) + BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetBinWidth(NBinsY);
-				double YHigh = XHigh;
-
+				int NBins = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
+				const double* ArrayBins = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetXbins()->GetArray();
 				TString XTitle = BeamOnPlots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
-				TString YTitle = XTitle;
 
-				Covariances[WhichSample][WhichPlot] = new TH2D("Covariance_"+PlotNames[WhichPlot]+OverlaySample,";i bin "+XTitle+";j bin "+YTitle,NBinsX,XLow,XHigh,NBinsY,YLow,YHigh);
+				Covariances[WhichSample][WhichPlot] = new TH2D("Covariance_"+PlotNames[WhichPlot]+OverlaySample,";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
 
 				// -------------------------------------------------------------------------------------------------------
 
-				for (int WhichXBin = 0; WhichXBin < NBinsX; WhichXBin++) { // MC bins
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { // MC bins
 
 					// X Bin entry / error
 
@@ -212,7 +204,7 @@ void WienerSVD_POT_CovarianceMatrices(TString OverlaySample,int Universe = -1,TS
 					double POTDataEntryX = (1+POTUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 					double POTDataErrorX = (1+POTUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 
-					for (int WhichYBin = 0; WhichYBin < NBinsY; WhichYBin++) { // Data bins
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) { // Data bins
 
 						// Y Bin entry / error
 
@@ -281,7 +273,7 @@ void WienerSVD_POT_CovarianceMatrices(TString OverlaySample,int Universe = -1,TS
 					Covariances[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
 
 //					Covariances[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(-0.015,0.015);
-					Covariances[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0.,0.000099);
+					Covariances[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0.,0.000199);
 					Covariances[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Covariances[WhichSample][WhichPlot]->SetMarkerSize(1.5);
 //					Covariances[WhichSample][WhichPlot]->Draw("text colz e"); 
@@ -290,7 +282,7 @@ void WienerSVD_POT_CovarianceMatrices(TString OverlaySample,int Universe = -1,TS
 					TLatex* lat = new TLatex();
 					lat->SetTextFont(FontStyle);
 					lat->SetTextSize(TextSize);
-					lat->DrawLatexNDC(0.6,0.93,"x10^{-76} cm^{4}");
+					lat->DrawLatexNDC(0.6,0.94,"x10^{-76} cm^{4}");
 					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/WienerSVD_POT_CovarianceMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
