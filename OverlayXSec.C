@@ -81,20 +81,30 @@ void OverlayXSec() {
 	TH1D::SetDefaultSumw2();
 	vector<TString> FileNames; FileNames.clear();
 	vector<TString> Label; Label.clear();
+	
 	vector<TH1D*> Plots; Plots.clear();
 	vector<TH1D*> PlotsCC1p; PlotsCC1p.clear();
+	
+	vector<TH1D*> WPlots; WPlots.clear();
+	vector<TH1D*> WPlotsCC1p; WPlotsCC1p.clear();	
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
 	TString PlotName = "DeltaPTPlot";
 //	TString PlotName = "DeltaAlphaTPlot";
 //	TString PlotName = "DeltaPhiTPlot";
+//	TString PlotName = "MuonMomentumPlot";
+//	TString PlotName = "MuonCosThetaPlot";
+//	TString PlotName = "MuonPhiPlot";
+//	TString PlotName = "ProtonMomentumPlot";
+//	TString PlotName = "ProtonCosThetaPlot";
+//	TString PlotName = "ProtonPhiPlot";
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
 	FileNames.push_back("Overlay9_Run1"); Label.push_back("Run1"); 
 	//FileNames.push_back("Overlay9_Run1_CV"); Label.push_back("Overlay9 Run1 CV");
-	FileNames.push_back("Overlay9_Run3"); Label.push_back("Run3"); 
+//	FileNames.push_back("Overlay9_Run3"); Label.push_back("Run3"); 
 	//FileNames.push_back("Overlay9_Run3_CV"); Label.push_back("Overlay9 Run3 CV");
 
 	const int NFiles = FileNames.size();
@@ -117,13 +127,15 @@ void OverlayXSec() {
 
 		TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 
-		TH1D* h = (TH1D*)(f->Get("Reco"+PlotName));
+		TH1D* h = (TH1D*)(f->Get("TotalReco"+PlotName));
 		Plots.push_back(h);
 		Plots[WhichFile]->SetLineColor(Colors[WhichFile]);
 		Plots[WhichFile]->SetMarkerColor(Colors[WhichFile]);
 		PrettyPlot(Plots[WhichFile]);
+		Plots[WhichFile]->SetMarkerStyle(20);
+		Plots[WhichFile]->GetYaxis()->SetTitle(VarLabel[PlotName]);
 		Plots[WhichFile]->Draw("e same");
-		leg->AddEntry(Plots[WhichFile],"BeamOn " + Label[WhichFile],"lep");
+		leg->AddEntry(Plots[WhichFile],"EE BeamOn " + Label[WhichFile],"lep");
 
 		TH1D* hCC1p = (TH1D*)(f->Get("CC1pReco"+PlotName));
 		PlotsCC1p.push_back(hCC1p);
@@ -133,9 +145,22 @@ void OverlayXSec() {
 		PrettyPlot(PlotsCC1p[WhichFile]);
 		//PlotsCC1p[WhichFile]->SetFillColorAlpha(Colors[WhichFile],0.35);
 		PlotsCC1p[WhichFile]->SetFillStyle(3001);
-		PlotsCC1p[WhichFile]->Draw("e2 same");
-		leg->AddEntry(PlotsCC1p[WhichFile],"MC " + Label[WhichFile],"f");
+		
+		//PlotsCC1p[WhichFile]->Draw("e2 same");
+		//leg->AddEntry(PlotsCC1p[WhichFile],"MC " + Label[WhichFile],"f");
 
+		// Wiener SVD
+
+		TFile* Wf = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
+		
+		TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotName));
+		WPlots.push_back(Wh);
+		WPlots[WhichFile]->SetLineColor(Colors[WhichFile]+1);
+		WPlots[WhichFile]->SetMarkerColor(Colors[WhichFile]+1);
+		WPlots[WhichFile]->SetMarkerStyle(22);		
+		PrettyPlot(Plots[WhichFile]);
+		WPlots[WhichFile]->Draw("e same");
+		leg->AddEntry(WPlots[WhichFile],"SVD BeamOn " + Label[WhichFile],"lep");			
 
 	}
 

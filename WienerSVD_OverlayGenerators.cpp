@@ -26,7 +26,26 @@
 using namespace std;
 using namespace Constants;
 
-void OverlayGenerators() {
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+int LocateBinWithValue(TH1D* h, double Value) {
+
+	int NBins = h->GetXaxis()->GetNbins();
+
+	for (int i = 1; i <= NBins; i++) {
+
+		double CurrentEntry = h->GetBinContent(i);
+		if (CurrentEntry == Value) { return i; } 
+
+	}
+
+	return -99;
+
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+void WienerSVD_OverlayGenerators() {
 
 	int DecimalAccuracy = 2;
 
@@ -54,7 +73,10 @@ void OverlayGenerators() {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
+//	Runs.push_back("Run2");	
 	Runs.push_back("Run3");
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -103,18 +125,12 @@ void OverlayGenerators() {
 
 			if (NameOfSamples[WhichSample] == "Overlay9") { // CV with statistical uncertainties only for now
 
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly")); 
+				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-					TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("TotalReco"+PlotNames[WhichPlot]));
-					CurrentPlotsTotalReco.push_back(histTotalReco);
-
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
-
-					TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-					CurrentPlotsCC1pReco.push_back(histCC1pReco);
 
 					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 					CurrentPlotsTrue.push_back(histTrue);
@@ -181,10 +197,10 @@ void OverlayGenerators() {
 			TPad *midPad = new TPad("midPad", "",0.005, 0., 0.995, 0.995);
 			midPad->SetBottomMargin(0.14);
 			midPad->SetTopMargin(0.12);
-			midPad->SetLeftMargin(0.16);
+			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
 
-			TLegend* leg = new TLegend(0.02,0.89,0.98,0.99);
+			TLegend* leg = new TLegend(0.02,0.89,0.97,0.99);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
 			leg->SetTextFont(FontStyle);
@@ -192,61 +208,52 @@ void OverlayGenerators() {
 
 			// ------------------------------------------------------------------------------------------------------------------
 
-			// Make the canvas/plots pretty
+			// BeamOn Total Uncertainty
 
 			midPad->cd();
 
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.06);
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetTitleOffset(1.05);
-			PlotsCC1pReco[0][WhichPlot]->GetXaxis()->SetNdivisions(5);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.06);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetTitleOffset(1.05);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetNdivisions(5);
 
 
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(4);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.2);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetNdivisions(4);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.2);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
 
-			// -----------------------------------------------------------------------------------------------------------------
+			double MaxValue = PlotsReco[0][WhichPlot]->GetMaximum();
+			int MaxValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MaxValue);
+			double MaxValueError = PlotsReco[0][WhichPlot]->GetBinError(MaxValueBin);
 
-			// Overlay
+			double MinValue = PlotsReco[0][WhichPlot]->GetMinimum();
+			int MinValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MinValue);
+			double MinValueError = PlotsReco[0][WhichPlot]->GetBinError(MinValueBin);			
 
-			PlotsCC1pReco[0][WhichPlot]->SetLineColor(OverlayColor);
-			PlotsCC1pReco[0][WhichPlot]->SetFillColor(OverlayColor);
-			PlotsCC1pReco[0][WhichPlot]->Draw("e2 same");		
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// BeamOn Statistical Uncertainty
+			double min = TMath::Min(0., 0.9*(MinValue-MinValueError));
+			double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));															
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,max);
 
 			PlotsReco[0][WhichPlot]->SetLineWidth(2);
 			PlotsReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.5);
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
-//			PlotsReco[0][WhichPlot]->Draw("e1x0 same");
+			PlotsReco[0][WhichPlot]->Draw("e1x0 same");			
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			// BeamOn Total Uncertainty
+			// Overlay
 
-			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);
-			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
-			PlotsTotalReco[0][WhichPlot]->SetMarkerSize(1.5);
-			PlotsTotalReco[0][WhichPlot]->SetMarkerStyle(20);
-//			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same");
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// Genie Overlay
-
-			PlotsTrue[0][WhichPlot]->SetLineColor(GenieOverlayColor);
 			PlotsTrue[0][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[0][WhichPlot]->Draw("e same");
+			PlotsTrue[0][WhichPlot]->SetLineColor(OverlayColor);
+			//PlotsTrue[0][WhichPlot]->SetFillColor(OverlayColor);
+			PlotsTrue[0][WhichPlot]->Draw("hist same");		
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -254,7 +261,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[1][WhichPlot]->SetLineColor(Geniev3OutOfTheBoxColor);
 			PlotsTrue[1][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[1][WhichPlot]->Draw("e same");
+			PlotsTrue[1][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -262,7 +269,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[2][WhichPlot]->SetLineColor(GenieColor);
 			PlotsTrue[2][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[2][WhichPlot]->Draw("e same");
+			//PlotsTrue[2][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -270,7 +277,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[3][WhichPlot]->SetLineColor(SuSav2Color);
 			PlotsTrue[3][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[3][WhichPlot]->Draw("e same");
+			PlotsTrue[3][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -278,7 +285,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[4][WhichPlot]->SetLineColor(NuWroColor);
 			PlotsTrue[4][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[4][WhichPlot]->Draw("e same");
+			PlotsTrue[4][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -286,7 +293,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[5][WhichPlot]->SetLineColor(GiBUUColor);
 			PlotsTrue[5][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[5][WhichPlot]->Draw("e same");
+			PlotsTrue[5][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -294,7 +301,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[6][WhichPlot]->SetLineColor(GENIEv2Color);
 			PlotsTrue[6][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[6][WhichPlot]->Draw("e same");
+			PlotsTrue[6][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -302,7 +309,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[7][WhichPlot]->SetLineColor(NEUTColor);
 			PlotsTrue[7][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[7][WhichPlot]->Draw("e same");
+			PlotsTrue[7][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -310,11 +317,11 @@ void OverlayGenerators() {
 
 			PlotsTrue[8][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
 			PlotsTrue[8][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[8][WhichPlot]->Draw("e same");
+			PlotsTrue[8][WhichPlot]->Draw("hist same");
 
 			// ---------------------------------------------------------------------------------------------------------
 
-			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Unc Only
+			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Total
 
 			// ---------------------------------------------------------------------------------------------------------
 
@@ -337,8 +344,8 @@ void OverlayGenerators() {
 			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6","l");
 			lGenie->SetTextColor(Geniev3OutOfTheBoxColor);
 
-			TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
-			lGenie_uBTunev1->SetTextColor(GenieColor);
+			// TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
+			// lGenie_uBTunev1->SetTextColor(GenieColor);
 
 			TLegendEntry* lGenie_SuSav2 = leg->AddEntry(PlotsTrue[3][WhichPlot],"SuSav2","l");
 			lGenie_SuSav2->SetTextColor(SuSav2Color);
@@ -353,10 +360,7 @@ void OverlayGenerators() {
 			lGenie_NEUT->SetTextColor(NEUTColor);
 
 			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],"Genie Overlay","l");
-			lGenie_GenieOverlay->SetTextColor(GenieOverlayColor);
-
-			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
-			lMC->SetTextColor(OverlayColor);
+			lGenie_GenieOverlay->SetTextColor(OverlayColor);
 
 //			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data","ep");
@@ -366,16 +370,9 @@ void OverlayGenerators() {
 
 			// ----------------------------------------------------------------------------------------------
 
-			// Saving the canvas with the data (stat uncertainties) vs overlay & generator predictions
-
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Generator_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
-
-			// ----------------------------------------------------------------------------------------------
-
 			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions
 
-			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Total Unc
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Generator_TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/WienerSVD_Generator_TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			// ----------------------------------------------------------------------------------------------
 

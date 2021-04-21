@@ -14,13 +14,8 @@
 #include <vector>
 #include <sstream>
 #include <string>
-//#include <math>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
-
+#include "/home/afroditi/Dropbox/PhD/Secondary_Code/mySimFunctions.cpp"
 #include "../myClasses/Constants.h"
 
 using namespace std;
@@ -37,22 +32,15 @@ void IntegratedXSecs() {
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
-	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
-	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("DeltaPTPlot"); 
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
 	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
-	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot"); 
-//	PlotNames.push_back("EQEPlot"); 
-//	PlotNames.push_back("Q2Plot");
-
-//	PlotNames.push_back("kMissPlot");
-//	PlotNames.push_back("PMissPlot");
-//	PlotNames.push_back("PMissMinusPlot");
+//	PlotNames.push_back("MuonPhiPlot");
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("ProtonPhiPlot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -60,7 +48,11 @@ void IntegratedXSecs() {
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+//	Runs.push_back("Run1");
+//	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -72,8 +64,6 @@ void IntegratedXSecs() {
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
-
-		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
 
 		vector<TString> NameOfSamples; NameOfSamples.clear();
 	
@@ -107,15 +97,15 @@ void IntegratedXSecs() {
 
 			if (NameOfSamples[WhichSample] == "Overlay9") { // CV with statistical uncertainties only for now
 
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root")); 
+				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
 
-					TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-					CurrentPlotsCC1pReco.push_back(histCC1pReco);
+//					TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
+//					CurrentPlotsCC1pReco.push_back(histCC1pReco);
 
 					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 					CurrentPlotsTrue.push_back(histTrue);
@@ -180,19 +170,19 @@ void IntegratedXSecs() {
 
 			// BeamOn Statistical Uncertainty
 
-			cout << "    Data = " << IntegratedXSec(PlotsReco[0][WhichPlot]) << " \\pm " << IntegratedXSecError(PlotsReco[0][WhichPlot]) << endl;
+			cout << "    Data "+ Runs[WhichRun] +" = " << IntegratedXSec(PlotsReco[0][WhichPlot]) << " \\pm " << IntegratedXSecError(PlotsReco[0][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			// Overlay
+//			// Overlay
 
-			cout << "    Overlay = " << IntegratedXSec(PlotsCC1pReco[0][WhichPlot]) << " \\pm " << IntegratedXSecError(PlotsCC1pReco[0][WhichPlot]) << endl;
+//			cout << "    Overlay = " << IntegratedXSec(PlotsCC1pReco[0][WhichPlot]) << " \\pm " << IntegratedXSecError(PlotsCC1pReco[0][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GENIE Overlay
 
-			cout << "    GENIE Overlay = " << IntegratedXSec(PlotsTrue[0][WhichPlot]) << endl;
+			cout << "    MC "+ Runs[WhichRun] +" = " << IntegratedXSec(PlotsTrue[0][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -202,9 +192,9 @@ void IntegratedXSecs() {
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			// GENIE v3.0.6 MicroBooNE Tune v1
+//			// GENIE v3.0.6 MicroBooNE Tune v1
 
-			cout << "    GENIE v3.0.6 MicroBooNE Tune v2 = " << IntegratedXSec(PlotsTrue[2][WhichPlot]) << endl;
+//			cout << "    GENIE v3.0.6 MicroBooNE Tune v1 = " << IntegratedXSec(PlotsTrue[2][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 

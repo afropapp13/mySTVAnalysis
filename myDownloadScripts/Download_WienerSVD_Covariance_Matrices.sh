@@ -1,6 +1,6 @@
 . ../myClasses/Constants.sh
 
-export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myXSec/$UBCode
+export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myMigrationMatrices/$UBCode
 
 declare -a arrRun=("Run1" "Run3")
 
@@ -11,8 +11,7 @@ do
 
 	##############################################################################
 
-	scp $UserID@$UBgpvm:$OutPutDir/ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/
-	scp $UserID@$UBgpvm:$OutPutDir/WienerSVD_ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/	
+	scp $UserID@$UBgpvm:$OutPutDir/WienerSVD_Total_CovarianceMatrices_Overlay9_${RunNumber}_${UBCode}.root ./myMigrationMatrices/$UBCode/
 
 	##############################################################################
 

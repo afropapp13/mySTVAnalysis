@@ -170,7 +170,7 @@ void ResponseMatrices(TString OverlaySample) {
 					PlotCanvas->cd();
 					PlotCanvas->SetBottomMargin(0.16);
 					PlotCanvas->SetLeftMargin(0.15);
-					PlotCanvas->SetRightMargin(0.12);				
+					PlotCanvas->SetRightMargin(0.15);				
 					
 					gStyle->SetMarkerSize(1.5);
 					gStyle->SetPaintTextFormat("4.2f");				
@@ -211,6 +211,7 @@ void ResponseMatrices(TString OverlaySample) {
 			} // End of the loop over the plots
 			
 			FileSample[WhichSample][WhichRun]->Close();
+			TrueFileSample[WhichSample][WhichRun]->Close();
 
 		} // End of the loop over the samples
 

@@ -1,13 +1,19 @@
 #################################################################################################################################
 
-root -l WienerSVD_Detector_Systematics_LY_Covariances.cpp
+root -l script_WienerSVD_Systematics.C
+
+root -l WienerSVD_Merge_Covariances.cpp
+
+root -l WienerSVD_XSection_Extraction.cpp
 
 #################################################################################################################################
 #################################################################################################################################
 
 # Plotting the detector variation xsecs and storing the relevant systematics with respect to the CV sample
 
-root -l Detector_Systematics.cpp
+root -l Detector_Systematics_LY.cpp
+
+root -l Detector_Systematics_TPC.cpp
 
 # Plotting the nominal xsecs, adding the 2% POT uncertainty and storing the relevant systematics with respect to the CV sample
 
@@ -40,12 +46,18 @@ root -l Flux_Systematics.cpp
 
 root -l Systematics.cpp
 
+# Download the relevant xsecs
+
 #################################################################################################################################
 
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
 
 root -l OverlayXSec.C
+
+root -l WienerSVD_OverlayXSec.C
+
+root -l IntegratedXSecs.C
 
 #################################################################################################################################
 

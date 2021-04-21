@@ -16,7 +16,15 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"Stat\")");
 
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"LY\",\"Overlay9_CV\")");
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"LY\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"TPC\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"XSec\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"G4\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"Flux\")");
 
 	// -----------------------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------------------

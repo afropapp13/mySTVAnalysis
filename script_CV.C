@@ -28,11 +28,11 @@ void script_CV() {
 
 //	gROOT->ProcessLine(".L CovarianceMatrices.cpp++");
 
-	gROOT->ProcessLine(".L WienerSVD_Stat_CovarianceMatrices.cpp++");
+//	gROOT->ProcessLine(".L WienerSVD_Stat_CovarianceMatrices.cpp++");
 
-	gROOT->ProcessLine(".L WienerSVD_POT_CovarianceMatrices.cpp++");
+//	gROOT->ProcessLine(".L WienerSVD_POT_CovarianceMatrices.cpp++");
 
-	gROOT->ProcessLine(".L WienerSVD_NTargets_CovarianceMatrices.cpp++");
+//	gROOT->ProcessLine(".L WienerSVD_NTargets_CovarianceMatrices.cpp++");
 
 //	gROOT->ProcessLine(".L FFEfficiencies.cpp++");
 
@@ -56,11 +56,11 @@ void script_CV() {
 
 //		gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("WienerSVD_Stat_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
+//		gROOT->ProcessLine("WienerSVD_Stat_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("WienerSVD_POT_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
+//		gROOT->ProcessLine("WienerSVD_POT_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("WienerSVD_NTargets_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
+//		gROOT->ProcessLine("WienerSVD_NTargets_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
 //		gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"\")");
 
@@ -71,6 +71,8 @@ void script_CV() {
 //		gROOT->ProcessLine("FFXSection_Extraction(\""+WhichSampleArray[i]+"\")");
 
 		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\")");
+
+		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true)");		
 
 	}
 

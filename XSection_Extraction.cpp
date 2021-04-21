@@ -125,7 +125,6 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
-	double DataPOT = -99.;
 	
 	if ( Universe != -1 ) {
 	
@@ -147,11 +146,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		if (Runs[WhichRun] == "Run1") { DataPOT = tor860_wcut_Run1 ; }
-		if (Runs[WhichRun] == "Run2") { DataPOT = tor860_wcut_Run2 ; }
-		if (Runs[WhichRun] == "Run3") { DataPOT = tor860_wcut_Run3 ; }
-		if (Runs[WhichRun] == "Run4") { DataPOT = tor860_wcut_Run4 ; }
-		if (Runs[WhichRun] == "Run5") { DataPOT = tor860_wcut_Run5 ; }								
+		double DataPOT = ReturnBeamOnRunPOT(Runs[WhichRun]);													
 		
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);			
 

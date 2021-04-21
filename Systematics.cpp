@@ -14,28 +14,27 @@
 #include <vector>
 #include <sstream>
 #include <string>
-//#include <math>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/ToString.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
-
-#include "../myClasses/Constants.h"
+#include "../Secondary_Code/myFunctions.cpp"
+#include "ubana/myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
+#include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
+
 void Systematics() {
+
+	// ---------------------------------------------------------------------------------------------------------------------------
+
+	GlobalSettings();
+
+	// ---------------------------------------------------------------------------------------------------------------------------
 
 	int DecimalAccuracy = 2;
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
-
-	TString PathToFiles = "myXSec/";
-	TString PathToSystematics = "mySystematics/";
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -48,9 +47,6 @@ void Systematics() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot"); 
-//	PlotNames.push_back("EQEPlot"); 
-//	PlotNames.push_back("Q2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -75,7 +71,7 @@ void Systematics() {
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 
-		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
+//		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
 
 		vector<TString> NameOfSamples; NameOfSamples.clear();
 	
@@ -110,7 +106,7 @@ void Systematics() {
 
 			if (WhichSample == 0) { // CV with statistical uncertainties
 
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","update")); 
+				FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","update")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
@@ -131,7 +127,7 @@ void Systematics() {
 
 			else {
 
-				FileSample.push_back(TFile::Open(PathToSystematics+UBCodeVersion+"/"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+".root")); 
+				FileSample.push_back(TFile::Open(PathToSystematics+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+".root")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
@@ -267,12 +263,7 @@ void Systematics() {
 
 			// Legend & Run / POT
 
-			double tor860_wcut = -99.;
-			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
-			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
-			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
-			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
+			double tor860_wcut = ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToString(tor860_wcut)+" POT";
 
 			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
@@ -294,9 +285,9 @@ void Systematics() {
 
 			// Saving the canvas with the data (total uncertainties) vs overlay predictions
 
-			PlotCanvasSyst->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvasSyst->SaveAs(PlotPath+"BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
-			//delete PlotCanvasSyst;
+			delete PlotCanvasSyst;
 
 			// ------------------------------------------------------------------------------------------------------------------------
 
