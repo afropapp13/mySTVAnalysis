@@ -74,7 +74,7 @@ void OverlayXSec() {
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------
 
-	const std::vector<int> Colors{kBlack,610,410,kRed+1,kGreen+3,kBlue};
+	const std::vector<int> Colors{kBlack,kBlue-7,410,610,kRed+1,kGreen+3,kBlue};
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
@@ -125,29 +125,29 @@ void OverlayXSec() {
 
 	for (int WhichFile = 0; WhichFile < NFiles; WhichFile++) {
 
-		TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
+//		TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 
-		TH1D* h = (TH1D*)(f->Get("TotalReco"+PlotName));
-		Plots.push_back(h);
-		Plots[WhichFile]->SetLineColor(Colors[WhichFile]);
-		Plots[WhichFile]->SetMarkerColor(Colors[WhichFile]);
-		PrettyPlot(Plots[WhichFile]);
-		Plots[WhichFile]->SetMarkerStyle(20);
-		Plots[WhichFile]->GetYaxis()->SetTitle(VarLabel[PlotName]);
-		Plots[WhichFile]->Draw("e same");
-		leg->AddEntry(Plots[WhichFile],"EE BeamOn " + Label[WhichFile],"lep");
+//		TH1D* h = (TH1D*)(f->Get("TotalReco"+PlotName));
+//		Plots.push_back(h);
+//		Plots[WhichFile]->SetLineColor(Colors[WhichFile]);
+//		Plots[WhichFile]->SetMarkerColor(Colors[WhichFile]);
+//		PrettyPlot(Plots[WhichFile]);
+//		Plots[WhichFile]->SetMarkerStyle(20);
+//		Plots[WhichFile]->GetYaxis()->SetTitle(VarLabel[PlotName]);
+//		Plots[WhichFile]->Draw("e same");
+//		leg->AddEntry(Plots[WhichFile],"EE BeamOn " + Label[WhichFile],"lep");
 
-		TH1D* hCC1p = (TH1D*)(f->Get("CC1pReco"+PlotName));
-		PlotsCC1p.push_back(hCC1p);
-		PlotsCC1p[WhichFile]->SetLineColor(Colors[WhichFile]);
-		PlotsCC1p[WhichFile]->SetMarkerColor(Colors[WhichFile]);
-		PlotsCC1p[WhichFile]->SetFillColor(Colors[WhichFile]);
-		PrettyPlot(PlotsCC1p[WhichFile]);
-		//PlotsCC1p[WhichFile]->SetFillColorAlpha(Colors[WhichFile],0.35);
-		PlotsCC1p[WhichFile]->SetFillStyle(3001);
-		
-		//PlotsCC1p[WhichFile]->Draw("e2 same");
-		//leg->AddEntry(PlotsCC1p[WhichFile],"MC " + Label[WhichFile],"f");
+//		TH1D* hCC1p = (TH1D*)(f->Get("CC1pReco"+PlotName));
+//		PlotsCC1p.push_back(hCC1p);
+//		PlotsCC1p[WhichFile]->SetLineColor(Colors[WhichFile]);
+//		PlotsCC1p[WhichFile]->SetMarkerColor(Colors[WhichFile]);
+//		PlotsCC1p[WhichFile]->SetFillColor(Colors[WhichFile]);
+//		PrettyPlot(PlotsCC1p[WhichFile]);
+//		//PlotsCC1p[WhichFile]->SetFillColorAlpha(Colors[WhichFile],0.35);
+//		PlotsCC1p[WhichFile]->SetFillStyle(3001);
+//		
+//		PlotsCC1p[WhichFile]->Draw("e2 same");
+//		leg->AddEntry(PlotsCC1p[WhichFile],"MC " + Label[WhichFile],"f");
 
 		// Wiener SVD
 
@@ -155,12 +155,25 @@ void OverlayXSec() {
 		
 		TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotName));
 		WPlots.push_back(Wh);
-		WPlots[WhichFile]->SetLineColor(Colors[WhichFile]+1);
-		WPlots[WhichFile]->SetMarkerColor(Colors[WhichFile]+1);
-		WPlots[WhichFile]->SetMarkerStyle(22);		
-		PrettyPlot(Plots[WhichFile]);
+		WPlots[WhichFile]->SetLineColor(Colors[WhichFile]);
+		WPlots[WhichFile]->SetMarkerColor(Colors[WhichFile]);
+		WPlots[WhichFile]->SetMarkerStyle(20);		
+		PrettyPlot(WPlots[WhichFile]);
 		WPlots[WhichFile]->Draw("e same");
-		leg->AddEntry(WPlots[WhichFile],"SVD BeamOn " + Label[WhichFile],"lep");			
+		leg->AddEntry(WPlots[WhichFile],"SVD BeamOn " + Label[WhichFile],"lep");
+
+		TH1D* WhCC1p = (TH1D*)(Wf->Get("True"+PlotName));
+		WPlotsCC1p.push_back(WhCC1p);
+		WPlotsCC1p[WhichFile]->SetLineColor(Colors[WhichFile+1]);
+		WPlotsCC1p[WhichFile]->SetMarkerColor(Colors[WhichFile+1]);
+//		WPlotsCC1p[WhichFile]->SetFillColor(Colors[WhichFile]);
+		PrettyPlot(WPlotsCC1p[WhichFile]);
+//		WPlotsCC1p[WhichFile]->SetFillColorAlpha(Colors[WhichFile],0.35);
+//		WPlotsCC1p[WhichFile]->SetFillStyle(3001);
+		
+//		WPlotsCC1p[WhichFile]->Draw("e2 same");
+		WPlotsCC1p[WhichFile]->Draw("hist same");
+		leg->AddEntry(WPlotsCC1p[WhichFile],"MC " + Label[WhichFile],"l");			
 
 	}
 

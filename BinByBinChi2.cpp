@@ -9,22 +9,50 @@
 #include <TEfficiency.h>
 #include <TMath.h>
 #include <TLatex.h>
+#include <TVectorD.h>
+#include <TMatrixD.h>
 
 #include <iostream>
 #include <vector>
 #include <sstream>
 #include <string>
-//#include <math>
 
-#include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/myFunctions.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
-
+#include "/home/afroditi/Dropbox/PhD/Secondary_Code/mySimFunctions.cpp"
 #include "../myClasses/Constants.h"
+#include "../myClasses/Util.h"
 
 using namespace std;
 using namespace Constants;
+
+// -----------------------------------------------------------------------------------------------
+
+double Chi2(TH1D* h1,TH1D* h2, int LowBin = -1, int HighBin = -1) {
+
+	int NBinsX = h1->GetXaxis()->GetNbins();
+
+	double chi2 = 0;
+	
+	if (LowBin == -1) { LowBin = 0; }
+	if (HighBin == -1) { HighBin = NBinsX; }	
+
+	for (int WhichXBin = LowBin; WhichXBin < HighBin; WhichXBin++) {
+
+		double h1Entry = h1->GetBinContent(WhichXBin+1);
+		double h1Error = h1->GetBinError(WhichXBin+1);
+		double h2Entry = h2->GetBinContent(WhichXBin+1);
+		double h2Error = h2->GetBinError(WhichXBin+1);
+
+		double num = TMath::Power(h1Entry - h2Entry,2.);
+		double den = TMath::Power(h1Error,2.) + TMath::Power(h2Error,2.);
+		if (den != 0) { chi2 += (num / den); }
+
+	}
+
+	return chi2;
+
+}
+
+// -----------------------------------------------------------------------------------------------
 
 void BinByBinChi2() {
 
@@ -34,6 +62,7 @@ void BinByBinChi2() {
 	vector<TString> PlotNames;
 
 	TString PathToFiles = "myXSec/";
+	TString PathToCovFiles = "myMigrationMatrices/";	
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -46,13 +75,6 @@ void BinByBinChi2() {
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot"); 
-//	PlotNames.push_back("EQEPlot"); 
-//	PlotNames.push_back("Q2Plot");
-
-//	PlotNames.push_back("kMissPlot");
-//	PlotNames.push_back("PMissPlot");
-//	PlotNames.push_back("PMissMinusPlot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -61,110 +83,74 @@ void BinByBinChi2() {
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
+//	Runs.push_back("Run2");
+//	Runs.push_back("Run3");
+//	Runs.push_back("Run4");
+//	Runs.push_back("Run5");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
+	vector<TString> NameOfSamples; NameOfSamples.clear();
+	
+	// CV
+
+//	NameOfSamples.push_back("Overlay9");
+
+	NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");
+	//NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");
+	NameOfSamples.push_back("SuSav2");
+	NameOfSamples.push_back("NuWro");
+	NameOfSamples.push_back("GiBUU");
+	NameOfSamples.push_back("GENIEv2");
+	NameOfSamples.push_back("NEUT");
+	NameOfSamples.push_back("GENIEv3_0_4");
+
+	const int NSamples = NameOfSamples.size();
+	
+	vector<TFile*> FileSample; FileSample.resize(NSamples);
+	
+	for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {	
+	
+		if (
+			NameOfSamples[WhichSample] == "Genie_v3_0_6_Out_Of_The_Box" || 
+			NameOfSamples[WhichSample] == "Genie_v3_0_6_uB_Tune_1" || 
+			NameOfSamples[WhichSample] == "SuSav2" ||
+			NameOfSamples[WhichSample] == "GENIEv2" ||
+			NameOfSamples[WhichSample] == "GENIEv3_0_4"
+		) {
+			FileSample[WhichSample] = TFile::Open("../myGenieAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root"); 
+		}
+
+		if (NameOfSamples[WhichSample] == "NuWro") 
+			{ FileSample[WhichSample] = TFile::Open("../myNuWroAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root"); }
+
+		if (NameOfSamples[WhichSample] == "GiBUU") 
+			{ FileSample[WhichSample] = TFile::Open("../myGiBUUAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root"); }
+
+		if (NameOfSamples[WhichSample] == "NEUT") 
+			{ FileSample[WhichSample] = TFile::Open("../myNEUTAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root"); }
+	
+	}		
+
+	// -----------------------------------------------------------------------------------------------------------------------------------------
+	
+	vector<TFile*> DataFileSample; DataFileSample.resize(NRuns);
+	vector<TFile*> CovarianceFiles; CovarianceFiles.resize(NRuns);			
+	
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
-		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
-		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
-		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
-
-		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
-
-		vector<TString> NameOfSamples; NameOfSamples.clear();
+		DataFileSample[WhichRun] = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+			
+		CovarianceFiles[WhichRun] = TFile::Open(PathToCovFiles+UBCodeVersion+"/WienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+			
+	}		
 	
-		// CV
+	// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		NameOfSamples.push_back("Overlay9");
-
-		NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");
-		NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");
-		NameOfSamples.push_back("SuSav2");
-		NameOfSamples.push_back("NuWro");
-		NameOfSamples.push_back("GiBUU");
-		NameOfSamples.push_back("GENIEv2");
-		NameOfSamples.push_back("NEUT");
-		NameOfSamples.push_back("GENIEv3_0_4");
-
-		const int NSamples = NameOfSamples.size();
-		vector<TFile*> FileSample; FileSample.clear();
-
-		// -------------------------------------------------------------------------------------------------------------------
-
-		// Open the files and grap the relevant plots
-
-		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
-
-			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
-			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
-			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
-
-			// CV With Statistical Uncertainties
-
-			if (NameOfSamples[WhichSample] == "Overlay9") { // CV with statistical uncertainties only for now
-
-				FileSample.push_back(TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root")); 
-
-				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
-
-					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
-					CurrentPlotsReco.push_back(histReco);
-
-					TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-					CurrentPlotsCC1pReco.push_back(histCC1pReco);
-
-					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
-					CurrentPlotsTrue.push_back(histTrue);
-		
-				}
-
-			} 
-
-			else {
-
-				if (
-					NameOfSamples[WhichSample] == "Genie_v3_0_6_Out_Of_The_Box" || 
-					NameOfSamples[WhichSample] == "Genie_v3_0_6_uB_Tune_1" || 
-					NameOfSamples[WhichSample] == "SuSav2" ||
-					NameOfSamples[WhichSample] == "GENIEv2" ||
-					NameOfSamples[WhichSample] == "GENIEv3_0_4"
-				) {
-					FileSample.push_back(TFile::Open("../myGenieAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); 
-				}
-
-				if (NameOfSamples[WhichSample] == "NuWro") 
-					{ FileSample.push_back(TFile::Open("../myNuWroAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
-
-				if (NameOfSamples[WhichSample] == "GiBUU") 
-					{ FileSample.push_back(TFile::Open("../myGiBUUAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
-
-				if (NameOfSamples[WhichSample] == "NEUT") 
-					{ FileSample.push_back(TFile::Open("../myNEUTAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
-
-				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
-
-					TH1D* histReco = nullptr;
-					CurrentPlotsReco.push_back(histReco);
-
-					TH1D* histCC1pReco = nullptr;
-					CurrentPlotsCC1pReco.push_back(histCC1pReco);
-
-					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
-					CurrentPlotsTrue.push_back(histTrue);
-		
-				}
-
-			}
-
-			PlotsReco.push_back(CurrentPlotsReco);		
-			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
-			PlotsTrue.push_back(CurrentPlotsTrue);		
-
-		}
+	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		// -----------------------------------------------------------------------------------------------------------------------------
 
@@ -176,80 +162,34 @@ void BinByBinChi2() {
 
 			cout << PlotNames[WhichPlot] << endl << endl;
 
-			int Nbins = PlotsReco[0][WhichPlot]->GetXaxis()->GetNbins();
+			// -----------------------------------------------------------------------------------------------------------------
+			
+			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
+			TH1D* MCPlot = (TH1D*)(DataFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
+			
+			TH2D* Covariance = (TH2D*)(CovarianceFiles[WhichRun]->Get("TotalCovariance_"+PlotNames[WhichPlot]));			
+
+			int n = DataPlot->GetXaxis()->GetNbins();
 
 			// -----------------------------------------------------------------------------------------------------------------
+					
+			vector<TH1D*> Plots; Plots.resize(NSamples);					
+					
+			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+			
+				Plots[WhichSample] = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot])); 
 
-			// BeamOn Statistical Uncertainty
+				double chi2 = Chi2(Plots[WhichSample],DataPlot);							
+				
+				cout << NameOfSamples[WhichSample] << "   chi2 / dof = " << chi2 << " / " << n << endl;
 
-			// Sanity check for my own sanity
-			//cout << "    Data = " << Chi2(PlotsReco[0][WhichPlot],PlotsReco[0][WhichPlot]) << endl;
+			}
 
-			// -----------------------------------------------------------------------------------------------------------------
+			double MCchi2 = Chi2(MCPlot,DataPlot);
 
-			// Overlay
+			cout << "MC  chi2 / dof = " << MCchi2 << " / " << n << endl;							
 
-			cout << "    Overlay = " << Chi2(PlotsReco[0][WhichPlot],PlotsCC1pReco[0][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE Overlay
-
-			cout << "    GENIE Overlay = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[0][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 Out Of The Box
-
-			cout << "    GENIE v3.0.6 = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[1][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 MicroBooNE Tune v1
-
-			cout << "    GENIE v3.0.6 MicroBooNE Tune v1 = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[2][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE SuSav2
-
-			cout << "    GENIE SuSav2 = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[3][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.4
-
-			cout << "    GENIE v3.0.4 = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[8][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE v2
-
-			cout << "    GENIE v2.12.10 = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[6][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// NuWro
-
-			cout << "    NuWro = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[4][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GiBUU
-
-			cout << "    GiBUU = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[5][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// NEUT
-
-			cout << "    NEUT = " << Chi2(PlotsReco[0][WhichPlot],PlotsTrue[7][WhichPlot]) << " / " << Nbins << endl;
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			cout << endl;
-			cout << "----------------------------------------------------------------------------------------------------------------------------" << endl;
-			cout << endl << endl ;
+			cout << endl << endl;
 
 		} // End of the loop over the plots
 

@@ -178,8 +178,8 @@ void MigrationMatrices(TString OverlaySample) {
 	
 				if (OverlaySample == "") {
 		
-					TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
-							    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
+					TString PlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+NameOfSamples[WhichSample];
+					TCanvas* PlotCanvas = new TCanvas(PlotCanvasName,PlotCanvasName,205,34,1024,768);
 					PlotCanvas->cd();
 					PlotCanvas->SetBottomMargin(0.16);
 					PlotCanvas->SetLeftMargin(0.15);

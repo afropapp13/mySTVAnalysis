@@ -1,3 +1,10 @@
+# Don't forget to run the effective efficiencies as well
+
+root -l script_Detector_Systematics.C
+root -l script_Flux_Systematics.C
+root -l script_G4_Systematics.C
+root -l script_Genie_Systematics.C
+
 #################################################################################################################################
 
 root -l script_WienerSVD_Systematics.C
@@ -53,11 +60,16 @@ root -l Systematics.cpp
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
 
+root -l OverlayXSecMethods.C
+
 root -l OverlayXSec.C
 
 root -l WienerSVD_OverlayXSec.C
 
 root -l IntegratedXSecs.C
+
+root -l BinByBinChi2.cpp
+.L 
 
 #################################################################################################################################
 
