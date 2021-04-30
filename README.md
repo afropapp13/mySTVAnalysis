@@ -7,11 +7,13 @@ root -l script_Genie_Systematics.C
 
 #################################################################################################################################
 
+# Now WienerSVD
+
 root -l script_WienerSVD_Systematics.C
 
 root -l WienerSVD_Merge_Covariances.cpp
 
-root -l WienerSVD_XSection_Extraction.cpp
+root -l script_WienerSVD_XSec.C
 
 #################################################################################################################################
 #################################################################################################################################
@@ -46,30 +48,39 @@ root -l Genie_Systematics.cpp
 
 root -l Flux_Systematics.cpp
 
-
 #################################################################################################################################
 
 # Plotting the final results / total uncertainties / putting everything together
 
 root -l Systematics.cpp
 
-# Download the relevant xsecs
+# Download the relevant xsecs & plots
+
+# (locally)
+
+./myDownloadScripts/DownloadXSec.sh
+./myDownloadScripts/DownloadPlots.sh
+
+cd ../myEvents/
+./Syst_DownloadEventRatePlots.sh
+cd ../mySTVAnalysis/
 
 #################################################################################################################################
 
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
 
+# (locally)
+
+root -l OverlayGenerators.cpp
+
+root -l WienerSVD_OverlayGenerators.cpp
+
 root -l OverlayXSecMethods.C
-
-root -l OverlayXSec.C
-
-root -l WienerSVD_OverlayXSec.C
 
 root -l IntegratedXSecs.C
 
 root -l BinByBinChi2.cpp
-.L 
 
 #################################################################################################################################
 

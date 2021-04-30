@@ -377,6 +377,8 @@ void OverlayGenerators() {
 			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Total Unc
 			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/Generator_TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
+			delete PlotCanvas;
+
 			// ----------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots

@@ -26,6 +26,38 @@
 using namespace std;
 using namespace Constants;
 
+// --------------------------------------------------------------------------------------------------------------------------------------------
+
+void Multiply(TH1D* True, TH2D* SmearMatrix) {
+
+	int XBins = SmearMatrix->GetXaxis()->GetNbins();
+	int YBins = SmearMatrix->GetYaxis()->GetNbins();
+
+	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
+
+	for (int WhichXBin = 0; WhichXBin < XBins; WhichXBin++) {
+
+		double Entry = 0.;
+
+		for (int WhichYBin = 0; WhichYBin < YBins; WhichYBin++) {
+
+			double TrueInBin = True->GetBinContent(WhichYBin + 1);
+			double MigrationInBin = SmearMatrix->GetBinContent(WhichYBin + 1,WhichXBin + 1);
+
+			Entry +=  MigrationInBin * TrueInBin;
+	
+		}
+
+		// Bin entry in reco space
+
+		True->SetBinContent(WhichXBin+1,Entry);
+
+	}
+
+	return;
+
+}
+
 // -------------------------------------------------------------------------------------------------------------------------------------
 
 int LocateBinWithValue(TH1D* h, double Value) {
@@ -129,6 +161,9 @@ void WienerSVD_OverlayGenerators() {
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
+					TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
+					CurrentPlotsTotalReco.push_back(histTotalReco);
+
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
 
@@ -160,7 +195,7 @@ void WienerSVD_OverlayGenerators() {
 				if (NameOfSamples[WhichSample] == "NEUT") 
 					{ FileSample.push_back(TFile::Open("../myNEUTAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
 
-				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
+				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
 					TH1D* histTotalReco = nullptr;
 					CurrentPlotsTotalReco.push_back(histTotalReco);
@@ -191,6 +226,8 @@ void WienerSVD_OverlayGenerators() {
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
 
+			TH2D* Ac = (TH2D*)FileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
+
 			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
 			PlotCanvas->cd();
 
@@ -217,12 +254,12 @@ void WienerSVD_OverlayGenerators() {
 			PlotsReco[0][WhichPlot]->GetXaxis()->SetTitleSize(0.06);
 			PlotsReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.06);
 			PlotsReco[0][WhichPlot]->GetXaxis()->SetTitleOffset(1.05);
-			PlotsReco[0][WhichPlot]->GetXaxis()->SetNdivisions(5);
+			PlotsReco[0][WhichPlot]->GetXaxis()->SetNdivisions(8);
 
 
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-			PlotsReco[0][WhichPlot]->GetYaxis()->SetNdivisions(4);
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetNdivisions(8);
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.2);
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
@@ -235,8 +272,8 @@ void WienerSVD_OverlayGenerators() {
 			int MinValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MinValue);
 			double MinValueError = PlotsReco[0][WhichPlot]->GetBinError(MinValueBin);			
 
-			double min = TMath::Min(0., 0.9*(MinValue-MinValueError));
-			double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));															
+			double min = TMath::Min(0., 0.8*(MinValue-MinValueError));
+			double max = TMath::Max(0., 1.15*(MaxValue+MaxValueError));													
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,max);
 
 			PlotsReco[0][WhichPlot]->SetLineWidth(2);
@@ -244,7 +281,9 @@ void WienerSVD_OverlayGenerators() {
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.5);
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
-			PlotsReco[0][WhichPlot]->Draw("e1x0 same");			
+			PlotsReco[0][WhichPlot]->Draw("e1x0 same");
+
+			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same");			
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -259,6 +298,8 @@ void WienerSVD_OverlayGenerators() {
 
 			// Genie v3.0.6 Out Of The Box
 
+			Multiply(PlotsTrue[1][WhichPlot],Ac);
+
 			PlotsTrue[1][WhichPlot]->SetLineColor(Geniev3OutOfTheBoxColor);
 			PlotsTrue[1][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[1][WhichPlot]->Draw("hist same");
@@ -266,6 +307,8 @@ void WienerSVD_OverlayGenerators() {
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// Genie v3.0.6 MicroBooNE Tune v1
+
+			Multiply(PlotsTrue[2][WhichPlot],Ac);
 
 			PlotsTrue[2][WhichPlot]->SetLineColor(GenieColor);
 			PlotsTrue[2][WhichPlot]->SetLineWidth(3);
@@ -275,6 +318,8 @@ void WienerSVD_OverlayGenerators() {
 
 			// Genie SuSav2
 
+			Multiply(PlotsTrue[3][WhichPlot],Ac);
+
 			PlotsTrue[3][WhichPlot]->SetLineColor(SuSav2Color);
 			PlotsTrue[3][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[3][WhichPlot]->Draw("hist same");
@@ -282,6 +327,8 @@ void WienerSVD_OverlayGenerators() {
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// NuWro
+
+			Multiply(PlotsTrue[4][WhichPlot],Ac);
 
 			PlotsTrue[4][WhichPlot]->SetLineColor(NuWroColor);
 			PlotsTrue[4][WhichPlot]->SetLineWidth(3);
@@ -291,6 +338,8 @@ void WienerSVD_OverlayGenerators() {
 
 			// GiBUU
 
+			Multiply(PlotsTrue[5][WhichPlot],Ac);
+
 			PlotsTrue[5][WhichPlot]->SetLineColor(GiBUUColor);
 			PlotsTrue[5][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[5][WhichPlot]->Draw("hist same");
@@ -298,6 +347,8 @@ void WienerSVD_OverlayGenerators() {
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GENIE v2
+
+			Multiply(PlotsTrue[6][WhichPlot],Ac);
 
 			PlotsTrue[6][WhichPlot]->SetLineColor(GENIEv2Color);
 			PlotsTrue[6][WhichPlot]->SetLineWidth(3);
@@ -307,6 +358,8 @@ void WienerSVD_OverlayGenerators() {
 
 			// NEUT
 
+			Multiply(PlotsTrue[7][WhichPlot],Ac);
+
 			PlotsTrue[7][WhichPlot]->SetLineColor(NEUTColor);
 			PlotsTrue[7][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[7][WhichPlot]->Draw("hist same");
@@ -314,6 +367,8 @@ void WienerSVD_OverlayGenerators() {
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GENIE v3.0.4
+
+			Multiply(PlotsTrue[8][WhichPlot],Ac);
 
 			PlotsTrue[8][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
 			PlotsTrue[8][WhichPlot]->SetLineWidth(3);
@@ -373,6 +428,8 @@ void WienerSVD_OverlayGenerators() {
 			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions
 
 			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/WienerSVD_Generator_TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+
+			delete PlotCanvas;
 
 			// ----------------------------------------------------------------------------------------------
 

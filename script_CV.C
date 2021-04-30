@@ -13,8 +13,8 @@ void script_CV() {
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L ../../myClasses/Util.C++");
-	gROOT->ProcessLine(".L ../../myClasses/WienerSVD.C++");
+//	gROOT->ProcessLine(".L ../../myClasses/Util.C++");
+//	gROOT->ProcessLine(".L ../../myClasses/WienerSVD.C++");
 
 	// -----------------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ void script_CV() {
 
 //	gROOT->ProcessLine(".L FFXSection_Extraction.cpp++");
 
-	gROOT->ProcessLine(".L WienerSVD_XSection_Extraction.cpp++");
+//	gROOT->ProcessLine(".L WienerSVD_XSection_Extraction.cpp++");
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
@@ -70,9 +70,9 @@ void script_CV() {
 
 //		gROOT->ProcessLine("FFXSection_Extraction(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\")");
+//		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true)");		
+//		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true)");		
 
 	}
 

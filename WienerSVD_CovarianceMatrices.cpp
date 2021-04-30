@@ -17,7 +17,7 @@ using namespace Constants;
 #include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
 #include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
 
-// TString Syst = "NTarget" "POT" "Stat" "LY" "TPC" "XSec" "G4" "Flux"
+// TString Syst = "NTarget" "POT" "Stat" "LY" "TPC" "XSec" "G4" "Flux" "Dirt" "MC_Stat" "MC_POT" "MC_NTarget" "MC_LY" "MC_TPC" "MC_XSec" "MC_G4" "MC_Flux" "MC_Dirt"
 
 void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
 
@@ -95,7 +95,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	std::vector<TH1D*> UniHistoFlux;
 	std::vector<double> UniFlux;
 
-	if (Syst == "LY") {
+	if (Syst == "LY" || Syst == "MC_LY") {
 
 		AltModels.push_back("_LYDown"); Colors.push_back(kRed+1); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_LYRayleigh"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
@@ -103,7 +103,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 	}
 
-	if (Syst == "TPC") {
+	if (Syst == "TPC" || Syst == "MC_TPC") {
 
 		AltModels.push_back("_WireModX"); Colors.push_back(kRed+1); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_WireModYZ"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
@@ -115,7 +115,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 	}
 
-	if (Syst == "XSec") {
+	if (Syst == "XSec" || Syst == "MC_XSec") {
 
 		UniAltModels.push_back("_AxFFCCQEshape_UBGenie"); Universes.push_back(2); 
 		UniAltModels.push_back("_DecayAngMEC_UBGenie"); Universes.push_back(2);
@@ -141,7 +141,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 	}
 
-	if (Syst == "G4") {
+	if (Syst == "G4" || Syst == "MC_G4") {
 
 		UniAltModels.push_back("_reinteractions_piminus_Geant4"); Universes.push_back(100);
 		UniAltModels.push_back("_reinteractions_piplus_Geant4"); Universes.push_back(100);
@@ -160,7 +160,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 	}
 
-	if (Syst == "Flux") {
+	if (Syst == "Flux" || Syst == "MC_Flux") {
 
 		UniAltModels.push_back("_horncurrent_FluxUnisim"); Universes.push_back(100);
 		UniAltModels.push_back("_kminus_PrimaryHadronNormalization"); Universes.push_back(100);
@@ -225,7 +225,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 		double DataPOT = ReturnBeamOnRunPOT(Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);
 
-		if (Syst == "Flux") {
+		if (Syst == "Flux" || Syst == "MC_Flux") {
 
 			UniFlux.clear();
 
@@ -247,7 +247,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 		TString ExactFileLocation = PathToFiles+CutExtension;
 		TString TStringBaseMC = ExactFileLocation+"/STVStudies_"+BaseMC+"_"+Runs[WhichRun]+CutExtension+".root";
-		if (Syst == "LY" || Syst == "TPC") { TStringBaseMC = ExactFileLocation+"/STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CV"+CutExtension+".root"; }
+		if (Syst == "LY" || Syst == "TPC" || Syst == "MC_LY" || Syst == "MC_TPC") { TStringBaseMC = ExactFileLocation+"/STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CV"+CutExtension+".root"; }
 
 		MCFileSample[WhichRun] = TFile::Open(TStringBaseMC,"readonly");
 		BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
@@ -292,8 +292,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 			// -------------------------------------------------------------------------------------------------------
 
 			TH1D* DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+			TH1D* AltDataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
 
-			if (BeamOnSample == "BeamOn9") { // Beam On Sample, need to subtract ALL backgrounds
+			if (BeamOnSample == "BeamOn9" || BeamOnSample == "Overlay9") { // Beam On Sample, need to subtract ALL backgrounds
 
 				DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
 				DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
@@ -305,6 +306,18 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt],-1.);
 					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
 					AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot],-1.);
+
+				}
+
+				if (Syst == "Dirt" || Syst == "MC_Dirt") {
+
+					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
+
+					// Scale the dirt sample by 25% down
+					TH1D* DirtClone = (TH1D*)(DirtPlots[WhichPlot]->Clone());
+					DirtClone->Scale(0.75);
+					AltDataPlot->Add(DirtClone,-1.);
 
 				}
 
@@ -327,7 +340,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// LY / TPC overlays
 
-			if (Syst == "LY" || Syst == "TPC") {
+			if (Syst == "LY" || Syst == "TPC" || Syst == "MC_LY" || Syst == "MC_TPC") {
 
 				TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 				TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
@@ -338,7 +351,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				leg->SetBorderSize(0);
 				leg->SetTextFont(FontStyle);
 				leg->SetTextSize(TextSize-0.02);
-				if (Syst == "TPC") { leg->SetTextSize(TextSize-0.03); }
+				if (Syst == "TPC" || Syst == "MC_TPC") { leg->SetTextSize(TextSize-0.03); }
 				leg->SetNColumns(3);
 
 				DataPlot->GetXaxis()->CenterTitle();
@@ -398,7 +411,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// XSec overlays
 
-			if (Syst == "XSec" || Syst == "G4" || Syst == "Flux") {
+			if (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux") {
 
 				for (int unialt = 0; unialt < (int)(UniAltModels.size()); unialt++ ) {
 
@@ -528,7 +541,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 					// Based on the type of systematic unceratainty, choose how to handle it
 
-					if (Syst == "NTarget") {
+					if (Syst == "NTarget" || Syst == "MC_NTarget") {
 
 						AltDataEntryX = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorX = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
@@ -541,7 +554,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
-					} else if (Syst == "POT") {
+					} else if (Syst == "POT" || Syst == "MC_POT") {
 
 						AltDataEntryX = (1+POTUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorX = (1+POTUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
@@ -554,7 +567,20 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
-					} else if (Syst == "Stat") {
+					} else if (Syst == "Dirt" || Syst == "MC_Dirt") {
+
+						AltDataEntryX = AltDataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataErrorX = AltDataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						CovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovError = TMath::Max( TMath::Sqrt( 
+							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+
+					} else if (Syst == "Stat" || Syst == "MC_Stat") {
 
 						if (WhichXBin == WhichYBin) {
 
@@ -585,7 +611,10 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
-					} else if (Syst == "LY" || Syst == "TPC" || Syst == "XSec" || Syst == "G4" || Syst == "Flux") {
+					} else if (
+						Syst == "LY" || Syst == "TPC" || Syst == "XSec" || Syst == "G4" || Syst == "Flux" ||
+						Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux"
+					) {
 
 						for (int alt = 0; alt < NAltModels; alt++ ) {
 
@@ -598,7 +627,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 							AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 							AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-							if (Syst == "Flux") {
+							if (Syst == "Flux" || Syst == "MC_Flux") {
 
 								AltDataEntryX = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1) / (UniFlux[alt] * NTargets) * Units;
 								AltDataErrorX = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1) / (UniFlux[alt] * NTargets) * Units;

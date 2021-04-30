@@ -35,7 +35,7 @@ void IntegratedXSecs() {
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot"); 
+	PlotNames.push_back("MuonMomentumPlot"); 
 	PlotNames.push_back("MuonCosThetaPlot"); 
 //	PlotNames.push_back("MuonPhiPlot");
 //	PlotNames.push_back("ProtonMomentumPlot"); 
@@ -48,9 +48,9 @@ void IntegratedXSecs() {
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-//	Runs.push_back("Run1");
+	Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+//	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
 

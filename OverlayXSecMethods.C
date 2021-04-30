@@ -162,7 +162,7 @@ void OverlayXSecMethods() {
 
 			int n = Wh->GetXaxis()->GetNbins();
 			double Nuedges[n+1];   
-			for (int i = 0; i < n+1; i++) { Nuedges[i] = Wh->GetBinLowEdge(i+1) + 0.2 * Wh->GetBinWidth(i+1); }
+			for (int i = 0; i < n+1; i++) { Nuedges[i] = Wh->GetBinLowEdge(i+1) + 0.1 * Wh->GetBinWidth(i+1); }
 
 			TString Xtitle = Wh->GetXaxis()->GetTitle();
 			TString Ytitle = Wh->GetYaxis()->GetTitle();		
@@ -195,11 +195,11 @@ void OverlayXSecMethods() {
 			Plots->GetYaxis()->SetRangeUser(min,max);
 			Plots->GetYaxis()->SetTitleOffset(1.2);			
 
-			Plots->Draw("e same");
-			Offset->Draw("e same");
+			Plots->Draw("p0 hist same");
+			Offset->Draw("p0 hist same");
 
-			leg->AddEntry(Plots,"EE BeamOn " + Label[WhichFile],"lep");
-			leg->AddEntry(Offset,"SVD BeamOn " + Label[WhichFile],"lep");			
+			leg->AddEntry(Plots,"EE BeamOn " + Label[WhichFile],"p");
+			leg->AddEntry(Offset,"SVD BeamOn " + Label[WhichFile],"p");			
 
 			// -----------------------------------------------------------------------------------------------------------------------------
 

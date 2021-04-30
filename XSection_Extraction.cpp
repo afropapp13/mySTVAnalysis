@@ -21,6 +21,8 @@
 using namespace std;
 using namespace Constants;
 
+#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
+
 TString ToStringPOT(double num) {
 
 	std::ostringstream start;

@@ -22,10 +22,10 @@
 #include "ubana/myClasses/Util.h"
 #include "ubana/myClasses/WienerSVD.h"
 
-#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
-
 using namespace std;
 using namespace Constants;
+
+#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -375,7 +375,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			// ------------------------------------------------------------------------------------------	
 
-			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Additional Smearing Matirx",n,Nuedges,n,Nuedges);
+			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
 			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Wiener Filter Vector",n,0,n);
 			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
 
@@ -410,6 +410,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TH1D* unfStatUnc = new TH1D("unfStatUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfSystUnc = new TH1D("unfSystUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
+			TH1D* unfStatUncOverCV = new TH1D("unfStatUncOverCV_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfSystUncOverCV = new TH1D("unfSystUncOverCV_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+
 			// --------------------------------------------------------------------------------------------------
 
 			V2H(unfold, unf);
@@ -417,7 +420,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			V2H(unfoldStat, unfStat);
 			V2H(unfoldSyst, unfSyst);	
 
-			// --------------------------------------------------------------------------------------------------																												
+			// --------------------------------------------------------------------------------------------------					
 
 			// Scaling by correct units & bin width division
 
@@ -430,13 +433,14 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 				double CVInBin = unf->GetBinContent(i);
 				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
+
 				double StatCovUnc = TMath::Sqrt(StatUnfoldCov(i-1,i-1) );
 				double SystCovUnc = TMath::Sqrt(SystUnfoldCov(i-1,i-1) );
 
 				unf->SetBinError(i, CovUnc );
 
-				//unfStat->SetBinContent(i, CVInBin );
-				//unfSyst->SetBinContent(i, CVInBin );
+				unfStat->SetBinContent(i, CVInBin );
+				unfSyst->SetBinContent(i, CVInBin );
 
 				unfStat->SetBinError(i, StatCovUnc );
 				unfSyst->SetBinError(i, SystCovUnc );
@@ -444,12 +448,15 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfStatUnc->SetBinContent(i, StatCovUnc / CovUnc * 100.);
 				unfSystUnc->SetBinContent(i, SystCovUnc / CovUnc * 100.);
 
+				unfStatUncOverCV->SetBinContent(i, StatCovUnc / TMath::Abs(CVInBin) * 100.);
+				unfSystUncOverCV->SetBinContent(i, SystCovUnc / TMath::Abs(CVInBin) * 100.);
+
 			}
 
 			ReweightXSec(unf);
 
 			ReweightXSec(unfStat);
-			ReweightXSec(unfSyst);																									
+			ReweightXSec(unfSyst);													
 
 			// ------------------------------------------------------------------------------------
 
@@ -479,7 +486,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			double MinValueError = unf->GetBinError(MinValueBin);			
 
 			double min = TMath::Min(0., 0.8*(MinValue-MinValueError));
-			double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));											
+			double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));	
+			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" && ClosureTest == false) { max = TMath::Max(0., 1.5*(MaxValue+MaxValueError)); }					
 			unf->GetYaxis()->SetRangeUser(min,max);
 			unf->SetLineColor(BeamOnColor);
 			unf->SetMarkerColor(BeamOnColor);
@@ -499,7 +507,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			ReweightXSec(TrueUnf);
 			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
 			TrueUnf->SetLineColor(OverlayColor);
-			//TrueUnf->SetFillColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
 			PlotCanvas->cd();					
 			TrueUnf->Draw("hist same");
@@ -508,10 +515,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			if (ClosureTest == true) { unf->Draw("p0 hist same"); }
 			else { 
 				
-				unf->Draw("ex0 same"); 
+				unf->Draw("e1x0 same"); 
 
-				// unfStat->SetLineColor(kRed);
-				// unfStat->Draw("ex0 same");
+				unfStat->SetLineColor(kBlack);
+				unfStat->Draw("e1x0 same");
 
 				// unfSyst->SetLineColor(kBlue);
 				// unfSyst->Draw("ex0 same");				
@@ -683,7 +690,14 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 					unfTPCUnc->SetBinContent(i, TPCCovUnc / CovUnc * 100.);
 					unfXSecUnc->SetBinContent(i, XSecCovUnc / CovUnc * 100.);
 					unfG4Unc->SetBinContent(i, G4CovUnc / CovUnc * 100.);
-					unfFluxUnc->SetBinContent(i, FluxCovUnc / CovUnc * 100.);	
+					unfFluxUnc->SetBinContent(i, FluxCovUnc / CovUnc * 100.);
+
+					unfNTargetUncOverCV->SetBinContent(i, NTargetCovUnc / TMath::Abs(CVBinEntry) * 100.);		
+					unfLYUncOverCV->SetBinContent(i, LYCovUnc / TMath::Abs(CVBinEntry) * 100.);
+					unfTPCUncOverCV->SetBinContent(i, TPCCovUnc / TMath::Abs(CVBinEntry) * 100.);
+					unfXSecUncOverCV->SetBinContent(i, XSecCovUnc / TMath::Abs(CVBinEntry) * 100.);
+					unfG4UncOverCV->SetBinContent(i, G4CovUnc / TMath::Abs(CVBinEntry) * 100.);
+					unfFluxUncOverCV->SetBinContent(i, FluxCovUnc / TMath::Abs(CVBinEntry) * 100.);	
 
 				}				
 
@@ -694,7 +708,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				ReweightXSec(unfTPC);
 				ReweightXSec(unfXSec);
 				ReweightXSec(unfG4);
-				ReweightXSec(unfFlux);				
+				ReweightXSec(unfFlux);	
+
+				// Do NOT divide the uncertainty (Unc & UncOverCV) plots by the bin width, they cancel out
+
+				// --------------------------------------------------------------------------------------------------------------------------			
 
 				TString CanvasNameUnc = "Unc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 				TCanvas* PlotCanvasUnc = new TCanvas(CanvasNameUnc,CanvasNameUnc,205,34,1024,768);
@@ -717,7 +735,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfStatUnc->GetXaxis()->SetTitleFont(FontStyle);			
 				unfStatUnc->GetXaxis()->SetNdivisions(6);	
 
-				unfStatUnc->GetYaxis()->SetTitle("Uncertainty Source / Total [%]");
+				unfStatUnc->GetYaxis()->SetTitle("Unc Source / Total Unc [%]");
 				unfStatUnc->GetYaxis()->CenterTitle();
 				unfStatUnc->GetYaxis()->SetLabelSize(TextSize);
 				unfStatUnc->GetYaxis()->SetLabelFont(FontStyle);
@@ -742,7 +760,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfTPCUnc->SetLineColor(NEUTColor);
 				unfXSecUnc->SetLineColor(SuSav2Color);
 				unfG4Unc->SetLineColor(GENIEv2Color);
-				unfFluxUnc->SetLineColor(GenieColor);																												
+				unfFluxUnc->SetLineColor(GenieColor);																
 
 				unfStatUnc->Draw("hist text0 same");
 				unfPOTUnc->Draw("hist text0 same");				
@@ -760,13 +778,89 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				legUnc->AddEntry(unfTPCUnc,"TPC","l");
 				legUnc->AddEntry(unfXSecUnc,"XSec","l");
 				legUnc->AddEntry(unfG4Unc,"G4","l");
-				legUnc->AddEntry(unfFluxUnc,"Flux","l");																				
+				legUnc->AddEntry(unfFluxUnc,"Flux","l");														
 
 				legUnc->Draw();											
 
 				TString FullCanvasNameUnc = "/Syst_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				PlotCanvasUnc->SaveAs(CanvasPath+FullCanvasNameUnc);
 				delete PlotCanvasUnc;
+
+				// --------------------------------------------------------------------------------------------------------------------------			
+
+				TString CanvasNameUncOverCV = "UncOverCV_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+				TCanvas* PlotCanvasUncOverCV = new TCanvas(CanvasNameUncOverCV,CanvasNameUncOverCV,205,34,1024,768);
+				PlotCanvasUncOverCV->cd();
+				PlotCanvasUncOverCV->SetBottomMargin(0.16);
+				PlotCanvasUncOverCV->SetTopMargin(0.13);			
+				PlotCanvasUncOverCV->SetLeftMargin(0.2);
+
+				TLegend* legUncOverCV = new TLegend(0.15,0.88,0.95,0.98);
+				legUncOverCV->SetBorderSize(0);
+				legUncOverCV->SetTextSize(0.06);
+				legUncOverCV->SetTextFont(FontStyle);
+				legUncOverCV->SetNColumns(5);
+				legUncOverCV->SetMargin(0.1);								
+
+				unfStatUncOverCV->GetXaxis()->CenterTitle();
+				unfStatUncOverCV->GetXaxis()->SetLabelSize(TextSize);
+				unfStatUncOverCV->GetXaxis()->SetLabelFont(FontStyle);
+				unfStatUncOverCV->GetXaxis()->SetTitleSize(TextSize);
+				unfStatUncOverCV->GetXaxis()->SetTitleFont(FontStyle);			
+				unfStatUncOverCV->GetXaxis()->SetNdivisions(6);	
+
+				unfStatUncOverCV->GetYaxis()->SetTitle("Unc Source / |CV| [%]");
+				unfStatUncOverCV->GetYaxis()->CenterTitle();
+				unfStatUncOverCV->GetYaxis()->SetLabelSize(TextSize);
+				unfStatUncOverCV->GetYaxis()->SetLabelFont(FontStyle);
+				unfStatUncOverCV->GetYaxis()->SetTitleSize(TextSize);
+				unfStatUncOverCV->GetYaxis()->SetTitleFont(FontStyle);			
+				unfStatUncOverCV->GetYaxis()->SetNdivisions(6);
+				unfStatUncOverCV->GetYaxis()->SetRangeUser(0.,109.);					
+
+				unfStatUncOverCV->SetLineWidth(3);
+				unfPOTUncOverCV->SetLineWidth(3);
+				unfNTargetUncOverCV->SetLineWidth(3);
+				unfLYUncOverCV->SetLineWidth(3);
+				unfTPCUncOverCV->SetLineWidth(3);
+				unfXSecUncOverCV->SetLineWidth(3);												
+				unfG4UncOverCV->SetLineWidth(3);
+				unfFluxUncOverCV->SetLineWidth(3);
+
+				unfStatUncOverCV->SetLineColor(BeamOnColor);
+				unfPOTUncOverCV->SetLineColor(OverlayColor);
+				unfNTargetUncOverCV->SetLineColor(GiBUUColor);
+				unfLYUncOverCV->SetLineColor(NuWroColor);
+				unfTPCUncOverCV->SetLineColor(NEUTColor);
+				unfXSecUncOverCV->SetLineColor(SuSav2Color);
+				unfG4UncOverCV->SetLineColor(GENIEv2Color);
+				unfFluxUncOverCV->SetLineColor(GenieColor);													
+
+				unfStatUncOverCV->Draw("hist text0 same");
+				unfPOTUncOverCV->Draw("hist text0 same");				
+				unfNTargetUncOverCV->Draw("hist text0 same");
+				unfLYUncOverCV->Draw("hist text0 same");				
+				unfTPCUncOverCV->Draw("hist text0 same");
+				unfXSecUncOverCV->Draw("hist text0 same");
+				unfG4UncOverCV->Draw("hist text0 same");
+				unfFluxUncOverCV->Draw("hist text0 same");											
+
+				legUncOverCV->AddEntry(unfStatUncOverCV,"Stat","l");
+				legUncOverCV->AddEntry(unfPOTUncOverCV,"POT","l");
+				legUncOverCV->AddEntry(unfNTargetUncOverCV,"N_{targets}","l");
+				legUncOverCV->AddEntry(unfLYUncOverCV,"LY","l");
+				legUncOverCV->AddEntry(unfTPCUncOverCV,"TPC","l");
+				legUncOverCV->AddEntry(unfXSecUncOverCV,"XSec","l");
+				legUncOverCV->AddEntry(unfG4UncOverCV,"G4","l");
+				legUncOverCV->AddEntry(unfFluxUncOverCV,"Flux","l");														
+
+				legUncOverCV->Draw();											
+
+				TString FullCanvasNameUncOverCV = "/SystOverCV_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				PlotCanvasUncOverCV->SaveAs(CanvasPath+FullCanvasNameUncOverCV);
+				delete PlotCanvasUncOverCV;
+
+				// --------------------------------------------------------------------------------------------------------------------------			
 
 			}							
 
@@ -786,55 +880,55 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 
-            // intrinsic bias (Ac-I) * s_bar formula
+			// intrinsic bias (Ac-I) * s_bar formula
 
-            TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
-            TH1D* bias2 = new TH1D("bias2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias2 w.r.t. unfolded result",n, Nuedges);
-            TMatrixD unit(n,n);
-            unit.UnitMatrix();
-            TVectorD intrinsicbias = (AddSmear - unit)*signal;
-            TVectorD intrinsicbias2 = (AddSmear - unit)*unfold;
+			TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
+			TH1D* bias2 = new TH1D("bias2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias2 w.r.t. unfolded result",n, Nuedges);
+			TMatrixD unit(n,n);
+			unit.UnitMatrix();
+			TVectorD intrinsicbias = (AddSmear - unit)*signal;
+			TVectorD intrinsicbias2 = (AddSmear - unit)*unfold;
 
-            for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 
-                if (signal(i) != 0) { intrinsicbias(i) = intrinsicbias(i)/signal(i); }
-                else { intrinsicbias(i) = 0.; }
-                if (unfold(i) != 0) { intrinsicbias2(i) = intrinsicbias2(i)/unfold(i); }
-                else { intrinsicbias2(i) = 0.; }
-            }	
+			    if (signal(i) != 0) { intrinsicbias(i) = intrinsicbias(i)/signal(i); }
+			    else { intrinsicbias(i) = 0.; }
+			    if (unfold(i) != 0) { intrinsicbias2(i) = intrinsicbias2(i)/unfold(i); }
+			    else { intrinsicbias2(i) = 0.; }
+			}	
 
-		    V2H(intrinsicbias, bias);
-            V2H(intrinsicbias2, bias2);					
+			V2H(intrinsicbias, bias);
+			V2H(intrinsicbias2, bias2);					
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 
-            // Diagonal Uncertainty
+			// Diagonal Uncertainty
 
-            TH1D* fracError = new TH1D("fracError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Fractional uncertainty", n, Nuedges);
-            TH1D* absError = new TH1D("absError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "absolute uncertainty", n, Nuedges);
+			TH1D* fracError = new TH1D("fracError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Fractional uncertainty", n, Nuedges);
+			TH1D* absError = new TH1D("absError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "absolute uncertainty", n, Nuedges);
 
-            for (int i = 1; i <= n; i++) {
+			for (int i = 1; i <= n; i++) {
 
-                fracError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1))/unfold(i-1));
-                absError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1)));
-            }
+			    fracError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1))/unfold(i-1));
+			    absError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1)));
+			}
     
-            /// MSE
-            TH1D* MSE = new TH1D("MSE_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance+bias^2", n, Nuedges);
-            TH1D* MSE2 = new TH1D("MSE2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance", n, Nuedges);
+			/// MSE
+			TH1D* MSE = new TH1D("MSE_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance+bias^2", n, Nuedges);
+			TH1D* MSE2 = new TH1D("MSE2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance", n, Nuedges);
     
-	        for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 
-                MSE->SetBinContent(i+1, TMath::Power(intrinsicbias2(i)*unfold(i),2)+UnfoldCov(i,i));
-                MSE2->SetBinContent(i+1, UnfoldCov(i,i));
+			    MSE->SetBinContent(i+1, TMath::Power(intrinsicbias2(i)*unfold(i),2)+UnfoldCov(i,i));
+			    MSE2->SetBinContent(i+1, UnfoldCov(i,i));
 
-            }
+			}
 
-            // convert matrix/vector to histogram and save
+			// convert matrix/vector to histogram and save
 
-            M2H(AddSmear, smear);
-            V2H(WF, wiener);
-            M2H(UnfoldCov, unfcov);
+			M2H(AddSmear, smear);
+			V2H(WF, wiener);
+			M2H(UnfoldCov, unfcov);
 
 			// ---------------------------------------------------------------------------------------------------------------------------
     
@@ -842,6 +936,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 				ExtractedXSec->cd();
 
+				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
 				unf->Write("Reco"+PlotNames[WhichPlot]);
 				TrueUnf->Write("True"+PlotNames[WhichPlot]);			
 				smear->Write("Ac"+PlotNames[WhichPlot]);
@@ -856,6 +951,19 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				MSE->Write("MSE"+PlotNames[WhichPlot]);
 				MSE2->Write("MSE2"+PlotNames[WhichPlot]);
 				ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]);	
+
+				TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+				TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
+				SmearPlotCanvas->cd();
+				SmearPlotCanvas->SetBottomMargin(0.16);
+				SmearPlotCanvas->SetTopMargin(0.13);			
+				SmearPlotCanvas->SetLeftMargin(0.2);
+
+				smear->Draw("coltz");
+
+				TString SmearCanvas = "/Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
+				delete SmearPlotCanvas;
 
 			}
 

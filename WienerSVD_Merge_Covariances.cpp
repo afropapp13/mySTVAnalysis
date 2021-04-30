@@ -77,6 +77,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> UncSources;
+
 	UncSources.push_back("Stat");
 	UncSources.push_back("POT");
 	UncSources.push_back("NTarget");
@@ -85,6 +86,17 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 	UncSources.push_back("XSec");
 	UncSources.push_back("G4");
 	UncSources.push_back("Flux");
+	UncSources.push_back("Dirt");
+
+	UncSources.push_back("MC_Stat");
+	UncSources.push_back("MC_POT");
+	UncSources.push_back("MC_NTarget");
+	UncSources.push_back("MC_LY");
+	UncSources.push_back("MC_TPC");
+	UncSources.push_back("MC_XSec");
+	UncSources.push_back("MC_G4");
+	UncSources.push_back("MC_Flux");
+	UncSources.push_back("MC_Dirt");
 
 	int NSamples = UncSources.size();
 

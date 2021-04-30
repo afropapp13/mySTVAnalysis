@@ -140,20 +140,20 @@ void Stat_Systematics() {
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 	
-			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+Runs[WhichRun],PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
-			PlotCanvas->cd();
+//			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+Runs[WhichRun],PlotNames[WhichPlot]+Runs[WhichRun],205,34,1024,768);
+//			PlotCanvas->cd();
 
-			TPad *midPad = new TPad("midPad", "", 0.005, 0., 0.995, 0.995);
-			midPad->SetTopMargin(0.12);
-			midPad->SetBottomMargin(0.13);
-			midPad->SetLeftMargin(0.17);
-			midPad->Draw();
+//			TPad *midPad = new TPad("midPad", "", 0.005, 0., 0.995, 0.995);
+//			midPad->SetTopMargin(0.12);
+//			midPad->SetBottomMargin(0.13);
+//			midPad->SetLeftMargin(0.17);
+//			midPad->Draw();
 
-			TLegend* leg = new TLegend(0.03,0.89,0.57,0.99);
-			leg->SetBorderSize(0);
-			leg->SetTextSize(0.06);
-			leg->SetTextFont(FontStyle);
-			leg->SetNColumns(3);
+//			TLegend* leg = new TLegend(0.03,0.89,0.57,0.99);
+//			leg->SetBorderSize(0);
+//			leg->SetTextSize(0.06);
+//			leg->SetTextFont(FontStyle);
+//			leg->SetNColumns(3);
 
 			// ------------------------------------------------------------------------------------------------------------
 
