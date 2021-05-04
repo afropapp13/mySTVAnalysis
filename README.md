@@ -1,5 +1,6 @@
 # Don't forget to run the effective efficiencies as well
 
+root -l script_CV.C
 root -l script_Detector_Systematics.C
 root -l script_Flux_Systematics.C
 root -l script_G4_Systematics.C
@@ -12,6 +13,8 @@ root -l script_Genie_Systematics.C
 root -l script_WienerSVD_Systematics.C
 
 root -l WienerSVD_Merge_Covariances.cpp
+
+root -l WienerSVD_QuantifyUnc.cpp
 
 root -l script_WienerSVD_XSec.C
 

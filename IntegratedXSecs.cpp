@@ -21,6 +21,41 @@
 using namespace std;
 using namespace Constants;
 
+// --------------------------------------------------------------------------------------------------------------------------------------------
+
+void Multiply(TH1D* True, TH2D* SmearMatrix) {
+
+	int XBins = SmearMatrix->GetXaxis()->GetNbins();
+	int YBins = SmearMatrix->GetYaxis()->GetNbins();
+
+	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
+
+	for (int WhichXBin = 0; WhichXBin < XBins; WhichXBin++) {
+
+		double Entry = 0.;
+
+		double TrueInBin = True->GetBinContent(WhichXBin + 1);
+
+		for (int WhichYBin = 0; WhichYBin < YBins; WhichYBin++) {
+
+			double MigrationInBin = SmearMatrix->GetBinContent(WhichXBin + 1,WhichYBin + 1);
+
+			Entry +=  MigrationInBin * TrueInBin;
+	
+		}
+
+		// Bin entry in reco space
+
+		True->SetBinContent(WhichXBin+1,Entry);
+
+	}
+
+	return;
+
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------
+
 void IntegratedXSecs() {
 
 	int DecimalAccuracy = 2;
@@ -35,7 +70,7 @@ void IntegratedXSecs() {
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonMomentumPlot"); 
 	PlotNames.push_back("MuonCosThetaPlot"); 
 //	PlotNames.push_back("MuonPhiPlot");
 //	PlotNames.push_back("ProtonMomentumPlot"); 
@@ -50,7 +85,7 @@ void IntegratedXSecs() {
 	vector<TString> Runs;
 	Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
+	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
 
@@ -164,6 +199,10 @@ void IntegratedXSecs() {
 
 			// -----------------------------------------------------------------------------------------------------------------
 
+			TH2D* Ac = (TH2D*)FileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
+
+			// -----------------------------------------------------------------------------------------------------------------
+
 			cout << PlotNames[WhichPlot] << endl << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -188,48 +227,56 @@ void IntegratedXSecs() {
 
 			// GENIE v3.0.6 Out Of The Box
 
+			Multiply(PlotsTrue[1][WhichPlot],Ac);
 			cout << "    GENIE v3.0.6 = " << IntegratedXSec(PlotsTrue[1][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 //			// GENIE v3.0.6 MicroBooNE Tune v1
 
+//			Multiply(PlotsTrue[2][WhichPlot],Ac);
 //			cout << "    GENIE v3.0.6 MicroBooNE Tune v1 = " << IntegratedXSec(PlotsTrue[2][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GENIE SuSav2
 
+			Multiply(PlotsTrue[3][WhichPlot],Ac);
 			cout << "    GENIE SuSav2 = " << IntegratedXSec(PlotsTrue[3][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GENIE v3.0.4
 
+			Multiply(PlotsTrue[8][WhichPlot],Ac);
 			cout << "    GENIE v3.0.4 = " << IntegratedXSec(PlotsTrue[8][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GENIE v2
 
+			Multiply(PlotsTrue[6][WhichPlot],Ac);
 			cout << "    GENIE v2.12.10 = " << IntegratedXSec(PlotsTrue[6][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// NuWro
 
+			Multiply(PlotsTrue[4][WhichPlot],Ac);
 			cout << "    NuWro = " << IntegratedXSec(PlotsTrue[4][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// GiBUU
 
+			Multiply(PlotsTrue[5][WhichPlot],Ac);
 			cout << "    GiBUU = " << IntegratedXSec(PlotsTrue[5][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// NEUT
 
+			Multiply(PlotsTrue[7][WhichPlot],Ac);
 			cout << "    NEUT = " << IntegratedXSec(PlotsTrue[7][WhichPlot]) << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------

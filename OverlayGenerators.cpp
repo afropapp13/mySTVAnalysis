@@ -181,7 +181,7 @@ void OverlayGenerators() {
 			TPad *midPad = new TPad("midPad", "",0.005, 0., 0.995, 0.995);
 			midPad->SetBottomMargin(0.14);
 			midPad->SetTopMargin(0.12);
-			midPad->SetLeftMargin(0.16);
+			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
 
 			TLegend* leg = new TLegend(0.02,0.89,0.98,0.99);
@@ -262,7 +262,7 @@ void OverlayGenerators() {
 
 			PlotsTrue[2][WhichPlot]->SetLineColor(GenieColor);
 			PlotsTrue[2][WhichPlot]->SetLineWidth(3);
-			PlotsTrue[2][WhichPlot]->Draw("e same");
+			//PlotsTrue[2][WhichPlot]->Draw("e same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -337,8 +337,8 @@ void OverlayGenerators() {
 			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6","l");
 			lGenie->SetTextColor(Geniev3OutOfTheBoxColor);
 
-			TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
-			lGenie_uBTunev1->SetTextColor(GenieColor);
+			//TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
+			//lGenie_uBTunev1->SetTextColor(GenieColor);
 
 			TLegendEntry* lGenie_SuSav2 = leg->AddEntry(PlotsTrue[3][WhichPlot],"SuSav2","l");
 			lGenie_SuSav2->SetTextColor(SuSav2Color);

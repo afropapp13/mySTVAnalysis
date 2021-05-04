@@ -39,10 +39,11 @@ void Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 		double Entry = 0.;
 
+		double TrueInBin = True->GetBinContent(WhichXBin + 1);
+
 		for (int WhichYBin = 0; WhichYBin < YBins; WhichYBin++) {
 
-			double TrueInBin = True->GetBinContent(WhichYBin + 1);
-			double MigrationInBin = SmearMatrix->GetBinContent(WhichYBin + 1,WhichXBin + 1);
+			double MigrationInBin = SmearMatrix->GetBinContent(WhichXBin + 1,WhichYBin + 1);
 
 			Entry +=  MigrationInBin * TrueInBin;
 	
@@ -83,6 +84,7 @@ void WienerSVD_OverlayGenerators() {
 
 	TH1D::SetDefaultSumw2();
 	vector<TString> PlotNames;
+	gStyle->SetEndErrorSize(4);		
 
 	TString PathToFiles = "myXSec/";
 
@@ -269,27 +271,28 @@ void WienerSVD_OverlayGenerators() {
 			double MaxValueError = PlotsReco[0][WhichPlot]->GetBinError(MaxValueBin);
 
 			double MinValue = PlotsReco[0][WhichPlot]->GetMinimum();
-			int MinValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MinValue);
-			double MinValueError = PlotsReco[0][WhichPlot]->GetBinError(MinValueBin);			
+			// int MinValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MinValue);
+			// double MinValueError = PlotsReco[0][WhichPlot]->GetBinError(MinValueBin);			
 
-			double min = TMath::Min(0., 0.8*(MinValue-MinValueError));
-			double max = TMath::Max(0., 1.15*(MaxValue+MaxValueError));													
-			PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(min,max);
+			// double min = TMath::Min(0., 0.8*(MinValue-MinValueError));
+			// double min = TMath::Min(0., 0.8*MinValue);			
+			// double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));													
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,XSecRange[PlotNames[WhichPlot]].second);
 
-			PlotsReco[0][WhichPlot]->SetLineWidth(2);
+			//PlotsReco[0][WhichPlot]->SetLineWidth(2);
 			PlotsReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
-			PlotsReco[0][WhichPlot]->SetMarkerSize(1.5);
+			PlotsReco[0][WhichPlot]->SetMarkerSize(1.);
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
-			PlotsReco[0][WhichPlot]->Draw("e1x0 same");
+			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // Total Unc
 
-			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same");			
+			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only		
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// Overlay
 
-			PlotsTrue[0][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[0][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[0][WhichPlot]->SetLineColor(OverlayColor);
 			//PlotsTrue[0][WhichPlot]->SetFillColor(OverlayColor);
 			PlotsTrue[0][WhichPlot]->Draw("hist same");		
@@ -301,7 +304,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[1][WhichPlot],Ac);
 
 			PlotsTrue[1][WhichPlot]->SetLineColor(Geniev3OutOfTheBoxColor);
-			PlotsTrue[1][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[1][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[1][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -311,7 +314,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[2][WhichPlot],Ac);
 
 			PlotsTrue[2][WhichPlot]->SetLineColor(GenieColor);
-			PlotsTrue[2][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[2][WhichPlot]->SetLineWidth(3);
 			//PlotsTrue[2][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -321,7 +324,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[3][WhichPlot],Ac);
 
 			PlotsTrue[3][WhichPlot]->SetLineColor(SuSav2Color);
-			PlotsTrue[3][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[3][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[3][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -331,7 +334,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[4][WhichPlot],Ac);
 
 			PlotsTrue[4][WhichPlot]->SetLineColor(NuWroColor);
-			PlotsTrue[4][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[4][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[4][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -341,7 +344,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[5][WhichPlot],Ac);
 
 			PlotsTrue[5][WhichPlot]->SetLineColor(GiBUUColor);
-			PlotsTrue[5][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[5][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[5][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -351,7 +354,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[6][WhichPlot],Ac);
 
 			PlotsTrue[6][WhichPlot]->SetLineColor(GENIEv2Color);
-			PlotsTrue[6][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[6][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[6][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -361,7 +364,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[7][WhichPlot],Ac);
 
 			PlotsTrue[7][WhichPlot]->SetLineColor(NEUTColor);
-			PlotsTrue[7][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[7][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[7][WhichPlot]->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -371,7 +374,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[8][WhichPlot],Ac);
 
 			PlotsTrue[8][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
-			PlotsTrue[8][WhichPlot]->SetLineWidth(3);
+			//PlotsTrue[8][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[8][WhichPlot]->Draw("hist same");
 
 			// ---------------------------------------------------------------------------------------------------------
@@ -414,7 +417,7 @@ void WienerSVD_OverlayGenerators() {
 			TLegendEntry* lGenie_NEUT = leg->AddEntry(PlotsTrue[7][WhichPlot],"NEUT","l");
 			lGenie_NEUT->SetTextColor(NEUTColor);
 
-			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],"Genie Overlay","l");
+			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],"MC (uB Tune v2)","l");
 			lGenie_GenieOverlay->SetTextColor(OverlayColor);
 
 //			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");

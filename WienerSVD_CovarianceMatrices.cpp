@@ -111,7 +111,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 		AltModels.push_back("_WireModThetaYZ"); Colors.push_back(kBlue-3); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_SCE"); Colors.push_back(kBlue); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_Recombination2"); Colors.push_back(kMagenta); Universes.push_back(1); AltUniverses.push_back(1);
-		AltModels.push_back("_dEdx"); Colors.push_back(kYellow+2); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_dEdx"); Colors.push_back(kYellow+2); Universes.push_back(1); AltUniverses.push_back(1);
 
 	}
 
@@ -274,6 +274,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			for (int alt = 0; alt < NAltModels; alt++ ) {
 
+				if ( (Syst == "LY" || Syst == "MC_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+					{ continue;}
+
 				// Open Alternative MC files
 
 				TString TStringAltBaseMC = ExactFileLocation+"/STVStudies_"+BaseMC+"_"+Runs[WhichRun]+AltModels[alt]+CutExtension+".root";
@@ -302,6 +305,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
+					if ( (Syst == "LY" || Syst == "MC_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+						{ continue;}
+
 					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
 					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt],-1.);
 					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
@@ -326,6 +332,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				DataPlot = CC1pPlots[WhichPlot];
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
+
+					if ( (Syst == "LY" || Syst == "MC_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+						{ continue;}
 
 					AltBeamOnPlots[WhichPlot][alt] = AltCC1pPlots[WhichPlot][alt];
 
@@ -383,6 +392,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				EventRatePlotCanvas->cd();
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
+
+					if ( (Syst == "LY" || Syst == "MC_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+						{ continue;}
 
 					AltBeamOnPlots[WhichPlot][alt]->SetMarkerColor(Colors[alt]);
 					AltBeamOnPlots[WhichPlot][alt]->SetMarkerStyle(20);
@@ -549,10 +561,12 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
-						CovError = TMath::Max( TMath::Sqrt( 
-							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
-							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						CovEntry = TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+						// CovError = TMath::Max( TMath::Sqrt( 
+						// 	TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+						// 	TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						CovError = 1E-8;
+
 
 					} else if (Syst == "POT" || Syst == "MC_POT") {
 
@@ -562,10 +576,12 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
-						CovError = TMath::Max( TMath::Sqrt( 
-							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
-							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
+//						CovError = TMath::Max( TMath::Sqrt( 
+//							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+//							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						CovError = 1E-8;
+
 
 					} else if (Syst == "Dirt" || Syst == "MC_Dirt") {
 
@@ -575,12 +591,17 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
-						CovError = TMath::Max( TMath::Sqrt( 
-							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
-							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX ) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
+//						CovError = TMath::Max( TMath::Sqrt( 
+//							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+//							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+
+						CovError = 1E-8;
 
 					} else if (Syst == "Stat" || Syst == "MC_Stat") {
+
+						double DataEntryXCV = DataEntryX;
+						double DataEntryYCV = DataEntryY;
 
 						if (WhichXBin == WhichYBin) {
 
@@ -606,17 +627,22 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 						}
 
-						CovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
-						CovError = TMath::Max( TMath::Sqrt( 
-							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
-							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryXCV) * ( (AltDataEntryY - DataEntryY) / DataEntryYCV),1E-8);
+//						CovError = TMath::Max( TMath::Sqrt( 
+//							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+//							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+
+						CovError = 1E-8;
 
 					} else if (
 						Syst == "LY" || Syst == "TPC" || Syst == "XSec" || Syst == "G4" || Syst == "Flux" ||
 						Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux"
-					) {
+					) {						
 
 						for (int alt = 0; alt < NAltModels; alt++ ) {
+
+							if ( (Syst == "LY" || Syst == "MC_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+								{ continue;}							
 
 							double CurrentCovEntry = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
 							double CurrentCovError = Covariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
@@ -637,10 +663,13 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 							}
 
-							double LocalCovEntry = TMath::Max((AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
-							double LocalCovError = TMath::Max( TMath::Sqrt( 
-								TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
-								TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+							double LocalCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+//							double LocalCovError = TMath::Max( TMath::Sqrt( 
+//								TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+//								TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+
+							double LocalCovError = 1E-8;
 
 							if (AltUniverses[alt] > 2) {
 
@@ -650,7 +679,8 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 							}
 
 							CovEntry = CurrentCovEntry + LocalCovEntry;
-							CovError = TMath::Sqrt( TMath::Power(CurrentCovError,2.) + TMath::Power(LocalCovError,2.) );
+//							CovError = TMath::Sqrt( TMath::Power(CurrentCovError,2.) + TMath::Power(LocalCovError,2.) );
+							CovError = 1E-8;
 
 							Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 							Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
@@ -696,7 +726,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
 			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
 			Covariances[WhichRun][WhichPlot]->GetXaxis()->CenterTitle();
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(5);
+			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(8);
 			
 			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
@@ -708,10 +738,10 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			Covariances[WhichRun][WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
 
-			double CovMax = 1.05*Covariances[WhichRun][WhichPlot]->GetMaximum();
+			double CovMax = TMath::Min(1.,1.05*Covariances[WhichRun][WhichPlot]->GetMaximum());
 			double CovMin = TMath::Min(0.,1.05*Covariances[WhichRun][WhichPlot]->GetMinimum());
 			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetRangeUser(CovMin,CovMax);
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
+//			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
 			Covariances[WhichRun][WhichPlot]->GetZaxis()->CenterTitle();
 			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
 			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
