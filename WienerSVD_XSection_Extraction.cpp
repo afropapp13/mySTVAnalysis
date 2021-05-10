@@ -456,7 +456,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			unf->SetLineColor(BeamOnColor);
 			unf->SetMarkerColor(BeamOnColor);
 			unf->SetMarkerStyle(20);
-			unf->SetMarkerSize(2.);	
+			unf->SetMarkerSize(1.);	
 
 			PlotCanvas->cd();
 			if (ClosureTest == true) { unf->Draw("p0 hist"); }
@@ -607,8 +607,33 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				SmearPlotCanvas->SetBottomMargin(0.16);
 				SmearPlotCanvas->SetTopMargin(0.13);			
 				SmearPlotCanvas->SetLeftMargin(0.2);
+				SmearPlotCanvas->SetRightMargin(0.2);
+
+				smear->GetXaxis()->CenterTitle();
+				smear->GetXaxis()->SetLabelFont(FontStyle);
+				smear->GetXaxis()->SetTitleFont(FontStyle);
+				smear->GetXaxis()->SetLabelSize(TextSize);
+				smear->GetXaxis()->SetTitleSize(TextSize);
+				smear->GetXaxis()->SetNdivisions(6);
+
+				smear->GetYaxis()->CenterTitle();
+				smear->GetYaxis()->SetLabelFont(FontStyle);
+				smear->GetYaxis()->SetTitleFont(FontStyle);
+				smear->GetYaxis()->SetLabelSize(TextSize);
+				smear->GetYaxis()->SetTitleSize(TextSize);
+				smear->GetYaxis()->SetNdivisions(6);	
+
+				smear->GetZaxis()->SetLabelFont(FontStyle);
+				smear->GetZaxis()->SetTitleFont(FontStyle);
+				smear->GetZaxis()->SetLabelSize(TextSize);
+				smear->GetZaxis()->SetTitleSize(TextSize);
 
 				smear->Draw("coltz");
+
+				TLatex *text = new TLatex();
+				text->SetTextFont(FontStyle);
+				text->SetTextSize(0.06);
+				text->DrawTextNDC(0.47, 0.92, Runs[WhichRun]);
 
 				TString SmearCanvas = "/Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);

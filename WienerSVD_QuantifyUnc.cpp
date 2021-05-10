@@ -29,7 +29,7 @@ using namespace Constants;
 
 // -----------------------------------------------------------------------------------------------
 
-double IntegratedXSecError(TH2D* LocalCovMatrix) {
+double IntegratedXSecError(TH2D* LocalCovMatrix,TH1D* CV) {
 
 	int n = LocalCovMatrix->GetNbinsX();
 	double Nuedges[n+1];
@@ -41,23 +41,27 @@ double IntegratedXSecError(TH2D* LocalCovMatrix) {
 	for (int i = 1; i <= n; i++) { 
 
 		double CovValue = LocalCovMatrix->GetBinContent(i,i);	
-		unc->SetBinContent(i,TMath::Sqrt(CovValue)*100.);	
+		unc->SetBinContent(i,TMath::Sqrt(CovValue));	
 		
 	}
 
 	double IntegratedXSecErrorSquared = 0;
+	double IntegratedXSec = 0;
 
 	for (int WhichXBin = 0; WhichXBin < n; WhichXBin++) {
 
 		double BinWidth = unc->GetBinWidth(WhichXBin+1);
+		double BinCV = CV->GetBinContent(WhichXBin+1);
 		double BinError = unc->GetBinContent(WhichXBin+1);
 
-		cout << "Bin " << WhichXBin + 1 << "  BinWidth = " << BinWidth << "  BinError = " << BinError << endl;
 		IntegratedXSecErrorSquared += TMath::Power(BinError * BinWidth,2.);
+		IntegratedXSec += BinCV * BinWidth;
+
+		cout << "Bin " << WhichXBin + 1 << "  BinWidth = " << BinWidth << "  BinError = " << BinError << " CV = " << BinCV << endl;
 		
 	}
 
-	double IntegratedXSecErrorValue = TMath::Sqrt(IntegratedXSecErrorSquared);
+	double IntegratedXSecErrorValue = TMath::Sqrt(IntegratedXSecErrorSquared) / IntegratedXSec * 100.;
 
 	return IntegratedXSecErrorValue;
 
@@ -159,8 +163,8 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString TotalFileCovarianceSpecName = "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
+		TString XSecFileName = PathToExtractedXSec+"WienerSVD_ExtractedXSec_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TFile* ExtractedXSec = TFile::Open(XSecFileName,"readonly");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,11 +176,11 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
-				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
+//				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+//				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
+//				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
 
-				TH2D* LocalCovMatrix = (TH2D*)(CovFiles[WhichSample]->Get(UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]));
+				TH2D* LocalCovMatrix = (TH2D*)(ExtractedXSec->Get("UnfCov"+PlotNames[WhichPlot]));
 
 				if (string(UncSources[WhichSample]).find("Stat") != std::string::npos) { 
 
@@ -207,11 +211,15 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 
 			// ------------------------------------------------------------------
 
+			TH1D* CV = (TH1D*)(ExtractedXSec->Get("Reco"+PlotNames[WhichPlot]));
+
+			// ------------------------------------------------------------------
+
 			// Print out the contribution for each one of the uncertainties using the DeltaAlphaT plot
 
 			//if (PlotNames[WhichPlot] == "DeltaAlphaTPlot") {
 
-				double StatUnc = IntegratedXSecError(StatCovariances[WhichPlot]);
+				double StatUnc = IntegratedXSecError(StatCovariances[WhichPlot],CV);
 
 				cout << Runs[WhichRun] << "  " << PlotNames[WhichPlot] << endl;
 

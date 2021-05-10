@@ -145,15 +145,15 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 	UncSources.push_back("Flux");
 	UncSources.push_back("Dirt");
 
-	UncSources.push_back("MC_Stat");
-	UncSources.push_back("MC_POT");
-	UncSources.push_back("MC_NTarget");
-	UncSources.push_back("MC_LY");
-	UncSources.push_back("MC_TPC");
-	UncSources.push_back("MC_XSec");
-	UncSources.push_back("MC_G4");
-	UncSources.push_back("MC_Flux");
-	UncSources.push_back("MC_Dirt");
+//	UncSources.push_back("MC_Stat");
+//	UncSources.push_back("MC_POT");
+//	UncSources.push_back("MC_NTarget");
+//	UncSources.push_back("MC_LY");
+//	UncSources.push_back("MC_TPC");
+//	UncSources.push_back("MC_XSec");
+//	UncSources.push_back("MC_G4");
+//	UncSources.push_back("MC_Flux");
+//	UncSources.push_back("MC_Dirt");
 
 	int NSamples = UncSources.size();
 
@@ -167,6 +167,30 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 
 	vector<TH2D*> StatCovariances;
 	StatCovariances.resize(NPlots);
+
+	vector<TH2D*> POTCovariances;
+	POTCovariances.resize(NPlots);
+
+	vector<TH2D*> NTargetCovariances;
+	NTargetCovariances.resize(NPlots);
+
+	vector<TH2D*> LYCovariances;
+	LYCovariances.resize(NPlots);
+
+	vector<TH2D*> TPCCovariances;
+	TPCCovariances.resize(NPlots);
+
+	vector<TH2D*> XSecCovariances;
+	XSecCovariances.resize(NPlots);
+
+	vector<TH2D*> G4Covariances;
+	G4Covariances.resize(NPlots);
+
+	vector<TH2D*> FluxCovariances;
+	FluxCovariances.resize(NPlots);
+
+	vector<TH2D*> DirtCovariances;
+	DirtCovariances.resize(NPlots);
 
 	vector<TH2D*> SystCovariances;
 	SystCovariances.resize(NPlots);		
@@ -244,6 +268,66 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 					else { StatCovariances[WhichPlot]->Add(LocalCovMatrix); }
 				
 				} else {
+
+					// --------------------------------------------------------------------------------
+
+					if (string(UncSources[WhichSample]).find("POT") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "POT") { POTCovariances[WhichPlot] = LocalCovMatrix; }
+						else { POTCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("NTarget") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "NTarget") { NTargetCovariances[WhichPlot] = LocalCovMatrix; }
+						else { NTargetCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("LY") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "LY") { LYCovariances[WhichPlot] = LocalCovMatrix; }
+						else { LYCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("TPC") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "TPC") { TPCCovariances[WhichPlot] = LocalCovMatrix; }
+						else { TPCCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("XSec") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "XSec") { XSecCovariances[WhichPlot] = LocalCovMatrix; }
+						else { XSecCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("G4") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "G4") { G4Covariances[WhichPlot] = LocalCovMatrix; }
+						else { G4Covariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("Flux") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "Flux") { FluxCovariances[WhichPlot] = LocalCovMatrix; }
+						else { FluxCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					if (string(UncSources[WhichSample]).find("Dirt") != std::string::npos) { 
+
+						if (UncSources[WhichSample] == "Dirt") { DirtCovariances[WhichPlot] = LocalCovMatrix; }
+						else { DirtCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+					}
+
+					// --------------------------------------------------------------------------------
 
 					if (WhichSample == 1) { 
 

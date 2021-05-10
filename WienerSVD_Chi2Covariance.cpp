@@ -110,8 +110,8 @@ void CalcChiSquared(TH1D* h_model, TH1D* h_data, TH2D* cov, double &chi, int &nd
 	ndof = h_data_clone->GetNbinsX();
 	pval = TMath::Prob(chi, ndof);
 
-	std::cout << "Chi2/dof: " << chi << "/" << h_data_clone->GetNbinsX() << " = " << chi/double(ndof) <<  std::endl;
-	std::cout << "p-value: " <<  pval << "\n" <<  std::endl;
+	//std::cout << "Chi2/dof: " << chi << "/" << h_data_clone->GetNbinsX() << " = " << chi/double(ndof) <<  std::endl;
+	//std::cout << "p-value: " <<  pval << "\n" <<  std::endl;
 
 	delete h_model_clone;
 	delete h_data_clone;
@@ -135,47 +135,48 @@ void WienerSVD_Chi2Covariance() {
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
-//	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
+	PlotNames.push_back("DeltaPTPlot"); 
+	PlotNames.push_back("DeltaAlphaTPlot"); 
 	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot"); 
-//	PlotNames.push_back("MuonPhiPlot");
-//	PlotNames.push_back("ProtonMomentumPlot"); 
-//	PlotNames.push_back("ProtonCosThetaPlot");
-//	PlotNames.push_back("ProtonPhiPlot");
+	PlotNames.push_back("MuonMomentumPlot"); 
+	PlotNames.push_back("MuonCosThetaPlot"); 
+	PlotNames.push_back("MuonPhiPlot");
+	PlotNames.push_back("ProtonMomentumPlot"); 
+	PlotNames.push_back("ProtonCosThetaPlot");
+	PlotNames.push_back("ProtonPhiPlot");
 
 	const int N1DPlots = PlotNames.size();
-	cout << "Number of 1D Plots = " << N1DPlots << endl;
+	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
 	Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
+	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
 
 	int NRuns = (int)(Runs.size());
-	cout << "Number of Runs = " << NRuns << endl;
+	//cout << "Number of Runs = " << NRuns << endl;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> NameOfSamples; NameOfSamples.clear();
+	vector<TString> SampleLabel; SampleLabel.clear();
 	
 	// CV
 
 //	NameOfSamples.push_back("Overlay9");
 
-	NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");
+	NameOfSamples.push_back("GENIEv3_0_4"); SampleLabel.push_back("v3.0.4");
+	NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box"); SampleLabel.push_back("v3.0.6");
 //	NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");
-	NameOfSamples.push_back("SuSav2");
-	NameOfSamples.push_back("NuWro");
-	NameOfSamples.push_back("GiBUU");
-	NameOfSamples.push_back("GENIEv2");
-	NameOfSamples.push_back("NEUT");
-	NameOfSamples.push_back("GENIEv3_0_4");
+	NameOfSamples.push_back("GENIEv2"); SampleLabel.push_back("v2.12.10");
+	NameOfSamples.push_back("SuSav2"); SampleLabel.push_back("SuSav2");
+	NameOfSamples.push_back("GiBUU"); SampleLabel.push_back("GiBUU");
+	NameOfSamples.push_back("NEUT"); SampleLabel.push_back("NEUT");
+	NameOfSamples.push_back("NuWro"); SampleLabel.push_back("NuWro");
 
 	const int NSamples = NameOfSamples.size();
 	
@@ -213,10 +214,17 @@ void WienerSVD_Chi2Covariance() {
 		DataFileSample[WhichRun] = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 			
 	}		
+
+	// -----------------------------------------------------------------------------------------------------------------------------------------
+
+	double Chi2[NRuns][N1DPlots][NSamples+1];
+	double Ndof[NRuns][N1DPlots][NSamples+1];
 	
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
+
+		cout << endl;
 
 		// -----------------------------------------------------------------------------------------------------------------------------
 
@@ -230,7 +238,7 @@ void WienerSVD_Chi2Covariance() {
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			cout << PlotNames[WhichPlot] << endl << endl;
+			//cout << PlotNames[WhichPlot] << endl << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 			
@@ -267,26 +275,65 @@ void WienerSVD_Chi2Covariance() {
 			double chi = -99.;
 			int ndof = -99;
 			double pval = -99.;				
-					
+			
+			// ----------------------------------------------------------------------------------------------------	
+
+			//cout << "MC" << endl;
+			CalcChiSquared(MCPlot,DataPlot,CovarianceClone,chi,ndof,pval);
+
+			Chi2[WhichRun][WhichPlot][0] = chi;
+			Ndof[WhichRun][WhichPlot][0] = ndof;
+
+			// ----------------------------------------------------------------------------------------------------	
+
+			// Watch out!!! We need to divide by 2D bin width		
+
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-				cout << NameOfSamples[WhichSample] << endl;
+				//cout << NameOfSamples[WhichSample] << endl;
 			
 				Plots[WhichSample] = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot])); 	
 
 				Multiply(Plots[WhichSample],Ac);
-				CalcChiSquared(Plots[WhichSample],DataPlot,CovarianceClone,chi,ndof,pval);							
+				CalcChiSquared(Plots[WhichSample],DataPlot,CovarianceClone,chi,ndof,pval);
+
+				Chi2[WhichRun][WhichPlot][WhichSample+1] = chi;
+				Ndof[WhichRun][WhichPlot][WhichSample+1] = ndof;							
 				
 			}
-
-			// ----------------------------------------------------------------------------------------------------	
-
-			cout << "MC" << endl;
-			CalcChiSquared(MCPlot,DataPlot,CovarianceClone,chi,ndof,pval);
 
 			// ----------------------------------------------------------------------------------------------------			
 
 		} // End of the loop over the plots
+
+		cout << Runs[WhichRun] << endl << endl;
+		cout << "MC" ;
+
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+			cout << " & " << Chi2[WhichRun][WhichPlot][0] << "/" << Ndof[WhichRun][WhichPlot][0] ;
+			if (WhichPlot == N1DPlots-1) { cout << "  \\\\"; }
+
+		} // End of the loop over the plots
+
+		cout << endl;
+
+		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+
+			cout << SampleLabel[WhichSample] ;
+
+			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+				cout << " & " << Chi2[WhichRun][WhichPlot][WhichSample+1] << "/" << Ndof[WhichRun][WhichPlot][WhichSample+1] ;
+				if (WhichPlot == N1DPlots-1) { cout << "  \\\\"; }
+
+			} // End of the loop over the plots
+
+			cout << endl;
+
+		} // End of the loop over the samples
+
+		cout << endl;
 
 	} // End of the loop over the runs	
 
