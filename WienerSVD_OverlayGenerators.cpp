@@ -26,36 +26,29 @@
 using namespace std;
 using namespace Constants;
 
+#include "../myClasses/Util.h"
+
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
 void Multiply(TH1D* True, TH2D* SmearMatrix) {
+
+	TH1D* TrueClone = (TH1D*)(True->Clone());
 
 	int XBins = SmearMatrix->GetXaxis()->GetNbins();
 	int YBins = SmearMatrix->GetYaxis()->GetNbins();
 
 	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
 
-	for (int WhichXBin = 0; WhichXBin < XBins; WhichXBin++) {
+	TVectorD signal(XBins);
+	TMatrixD response(XBins,XBins);
 
-		double Entry = 0.;
+	H2V(True, signal);
+	H2M(SmearMatrix, response, kFALSE); // X axis: Reco, Y axis: True
 
-		double TrueInBin = True->GetBinContent(WhichXBin + 1);
+	TVectorD RecoSpace = response * signal;
+	V2H(RecoSpace, TrueClone);	
 
-		for (int WhichYBin = 0; WhichYBin < YBins; WhichYBin++) {
-
-			double MigrationInBin = SmearMatrix->GetBinContent(WhichXBin + 1,WhichYBin + 1);
-
-			Entry +=  MigrationInBin * TrueInBin;
-	
-		}
-
-		// Bin entry in reco space
-
-		True->SetBinContent(WhichXBin+1,Entry);
-
-	}
-
-	return;
+	return TrueClone;
 
 }
 

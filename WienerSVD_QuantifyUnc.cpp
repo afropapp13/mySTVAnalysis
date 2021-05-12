@@ -29,35 +29,26 @@ using namespace Constants;
 
 // -----------------------------------------------------------------------------------------------
 
-double IntegratedXSecError(TH2D* LocalCovMatrix,TH1D* CV) {
+double IntegratedXSecError(TH2D* FracCovMatrix,TH1D* CV) {
 
-	int n = LocalCovMatrix->GetNbinsX();
-	double Nuedges[n+1];
-			    
-	for (int i = 0; i < n+1; i++) { Nuedges[i] = LocalCovMatrix->GetXaxis()->GetBinLowEdge(i+1); }
-
-	TH1D* unc = new TH1D("unc","",n,Nuedges);
-
-	for (int i = 1; i <= n; i++) { 
-
-		double CovValue = LocalCovMatrix->GetBinContent(i,i);	
-		unc->SetBinContent(i,TMath::Sqrt(CovValue));	
-		
-	}
+	int n = FracCovMatrix->GetNbinsX();
 
 	double IntegratedXSecErrorSquared = 0;
 	double IntegratedXSec = 0;
 
-	for (int WhichXBin = 0; WhichXBin < n; WhichXBin++) {
+	for (int i = 1; i <= n; i++) { 
 
-		double BinWidth = unc->GetBinWidth(WhichXBin+1);
-		double BinCV = CV->GetBinContent(WhichXBin+1);
-		double BinError = unc->GetBinContent(WhichXBin+1);
+		double BinWidth = CV->GetBinWidth(i);
+		double BinCV = CV->GetBinContent(i);
+
+		//double TotalBinError = CV->GetBinError(i); // Total uncertainty in that bin	
+		double FracError = TMath::Sqrt(FracCovMatrix->GetBinContent(i,i)); // Fractional contribution from a given source of uncertainty
+		double BinError = BinCV*FracError;
 
 		IntegratedXSecErrorSquared += TMath::Power(BinError * BinWidth,2.);
 		IntegratedXSec += BinCV * BinWidth;
 
-		cout << "Bin " << WhichXBin + 1 << "  BinWidth = " << BinWidth << "  BinError = " << BinError << " CV = " << BinCV << endl;
+		//cout << "Bin " << i << "  BinWidth = " << BinWidth  << " CV = " << BinCV << "  BinError = " << BinError << endl;
 		
 	}
 
@@ -81,16 +72,17 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 	// -------------------------------------------------------------------------------------
 
 	GlobalSettings();
-	TGaxis::SetMaxDigits(3);			
+	TGaxis::SetMaxDigits(3);
+	std::cout.precision(3);			
 
 	// -------------------------------------------------------------------------------------
 
 	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
 //	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot"); 
+	PlotNames.push_back("MuonCosThetaPlot"); 
 //	PlotNames.push_back("MuonPhiPlot");
 //	PlotNames.push_back("ProtonMomentumPlot"); 
 //	PlotNames.push_back("ProtonCosThetaPlot");
@@ -107,7 +99,7 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 	vector<TString> Runs;
 	Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
+	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
 
@@ -129,14 +121,24 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 	UncSources.push_back("Dirt");
 
 	UncSources.push_back("MC_Stat");
-	UncSources.push_back("MC_POT");
-	UncSources.push_back("MC_NTarget");
-	UncSources.push_back("MC_LY");
-	UncSources.push_back("MC_TPC");
-	UncSources.push_back("MC_XSec");
-	UncSources.push_back("MC_G4");
-	UncSources.push_back("MC_Flux");
-	UncSources.push_back("MC_Dirt");
+//	UncSources.push_back("MC_POT");
+//	UncSources.push_back("MC_NTarget");
+//	UncSources.push_back("MC_LY");
+//	UncSources.push_back("MC_TPC");
+//	UncSources.push_back("MC_XSec");
+//	UncSources.push_back("MC_G4");
+//	UncSources.push_back("MC_Flux");
+//	UncSources.push_back("MC_Dirt");
+
+//	UncSources.push_back("SmEff_Stat");
+	UncSources.push_back("SmEff_POT");
+	UncSources.push_back("SmEff_NTarget");
+	UncSources.push_back("SmEff_LY");
+	UncSources.push_back("SmEff_TPC");
+	UncSources.push_back("SmEff_XSec");
+	UncSources.push_back("SmEff_G4");
+	UncSources.push_back("SmEff_Flux");
+//	UncSources.push_back("SmEff_Dirt");
 
 	int NSamples = UncSources.size();
 
@@ -148,14 +150,38 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TH2D*> Covariances;
-	Covariances.resize(NPlots);
+	vector<TH2D*> FracCovariances;
+	FracCovariances.resize(NPlots);
 
-	vector<TH2D*> StatCovariances;
-	StatCovariances.resize(NPlots);
+	vector<TH2D*> TotalCovariances;
+	TotalCovariances.resize(NPlots);
 
-	vector<TH2D*> SystCovariances;
-	SystCovariances.resize(NPlots);		
+	vector<TH2D*> StatFracCovariances;
+	StatFracCovariances.resize(NPlots);
+
+	vector<TH2D*> POTFracCovariances;
+	POTFracCovariances.resize(NPlots);
+
+	vector<TH2D*> NTargetFracCovariances;
+	NTargetFracCovariances.resize(NPlots);	
+
+	vector<TH2D*> LYFracCovariances;
+	LYFracCovariances.resize(NPlots);		
+
+	vector<TH2D*> TPCFracCovariances;
+	TPCFracCovariances.resize(NPlots);	
+
+	vector<TH2D*> XSecFracCovariances;
+	XSecFracCovariances.resize(NPlots);
+
+	vector<TH2D*> G4FracCovariances;
+	G4FracCovariances.resize(NPlots);	
+
+	vector<TH2D*> FluxFracCovariances;
+	FluxFracCovariances.resize(NPlots);
+
+	vector<TH2D*> DirtFracCovariances;
+	DirtFracCovariances.resize(NPlots);
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,42 +198,70 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 
 		for (int WhichPlot = 0; WhichPlot < NPlots; WhichPlot ++) {
 
+			// Total Covariance Matrix (not fractional covariance matrix)
+
+			TotalCovariances[WhichPlot] = (TH2D*)(ExtractedXSec->Get("UnfCov"+PlotNames[WhichPlot]));
+
 			// Loop over the samples
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-//				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-//				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
-//				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
+				// Fractional Covariances
 
-				TH2D* LocalCovMatrix = (TH2D*)(ExtractedXSec->Get("UnfCov"+PlotNames[WhichPlot]));
+				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
+				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
+
+				TH2D* LocalFracCovMatrix = (TH2D*)(CovFiles[WhichSample]->Get(UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]));
 
 				if (string(UncSources[WhichSample]).find("Stat") != std::string::npos) { 
 
-					if (UncSources[WhichSample] == "Stat") { StatCovariances[WhichPlot] = LocalCovMatrix; }
-					else { StatCovariances[WhichPlot]->Add(LocalCovMatrix); }
+					if (UncSources[WhichSample] == "Stat") { StatFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { StatFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
 				
-				} else {
+				} else if (string(UncSources[WhichSample]).find("POT") != std::string::npos) { 
 
-					if (WhichSample == 1) { 
-
-						SystCovariances[WhichPlot] = LocalCovMatrix; 
-
-					}
-					else if (WhichSample > 1) { 
-						
-						SystCovariances[WhichPlot]->Add(LocalCovMatrix); 
-						
-					}
+					if (UncSources[WhichSample] == "POT") { POTFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { POTFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
 					
-				}				
+				} else if (string(UncSources[WhichSample]).find("NTarget") != std::string::npos) { 
 
-			} // End of the loop over the samples
+					if (UncSources[WhichSample] == "NTarget") { NTargetFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { NTargetFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				} else if (string(UncSources[WhichSample]).find("LY") != std::string::npos) { 
 
-			// ------------------------------------------------------------------
+					if (UncSources[WhichSample] == "LY") { LYFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { LYFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				} else if (string(UncSources[WhichSample]).find("TPC") != std::string::npos) { 
 
-			Covariances[WhichPlot] = (TH2D*) (StatCovariances[WhichPlot]->Clone());
-			Covariances[WhichPlot]->Add(SystCovariances[WhichPlot]);				
+					if (UncSources[WhichSample] == "TPC") { TPCFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { TPCFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				} else if (string(UncSources[WhichSample]).find("XSec") != std::string::npos) { 
+
+					if (UncSources[WhichSample] == "XSec") { XSecFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { XSecFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				} else if (string(UncSources[WhichSample]).find("G4") != std::string::npos) { 
+
+					if (UncSources[WhichSample] == "G4") { G4FracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { G4FracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				} else if (string(UncSources[WhichSample]).find("Flux") != std::string::npos) { 
+
+					if (UncSources[WhichSample] == "Flux") { FluxFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { FluxFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				} else if (string(UncSources[WhichSample]).find("Dirt") != std::string::npos) { 
+
+					if (UncSources[WhichSample] == "Dirt") { DirtFracCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { DirtFracCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					
+				}
+
+			} // End of the loop over the samples				
 
 			// ------------------------------------------------------------------
 
@@ -219,15 +273,33 @@ void WienerSVD_QuantifyUnc(TString OverlaySample = "Overlay9") {
 
 			//if (PlotNames[WhichPlot] == "DeltaAlphaTPlot") {
 
-				double StatUnc = IntegratedXSecError(StatCovariances[WhichPlot],CV);
+				double StatUnc = IntegratedXSecError(StatFracCovariances[WhichPlot],CV);
+				double POTUnc = IntegratedXSecError(POTFracCovariances[WhichPlot],CV);
+				double NTargetUnc = IntegratedXSecError(NTargetFracCovariances[WhichPlot],CV);
+				double LYUnc = IntegratedXSecError(LYFracCovariances[WhichPlot],CV);
+				double TPCUnc = IntegratedXSecError(TPCFracCovariances[WhichPlot],CV);
+				double XSecUnc = IntegratedXSecError(XSecFracCovariances[WhichPlot],CV);
+				double G4Unc = IntegratedXSecError(G4FracCovariances[WhichPlot],CV);
+				double FluxUnc = IntegratedXSecError(FluxFracCovariances[WhichPlot],CV);
+				double DirtUnc = IntegratedXSecError(DirtFracCovariances[WhichPlot],CV);
 
-				cout << Runs[WhichRun] << "  " << PlotNames[WhichPlot] << endl;
+				cout << Runs[WhichRun] << "  " << PlotNames[WhichPlot] << endl << endl;
 
-				cout << "Stat Unc = " << StatUnc << endl;
+				cout << "Stat & " << StatUnc << "\\\\" << endl;
+				cout << "%POT & " << POTUnc << "\\\\" << endl;
+				cout << "%NTarget & " << NTargetUnc << "\\\\" << endl;
+				cout << "LY & " << LYUnc  << "\\\\" << endl;
+				cout << "TPC & " << TPCUnc  << "\\\\" << endl;
+				cout << "XSec & " << XSecUnc  << "\\\\" << endl;
+				cout << "G4 & " << G4Unc  << "\\\\" << endl;
+				cout << "Flux & " << FluxUnc  << "\\\\" << endl;
+				cout << "Dirt & " << DirtUnc  << "\\\\" << endl;
+
+				double TotalUnc = TMath::Sqrt(TMath::Power(StatUnc,2.) + TMath::Power(POTUnc,2.) + TMath::Power(NTargetUnc,2.) + TMath::Power(LYUnc,2.) + TMath::Power(TPCUnc,2.) + TMath::Power(XSecUnc,2.) + TMath::Power(G4Unc,2.)  + TMath::Power(FluxUnc,2.) + TMath::Power(DirtUnc,2.));
+				cout << "\\hline" << endl << "\\hline" << endl;
+				cout << "Total & " << TotalUnc  << "\\\\" << endl << endl;
 
 			//}			
-
-			cout << endl << endl;
 
 			// ------------------------------------------------------------------
 

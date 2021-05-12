@@ -145,7 +145,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 	UncSources.push_back("Flux");
 	UncSources.push_back("Dirt");
 
-//	UncSources.push_back("MC_Stat");
+	UncSources.push_back("MC_Stat");
 //	UncSources.push_back("MC_POT");
 //	UncSources.push_back("MC_NTarget");
 //	UncSources.push_back("MC_LY");
@@ -154,6 +154,16 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 //	UncSources.push_back("MC_G4");
 //	UncSources.push_back("MC_Flux");
 //	UncSources.push_back("MC_Dirt");
+
+//	UncSources.push_back("SmEff_Stat");
+	UncSources.push_back("SmEff_POT");
+	UncSources.push_back("SmEff_NTarget");
+	UncSources.push_back("SmEff_LY");
+	UncSources.push_back("SmEff_TPC");
+	UncSources.push_back("SmEff_XSec");
+	UncSources.push_back("SmEff_G4");
+	UncSources.push_back("SmEff_Flux");
+//	UncSources.push_back("SmEff_Dirt");
 
 	int NSamples = UncSources.size();
 
@@ -226,21 +236,21 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(5);			
 
-			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-			TCanvas* MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
-			MCERPlotCanvas->SetBottomMargin(0.16);
-			MCERPlotCanvas->SetLeftMargin(0.15);
-			MCERPlotCanvas->SetRightMargin(0.25);
-			MCERPlotCanvas->SetTopMargin(0.15);			
+//			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+//			TCanvas* MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
+//			MCERPlotCanvas->SetBottomMargin(0.16);
+//			MCERPlotCanvas->SetLeftMargin(0.15);
+//			MCERPlotCanvas->SetRightMargin(0.25);
+//			MCERPlotCanvas->SetTopMargin(0.15);			
 
-			TLegend* legMC = new TLegend(0.02,0.89,0.97,0.99);
-			legMC->SetBorderSize(0);
-			legMC->SetTextSize(0.04);
-			legMC->SetTextFont(FontStyle);
-			legMC->SetNColumns(5);			
+//			TLegend* legMC = new TLegend(0.02,0.89,0.97,0.99);
+//			legMC->SetBorderSize(0);
+//			legMC->SetTextSize(0.04);
+//			legMC->SetTextFont(FontStyle);
+//			legMC->SetNColumns(5);			
 
 			TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-			TCanvas* SmEffPlotCanvas = new TCanvas(SmEffCanvasName,MCERCanvasName,205,34,1024,768);			
+			TCanvas* SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
 			SmEffPlotCanvas->SetBottomMargin(0.16);
 			SmEffPlotCanvas->SetLeftMargin(0.15);
 			SmEffPlotCanvas->SetRightMargin(0.25);
@@ -350,8 +360,9 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 
 				TLegend* leg = nullptr;
 
-				if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos) { SmEffPlotCanvas->cd(); leg = legSmEff;}
-				else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
+				if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos || string(UncSources[WhichSample]).find("MC_") != std::string::npos) 
+					{ SmEffPlotCanvas->cd(); leg = legSmEff;}
+				//else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
 				else { DataERPlotCanvas->cd(); leg = legData; }
 
 				ReturnUncPlot(LocalCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],WhichSample,leg);				
@@ -363,8 +374,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 			DataERPlotCanvas->cd();
 			legData->Draw();
 
-			MCERPlotCanvas->cd();
-			legMC->Draw();
+//			MCERPlotCanvas->cd();
+//			legMC->Draw();
 
 			SmEffPlotCanvas->cd();
 			legSmEff->Draw();
@@ -372,11 +383,11 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 			// ------------------------------------------------------------------
 
 			DataERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+DataERCanvasName+".pdf");
-			MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
+//			MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
 			SmEffPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+SmEffCanvasName+".pdf");	
 
 			delete 	DataERPlotCanvas;	
-			delete 	MCERPlotCanvas;
+//			delete 	MCERPlotCanvas;
 			delete 	SmEffPlotCanvas;
 
 			// ------------------------------------------------------------------			

@@ -12,6 +12,8 @@ root -l script_Genie_Systematics.C
 
 root -l script_WienerSVD_Systematics.C
 
+root -l script_WienerSVD_SmEff_Systematics.C
+
 root -l WienerSVD_Merge_Covariances.cpp
 
 root -l WienerSVD_QuantifyUnc.cpp
@@ -76,14 +78,13 @@ cd ../mySTVAnalysis/
 # (locally)
 
 root -l OverlayGenerators.cpp
-
-root -l WienerSVD_OverlayGenerators.cpp
-
 root -l OverlayXSecMethods.C
 
-root -l IntegratedXSecs.C
-
-root -l BinByBinChi2.cpp
+root -l 
+.L ../myClasses/Util.C
+.x WienerSVD_OverlayGenerators.cpp
+.x IntegratedXSecs.C
+.x BinByBinChi2.cpp
 
 #################################################################################################################################
 
