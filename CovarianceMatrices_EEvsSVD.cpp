@@ -125,33 +125,40 @@ void CovarianceMatrices_EEvsSVD(TString BaseMC = "Overlay9") {
 
 				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
 
-					// X Bin entry / error
+					double CovEntry = 0.;
+					double CovError = 0.;
 
-					double DataEntryX = SVD_BeamOnPlots[WhichPlot]->GetBinContent(WhichXBin+1);
-					double DataErrorX = SVD_BeamOnPlots[WhichPlot]->GetBinError(WhichXBin+1);
+					if (WhichXBin == WhichYBin) {
 
-					double AltDataEntryX = EE_BeamOnPlots[WhichPlot]->GetBinContent(WhichXBin+1);
-					double AltDataErrorX = EE_BeamOnPlots[WhichPlot]->GetBinError(WhichXBin+1);
+						// X Bin entry / error
 
-					// Y Bin entry / error
+						double DataEntryX = SVD_BeamOnPlots[WhichPlot]->GetBinContent(WhichXBin+1);
+						double DataErrorX = SVD_BeamOnPlots[WhichPlot]->GetBinError(WhichXBin+1);
 
-					double DataEntryY = SVD_BeamOnPlots[WhichPlot]->GetBinContent(WhichYBin+1);
-					double DataErrorY = SVD_BeamOnPlots[WhichPlot]->GetBinError(WhichYBin+1);
+						double AltDataEntryX = EE_BeamOnPlots[WhichPlot]->GetBinContent(WhichXBin+1);
+						double AltDataErrorX = EE_BeamOnPlots[WhichPlot]->GetBinError(WhichXBin+1);
 
-					double AltDataEntryY = EE_BeamOnPlots[WhichPlot]->GetBinContent(WhichYBin+1);
-					double AltDataErrorY = EE_BeamOnPlots[WhichPlot]->GetBinError(WhichYBin+1);
+						// Y Bin entry / error
 
-					// -------------------------------------------------------------------------------------------------------
+						double DataEntryY = SVD_BeamOnPlots[WhichPlot]->GetBinContent(WhichYBin+1);
+						double DataErrorY = SVD_BeamOnPlots[WhichPlot]->GetBinError(WhichYBin+1);
 
-					// Setting the elements of the Fractional Cov Matrix
+						double AltDataEntryY = EE_BeamOnPlots[WhichPlot]->GetBinContent(WhichYBin+1);
+						double AltDataErrorY = EE_BeamOnPlots[WhichPlot]->GetBinError(WhichYBin+1);
 
-					double CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) / TMath::Sqrt(12),1E-8);
+						// -------------------------------------------------------------------------------------------------------
 
-//					double LocalCovError = TMath::Max( TMath::Sqrt( 
-//						TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
-//						TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+						// Setting the elements of the Fractional Cov Matrix
 
-					double CovError = 1E-8;
+						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) / TMath::Sqrt(12),1E-8);
+
+	//					LocalCovError = TMath::Max( TMath::Sqrt( 
+	//						TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
+	//						TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+
+						CovError = 1E-8;
+
+					}
 
 					Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 					Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
@@ -214,7 +221,9 @@ void CovarianceMatrices_EEvsSVD(TString BaseMC = "Overlay9") {
 			
 			PlotCanvas->SaveAs(PlotPath+BaseMC+"/WienerSVD_UnfoldingTechnique_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			
-			delete PlotCanvas;			
+			delete PlotCanvas;	
+
+			// ---------------------------------------------------------------------------------------			
 
 		} // End of the loop over the plots
 

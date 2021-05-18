@@ -59,6 +59,18 @@ root -l Flux_Systematics.cpp
 
 root -l Systematics.cpp
 
+#################################################################################################################################
+
+# Use the difference between the 2 unfolding techniques as an extra uncertainty
+
+root -l CovarianceMatrices_EEvsSVD.cpp
+
+root -l
+.L WienerSVD_Merge_Covariances.cpp
+WienerSVD_Merge_Covariances("Overlay9",true)
+
+#################################################################################################################################
+
 # Download the relevant xsecs & plots
 
 # (locally)
@@ -69,12 +81,6 @@ root -l Systematics.cpp
 cd ../myEvents/
 ./Syst_DownloadEventRatePlots.sh
 cd ../mySTVAnalysis/
-
-#################################################################################################################################
-
-# Use the difference between the 2 unfolding techniques as an extra uncertainty
-
-root -l CovarianceMatrices_EEvsSVD.cpp
 
 #################################################################################################################################
 

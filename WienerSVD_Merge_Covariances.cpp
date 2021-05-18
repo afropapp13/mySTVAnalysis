@@ -86,7 +86,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 // -----------------------------------------------------------------------------------------------
 
-void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
+void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool IncludeUnfTech = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -164,6 +164,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9") {
 	UncSources.push_back("SmEff_G4");
 	UncSources.push_back("SmEff_Flux");
 //	UncSources.push_back("SmEff_Dirt");
+
+	if (IncludeUnfTech) { UncSources.push_back("UnfoldingTechnique"); }
 
 	int NSamples = UncSources.size();
 
