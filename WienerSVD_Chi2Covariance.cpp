@@ -83,7 +83,9 @@ void CalcChiSquared(TH1D* h_model, TH1D* h_data, TH2D* cov, double &chi, int &nd
 
 	// Inverting the covariance matrix
 
+	cov_m.SetTol(1.e-23);
 	TMatrix inverse_cov_m = cov_m.Invert();
+	inverse_cov_m.SetTol(1.e-23);
 
 	// Calculating the chi2 = Summation_ij{ (x_i - mu_j)*E_ij^(-1)*(x_j - mu_j)  }
 	// x = data, mu = model, E^(-1) = inverted covariance matrix 

@@ -72,6 +72,12 @@ cd ../mySTVAnalysis/
 
 #################################################################################################################################
 
+# Use the difference between the 2 unfolding techniques as an extra uncertainty
+
+root -l CovarianceMatrices_EEvsSVD.cpp
+
+#################################################################################################################################
+
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
 
@@ -83,8 +89,9 @@ root -l OverlayXSecMethods.C
 root -l 
 .L ../myClasses/Util.C
 .x WienerSVD_OverlayGenerators.cpp
-.x IntegratedXSecs.C
-.x BinByBinChi2.cpp
+.x IntegratedXSecs.cpp
+.x WienerSVD_Chi2Covariance.cpp
+#.x BinByBinChi2.cpp
 
 #################################################################################################################################
 

@@ -43,7 +43,7 @@ double IntegratedXSecError(TH2D* FracCovMatrix,TH1D* CV) {
 
 		//double TotalBinError = CV->GetBinError(i); // Total uncertainty in that bin	
 		double FracError = TMath::Sqrt(FracCovMatrix->GetBinContent(i,i)); // Fractional contribution from a given source of uncertainty
-		double BinError = BinCV*FracError;
+		double BinError = TMath::Abs(BinCV*FracError);
 
 		IntegratedXSecErrorSquared += TMath::Power(BinError * BinWidth,2.);
 		IntegratedXSec += BinCV * BinWidth;

@@ -145,6 +145,8 @@ void OverlayXSecMethods() {
 
 			// -----------------------------------------------------------------------------------------------------------------------------		
 
+			// EE
+
 			TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 
 			TH1D* Plots = (TH1D*)(f->Get("TotalReco"+PlotName[WhichPlot]));
@@ -154,11 +156,19 @@ void OverlayXSecMethods() {
 			Plots->SetMarkerStyle(20);
 			Plots->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
 
+			TH1D* PlotsStat = (TH1D*)(f->Get("Reco"+PlotName[WhichPlot]));
+			PlotsStat->SetLineColor(kBlack);
+			PlotsStat->SetMarkerColor(kBlack);
+			PrettyPlot(PlotsStat);
+			PlotsStat->SetMarkerStyle(20);
+			PlotsStat->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
+
 			// Wiener SVD
 
 			TFile* Wf = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 			
-			TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotName[WhichPlot]));
+			TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotName[WhichPlot])); // Plots with total uncertainty
+			TH1D* WhStat = (TH1D*)(Wf->Get("StatReco"+PlotName[WhichPlot])); // Plots with stat uncertainty
 
 			int n = Wh->GetXaxis()->GetNbins();
 			double Nuedges[n+1];   
@@ -167,11 +177,15 @@ void OverlayXSecMethods() {
 			TString Xtitle = Wh->GetXaxis()->GetTitle();
 			TString Ytitle = Wh->GetYaxis()->GetTitle();		
 			TH1D* Offset = new TH1D("Offset_"+PlotName[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
+			TH1D* StatOffset = new TH1D("StatOffset_"+PlotName[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
 
 			for (int WhichBin = 1; WhichBin <= n; WhichBin++ ) {
 
 				Offset->SetBinContent(WhichBin, Wh->GetBinContent(WhichBin));
 				Offset->SetBinError(WhichBin, Wh->GetBinError(WhichBin));
+
+				StatOffset->SetBinContent(WhichBin, WhStat->GetBinContent(WhichBin));
+				StatOffset->SetBinError(WhichBin, WhStat->GetBinError(WhichBin));
 
 			}
 
@@ -180,6 +194,12 @@ void OverlayXSecMethods() {
 			Offset->SetMarkerStyle(22);
 			Offset->SetMarkerSize(2.);				
 			PrettyPlot(Offset);
+
+			StatOffset->SetLineColor(kRed);
+			StatOffset->SetMarkerColor(kRed);
+			StatOffset->SetMarkerStyle(22);
+			StatOffset->SetMarkerSize(2.);				
+			PrettyPlot(StatOffset);
 
 			double MaxValue = TMath::Max(Plots->GetMaximum(),Offset->GetMaximum());
 			int MaxValueBin = LocateBinWithValue(Plots,MaxValue);
@@ -197,6 +217,11 @@ void OverlayXSecMethods() {
 
 			Plots->Draw("p0 hist same");
 			Offset->Draw("p0 hist same");
+
+//			Plots->Draw("e1 same");
+//			PlotsStat->Draw("e1 same");
+//			Offset->Draw("e1 same");
+//			StatOffset->Draw("e1 same");
 
 			leg->AddEntry(Plots,"EE BeamOn " + Label[WhichFile],"p");
 			leg->AddEntry(Offset,"SVD BeamOn " + Label[WhichFile],"p");			
