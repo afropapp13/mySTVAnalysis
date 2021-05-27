@@ -234,7 +234,7 @@ void WienerSVD_OverlayGenerators() {
 
 			TLegend* leg = new TLegend(0.02,0.89,0.97,0.99);
 			leg->SetBorderSize(0);
-			leg->SetTextSize(0.04);
+			leg->SetTextSize(0.03);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(4);
 
@@ -384,15 +384,15 @@ void WienerSVD_OverlayGenerators() {
 			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
 			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
 			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
-			TString Label = ToString(tor860_wcut)+" POT";
+			TString Label = ToString(tor860_wcut)+" POT (Stat #oplus Syst)";
 
 			TLegendEntry* lGenie_GENIEv2 = leg->AddEntry(PlotsTrue[6][WhichPlot],"v2.12.10","l");
 			lGenie_GENIEv2->SetTextColor(GENIEv2Color);
 
-			TLegendEntry* lGenie_GENIEv3_0_4 = leg->AddEntry(PlotsTrue[8][WhichPlot],"v3.0.4","l");
+			TLegendEntry* lGenie_GENIEv3_0_4 = leg->AddEntry(PlotsTrue[8][WhichPlot],"v3.0.4 (G2018)","l");
 			lGenie_GENIEv3_0_4->SetTextColor(GENIEv3_0_4_Color);
 
-			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6","l");
+			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6 (G2018)","l");
 			lGenie->SetTextColor(Geniev3OutOfTheBoxColor);
 
 			// TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
