@@ -86,7 +86,15 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 // -----------------------------------------------------------------------------------------------
 
-void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool IncludeUnfTech = false) {
+void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "", bool IncludeUnfTech = false) {
+
+	// -------------------------------------------------------------------------------------
+
+	// Store the pdf's only for the OverlaySample = "Overlay9" & BeamOn9 = ""
+	// Otherwise, just store the merged fractional covariance matrix	
+
+	bool StrorePlots = false;
+	if (OverlaySample == "Overlay9" && BeamOn9 == "") { StrorePlots = true; }
 
 	// -------------------------------------------------------------------------------------
 
@@ -136,8 +144,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool Includ
 	vector<TString> UncSources;
 
 	UncSources.push_back("Stat");
-	UncSources.push_back("POT");
-	UncSources.push_back("NTarget");
+//	UncSources.push_back("POT");     // Potentially add back 
+//	UncSources.push_back("NTarget"); // Potentially add back
 	UncSources.push_back("LY");
 	UncSources.push_back("TPC");
 	UncSources.push_back("XSec");
@@ -156,8 +164,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool Includ
 //	UncSources.push_back("MC_Dirt");
 
 //	UncSources.push_back("SmEff_Stat");
-	UncSources.push_back("SmEff_POT");
-	UncSources.push_back("SmEff_NTarget");
+//	UncSources.push_back("SmEff_POT");     // Potentially add back
+//	UncSources.push_back("SmEff_NTarget"); // Potentially add back
 	UncSources.push_back("SmEff_LY");
 	UncSources.push_back("SmEff_TPC");
 	UncSources.push_back("SmEff_XSec");
@@ -213,7 +221,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool Includ
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString TotalFileCovarianceSpecName = "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString TotalFileCovarianceSpecName = BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
 		TFile* TotalFileCovarianceMatrices = new TFile(TotalFileCovarianceName,"recreate");
 
@@ -223,52 +231,66 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool Includ
 
 		for (int WhichPlot = 0; WhichPlot < NPlots; WhichPlot ++) {
 
-			// Create canvases for 3 categories of systematics: MC event rates, Data event rates, Smearing + Efficiency
+			TCanvas* DataERPlotCanvas = nullptr;
+//			TCanvas* MCERPlotCanvas = nullptr;
+			TCanvas* SmEffPlotCanvas = nullptr;
 
-			TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-			TCanvas* DataERPlotCanvas = new TCanvas(DataERCanvasName,DataERCanvasName,205,34,1024,768);
-			DataERPlotCanvas->SetBottomMargin(0.16);
-			DataERPlotCanvas->SetLeftMargin(0.15);
-			DataERPlotCanvas->SetRightMargin(0.25);
-			DataERPlotCanvas->SetTopMargin(0.15);			
+			TLegend* legData = nullptr;
+//			TLegend* legMC = nullptr;
+			TLegend* legSmEff = nullptr;
 
-			TLegend* legData = new TLegend(0.02,0.89,0.97,0.99);
-			legData->SetBorderSize(0);
-			legData->SetTextSize(0.04);
-			legData->SetTextFont(FontStyle);
-			legData->SetNColumns(5);			
+			if (StorePlots) {
 
-//			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-//			TCanvas* MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
-//			MCERPlotCanvas->SetBottomMargin(0.16);
-//			MCERPlotCanvas->SetLeftMargin(0.15);
-//			MCERPlotCanvas->SetRightMargin(0.25);
-//			MCERPlotCanvas->SetTopMargin(0.15);			
+				// Create canvases for 3 categories of systematics: MC event rates, Data event rates, Smearing + Efficiency
 
-//			TLegend* legMC = new TLegend(0.02,0.89,0.97,0.99);
-//			legMC->SetBorderSize(0);
-//			legMC->SetTextSize(0.04);
-//			legMC->SetTextFont(FontStyle);
-//			legMC->SetNColumns(5);			
+				TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+				DataERPlotCanvas = new TCanvas(DataERCanvasName,DataERCanvasName,205,34,1024,768);
+				DataERPlotCanvas->SetBottomMargin(0.16);
+				DataERPlotCanvas->SetLeftMargin(0.15);
+				DataERPlotCanvas->SetRightMargin(0.25);
+				DataERPlotCanvas->SetTopMargin(0.15);			
 
-			TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-			TCanvas* SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
-			SmEffPlotCanvas->SetBottomMargin(0.16);
-			SmEffPlotCanvas->SetLeftMargin(0.15);
-			SmEffPlotCanvas->SetRightMargin(0.25);
-			SmEffPlotCanvas->SetTopMargin(0.15);			
+				legData = new TLegend(0.02,0.89,0.97,0.99);
+				legData->SetBorderSize(0);
+				legData->SetTextSize(0.04);
+				legData->SetTextFont(FontStyle);
+				legData->SetNColumns(5);			
 
-			TLegend* legSmEff = new TLegend(0.02,0.89,0.97,0.99);
-			legSmEff->SetBorderSize(0);
-			legSmEff->SetTextSize(0.04);
-			legSmEff->SetTextFont(FontStyle);
-			legSmEff->SetNColumns(5);
+	//			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+	//			MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
+	//			MCERPlotCanvas->SetBottomMargin(0.16);
+	//			MCERPlotCanvas->SetLeftMargin(0.15);
+	//			MCERPlotCanvas->SetRightMargin(0.25);
+	//			MCERPlotCanvas->SetTopMargin(0.15);			
+
+	//			legMC = new TLegend(0.02,0.89,0.97,0.99);
+	//			legMC->SetBorderSize(0);
+	//			legMC->SetTextSize(0.04);
+	//			legMC->SetTextFont(FontStyle);
+	//			legMC->SetNColumns(5);			
+
+				TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+				SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
+				SmEffPlotCanvas->SetBottomMargin(0.16);
+				SmEffPlotCanvas->SetLeftMargin(0.15);
+				SmEffPlotCanvas->SetRightMargin(0.25);
+				SmEffPlotCanvas->SetTopMargin(0.15);			
+
+				legSmEff = new TLegend(0.02,0.89,0.97,0.99);
+				legSmEff->SetBorderSize(0);
+				legSmEff->SetTextSize(0.04);
+				legSmEff->SetTextFont(FontStyle);
+				legSmEff->SetNColumns(5);
+
+			}
+
+			// ----------------------------------------------------------------------------------------------------
 
 			// Loop over the samples
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
 				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
 
@@ -360,41 +382,49 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool Includ
 
 				// --------------------------------------------------------------------------------
 
-				TLegend* leg = nullptr;
+				if (StorePlots) {
 
-				if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos || string(UncSources[WhichSample]).find("MC_") != std::string::npos) 
-					{ SmEffPlotCanvas->cd(); leg = legSmEff;}
-				//else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
-				else { DataERPlotCanvas->cd(); leg = legData; }
+					TLegend* leg = nullptr;
 
-				ReturnUncPlot(LocalCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],WhichSample,leg);				
+					if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos || string(UncSources[WhichSample]).find("MC_") != std::string::npos) 
+						{ SmEffPlotCanvas->cd(); leg = legSmEff;}
+					//else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
+					else { DataERPlotCanvas->cd(); leg = legData; }
+
+					ReturnUncPlot(LocalCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],WhichSample,leg);				
+
+				}
 
 			} // End of the loop over the samples
 
 			// ------------------------------------------------------------------
 
-			DataERPlotCanvas->cd();
-			legData->Draw();
+			if (StorePlots) {
 
-//			MCERPlotCanvas->cd();
-//			legMC->Draw();
+				DataERPlotCanvas->cd();
+				legData->Draw();
 
-			SmEffPlotCanvas->cd();
-			legSmEff->Draw();
+	//			MCERPlotCanvas->cd();
+	//			legMC->Draw();
 
-			// ------------------------------------------------------------------
+				SmEffPlotCanvas->cd();
+				legSmEff->Draw();
+		
+				// ------------------------------------------------------------------
 
-			DataERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+DataERCanvasName+".pdf");
-//			MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
-			SmEffPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+SmEffCanvasName+".pdf");	
+				DataERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+DataERCanvasName+".pdf");
+	//			MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
+				SmEffPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+SmEffCanvasName+".pdf");	
 
-			delete 	DataERPlotCanvas;	
-//			delete 	MCERPlotCanvas;
-			delete 	SmEffPlotCanvas;
+				delete 	DataERPlotCanvas;	
+	//			delete 	MCERPlotCanvas;
+				delete 	SmEffPlotCanvas;
+
+			}
 
 			// ------------------------------------------------------------------			
 
-			// Storing Total Covariance Matrices
+			// Storing Total Covariance Matrices in root file
 
 			TotalFileCovarianceMatrices->cd();
 			StatCovariances[WhichPlot]->Write("StatCovariance_"+PlotNames[WhichPlot]);
@@ -406,54 +436,58 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", bool Includ
 			
 			// ---------------------------------------------------------------------------------------------
 			
-			// Plotting Total Fractional Covariances
+			if (StorePlots) {
 
-			TString CanvasName = "Total_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-			PlotCanvas->cd();
-			PlotCanvas->SetBottomMargin(0.16);
-			PlotCanvas->SetLeftMargin(0.15);
-			PlotCanvas->SetRightMargin(0.25);			
-			
-			gStyle->SetMarkerSize(1.5);
-			gStyle->SetPaintTextFormat("4.3f");			
-			
-			Covariances[WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-			Covariances[WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-			Covariances[WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
-			Covariances[WhichPlot]->GetXaxis()->CenterTitle();
-			Covariances[WhichPlot]->GetXaxis()->SetNdivisions(5);
-			
-			Covariances[WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-			Covariances[WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-			Covariances[WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
-			Covariances[WhichPlot]->GetYaxis()->CenterTitle();
-			Covariances[WhichPlot]->GetYaxis()->SetNdivisions(5);
-			Covariances[WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
+				// Plotting Total Fractional Covariances
 
-			Covariances[WhichPlot]->SetTitle(Runs[WhichRun] + " Total");	
+				TString CanvasName = "Total_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+				PlotCanvas->cd();
+				PlotCanvas->SetBottomMargin(0.16);
+				PlotCanvas->SetLeftMargin(0.15);
+				PlotCanvas->SetRightMargin(0.25);			
+				
+				gStyle->SetMarkerSize(1.5);
+				gStyle->SetPaintTextFormat("4.3f");			
+				
+				Covariances[WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+				Covariances[WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+				Covariances[WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
+				Covariances[WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
+				Covariances[WhichPlot]->GetXaxis()->CenterTitle();
+				Covariances[WhichPlot]->GetXaxis()->SetNdivisions(5);
+				
+				Covariances[WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+				Covariances[WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+				Covariances[WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+				Covariances[WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
+				Covariances[WhichPlot]->GetYaxis()->CenterTitle();
+				Covariances[WhichPlot]->GetYaxis()->SetNdivisions(5);
+				Covariances[WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
 
-			double CovMax = TMath::Min(1.,1.05*Covariances[WhichPlot]->GetMaximum());
-			double CovMin = TMath::Min(0.,1.05*Covariances[WhichPlot]->GetMinimum());
-			Covariances[WhichPlot]->GetZaxis()->SetRangeUser(CovMin,CovMax);
-//			Covariances[WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
-			Covariances[WhichPlot]->GetZaxis()->CenterTitle();
-			Covariances[WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
-			Covariances[WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
-			Covariances[WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
-			Covariances[WhichPlot]->GetZaxis()->SetNdivisions(5);
+				Covariances[WhichPlot]->SetTitle(Runs[WhichRun] + " Total");	
 
-			Covariances[WhichPlot]->SetMarkerColor(kWhite);			
-			Covariances[WhichPlot]->SetMarkerSize(1.5);
-//			Covariances[WhichPlot]->Draw("text colz e"); 
-			Covariances[WhichPlot]->Draw("colz");
-			
-			PlotCanvas->SaveAs(PlotPath+OverlaySample+"/WienerSVD_Total_CovarianceMatrices_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
-			
-			delete PlotCanvas;
+				double CovMax = TMath::Min(1.,1.05*Covariances[WhichPlot]->GetMaximum());
+				double CovMin = TMath::Min(0.,1.05*Covariances[WhichPlot]->GetMinimum());
+				Covariances[WhichPlot]->GetZaxis()->SetRangeUser(CovMin,CovMax);
+	//			Covariances[WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
+				Covariances[WhichPlot]->GetZaxis()->CenterTitle();
+				Covariances[WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
+				Covariances[WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
+				Covariances[WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
+				Covariances[WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
+				Covariances[WhichPlot]->GetZaxis()->SetNdivisions(5);
+
+				Covariances[WhichPlot]->SetMarkerColor(kWhite);			
+				Covariances[WhichPlot]->SetMarkerSize(1.5);
+	//			Covariances[WhichPlot]->Draw("text colz e"); 
+				Covariances[WhichPlot]->Draw("colz");
+				
+				PlotCanvas->SaveAs(PlotPath+OverlaySample+"/WienerSVD_Total_CovarianceMatrices_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				
+				delete PlotCanvas;
+
+			}
 		
 		} // End of the loop over the plots
 

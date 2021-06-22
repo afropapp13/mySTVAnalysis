@@ -221,6 +221,12 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		// Until Run3 NuWro is produced
+		if ( Runs[WhichRun] == "Run3" && (BaseMC == "Overlay9NuWro" || BeamOnSample == "Overlay9NuWro") ) 
+			{ continue;}
+
+		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 		double DataPOT = ReturnBeamOnRunPOT(Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);
@@ -240,7 +246,8 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString FileName = MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOnSample != "BeamOn9") { MigrationMatrixPath+BeamOnSample"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
 		// Open base files
@@ -327,7 +334,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				}
 
-			} else { // Fake Data Studies, working with MC CC1p signal events as BeamOn
+			} else { // Fake Data Studies, working only with MC CC1p signal events as BeamOn
 
 				DataPlot = CC1pPlots[WhichPlot];
 
@@ -347,9 +354,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			double BeamOnMax = 1.25*DataPlot->GetMaximum();
 
-			// LY / TPC overlays
+			// GENIE CV LY / TPC overlays
 
-			if (Syst == "LY" || Syst == "TPC" || Syst == "MC_LY" || Syst == "MC_TPC") {
+			if (BaseMC == "Overlay9" && (Syst == "LY" || Syst == "TPC" || Syst == "MC_LY" || Syst == "MC_TPC") ) {
 
 				TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 				TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
@@ -417,13 +424,13 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
 				delete EventRatePlotCanvas;
 
-			} // End of the cases where we overlay the event rates for LY / TPC systematics
+			} // End of the cases where we overlay the event rates for GENIE CV LY / TPC systematics
 
 			// -------------------------------------------------------------------------------------------------------
 
-			// XSec overlays
+			// GENIE CV multisim overlays
 
-			if (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux") {
+			if (BaseMC == "Overlay9" (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux") ) {
 
 				for (int unialt = 0; unialt < (int)(UniAltModels.size()); unialt++ ) {
 
@@ -497,7 +504,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				} // End of the loop over a specific universe name
 
-			} // End of the cases where we overlay the event rates for XSec/G4/Flux systematics	
+			} // End of the cases where we overlay the event rates for GENIE CV  XSec/G4/Flux systematics	
 
 			// -------------------------------------------------------------------------------------------------------
 			// -------------------------------------------------------------------------------------------------------
@@ -709,54 +716,58 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 			
 			// ---------------------------------------------------------------------------------------	
 
-			// Plot the total covariance matrix		
+			// Plot the total covariance matrix for GENIE CV
+
+			if (BaseMC == "Overlay9") {		
 		
-			TString CanvasName = Syst+"_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun];
-			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-			PlotCanvas->cd();
-			PlotCanvas->SetBottomMargin(0.16);
-			PlotCanvas->SetLeftMargin(0.15);
-			PlotCanvas->SetRightMargin(0.25);			
-			
-			gStyle->SetMarkerSize(1.5);
-			gStyle->SetPaintTextFormat("4.3f");			
-			
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->CenterTitle();
-			Covariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(8);
-			
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->CenterTitle();
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetNdivisions(5);
-			Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
+				TString CanvasName = Syst+"_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun];
+				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+				PlotCanvas->cd();
+				PlotCanvas->SetBottomMargin(0.16);
+				PlotCanvas->SetLeftMargin(0.15);
+				PlotCanvas->SetRightMargin(0.25);			
+				
+				gStyle->SetMarkerSize(1.5);
+				gStyle->SetPaintTextFormat("4.3f");			
+				
+				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
+				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
+				Covariances[WhichRun][WhichPlot]->GetXaxis()->CenterTitle();
+				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(8);
+				
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->CenterTitle();
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetNdivisions(5);
+				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
 
-			Covariances[WhichRun][WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
+				Covariances[WhichRun][WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
 
-			double CovMax = TMath::Min(1.,1.05*Covariances[WhichRun][WhichPlot]->GetMaximum());
-			double CovMin = TMath::Min(0.,1.05*Covariances[WhichRun][WhichPlot]->GetMinimum());
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetRangeUser(CovMin,CovMax);
-//			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->CenterTitle();
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
-			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetNdivisions(5);
+				double CovMax = TMath::Min(1.,1.05*Covariances[WhichRun][WhichPlot]->GetMaximum());
+				double CovMin = TMath::Min(0.,1.05*Covariances[WhichRun][WhichPlot]->GetMinimum());
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetRangeUser(CovMin,CovMax);
+	//			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->CenterTitle();
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
+				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetNdivisions(5);
 
-			Covariances[WhichRun][WhichPlot]->SetMarkerColor(kWhite);			
-			Covariances[WhichRun][WhichPlot]->SetMarkerSize(1.5);
-//			Covariances[WhichRun][WhichPlot]->Draw("text colz e"); 
-			Covariances[WhichRun][WhichPlot]->Draw("colz");
-			
-			PlotCanvas->SaveAs(PlotPath+BaseMC+"/WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
-			
-			delete PlotCanvas;			
+				Covariances[WhichRun][WhichPlot]->SetMarkerColor(kWhite);			
+				Covariances[WhichRun][WhichPlot]->SetMarkerSize(1.5);
+	//			Covariances[WhichRun][WhichPlot]->Draw("text colz e"); 
+				Covariances[WhichRun][WhichPlot]->Draw("colz");
+				
+				PlotCanvas->SaveAs(PlotPath+BaseMC+"/WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				
+				delete PlotCanvas;
+
+			}			
 
 		} // End of the loop over the plots
 

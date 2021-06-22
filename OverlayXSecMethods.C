@@ -156,6 +156,14 @@ void OverlayXSecMethods() {
 			Plots->SetMarkerStyle(20);
 			Plots->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
 
+			TH1D* PlotsUnfOnly = (TH1D*)(f->Get("UnfOnlyReco"+PlotName[WhichPlot]));
+			PlotsUnfOnly->SetLineColor(kBlack);
+			PlotsUnfOnly->SetMarkerColor(kBlack);
+			PrettyPlot(PlotsUnfOnly);
+			PlotsUnfOnly->SetMarkerStyle(20);
+			PlotsUnfOnly->SetMarkerSize(1.);
+			PlotsUnfOnly->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
+
 			TH1D* PlotsStat = (TH1D*)(f->Get("Reco"+PlotName[WhichPlot]));
 			PlotsStat->SetLineColor(kBlack);
 			PlotsStat->SetMarkerColor(kBlack);
@@ -213,9 +221,13 @@ void OverlayXSecMethods() {
 			double max = TMath::Max(0., 1.22*(MaxValue+MaxValueError));	
 
 			Plots->GetYaxis()->SetRangeUser(min,max);
-			Plots->GetYaxis()->SetTitleOffset(1.2);			
+			Plots->GetYaxis()->SetTitleOffset(1.2);
 
-			Plots->Draw("p0 hist same");
+			PlotsUnfOnly->GetYaxis()->SetRangeUser(min,max);
+			PlotsUnfOnly->GetYaxis()->SetTitleOffset(1.2);			
+
+//			Plots->Draw("p0 hist same");
+			PlotsUnfOnly->Draw("e same");
 			Offset->Draw("p0 hist same");
 
 //			Plots->Draw("e1 same");

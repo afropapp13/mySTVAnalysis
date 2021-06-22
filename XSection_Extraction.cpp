@@ -156,6 +156,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 		vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
 
+		vector<TH1D*> PlotsRecoUnfOnly; PlotsRecoUnfOnly.resize(N1DPlots);
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
@@ -245,6 +246,8 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {			
 
 			int NBinsX = PlotsCC1pReco[0][WhichPlot]->GetNbinsX();
+				
+			PlotsRecoUnfOnly[WhichPlot] = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -273,7 +276,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 				double CurrentExtBNBEntry = PlotsReco[2][WhichPlot]->GetBinContent(WhichXBin+1);
 				double CurrentExtBNBError = PlotsReco[2][WhichPlot]->GetBinError(WhichXBin+1);
-				double ExtBNBScaledEntry = 0., ExtBNBScaledError = 0.;
+				double ExtBNBScaledEntry = 0., ExtBNBScaledError = 0., ExtBNBScaledErrorUnfOnly = 0.;
 				
 				if (EffectiveEfficiencyXBin != 0 ) {
 				  
@@ -283,6 +286,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 								TMath::Power(CurrentExtBNBEntry * EffectiveEfficiencyXBinError 
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							     ) * ScalingFactor;
+					ExtBNBScaledErrorUnfOnly = CurrentExtBNBEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin) * ScalingFactor;
 							     
 				}
 
@@ -295,7 +299,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 				double CurrentDirtEntry = PlotsReco[3][WhichPlot]->GetBinContent(WhichXBin+1);
 				double CurrentDirtError = PlotsReco[3][WhichPlot]->GetBinError(WhichXBin+1);
-				double DirtScaledEntry = 0., DirtScaledError = 0.;
+				double DirtScaledEntry = 0., DirtScaledError = 0., DirtScaledErrorUnfOnly = 0.;
 				
 				if (EffectiveEfficiencyXBin != 0 ) {  
 				
@@ -305,6 +309,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 								TMath::Power(CurrentDirtEntry * EffectiveEfficiencyXBinError 
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							   ) * ScalingFactor;
+					DirtScaledErrorUnfOnly = CurrentDirtEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin) * ScalingFactor;
 							   
 				}
 
@@ -317,7 +322,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 				double CurrentBkgEntry = PlotsBkgReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
 				double CurrentBkgError = PlotsBkgReco[0][WhichPlot]->GetBinError(WhichXBin+1);
-				double BkgScaledEntry = 0., BkgScaledError = 0.;
+				double BkgScaledEntry = 0., BkgScaledError = 0., BkgScaledErrorUnfOnly = 0.;
 
 				if (EffectiveEfficiencyXBin != 0 ) {
 				
@@ -327,6 +332,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 								TMath::Power(CurrentBkgEntry * EffectiveEfficiencyXBinError 
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							  ) * ScalingFactor;
+					BkgScaledErrorUnfOnly = CurrentBkgEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin) * ScalingFactor;
 
 				}
 
@@ -339,7 +345,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 				double CurrentOverlayEntry = PlotsCC1pReco[0][WhichPlot]->GetBinContent(WhichXBin+1);
 				double CurrentOverlayError = PlotsCC1pReco[0][WhichPlot]->GetBinError(WhichXBin+1);
-				double OverlayScaledEntry = 0., OverlayScaledError = 0.;
+				double OverlayScaledEntry = 0., OverlayScaledError = 0., OverlayScaledErrorUnfOnly = 0.;
 
 				if (EffectiveEfficiencyXBin != 0 ) {
 				
@@ -349,6 +355,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 								TMath::Power(CurrentOverlayEntry * EffectiveEfficiencyXBinError 
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							      ) * ScalingFactor;
+					OverlayScaledErrorUnfOnly = CurrentOverlayEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin);
 
 				}
 
@@ -382,7 +389,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 				double CurrentDataEntry = PlotsReco[1][WhichPlot]->GetBinContent(WhichXBin+1);
 				double CurrentDataError = PlotsReco[1][WhichPlot]->GetBinError(WhichXBin+1);
-				double DataScaledEntry = 0., DataScaledError = 0.;
+				double DataScaledEntry = 0., DataScaledError = 0., DataScaledErrorUnfOnly = 0.;
 
 				if (EffectiveEfficiencyXBin != 0 ) {  
 				
@@ -392,6 +399,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 								TMath::Power(CurrentDataEntry * EffectiveEfficiencyXBinError 
 								/ (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin),2.)
 							   ) * ScalingFactor;
+					DataScaledErrorUnfOnly = CurrentDataEntry * EffectiveEfficiencyXBinError / (EffectiveEfficiencyXBin * EffectiveEfficiencyXBin) * ScalingFactor;
 							   
 				}
 
@@ -404,6 +412,13 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 										TMath::Power(BkgScaledError,2.) +
 										TMath::Power(DirtScaledError,2.)						
 									   );	
+
+				double TotalDataScaledErrorUnfOnly = TMath::Sqrt( 
+										TMath::Power(DataScaledErrorUnfOnly,2.) +
+										TMath::Power(ExtBNBScaledErrorUnfOnly,2.) +
+										TMath::Power(BkgScaledErrorUnfOnly,2.) +
+										TMath::Power(DirtScaledErrorUnfOnly,2.)						
+									   );
 									   
 				if (Subtract == "_BUnsubtracted") { TotalDataScaledError = TMath::Sqrt( 
 													TMath::Power(DataScaledError,2.) +
@@ -414,6 +429,9 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 									   
 				PlotsReco[1][WhichPlot]->SetBinContent(WhichXBin+1,TotalDataScaledEntry);
 				PlotsReco[1][WhichPlot]->SetBinError(WhichXBin+1,TotalDataScaledError);
+
+				PlotsRecoUnfOnly[WhichPlot]->SetBinContent(WhichXBin+1,TotalDataScaledEntry);
+				PlotsRecoUnfOnly[WhichPlot]->SetBinError(WhichXBin+1,TotalDataScaledErrorUnfOnly);
 
 			} // End of the loop over the bins
 
@@ -555,6 +573,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
 			PlotsReco[1][WhichPlot]->Write(); // Data Reco
+			PlotsRecoUnfOnly[WhichPlot]->Write("UnfOnlyReco"+PlotNames[WhichPlot]); // Only with uncertainties due to unfolding procedure
 			PlotsCC1pReco[0][WhichPlot]->Write(); // Overlay MC		
 			PlotsTrue[4][WhichPlot]->Write(); // Genie Overlay // Closure test			
 

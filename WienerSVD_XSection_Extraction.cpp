@@ -79,7 +79,7 @@ int LocateBinWithValue(TH1D* h, double Value) {
 */
 // -------------------------------------------------------------------------------------------------------------------------------------
 
-void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest = false) {
+void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest = false, TString BeamOnSample = "") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -108,11 +108,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 	int NCuts = (int)(VectorCuts.size());	
 
-	for (int i = 0; i < NCuts; i++) {
-
-		CutExtension = CutExtension + VectorCuts[i];
-
-	}				
+	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
 
 	// -------------------------------------------------------------------------------------
 
@@ -139,8 +135,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 	vector<TString> LabelsOfSamples;
 	vector<TString> NameOfSamples;
 
-	NameOfSamples.push_back("Overlay9"); 
-	NameOfSamples.push_back("BeamOn9"); 
+	NameOfSamples.push_back("Overlay9"); if (OverlaySample != "") { NameOfSamples[0] = OverlaySample; }
+	NameOfSamples.push_back("BeamOn9");  if (BeamOnSample != "") { NameOfSamples[1] = BeamOnSample; }
 	NameOfSamples.push_back("ExtBNB9"); 
 	NameOfSamples.push_back("OverlayDirt9");
 	NameOfSamples.push_back("GenieOverlay");	 
@@ -149,12 +145,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TString> Runs;
-	Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+//	vector<TString> Runs;
+//	Runs.push_back("Run1");
+////	Runs.push_back("Run2");
+//	Runs.push_back("Run3");
+////	Runs.push_back("Run4");
+////	Runs.push_back("Run5");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
