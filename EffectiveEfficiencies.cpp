@@ -246,7 +246,8 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					pEffPlot->GetYaxis()->SetNdivisions(6);
 					pEffPlot->GetYaxis()->SetTitleSize(TextSize);
 					pEffPlot->GetYaxis()->SetLabelSize(TextSize);
-					pEffPlot->GetYaxis()->SetTitle("Effective Efficiency");
+					pEffPlot->GetYaxis()->SetTitle("Effective Efficiency [%]");
+					pEffPlot->Scale(100.);
 					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
 					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
@@ -256,7 +257,13 @@ void EffectiveEfficiencies(TString OverlaySample) {
 					PlotEffCanvas->SetLeftMargin(0.18);
 
 					PlotEffCanvas->cd();
-					pEffPlot->Draw();
+
+					pEffPlot->SetMarkerColor(kBlack);
+					pEffPlot->SetMarkerStyle(20);
+					pEffPlot->SetMarkerSize(2.);
+					pEffPlot->SetLineColor(kBlack);
+
+					pEffPlot->Draw("e1");
 
 					TLatex *textEff = new TLatex();
 					textEff->SetTextFont(FontStyle);
