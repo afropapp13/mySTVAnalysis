@@ -72,6 +72,11 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
 	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	// -------------------------------------------------------------------------------------
 
 	const int N1DPlots = PlotNames.size();

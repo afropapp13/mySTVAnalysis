@@ -48,6 +48,11 @@ void Detector_Systematics_TPC() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 

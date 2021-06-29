@@ -55,15 +55,20 @@ void Genie_Systematics() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//vector<TString> Runs;
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
 

@@ -125,6 +125,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
@@ -307,6 +312,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			DataPlot->Add(PlotsReco[3][WhichPlot],-1); // Subtract Dirt
 			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1); // Subtract NonCC1p Beam Related Background
 
+			// If performing a closure test, use the CC1p0pi MC part and no bkg subtraction
+
 			if (ClosureTest == true) { DataPlot = PlotsCC1pReco[0][WhichPlot]; }
 
 			int m = DataPlot->GetNbinsX();			
@@ -342,7 +349,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TVectorD signal(n);
 			TVectorD measure(m);
 			TMatrixD response(m, n);
-			TMatrixD covariance(m, m);																										
+			TMatrixD covariance(m, m);
 
 			// Convert input into mathematical formats, easy and clean to be processed. 
 			// Converted defined/implemented in source files, see include/Util.h
@@ -458,7 +465,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			if (ClosureTest == true) { unf->Draw("p0 hist"); }
 			else { unf->Draw("ex0"); }			
 
-			// The MC CC1p prediction has to be multiplied by the smearing matrix Ac
+			// The MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
 
 			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD AcTrueUnfold = AddSmear * signal;

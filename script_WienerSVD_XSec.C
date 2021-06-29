@@ -24,6 +24,8 @@ void script_WienerSVD_XSec() {
 
 		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\")");
 
+		// Closure test
+
 		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true)");		
 
 	}

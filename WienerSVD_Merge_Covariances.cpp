@@ -93,8 +93,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	// Store the pdf's only for the OverlaySample = "Overlay9" & BeamOn9 = ""
 	// Otherwise, just store the merged fractional covariance matrix	
 
-	bool StrorePlots = false;
-	if (OverlaySample == "Overlay9" && BeamOn9 == "") { StrorePlots = true; }
+	bool StorePlots = false;
+	if (OverlaySample == "Overlay9" && BeamOn9 == "") { StorePlots = true; }
 
 	// -------------------------------------------------------------------------------------
 
@@ -124,15 +124,20 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	const int NPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << NPlots << endl;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//vector<TString> Runs;
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
 
@@ -142,6 +147,15 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> UncSources;
+
+	if (BeamOn9 != "") { // Fake data study, we need only the Stat, MC_Stat, XSec & SmEff_XSec covariances
+
+	UncSources.push_back("Stat");
+	UncSources.push_back("XSec");
+	UncSources.push_back("MC_Stat");
+ 	UncSources.push_back("SmEff_XSec");
+
+	} else {
 
 	UncSources.push_back("Stat");
 //	UncSources.push_back("POT");     // Potentially add back 
@@ -172,6 +186,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	UncSources.push_back("SmEff_G4");
 	UncSources.push_back("SmEff_Flux");
 //	UncSources.push_back("SmEff_Dirt");
+
+	}
 
 	if (IncludeUnfTech) { UncSources.push_back("UnfoldingTechnique"); }
 
@@ -239,11 +255,13 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 //			TLegend* legMC = nullptr;
 			TLegend* legSmEff = nullptr;
 
+			TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+			TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+
 			if (StorePlots) {
 
 				// Create canvases for 3 categories of systematics: MC event rates, Data event rates, Smearing + Efficiency
 
-				TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 				DataERPlotCanvas = new TCanvas(DataERCanvasName,DataERCanvasName,205,34,1024,768);
 				DataERPlotCanvas->SetBottomMargin(0.16);
 				DataERPlotCanvas->SetLeftMargin(0.15);
@@ -269,7 +287,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	//			legMC->SetTextFont(FontStyle);
 	//			legMC->SetNColumns(5);			
 
-				TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 				SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
 				SmEffPlotCanvas->SetBottomMargin(0.16);
 				SmEffPlotCanvas->SetLeftMargin(0.15);

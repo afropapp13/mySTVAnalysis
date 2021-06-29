@@ -73,14 +73,19 @@ void WienerSVD_SmearEff_CovarianceMatrices(TString Syst = "None",TString BaseMC 
 	PlotNames.push_back("ProtonPhiPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	const int N1DPlots = PlotNames.size();
 		
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//vector<TString> Runs;
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");			
 
@@ -283,7 +288,8 @@ void WienerSVD_SmearEff_CovarianceMatrices(TString Syst = "None",TString BaseMC 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		TString FileName = MigrationMatrixPath+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOnSample != "BeamOn9") { MigrationMatrixPath+BeamOnSample"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		if (BeamOnSample != "BeamOn9") { MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
 		// Open base files
@@ -495,7 +501,7 @@ void WienerSVD_SmearEff_CovarianceMatrices(TString Syst = "None",TString BaseMC 
 
 			// GENIE CV multisim overlays
 
-			if (BaseMC == "Overlay9" (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux") ) {
+			if (BaseMC == "Overlay9" && (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux") ) {
 
 				for (int unialt = 0; unialt < (int)(UniAltModels.size()); unialt++ ) {
 
@@ -731,15 +737,15 @@ void WienerSVD_SmearEff_CovarianceMatrices(TString Syst = "None",TString BaseMC 
 							AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 							AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-							if (Syst == "Flux" || Syst == "MC_Flux") {
+//							if (Syst == "Flux" || Syst == "MC_Flux") {
 
-								AltDataEntryX = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1) / (UniFlux[alt] * NTargets) * Units;
-								AltDataErrorX = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1) / (UniFlux[alt] * NTargets) * Units;
+//								AltDataEntryX = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1) / (UniFlux[alt] * NTargets) * Units;
+//								AltDataErrorX = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1) / (UniFlux[alt] * NTargets) * Units;
 
-								AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (UniFlux[alt] * NTargets) * Units;
-								AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (UniFlux[alt] * NTargets) * Units;
+//								AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (UniFlux[alt] * NTargets) * Units;
+//								AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (UniFlux[alt] * NTargets) * Units;
 
-							}
+//							}
 
 							double LocalCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
 

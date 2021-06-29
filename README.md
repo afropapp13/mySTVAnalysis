@@ -53,6 +53,10 @@ root -l Flux_Systematics.cpp
 
 cd ../myEvents
 root -l Create1DPlotsTHStack_SubSpectrum.cpp
+
+#locally
+./Syst_DownloadEventRatePlots.sh
+
 cd ../mySTVAnalysis
 
 #################################################################################################################################
@@ -123,14 +127,19 @@ root -l PrintFinalUnc.cpp
 
 ####################################################################
 
+# Fake data studies: we need the MC stat & xsec uncertainties only
+
 # Fake data with CC1p0pi NuWro as data sample # need to be tested 
 root -l 
 .L WienerSVD_CovarianceMatrices.cpp++
 WienerSVD_CovarianceMatrices("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
+WienerSVD_CovarianceMatrices("XSec","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 # add the rest here after you verify that things are working for NuWro
+# do i need to play the same game with MC_Stat?
 
+root -l
 .L script_WienerSVD_SmEff_Systematics.cpp++
-script_WienerSVD_SmEff_Systematics("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
+script_WienerSVD_SmEff_Systematics("SmEff_XSec","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 # add the rest here after you verify that things are working for NuWro
 
 # Merge the NuWro covariances # needs testing

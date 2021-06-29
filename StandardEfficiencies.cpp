@@ -40,14 +40,6 @@ void StandardEfficiencies(TString OverlaySample) {
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
 
-	/*
-	// up to v43
-	VectorCuts.push_back("");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_Collinearity");
-	*/
-
 	int NCuts = (int)(VectorCuts.size());	
 	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
 
@@ -80,6 +72,11 @@ void StandardEfficiencies(TString OverlaySample) {
 	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
 	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
 	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
+
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	// -------------------------------------------------------------------------------------
 

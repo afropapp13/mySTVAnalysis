@@ -57,14 +57,6 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
 
-	/*
-	// up to v43
-	VectorCuts.push_back("");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_Collinearity");
-	*/
-
 	int NCuts = (int)(VectorCuts.size());	
 
 	for (int i = 0; i < NCuts; i++) {
@@ -90,6 +82,11 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 //	PlotNames.push_back("kMissPlot");
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
+
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
