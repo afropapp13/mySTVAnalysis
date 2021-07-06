@@ -85,11 +85,12 @@ void EffectiveEfficiencies(TString OverlaySample) {
 	// ------------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
+	Runs.push_back("Combined");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -232,7 +233,7 @@ void EffectiveEfficiencies(TString OverlaySample) {
 
 				if (WhichSample == 0 && OverlaySample == "") { 
 
-					pEffPlot->SetLineWidth(3);
+					pEffPlot->SetLineWidth(2);
 					pEffPlot->SetLineColor(kBlack);
 					pEffPlot->SetMarkerStyle(20);
 

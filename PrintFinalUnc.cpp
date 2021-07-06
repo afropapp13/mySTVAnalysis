@@ -33,17 +33,17 @@ void PrintFinalUnc() {
 
 	// Run 1
 
-	double Run1Stat = 12.26;
+	double Run1Stat = 14.97;
 	double Run1POT = 0.; // 2%
 	double Run1NTarget = 0.; // 1%
-	double Run1LY = 1.15;
-	double Run1TPC = 4.00;
+	double Run1LY = 5.87;
+	double Run1TPC = 16.96;
 	double Run1G4 = 0.;
 	double Run1Genie = 0.;
 	double Run1Flux = 0.;
 	double Run1Dirt = 0.91;
 
-	double Run1StatMC = 0.;
+	double Run1StatMC = 28.86;
 	double Run1POTSmEff = 0.; // 2%
 	double Run1NTargetSmEff = 0.; // 1%
 	double Run1LYSmEff = 0.;
@@ -59,7 +59,7 @@ void PrintFinalUnc() {
 	double Run3Stat = 23.90;
 	double Run3POT = 0.; // 2%
 	double Run3NTarget = 0.; // 1%
-	double Run3LY = 1.58;
+	double Run3LY = 1.08;
 	double Run3TPC = 1.36;
 	double Run3G4 = 0.;
 	double Run3Genie = 0.;

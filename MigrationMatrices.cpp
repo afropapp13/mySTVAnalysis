@@ -40,14 +40,6 @@ void MigrationMatrices(TString OverlaySample) {
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
 
-	/*
-	// up to v43
-	VectorCuts.push_back("");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_ThreePlaneLogChi2");
-	VectorCuts.push_back("_Collinearity");
-	*/
-
 	int NCuts = (int)(VectorCuts.size());	
 
 	for (int i = 0; i < NCuts; i++) {
@@ -89,11 +81,12 @@ void MigrationMatrices(TString OverlaySample) {
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
+	Runs.push_back("Combined");				
 
 	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	
@@ -216,7 +209,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
-					Plots[WhichSample][WhichPlot]->SetMarkerSize(1.5);
+					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.8);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]

@@ -31,6 +31,9 @@ using namespace Constants;
 
 void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString UncSources,int Color, TLegend* leg) {
 
+	if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) {  }
+	else {
+
 	int n = LocalCovMatrix->GetNbinsX();
 	TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
 	double Nuedges[n+1];
@@ -70,8 +73,6 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	if (PlotName == "ProtonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,16.); }
 	if (PlotName == "ProtonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }	
 				
-
-
 	unc->SetLineWidth(2);
 	if (Color >= 9) { Color = Color - 9; }
 	if (Color >= 18) { Color = Color - 18; }		
@@ -81,6 +82,8 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	unc->Draw("hist text0 same");
 
 	leg->AddEntry(unc,UncSources);
+
+	}
 
 }
 
@@ -160,26 +163,26 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	UncSources.push_back("Stat");
 //	UncSources.push_back("POT");     // Potentially add back 
 //	UncSources.push_back("NTarget"); // Potentially add back
-	UncSources.push_back("LY");
-	UncSources.push_back("TPC");
-	UncSources.push_back("XSec");
-	UncSources.push_back("G4");
-	UncSources.push_back("Flux");
-	UncSources.push_back("Dirt");
+//	UncSources.push_back("LY");
+//	UncSources.push_back("TPC");
+//	UncSources.push_back("XSec");
+//	UncSources.push_back("G4");
+//	UncSources.push_back("Flux");
+//	UncSources.push_back("Dirt");
 
 	UncSources.push_back("MC_Stat");
-//	UncSources.push_back("MC_POT");
-//	UncSources.push_back("MC_NTarget");
-//	UncSources.push_back("MC_LY");
-//	UncSources.push_back("MC_TPC");
-//	UncSources.push_back("MC_XSec");
-//	UncSources.push_back("MC_G4");
-//	UncSources.push_back("MC_Flux");
-//	UncSources.push_back("MC_Dirt");
+	UncSources.push_back("MC_POT");
+	UncSources.push_back("MC_NTarget");
+	UncSources.push_back("MC_LY");
+	UncSources.push_back("MC_TPC");
+	UncSources.push_back("MC_XSec");
+	UncSources.push_back("MC_G4");
+	UncSources.push_back("MC_Flux");
+	UncSources.push_back("MC_Dirt");
 
 //	UncSources.push_back("SmEff_Stat");
-//	UncSources.push_back("SmEff_POT");     // Potentially add back
-//	UncSources.push_back("SmEff_NTarget"); // Potentially add back
+	UncSources.push_back("SmEff_POT");     // Potentially add back
+	UncSources.push_back("SmEff_NTarget"); // Potentially add back
 	UncSources.push_back("SmEff_LY");
 	UncSources.push_back("SmEff_TPC");
 	UncSources.push_back("SmEff_XSec");
@@ -257,35 +260,35 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 			TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 
 			if (StorePlots) {
 
 				// Create canvases for 3 categories of systematics: MC event rates, Data event rates, Smearing + Efficiency
 
-				DataERPlotCanvas = new TCanvas(DataERCanvasName,DataERCanvasName,205,34,1024,768);
-				DataERPlotCanvas->SetBottomMargin(0.16);
-				DataERPlotCanvas->SetLeftMargin(0.15);
-				DataERPlotCanvas->SetRightMargin(0.25);
-				DataERPlotCanvas->SetTopMargin(0.15);			
+//				DataERPlotCanvas = new TCanvas(DataERCanvasName,DataERCanvasName,205,34,1024,768);
+//				DataERPlotCanvas->SetBottomMargin(0.16);
+//				DataERPlotCanvas->SetLeftMargin(0.15);
+//				DataERPlotCanvas->SetRightMargin(0.25);
+//				DataERPlotCanvas->SetTopMargin(0.15);			
 
-				legData = new TLegend(0.02,0.89,0.97,0.99);
-				legData->SetBorderSize(0);
-				legData->SetTextSize(0.04);
-				legData->SetTextFont(FontStyle);
-				legData->SetNColumns(5);			
+//				legData = new TLegend(0.02,0.89,0.97,0.99);
+//				legData->SetBorderSize(0);
+//				legData->SetTextSize(0.04);
+//				legData->SetTextFont(FontStyle);
+//				legData->SetNColumns(5);			
 
-	//			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-	//			MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
-	//			MCERPlotCanvas->SetBottomMargin(0.16);
-	//			MCERPlotCanvas->SetLeftMargin(0.15);
-	//			MCERPlotCanvas->SetRightMargin(0.25);
-	//			MCERPlotCanvas->SetTopMargin(0.15);			
+				MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
+				MCERPlotCanvas->SetBottomMargin(0.16);
+				MCERPlotCanvas->SetLeftMargin(0.15);
+				MCERPlotCanvas->SetRightMargin(0.25);
+				MCERPlotCanvas->SetTopMargin(0.15);			
 
-	//			legMC = new TLegend(0.02,0.89,0.97,0.99);
-	//			legMC->SetBorderSize(0);
-	//			legMC->SetTextSize(0.04);
-	//			legMC->SetTextFont(FontStyle);
-	//			legMC->SetNColumns(5);			
+				legMC = new TLegend(0.02,0.89,0.97,0.99);
+				legMC->SetBorderSize(0);
+				legMC->SetTextSize(0.04);
+				legMC->SetTextFont(FontStyle);
+				legMC->SetNColumns(5);			
 
 				SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
 				SmEffPlotCanvas->SetBottomMargin(0.16);
@@ -405,7 +408,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 					if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos || string(UncSources[WhichSample]).find("MC_") != std::string::npos) 
 						{ SmEffPlotCanvas->cd(); leg = legSmEff;}
-					//else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
+					else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
 					else { DataERPlotCanvas->cd(); leg = legData; }
 
 					ReturnUncPlot(LocalCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],WhichSample,leg);				
@@ -418,23 +421,23 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			if (StorePlots) {
 
-				DataERPlotCanvas->cd();
-				legData->Draw();
+//				DataERPlotCanvas->cd();
+//				legData->Draw();
 
-	//			MCERPlotCanvas->cd();
-	//			legMC->Draw();
+				MCERPlotCanvas->cd();
+				legMC->Draw();
 
 				SmEffPlotCanvas->cd();
 				legSmEff->Draw();
 		
 				// ------------------------------------------------------------------
 
-				DataERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+DataERCanvasName+".pdf");
-	//			MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
+//				DataERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+DataERCanvasName+".pdf");
+				MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
 				SmEffPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+SmEffCanvasName+".pdf");	
 
-				delete 	DataERPlotCanvas;	
-	//			delete 	MCERPlotCanvas;
+//				delete 	DataERPlotCanvas;	
+				delete 	MCERPlotCanvas;
 				delete 	SmEffPlotCanvas;
 
 			}
