@@ -16,7 +16,7 @@
 using namespace std;
 using namespace Constants;
 
-void StandardEfficiencies(TString OverlaySample) {
+void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -91,7 +91,14 @@ void StandardEfficiencies(TString OverlaySample) {
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
-	Runs.push_back("Combined");				
+	Runs.push_back("Combined");	
+
+	if (DetVar) {
+
+		Runs.clear();
+		Runs.push_back("Run3");
+
+	}			
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;

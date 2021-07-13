@@ -93,17 +93,23 @@ void WienerSVD_OverlayGenerators() {
 	PlotNames.push_back("ProtonCosThetaPlot");
 	PlotNames.push_back("ProtonPhiPlot");
 
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");	
-	Runs.push_back("Run3");
+	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
+	Runs.push_back("Combined");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -287,6 +293,7 @@ void WienerSVD_OverlayGenerators() {
 
 			//PlotsTrue[0][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[0][WhichPlot]->SetLineColor(OverlayColor);
+			PlotsTrue[0][WhichPlot]->SetMarkerColor(OverlayColor);
 			//PlotsTrue[0][WhichPlot]->SetFillColor(OverlayColor);
 			PlotsTrue[0][WhichPlot]->Draw("hist same");		
 
@@ -297,6 +304,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[1][WhichPlot],Ac);
 
 			PlotsTrue[1][WhichPlot]->SetLineColor(Geniev3OutOfTheBoxColor);
+			PlotsTrue[1][WhichPlot]->SetMarkerColor(Geniev3OutOfTheBoxColor);
 			//PlotsTrue[1][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[1][WhichPlot]->Draw("hist same");
 
@@ -307,6 +315,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[2][WhichPlot],Ac);
 
 			PlotsTrue[2][WhichPlot]->SetLineColor(GenieColor);
+			PlotsTrue[2][WhichPlot]->SetMarkerColor(GenieColor);
 			//PlotsTrue[2][WhichPlot]->SetLineWidth(3);
 			//PlotsTrue[2][WhichPlot]->Draw("hist same");
 
@@ -317,6 +326,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[3][WhichPlot],Ac);
 
 			PlotsTrue[3][WhichPlot]->SetLineColor(SuSav2Color);
+			PlotsTrue[3][WhichPlot]->SetMarkerColor(SuSav2Color);
 			//PlotsTrue[3][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[3][WhichPlot]->Draw("hist same");
 
@@ -327,6 +337,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[4][WhichPlot],Ac);
 
 			PlotsTrue[4][WhichPlot]->SetLineColor(NuWroColor);
+			PlotsTrue[4][WhichPlot]->SetMarkerColor(NuWroColor);
 			//PlotsTrue[4][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[4][WhichPlot]->Draw("hist same");
 
@@ -337,6 +348,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[5][WhichPlot],Ac);
 
 			PlotsTrue[5][WhichPlot]->SetLineColor(GiBUUColor);
+			PlotsTrue[5][WhichPlot]->SetMarkerColor(GiBUUColor);
 			//PlotsTrue[5][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[5][WhichPlot]->Draw("hist same");
 
@@ -347,6 +359,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[6][WhichPlot],Ac);
 
 			PlotsTrue[6][WhichPlot]->SetLineColor(GENIEv2Color);
+			PlotsTrue[6][WhichPlot]->SetMarkerColor(GENIEv2Color);
 			//PlotsTrue[6][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[6][WhichPlot]->Draw("hist same");
 
@@ -357,6 +370,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[7][WhichPlot],Ac);
 
 			PlotsTrue[7][WhichPlot]->SetLineColor(NEUTColor);
+			PlotsTrue[7][WhichPlot]->SetMarkerColor(NEUTColor);
 			//PlotsTrue[7][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[7][WhichPlot]->Draw("hist same");
 
@@ -367,6 +381,7 @@ void WienerSVD_OverlayGenerators() {
 			Multiply(PlotsTrue[8][WhichPlot],Ac);
 
 			PlotsTrue[8][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
+			PlotsTrue[8][WhichPlot]->SetMarkerColor(GENIEv3_0_4_Color);
 			//PlotsTrue[8][WhichPlot]->SetLineWidth(3);
 			PlotsTrue[8][WhichPlot]->Draw("hist same");
 
@@ -379,11 +394,12 @@ void WienerSVD_OverlayGenerators() {
 			// Legend & Run / POT
 
 			double tor860_wcut = -99.;
-			if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-			if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
-			if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
-			if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
-			if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
+			if (Runs[WhichRun] == "Run1") { tor860_wcut = Fulltor860_wcut_Run1; }
+			if (Runs[WhichRun] == "Run2") { tor860_wcut = Fulltor860_wcut_Run2; }
+			if (Runs[WhichRun] == "Run3") { tor860_wcut = Fulltor860_wcut_Run3; }
+			if (Runs[WhichRun] == "Run4") { tor860_wcut = Fulltor860_wcut_Run4; }
+			if (Runs[WhichRun] == "Run5") { tor860_wcut = Fulltor860_wcut_Run5; }
+			if (Runs[WhichRun] == "Combined") { tor860_wcut = Fulltor860_wcut_Combined; }
 			TString Label = ToString(tor860_wcut)+" POT (Stat #oplus Syst)";
 
 			TLegendEntry* lGenie_GENIEv2 = leg->AddEntry(PlotsTrue[6][WhichPlot],"v2.12.10","l");

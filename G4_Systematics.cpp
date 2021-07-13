@@ -65,12 +65,13 @@ void G4_Systematics() {
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------
 
-	//vector<TString> Runs;
+	vector<TString> Runs;
 	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
+	Runs.push_back("Combined");				
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -82,10 +83,11 @@ void G4_Systematics() {
 	std::vector<TString> EventWeightLabels; EventWeightLabels.clear();
 	
 	int LocalNUniverses = 100;		
-	
-	EventWeightLabels.push_back("reinteractions_piminus_Geant4"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("reinteractions_piplus_Geant4"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("reinteractions_proton_Geant4"); NUniverses.push_back(LocalNUniverses);		
+
+	EventWeightLabels.push_back("reinteractions"); NUniverses.push_back(LocalNUniverses);	
+//	EventWeightLabels.push_back("reinteractions_piminus_Geant4"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("reinteractions_piplus_Geant4"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("reinteractions_proton_Geant4"); NUniverses.push_back(LocalNUniverses);		
 		
 	int NEventWeightLabels = EventWeightLabels.size();
 
@@ -405,7 +407,7 @@ void G4_Systematics() {
 				
 				latex.DrawLatexNDC(0.45,0.75, "#splitline{"+Label+"}{#mu & #sigma Of Universes}");						
 				
-				MeanStdPlotCanvas->SaveAs(PlotPath+"/BeamOn9/MeanSt_G4_Systematics_"+PlotNames[WhichPlot]+"_"\
+				MeanStdPlotCanvas->SaveAs(PlotPath+"BeamOn9/MeanSt_G4_Systematics_"+PlotNames[WhichPlot]+"_"\
 						   +Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+UBCodeVersion+".pdf");
 						   
 				delete MeanStdPlotCanvas;		   

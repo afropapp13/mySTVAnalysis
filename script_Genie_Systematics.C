@@ -6,8 +6,6 @@
 	
 	// -----------------------------------------------------------------------------------------
 	
-	// Run 1 for now
-	
 	WhichSampleArray.push_back("_AxFFCCQEshape_UBGenie"); Universes.push_back(2);
 	WhichSampleArray.push_back("_DecayAngMEC_UBGenie"); Universes.push_back(2);
 	WhichSampleArray.push_back("_NormCCCOH_UBGenie"); Universes.push_back(2);

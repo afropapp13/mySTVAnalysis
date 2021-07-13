@@ -58,12 +58,13 @@ void Systematics() {
 
 	// ------------------------------------------------------------------------------------------------------------------------------
 
-	//vector<TString> Runs;
+	vector<TString> Runs;
 	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
+	Runs.push_back("Combined");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -109,9 +110,12 @@ void Systematics() {
 
 			// CV With Statistical Uncertainties
 
-			if (WhichSample == 0) { // CV with statistical uncertainties
+			if (WhichSample == 0) {
 
-				FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","update")); 
+				TString FileSampleName = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos ) 
+					{ FileSampleName = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_Run3_"+UBCodeVersion+".root"; }
+				FileSample.push_back(TFile::Open(FileSampleName,"update")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
@@ -132,7 +136,10 @@ void Systematics() {
 
 			else {
 
-				FileSample.push_back(TFile::Open(PathToSystematics+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+".root")); 
+				TString FileSampleName = PathToSystematics+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+".root";
+				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos ) 
+					{ FileSampleName = PathToSystematics+NameOfSamples[WhichSample]+"_Run3.root"; }
+				FileSample.push_back( TFile::Open(FileSampleName) ); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
@@ -268,7 +275,7 @@ void Systematics() {
 
 			// Legend & Run / POT
 
-			double tor860_wcut = ReturnBeamOnRunPOT(Runs[WhichRun]);
+			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToString(tor860_wcut)+" POT";
 
 			TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");

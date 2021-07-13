@@ -32,7 +32,7 @@ TString ToStringPOT(double num) {
 
 }
 
-void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe != -1 ONLY for the flux systematics
+void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = false) { // Universe != -1 ONLY for the flux systematics to deal with the flux of the different universes
 
 	// -------------------------------------------------------------------------------------
 
@@ -114,7 +114,14 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
-	Runs.push_back("Combined");				
+	Runs.push_back("Combined");
+
+	if (DetVar) {
+
+		Runs.clear();
+		Runs.push_back("Run3");
+
+	}				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -126,18 +133,23 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 	
-	if ( Universe != -1 ) {
+	// If flux universe, glad the relevant flux universe histo
+
+	if ( Universe != -1 && string(OverlaySample).find("fluxes") != std::string::npos ) {
 	
-		TString DublicateOverlaySample = OverlaySample;
-		TString ReducedOverlaySample = DublicateOverlaySample.ReplaceAll("m_","m");
-		if ( !(string(OverlaySample).find("expskin") != std::string::npos) ) { ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("n_","n"); }
-		ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("g_","g");				
-		
-		for (int i = 0; i < 10;i++) { ReducedOverlaySample.ReplaceAll(TString(std::to_string(i)),""); }
-		
-		TString FluxHistoName = "numu_ms"+ReducedOverlaySample+"/hEnumu"+ReducedOverlaySample+"_ms_"+TString(std::to_string(Universe));
+//		TString DublicateOverlaySample = OverlaySample;
+//		TString ReducedOverlaySample = DublicateOverlaySample.ReplaceAll("m_","m");
+//		if ( !(string(OverlaySample).find("expskin") != std::string::npos) ) { ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("n_","n"); }
+//		ReducedOverlaySample = ReducedOverlaySample.ReplaceAll("g_","g");				
+//			
+//		for (int i = 0; i < 10;i++) { ReducedOverlaySample.ReplaceAll(TString(std::to_string(i)),""); }
+//			
+//		TString FluxHistoName = "numu_ms"+ReducedOverlaySample+"/hEnumu"+ReducedOverlaySample+"_ms_"+TString(std::to_string(Universe));
+//		HistoFlux = (TH1D*)(FluxFile->Get(FluxHistoName));
+
+		TString FluxHistoName = "numu_ms_total/hEnumu_ms_"+TString(std::to_string(Universe));
 		HistoFlux = (TH1D*)(FluxFile->Get(FluxHistoName));
-	
+
 	}
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -524,15 +536,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1) { // Universe 
 
 				// Legend & POT Normalization
 
-				double tor860_wcut = -99.;
-				
-				if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-				if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
-				if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
-				if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
-				if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
-
-				TString Label = ToStringPOT(tor860_wcut)+" POT";
+				TString Label = ToStringPOT(DataPOT)+" POT";
 
 				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
 				lMC->SetTextColor(OverlayColor);

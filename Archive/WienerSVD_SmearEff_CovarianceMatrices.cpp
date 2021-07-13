@@ -47,9 +47,9 @@ TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
-// TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "XSec" "G4" "Flux" "Dirt"
+// TString Syst = "SmEff_Stat" "SmEff_POT" "SmEff_NTarget" "SmEff_LY" "SmEff_TPC" "SmEff_XSec" "SmEff_G4" "SmEff_Flux" "SmEff_Dirt"
 
-void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
+void WienerSVD_SmearEff_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -58,8 +58,6 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	// -------------------------------------------------------------------------------------
 
 	GlobalSettings();
-	TH1D::SetDefaultSumw2();
-	TH2D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);
 
 	// -------------------------------------------------------------------------------------
@@ -380,83 +378,54 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// -------------------------------------------------------------------------------------------------------
 
-			TH1D* DataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
-			TH1D* AltDataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
+			TH1D* DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+			TH1D* AltDataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
 
-			if ( string(Syst).find("Stat") != std::string::npos ) {
+//			if (BeamOnSample == "BeamOn9" || BeamOnSample == "Overlay9") { // Beam On Sample, need to subtract ALL backgrounds
 
-				if (Syst == "Stat") {
+//				DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+//				DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
+//				DataPlot->Add(DirtPlots[WhichPlot],-1.);
 
-					// Don't forget to subtract the cosmic part, the dirt and the nonCC1p part
-					DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
-					AltDataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+//				for (int alt = 0; alt < NAltModels; alt++ ) {
 
-					DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
-					DataPlot->Add(DirtPlots[WhichPlot],-1.);
-					DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+//					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+//						{ continue;}
 
-					AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
-					AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+//					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+//					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt],-1.);
+//					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
+//					AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot],-1.);
 
-				}
+//				}
 
-				if (Syst == "MC_Stat") {
+//				if (Syst == "Dirt" || Syst == "MC_Dirt" || Syst == "SmEff_Dirt") {
 
-					DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
-					AltDataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+//					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+//					AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 
-					// Don't forget to subtract the nonCC1p part
-					DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+//					// Scale the dirt sample by 25% down
+//					TH1D* DirtClone = (TH1D*)(DirtPlots[WhichPlot]->Clone());
+//					DirtClone->Scale(0.75);
+//					AltDataPlot->Add(DirtClone,-1.);
 
-				}
+//				}
 
+//			} else { // Fake Data Studies, working with MC CC1p signal events as BeamOn
 
-			}
-
-
-			if (BeamOnSample == "BeamOn9" || BeamOnSample == "Overlay9") { // Beam On Sample, need to subtract ALL backgrounds
+				DataPlot = CC1pPlots[WhichPlot];
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
-					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+					if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 						{ continue;}
 
-					// Make a copy of the alternative "CC1p" plot
-					// Which was derived via the multiplication of the 
-					// CV truth plot times the corresponding response matrix for a given universe 
-
-					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
-					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);
-					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot]);
-					AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot]);
-
-					// Now subtract the CV bkgs
-					AltBeamOnPlots[WhichPlot][alt]->Add(NonCC1pPlots[WhichPlot],-1.);
-					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
-					AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot],-1.);
+//					AltBeamOnPlots[WhichPlot][alt] = AltCC1pPlots[WhichPlot][alt];
+					AltBeamOnPlots[WhichPlot][alt] = AltForwardFoldedCC1pPlots[WhichPlot][alt];
 
 				}
 
-				if (Syst == "Dirt" || Syst == "MC_Dirt" || Syst == "SmEff_Dirt") {
-
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
-					AltDataPlot->Add(BeamOffPlots[WhichPlot]);
-
-					// Scale the dirt sample by 25% down
-					TH1D* DirtClone = (TH1D*)(DirtPlots[WhichPlot]->Clone());
-					DirtClone->Scale(0.75);
-					AltDataPlot->Add(DirtClone);
-
-					// Now subtract the CV bkgs
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
-					AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
-					AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
-
-				}
-
-			} 
+			//}
 
 			// -------------------------------------------------------------------------------------------------------
 			// -------------------------------------------------------------------------------------------------------

@@ -118,10 +118,12 @@ void OverlayXSecMethods() {
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
-	FileNames.push_back("Overlay9_Run1"); Label.push_back("Run1"); 
+//	FileNames.push_back("Overlay9_Run1"); Label.push_back("Run1"); 
 	//FileNames.push_back("Overlay9_Run1_CV"); Label.push_back("Overlay9 Run1 CV");
-	FileNames.push_back("Overlay9_Run3"); Label.push_back("Run3"); 
+//	FileNames.push_back("Overlay9_Run3"); Label.push_back("Run3"); 
 	//FileNames.push_back("Overlay9_Run3_CV"); Label.push_back("Overlay9 Run3 CV");
+
+	FileNames.push_back("Overlay9_Combined"); Label.push_back("Combined"); 
 
 	const int NFiles = FileNames.size();
 

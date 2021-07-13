@@ -150,12 +150,13 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
-//	vector<TString> Runs;
+	vector<TString> Runs;
 //	Runs.push_back("Run1");
 ////	Runs.push_back("Run2");
 //	Runs.push_back("Run3");
 ////	Runs.push_back("Run4");
-////	Runs.push_back("Run5");				
+////	Runs.push_back("Run5");	
+	Runs.push_back("Combined");			
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -173,7 +174,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		double DataPOT = ReturnBeamOnRunPOT(Runs[WhichRun]);						
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);					
 
 		// -------------------------------------------------------------------------------------		
@@ -493,7 +494,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			// Legend & POT Normalization
 
-			double tor860_wcut = ReturnBeamOnRunPOT(Runs[WhichRun]);
+			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
 			TLegend* legData = new TLegend(0.15,0.89,0.95,0.98);

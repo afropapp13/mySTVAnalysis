@@ -65,12 +65,13 @@ void Flux_Systematics() {
 
 	// -------------------------------------------------------------------------------------------------------------------------
 
-	//vector<TString> Runs;
+	vector<TString> Runs;
 	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
+	Runs.push_back("Combined");
 
 	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -82,20 +83,21 @@ void Flux_Systematics() {
 	std::vector<TString> EventWeightLabels; EventWeightLabels.clear();
 	
 	int LocalNUniverses = 100;		
-	
-	EventWeightLabels.push_back("horncurrent_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("kminus_PrimaryHadronNormalization"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("kplus_PrimaryHadronFeynmanScaling"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("kzero_PrimaryHadronSanfordWang"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("nucleoninexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("nucleonqexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("nucleontotxsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("piminus_PrimaryHadronSWCentralSplineVariation"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("pioninexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("pionqexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("piontotxsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("piplus_PrimaryHadronSWCentralSplineVariation"); NUniverses.push_back(LocalNUniverses);
-	EventWeightLabels.push_back("expskin_FluxUnisim"); NUniverses.push_back(10);
+
+	EventWeightLabels.push_back("fluxes"); NUniverses.push_back(LocalNUniverses);	
+//	EventWeightLabels.push_back("horncurrent_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("kminus_PrimaryHadronNormalization"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("kplus_PrimaryHadronFeynmanScaling"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("kzero_PrimaryHadronSanfordWang"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("nucleoninexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("nucleonqexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("nucleontotxsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("piminus_PrimaryHadronSWCentralSplineVariation"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("pioninexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("pionqexsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("piontotxsec_FluxUnisim"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("piplus_PrimaryHadronSWCentralSplineVariation"); NUniverses.push_back(LocalNUniverses);
+//	EventWeightLabels.push_back("expskin_FluxUnisim"); NUniverses.push_back(10);
 		
 	const int NEventWeightLabels = EventWeightLabels.size();
 

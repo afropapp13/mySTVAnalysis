@@ -10,11 +10,11 @@
 	WhichSampleArray.push_back("_LYRayleigh");
 	WhichSampleArray.push_back("_LYAttenuation");	
 	
-	WhichSampleArray.push_back("_WireModX");
-	WhichSampleArray.push_back("_WireModYZ");
-	WhichSampleArray.push_back("_WireModThetaYZ");
-	WhichSampleArray.push_back("_WireModThetaXZ");
-	WhichSampleArray.push_back("_dEdx");
+	WhichSampleArray.push_back("_X");
+	WhichSampleArray.push_back("_YZ");
+	WhichSampleArray.push_back("_ThetaYZ");
+	WhichSampleArray.push_back("_ThetaXZ");
+//	WhichSampleArray.push_back("_dEdx");
 	WhichSampleArray.push_back("_Recombination2");
 	WhichSampleArray.push_back("_SCE");		
 
@@ -38,19 +38,19 @@
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("StandardEfficiencies(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("StandardEfficiencies(\""+WhichSampleArray[i]+"\",true)");
 
-		gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("EffectiveEfficiencies(\""+WhichSampleArray[i]+"\",true)");
 
 		//gROOT->ProcessLine("MigrationMatrices(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true)");
 
 		//gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
 //		gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"\")");
+		gROOT->ProcessLine("XSection_Extraction(\""+WhichSampleArray[i]+"\",-1,true)");
 
 //		gROOT->ProcessLine("FFXSection_Extraction(\""+WhichSampleArray[i]+"\")");
 

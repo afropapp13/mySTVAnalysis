@@ -5,12 +5,11 @@
 	int NG4Universes = 100;
 	
 	// -----------------------------------------------------------------------------------------
-	
-	// Run 1 & 3
-	
-	WhichSampleArray.push_back("_reinteractions_piminus_Geant4"); Universes.push_back(NG4Universes);
-	WhichSampleArray.push_back("_reinteractions_piplus_Geant4"); Universes.push_back(NG4Universes);
-	WhichSampleArray.push_back("_reinteractions_proton_Geant4"); Universes.push_back(NG4Universes);		
+
+	WhichSampleArray.push_back("_reinteractions"); Universes.push_back(NG4Universes);	
+//	WhichSampleArray.push_back("_reinteractions_piminus_Geant4"); Universes.push_back(NG4Universes);
+//	WhichSampleArray.push_back("_reinteractions_piplus_Geant4"); Universes.push_back(NG4Universes);
+//	WhichSampleArray.push_back("_reinteractions_proton_Geant4"); Universes.push_back(NG4Universes);		
 
 	// -----------------------------------------------------------------------------------------
 

@@ -5,20 +5,21 @@
 	int NFluxUniverses = 100;
 	
 	// -----------------------------------------------------------------------------------------
-	
-	WhichSampleArray.push_back("_horncurrent_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_kminus_PrimaryHadronNormalization"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_kplus_PrimaryHadronFeynmanScaling"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_kzero_PrimaryHadronSanfordWang"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_nucleoninexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_nucleonqexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_nucleontotxsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_piminus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_pioninexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_pionqexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_piontotxsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_piplus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(NFluxUniverses);
-	WhichSampleArray.push_back("_expskin_FluxUnisim"); Universes.push_back(10); // Watch out, different models			
+
+	WhichSampleArray.push_back("_fluxes"); Universes.push_back(NFluxUniverses);	
+//	WhichSampleArray.push_back("_horncurrent_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_kminus_PrimaryHadronNormalization"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_kplus_PrimaryHadronFeynmanScaling"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_kzero_PrimaryHadronSanfordWang"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_nucleoninexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_nucleonqexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_nucleontotxsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_piminus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_pioninexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_pionqexsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_piontotxsec_FluxUnisim"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_piplus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(NFluxUniverses);
+//	WhichSampleArray.push_back("_expskin_FluxUnisim"); Universes.push_back(10); // Watch out, different models			
 
 	// -----------------------------------------------------------------------------------------
 

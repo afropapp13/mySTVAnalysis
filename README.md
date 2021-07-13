@@ -52,10 +52,10 @@ root -l Flux_Systematics.cpp
 #################################################################################################################################
 
 cd ../myEvents
-root -l Create1DPlotsTHStack_SubSpectrum.cpp
+root -l PeLEE_Create1DPlotsTHStack_SubSpectrum.cpp
 
 #locally
-./Syst_DownloadEventRatePlots.sh
+./PeLEE_Syst_DownloadEventRatePlots.sh
 
 cd ../mySTVAnalysis
 

@@ -31,8 +31,8 @@ using namespace Constants;
 
 void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString UncSources,int Color, TLegend* leg) {
 
-	if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) {  }
-	else {
+//	if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) {  }
+//	else {
 
 	int n = LocalCovMatrix->GetNbinsX();
 	TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
@@ -47,7 +47,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		double CovValue = LocalCovMatrix->GetBinContent(i,i);	
 		unc->SetBinContent(i,TMath::Sqrt(CovValue)*100.);
 		
-	}
+//	}
 
 	unc->GetXaxis()->SetTitleFont(FontStyle);
 	unc->GetXaxis()->SetLabelFont(FontStyle);
@@ -137,12 +137,13 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
-	//vector<TString> Runs;
+	vector<TString> Runs;
 	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");				
+	Runs.push_back("Combined");				
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
@@ -161,33 +162,33 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	} else {
 
 	UncSources.push_back("Stat");
-//	UncSources.push_back("POT");     // Potentially add back 
-//	UncSources.push_back("NTarget"); // Potentially add back
-//	UncSources.push_back("LY");
-//	UncSources.push_back("TPC");
-//	UncSources.push_back("XSec");
-//	UncSources.push_back("G4");
-//	UncSources.push_back("Flux");
-//	UncSources.push_back("Dirt");
+	UncSources.push_back("POT");     // Potentially add back 
+	UncSources.push_back("NTarget"); // Potentially add back
+	UncSources.push_back("LY");
+	UncSources.push_back("TPC");
+	UncSources.push_back("XSec");
+	UncSources.push_back("G4");
+	UncSources.push_back("Flux");
+	UncSources.push_back("Dirt");
 
 	UncSources.push_back("MC_Stat");
-	UncSources.push_back("MC_POT");
-	UncSources.push_back("MC_NTarget");
-	UncSources.push_back("MC_LY");
-	UncSources.push_back("MC_TPC");
-	UncSources.push_back("MC_XSec");
-	UncSources.push_back("MC_G4");
-	UncSources.push_back("MC_Flux");
-	UncSources.push_back("MC_Dirt");
+//	UncSources.push_back("MC_POT");
+//	UncSources.push_back("MC_NTarget");
+//	UncSources.push_back("MC_LY");
+//	UncSources.push_back("MC_TPC");
+//	UncSources.push_back("MC_XSec");
+//	UncSources.push_back("MC_G4");
+//	UncSources.push_back("MC_Flux");
+//	UncSources.push_back("MC_Dirt");
 
 //	UncSources.push_back("SmEff_Stat");
-	UncSources.push_back("SmEff_POT");     // Potentially add back
-	UncSources.push_back("SmEff_NTarget"); // Potentially add back
-	UncSources.push_back("SmEff_LY");
-	UncSources.push_back("SmEff_TPC");
-	UncSources.push_back("SmEff_XSec");
-	UncSources.push_back("SmEff_G4");
-	UncSources.push_back("SmEff_Flux");
+//	UncSources.push_back("SmEff_POT");     // Potentially add back
+//	UncSources.push_back("SmEff_NTarget"); // Potentially add back
+//	UncSources.push_back("SmEff_LY");
+//	UncSources.push_back("SmEff_TPC");
+//	UncSources.push_back("SmEff_XSec");
+//	UncSources.push_back("SmEff_G4");
+//	UncSources.push_back("SmEff_Flux");
 //	UncSources.push_back("SmEff_Dirt");
 
 	}
@@ -232,7 +233,13 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	DirtCovariances.resize(NPlots);
 
 	vector<TH2D*> SystCovariances;
-	SystCovariances.resize(NPlots);		
+	SystCovariances.resize(NPlots);	
+
+	vector<TH2D*> ERCovariances;
+	ERCovariances.resize(NPlots);
+
+	vector<TH2D*> SmEffCovariances;
+	SmEffCovariances.resize(NPlots);	
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -250,16 +257,16 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 		for (int WhichPlot = 0; WhichPlot < NPlots; WhichPlot ++) {
 
-			TCanvas* DataERPlotCanvas = nullptr;
-//			TCanvas* MCERPlotCanvas = nullptr;
-			TCanvas* SmEffPlotCanvas = nullptr;
+//			TCanvas* DataERPlotCanvas = nullptr;
+			TCanvas* MCERPlotCanvas = nullptr;
+//			TCanvas* SmEffPlotCanvas = nullptr;
 
-			TLegend* legData = nullptr;
-//			TLegend* legMC = nullptr;
-			TLegend* legSmEff = nullptr;
+//			TLegend* legData = nullptr;
+			TLegend* legMC = nullptr;
+//			TLegend* legSmEff = nullptr;
 
-			TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-			TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+//			TString DataERCanvasName = "DataERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+//			TString SmEffCanvasName = "SmEffSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 
 			if (StorePlots) {
@@ -290,17 +297,17 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				legMC->SetTextFont(FontStyle);
 				legMC->SetNColumns(5);			
 
-				SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
-				SmEffPlotCanvas->SetBottomMargin(0.16);
-				SmEffPlotCanvas->SetLeftMargin(0.15);
-				SmEffPlotCanvas->SetRightMargin(0.25);
-				SmEffPlotCanvas->SetTopMargin(0.15);			
+//				SmEffPlotCanvas = new TCanvas(SmEffCanvasName,SmEffCanvasName,205,34,1024,768);			
+//				SmEffPlotCanvas->SetBottomMargin(0.16);
+//				SmEffPlotCanvas->SetLeftMargin(0.15);
+//				SmEffPlotCanvas->SetRightMargin(0.25);
+//				SmEffPlotCanvas->SetTopMargin(0.15);			
 
-				legSmEff = new TLegend(0.02,0.89,0.97,0.99);
-				legSmEff->SetBorderSize(0);
-				legSmEff->SetTextSize(0.04);
-				legSmEff->SetTextFont(FontStyle);
-				legSmEff->SetNColumns(5);
+//				legSmEff = new TLegend(0.02,0.89,0.97,0.99);
+//				legSmEff->SetBorderSize(0);
+//				legSmEff->SetTextSize(0.04);
+//				legSmEff->SetTextFont(FontStyle);
+//				legSmEff->SetNColumns(5);
 
 			}
 
@@ -310,15 +317,63 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
+				// -----------------------------------------------------------------------------------------------------------------------------------------
+
+				// Opening the file containing the covariance matrices for each one of the systematics
+
 				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+
+				// For the detector variation, we follow the PeLEE recipe
+				// Only Run3 and propagate across all runs
+
+				if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC" || UncSources[WhichSample] == "MC_LY" 
+				|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "SmEff_LY" || UncSources[WhichSample] == "SmEff_TPC" ) {
+
+					FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
+
+				}
+
 				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
 				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
 
-				TH2D* LocalCovMatrix = (TH2D*)(CovFiles[WhichSample]->Get(UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]));
+				// -----------------------------------------------------------------------------------------------------------------------------------------
+
+				TString LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+
+				// For the detector variation, we follow the PeLEE recipe
+				// Only Run3 and propagate across all runs
+
+				if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC" || UncSources[WhichSample] == "MC_LY" 
+				|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "SmEff_LY" || UncSources[WhichSample] == "SmEff_TPC" ) {
+
+					LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_Run3";
+
+				}
+
+				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
+
+				// -------------------------------------------------------------------------------------------------
+
+				// Descriminate between Smearing / Efficiency covariances (SmEff) and MC Event Rates (ER)
+
+				if (string(UncSources[WhichSample]).find("SmEff") != std::string::npos) { 
+
+					if (SmEffCovariances[WhichPlot] == nullptr) { SmEffCovariances[WhichPlot] = LocalCovMatrix; }
+					else { SmEffCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+				} else {
+
+					if (ERCovariances[WhichPlot] == nullptr) { ERCovariances[WhichPlot] = LocalCovMatrix; }
+					else { ERCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
+				}
+
+				// -------------------------------------------------------------------------------------------------
+
 
 				if (string(UncSources[WhichSample]).find("Stat") != std::string::npos) { 
 
-					if (UncSources[WhichSample] == "Stat") { StatCovariances[WhichPlot] = LocalCovMatrix; }
+					if (StatCovariances[WhichPlot] == nullptr) { StatCovariances[WhichPlot] = LocalCovMatrix; }
 					else { StatCovariances[WhichPlot]->Add(LocalCovMatrix); }
 				
 				} else {
@@ -327,76 +382,77 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 					if (string(UncSources[WhichSample]).find("POT") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "POT") { POTCovariances[WhichPlot] = LocalCovMatrix; }
+						if (POTCovariances[WhichPlot] == nullptr) { POTCovariances[WhichPlot] = LocalCovMatrix; }
 						else { POTCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("NTarget") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "NTarget") { NTargetCovariances[WhichPlot] = LocalCovMatrix; }
+						if (NTargetCovariances[WhichPlot] == nullptr) { NTargetCovariances[WhichPlot] = LocalCovMatrix; }
 						else { NTargetCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("LY") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "LY") { LYCovariances[WhichPlot] = LocalCovMatrix; }
+						if (LYCovariances[WhichPlot] == nullptr) { LYCovariances[WhichPlot] = LocalCovMatrix; }
 						else { LYCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("TPC") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "TPC") { TPCCovariances[WhichPlot] = LocalCovMatrix; }
+						if (TPCCovariances[WhichPlot] == nullptr) { TPCCovariances[WhichPlot] = LocalCovMatrix; }
 						else { TPCCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("XSec") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "XSec") { XSecCovariances[WhichPlot] = LocalCovMatrix; }
+						if (XSecCovariances[WhichPlot] == nullptr) { XSecCovariances[WhichPlot] = LocalCovMatrix; }
 						else { XSecCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("G4") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "G4") { G4Covariances[WhichPlot] = LocalCovMatrix; }
+						if (G4Covariances[WhichPlot] == nullptr) { G4Covariances[WhichPlot] = LocalCovMatrix; }
 						else { G4Covariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("Flux") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "Flux") { FluxCovariances[WhichPlot] = LocalCovMatrix; }
+						if (FluxCovariances[WhichPlot] == nullptr) { FluxCovariances[WhichPlot] = LocalCovMatrix; }
 						else { FluxCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					if (string(UncSources[WhichSample]).find("Dirt") != std::string::npos) { 
 
-						if (UncSources[WhichSample] == "Dirt") { DirtCovariances[WhichPlot] = LocalCovMatrix; }
+						if (DirtCovariances[WhichPlot] == nullptr) { DirtCovariances[WhichPlot] = LocalCovMatrix; }
 						else { DirtCovariances[WhichPlot]->Add(LocalCovMatrix); }
 
 					}
 
 					// --------------------------------------------------------------------------------
 
-					if (WhichSample == 1) { 
+					if ( !(string(UncSources[WhichSample]).find("Stat") != std::string::npos) ) { 
 
-						SystCovariances[WhichPlot] = LocalCovMatrix; 
-						TotalFileCovarianceMatrices->cd();
+						if (SystCovariances[WhichPlot] == nullptr) { SystCovariances[WhichPlot] = LocalCovMatrix; }
+						else { SystCovariances[WhichPlot]->Add(LocalCovMatrix); }
+						//TotalFileCovarianceMatrices->cd();
 						//SystCovariances[WhichPlot]->Write(UncSources[WhichSample]+"Covariance_"+PlotNames[WhichPlot]);
 
 					}
-					else if (WhichSample > 1) { 
-						
-						TotalFileCovarianceMatrices->cd();
-						//LocalCovMatrix->Write(UncSources[WhichSample]+"Covariance_"+PlotNames[WhichPlot]);
-						SystCovariances[WhichPlot]->Add(LocalCovMatrix); 
-						
-					}
+//					else if (WhichSample > 2) { 
+//						
+//						TotalFileCovarianceMatrices->cd();
+//						//LocalCovMatrix->Write(UncSources[WhichSample]+"Covariance_"+PlotNames[WhichPlot]);
+//						SystCovariances[WhichPlot]->Add(LocalCovMatrix); 
+//						
+//					}
 					
 				}
 
@@ -406,10 +462,14 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 					TLegend* leg = nullptr;
 
-					if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos || string(UncSources[WhichSample]).find("MC_") != std::string::npos) 
-						{ SmEffPlotCanvas->cd(); leg = legSmEff;}
-					else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
-					else { DataERPlotCanvas->cd(); leg = legData; }
+					MCERPlotCanvas->cd();  leg = legMC;
+
+//					if (string(UncSources[WhichSample]).find("SmEff_") != std::string::npos)
+//						{ SmEffPlotCanvas->cd(); leg = legSmEff;}
+//					else { MCERPlotCanvas->cd();  leg = legMC; }				
+//					else if (string(UncSources[WhichSample]).find("MC_") != std::string::npos) { MCERPlotCanvas->cd();  leg = legMC; }				
+//					else { DataERPlotCanvas->cd(); leg = legData; }
+//					else { cout << "WARNING !!! No canvas to point to !"; }
 
 					ReturnUncPlot(LocalCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],WhichSample,leg);				
 
@@ -427,18 +487,18 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				MCERPlotCanvas->cd();
 				legMC->Draw();
 
-				SmEffPlotCanvas->cd();
-				legSmEff->Draw();
+//				SmEffPlotCanvas->cd();
+//				legSmEff->Draw();
 		
 				// ------------------------------------------------------------------
 
 //				DataERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+DataERCanvasName+".pdf");
 				MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
-				SmEffPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+SmEffCanvasName+".pdf");	
+//				SmEffPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+SmEffCanvasName+".pdf");	
 
 //				delete 	DataERPlotCanvas;	
 				delete 	MCERPlotCanvas;
-				delete 	SmEffPlotCanvas;
+//				delete 	SmEffPlotCanvas;
 
 			}
 

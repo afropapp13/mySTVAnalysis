@@ -11,7 +11,7 @@
 using namespace std;
 using namespace Constants;
 
-void ResponseMatrices(TString OverlaySample) {
+void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -80,7 +80,14 @@ void ResponseMatrices(TString OverlaySample) {
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");	
-	Runs.push_back("Combined");			
+	Runs.push_back("Combined");	
+
+	if (DetVar) {
+
+		Runs.clear();
+		Runs.push_back("Run3");
+
+	}		
 
 	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	
@@ -114,10 +121,19 @@ void ResponseMatrices(TString OverlaySample) {
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
 			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+CutExtension+".root");
+							  Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
 
 			TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root");
+							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
+
+			// Jul 8 2021: after discussion with Xin, if flux variations, the truth level should always be the CV
+
+			if (string(OverlaySample).find("fluxes") != std::string::npos) {
+
+				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
+							  Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
+
+			}
 
 		}
 

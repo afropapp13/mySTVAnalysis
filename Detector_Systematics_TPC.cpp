@@ -59,7 +59,7 @@ void Detector_Systematics_TPC() {
 	// ----------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
@@ -107,11 +107,11 @@ void Detector_Systematics_TPC() {
 
 		// TPC Detector Variations
 
-		NameOfSamples.push_back("WireModX"); Colors.push_back(kGreen+2); Markers.push_back(22);
-		NameOfSamples.push_back("WireModYZ"); Colors.push_back(kBlue); Markers.push_back(23);
-		NameOfSamples.push_back("WireModThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
-		NameOfSamples.push_back("WireModThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
-		NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
+		NameOfSamples.push_back("X"); Colors.push_back(kGreen+2); Markers.push_back(22);
+		NameOfSamples.push_back("YZ"); Colors.push_back(kBlue); Markers.push_back(23);
+		NameOfSamples.push_back("ThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
+		NameOfSamples.push_back("ThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
+		//NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
 		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
 		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);
 
