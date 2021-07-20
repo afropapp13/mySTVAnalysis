@@ -20,9 +20,9 @@ using namespace Constants;
 #include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
 #include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
 
-// TString Syst = "NTarget" "POT" "Stat" "LY" "TPC" "XSec" "G4" "Flux" "Dirt" "MC_Stat" "MC_POT" "MC_NTarget" "MC_LY" "MC_TPC" "MC_XSec" "MC_G4" "MC_Flux" "MC_Dirt"
+// TString Syst = "NTarget" "POT" "Stat" "LY" "TPC" "SCERecomb2" "XSec" "G4" "Flux" "Dirt" "MC_Stat" 
 
-void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
+void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -51,12 +51,20 @@ void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",T
 		
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
-	//vector<TString> Runs;
+	vector<TString> Runs;
 	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 	//Runs.push_back("Run3");
 //	Runs.push_back("Run4");
-//	Runs.push_back("Run5");			
+//	Runs.push_back("Run5");
+	Runs.push_back("Combined");
+
+	if (DetVar) {
+
+		Runs.clear();
+		Runs.push_back("Run3");
+
+	}
 
 	const int NRuns = (int)(Runs.size());
 
@@ -113,6 +121,18 @@ void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",T
 		AltModels.push_back("_WireModYZ"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_WireModThetaXZ"); Colors.push_back(kOrange+1); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_WireModThetaYZ"); Colors.push_back(kBlue-3); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_SCE"); Colors.push_back(kBlue); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_Recombination2"); Colors.push_back(kMagenta); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_dEdx"); Colors.push_back(kYellow+2); Universes.push_back(1); AltUniverses.push_back(1);
+
+	}
+
+	if (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2") {
+
+		//AltModels.push_back("_WireModX"); Colors.push_back(kRed+1); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_WireModYZ"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_WireModThetaXZ"); Colors.push_back(kOrange+1); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_WireModThetaYZ"); Colors.push_back(kBlue-3); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_SCE"); Colors.push_back(kBlue); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_Recombination2"); Colors.push_back(kMagenta); Universes.push_back(1); AltUniverses.push_back(1);
 		//AltModels.push_back("_dEdx"); Colors.push_back(kYellow+2); Universes.push_back(1); AltUniverses.push_back(1);
@@ -147,9 +167,11 @@ void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",T
 
 	if (Syst == "G4" || Syst == "MC_G4") {
 
-		UniAltModels.push_back("_reinteractions_piminus_Geant4"); Universes.push_back(100);
-		UniAltModels.push_back("_reinteractions_piplus_Geant4"); Universes.push_back(100);
-		UniAltModels.push_back("_reinteractions_proton_Geant4"); Universes.push_back(100);
+		UniAltModels.push_back("_reinteractions"); Universes.push_back(100);
+
+//		UniAltModels.push_back("_reinteractions_piminus_Geant4"); Universes.push_back(100);
+//		UniAltModels.push_back("_reinteractions_piplus_Geant4"); Universes.push_back(100);
+//		UniAltModels.push_back("_reinteractions_proton_Geant4"); Universes.push_back(100);
 
 		for (int UniAlt = 0; UniAlt < (int)(UniAltModels.size()); UniAlt++ ) {
 
@@ -166,19 +188,20 @@ void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",T
 
 	if (Syst == "Flux" || Syst == "MC_Flux") {
 
-		UniAltModels.push_back("_horncurrent_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_kminus_PrimaryHadronNormalization"); Universes.push_back(100);
-		UniAltModels.push_back("_kplus_PrimaryHadronFeynmanScaling"); Universes.push_back(100);
-		UniAltModels.push_back("_kzero_PrimaryHadronSanfordWang"); Universes.push_back(100);
-		UniAltModels.push_back("_nucleoninexsec_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_nucleonqexsec_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_nucleontotxsec_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_piminus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(100);
-		UniAltModels.push_back("_pioninexsec_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_pionqexsec_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_piontotxsec_FluxUnisim"); Universes.push_back(100);
-		UniAltModels.push_back("_piplus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(100);
-		UniAltModels.push_back("_expskin_FluxUnisim"); Universes.push_back(10);
+		UniAltModels.push_back("_fluxes"); Universes.push_back(100);
+//		UniAltModels.push_back("_horncurrent_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_kminus_PrimaryHadronNormalization"); Universes.push_back(100);
+//		UniAltModels.push_back("_kplus_PrimaryHadronFeynmanScaling"); Universes.push_back(100);
+//		UniAltModels.push_back("_kzero_PrimaryHadronSanfordWang"); Universes.push_back(100);
+//		UniAltModels.push_back("_nucleoninexsec_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_nucleonqexsec_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_nucleontotxsec_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_piminus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(100);
+//		UniAltModels.push_back("_pioninexsec_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_pionqexsec_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_piontotxsec_FluxUnisim"); Universes.push_back(100);
+//		UniAltModels.push_back("_piplus_PrimaryHadronSWCentralSplineVariation"); Universes.push_back(100);
+//		UniAltModels.push_back("_expskin_FluxUnisim"); Universes.push_back(10);
 
 		int NUniAltModels = (int)(UniAltModels.size());
 
@@ -226,7 +249,7 @@ void WienerSVD_Uncertainties(TString Syst = "None",TString BaseMC = "Overlay9",T
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		double DataPOT = ReturnBeamOnRunPOT(Runs[WhichRun]);						
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);
 
 		if (Syst == "Flux" || Syst == "MC_Flux") {

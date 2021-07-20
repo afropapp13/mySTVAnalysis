@@ -25,6 +25,8 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"TPC\")");
 
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"SCERecomb2\")");
+
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"XSec\")");
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"G4\")");

@@ -47,7 +47,7 @@ TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
-// TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "XSec" "G4" "Flux" "Dirt"
+// TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "G4" "Flux" "Dirt" "MC_Stat"
 
 void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9") {
 
@@ -71,6 +71,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	PlotNames.push_back("MuonMomentumPlot"); 
 	PlotNames.push_back("MuonPhiPlot"); 
 	PlotNames.push_back("MuonCosThetaPlot");
+	PlotNames.push_back("MuonCosThetaSingleBinPlot");
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonPhiPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot");
@@ -92,7 +93,8 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 //	Runs.push_back("Run5");			
 	Runs.push_back("Combined");
 
-	if (Syst == "LY" || Syst == "TPC" || Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "SmEff_LY" || Syst == "SmEff_TPC" ) {
+	if (Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" || Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2" 
+	|| Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_SCERecomb2" ) {
 
 		Runs.clear();
 		Runs.push_back("Run3");
@@ -158,11 +160,24 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 		AltModels.push_back("_YZ"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_ThetaXZ"); Colors.push_back(kOrange+1); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_ThetaYZ"); Colors.push_back(kBlue-3); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_SCE"); Colors.push_back(kBlue); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_Recombination2"); Colors.push_back(kMagenta); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_dEdx"); Colors.push_back(kYellow+2); Universes.push_back(1); AltUniverses.push_back(1);
+
+	}
+
+	if (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2" || Syst == "SmEff_SCERecomb2") {
+
+		//AltModels.push_back("_X"); Colors.push_back(kRed+1); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_YZ"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_ThetaXZ"); Colors.push_back(kOrange+1); Universes.push_back(1); AltUniverses.push_back(1);
+		//AltModels.push_back("_ThetaYZ"); Colors.push_back(kBlue-3); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_SCE"); Colors.push_back(kBlue); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_Recombination2"); Colors.push_back(kMagenta); Universes.push_back(1); AltUniverses.push_back(1);
 		//AltModels.push_back("_dEdx"); Colors.push_back(kYellow+2); Universes.push_back(1); AltUniverses.push_back(1);
 
 	}
+
 
 	if (Syst == "XSec" || Syst == "MC_XSec" || Syst == "SmEff_XSec") {
 
@@ -320,6 +335,14 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 		}
 
+		if (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2"  || Syst == "SmEff_SCERecomb2") { 
+
+			TStringBaseMC = ExactFileLocation+"/STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra"+CutExtension+".root"; 
+			TrueTStringBaseMC = PathToFiles+"/TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root"; 
+			ResponseFileName = MigrationMatrixPath+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root";
+
+		}
+
 		TFile* FileResponseMatrices = new TFile(ResponseFileName,"readonly");
 		TrueMCFileSample[WhichRun] = TFile::Open(TrueTStringBaseMC,"readonly");
 		MCFileSample[WhichRun] = TFile::Open(TStringBaseMC,"readonly");
@@ -429,20 +452,20 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
 					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);
-					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot]);
-					AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot]);
+					//AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot]);
+					//AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot]);
 
 					// Now subtract the CV bkgs
 					AltBeamOnPlots[WhichPlot][alt]->Add(NonCC1pPlots[WhichPlot],-1.);
-					AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
-					AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot],-1.);
+					//AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
+					//AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot],-1.);
 
 				}
 
 				if (Syst == "Dirt" || Syst == "MC_Dirt" || Syst == "SmEff_Dirt") {
 
 					AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
-					AltDataPlot->Add(BeamOffPlots[WhichPlot]);
+					//AltDataPlot->Add(BeamOffPlots[WhichPlot]);
 
 					// Scale the dirt sample by 25% down
 					TH1D* DirtClone = (TH1D*)(DirtPlots[WhichPlot]->Clone());
@@ -451,7 +474,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 					// Now subtract the CV bkgs
 					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
-					AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 					AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
 
 				}
@@ -463,9 +486,13 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			double BeamOnMax = 1.25*DataPlot->GetMaximum();
 
-			// GENIE CV LY / TPC overlays
+			// GENIE CV LY / TPC / SCERecomb2 overlays
 
-			if (BaseMC == "Overlay9" && (Syst == "LY" || Syst == "TPC" || Syst == "SmEff_LY" || Syst == "SmEff_TPC") ) {
+			if (	BaseMC == "Overlay9" 
+				&& (Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" 
+				|| Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_SCERecomb2" 
+				|| Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2") 
+			) {
 
 				TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 				TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
@@ -476,7 +503,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				leg->SetBorderSize(0);
 				leg->SetTextFont(FontStyle);
 				leg->SetTextSize(TextSize-0.02);
-				if (Syst == "TPC" || Syst == "MC_TPC" || Syst == "SmEff_TPC") { leg->SetTextSize(TextSize-0.03); }
+				//if (Syst == "TPC" || Syst == "MC_TPC" || Syst == "SmEff_TPC") { leg->SetTextSize(TextSize-0.03); }
 				leg->SetNColumns(3);
 
 				DataPlot->GetXaxis()->CenterTitle();
@@ -537,7 +564,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
 				delete EventRatePlotCanvas;
 
-			} // End of the cases where we overlay the event rates for GENIE CV  LY / TPC systematics
+			} // End of the cases where we overlay the event rates for GENIE CV  LY / TPC / SCERecomb systematics
 
 			// -------------------------------------------------------------------------------------------------------
 
@@ -760,14 +787,18 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						CovError = 1E-8;
 
 					} else if (
-						Syst == "LY" || Syst == "TPC" || Syst == "XSec" || Syst == "G4" || Syst == "Flux" ||
-						Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux" ||
-						Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux"
+						Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" || Syst == "XSec" || Syst == "G4" || Syst == "Flux" ||
+						Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux" ||
+						Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_SCERecomb2" || Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux"
 					) {						
 
 						for (int alt = 0; alt < NAltModels; alt++ ) {
 
 							if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+								{ continue;}
+
+							if ( (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2" || Syst == "SmEff_SCERecomb2") 
+								&& Runs[WhichRun] == "Run1" && AltModels[alt] == "_CVextra") 
 								{ continue;}							
 
 							double CurrentCovEntry = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);

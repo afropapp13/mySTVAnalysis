@@ -50,6 +50,7 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 	PlotNames.push_back("DeltaPhiTPlot");
 	PlotNames.push_back("MuonMomentumPlot"); 
 	PlotNames.push_back("MuonCosThetaPlot"); 
+	PlotNames.push_back("MuonCosThetaSingleBinPlot"); 
 	PlotNames.push_back("MuonPhiPlot");
 	PlotNames.push_back("ProtonMomentumPlot"); 
 	PlotNames.push_back("ProtonCosThetaPlot"); 

@@ -4,19 +4,26 @@
 
 	// -----------------------------------------------------------------------------------------
 	
+	// 1M events for Run1 & most of Run3 
+
 	WhichSampleArray.push_back("_CV");
 
 	WhichSampleArray.push_back("_LYDown");
 	WhichSampleArray.push_back("_LYRayleigh");
 	WhichSampleArray.push_back("_LYAttenuation");	
-	
+
 	WhichSampleArray.push_back("_X");
 	WhichSampleArray.push_back("_YZ");
 	WhichSampleArray.push_back("_ThetaYZ");
 	WhichSampleArray.push_back("_ThetaXZ");
-//	WhichSampleArray.push_back("_dEdx");
+
+	// 500k for SCE / Recombination2 / dEdx 
+
+	WhichSampleArray.push_back("_CV");
+
 	WhichSampleArray.push_back("_Recombination2");
-	WhichSampleArray.push_back("_SCE");		
+	WhichSampleArray.push_back("_SCE");
+//	WhichSampleArray.push_back("_dEdx");		
 
 	// -----------------------------------------------------------------------------------------
 

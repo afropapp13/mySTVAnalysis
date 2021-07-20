@@ -506,7 +506,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			legData->AddEntry(unf,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 
-			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"MC (uB Tune v2)","l");
+			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"MC uB Tune","l");
 			lMC->SetTextColor(OverlayColor);	
 
 			legData->Draw();

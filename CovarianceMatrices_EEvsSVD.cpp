@@ -42,11 +42,12 @@ void CovarianceMatrices_EEvsSVD(TString BaseMC = "Overlay9") {
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+	//Runs.push_back("Run1");
 //	Runs.push_back("Run2");
-	Runs.push_back("Run3");
+//	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");			
+	Runs.push_back("Combined");
 
 	const int NRuns = (int)(Runs.size());
 

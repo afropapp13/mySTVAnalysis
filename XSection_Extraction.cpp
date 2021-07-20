@@ -538,10 +538,10 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 				TString Label = ToStringPOT(DataPOT)+" POT";
 
-				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"MC","f");
+				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"Unfolded MC uB Tune","f");
 				lMC->SetTextColor(OverlayColor);
 
-				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"GENIE Overlay (uB Tune v2)","l");			
+				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"True MC uB Tune","l");			
 				lGenie->SetTextColor(GenieColor);
 
 				leg->Draw();	

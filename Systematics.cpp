@@ -89,6 +89,7 @@ void Systematics() {
 
 		NameOfSamples.push_back("Detector_Systematics_LY");
 		NameOfSamples.push_back("Detector_Systematics_TPC");
+		NameOfSamples.push_back("Detector_Systematics_SCERecomb2");
 		NameOfSamples.push_back("POT_Systematics");
 		NameOfSamples.push_back("NTarget_Systematics");
 		NameOfSamples.push_back("G4_Systematics");
@@ -113,7 +114,8 @@ void Systematics() {
 			if (WhichSample == 0) {
 
 				TString FileSampleName = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos ) 
+				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos 
+					|| string(NameOfSamples[WhichSample]).find("SCERecomb2") != std::string::npos ) 
 					{ FileSampleName = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_Run3_"+UBCodeVersion+".root"; }
 				FileSample.push_back(TFile::Open(FileSampleName,"update")); 
 
@@ -137,7 +139,8 @@ void Systematics() {
 			else {
 
 				TString FileSampleName = PathToSystematics+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+".root";
-				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos ) 
+				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos 
+				|| string(NameOfSamples[WhichSample]).find("SCERecomb2") != std::string::npos ) 
 					{ FileSampleName = PathToSystematics+NameOfSamples[WhichSample]+"_Run3.root"; }
 				FileSample.push_back( TFile::Open(FileSampleName) ); 
 

@@ -303,7 +303,7 @@ void WienerSVD_Chi2Covariance() {
 		} // End of the loop over the plots
 
 		cout << Runs[WhichRun] << endl << endl;
-		cout << "MC" ;
+		cout << "MC uB Tune" ;
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 

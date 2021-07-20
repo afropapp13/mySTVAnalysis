@@ -25,7 +25,7 @@
 using namespace std;
 using namespace Constants;
 
-void Detector_Systematics_TPC() {
+void Detector_Systematics_SCERecomb2() {
 
 	TH1D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);
@@ -85,7 +85,7 @@ void Detector_Systematics_TPC() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = PathToSystematics+"Detector_Systematics_TPC_"+Runs[WhichRun]+".root";
+		TString FileName = PathToSystematics+"Detector_Systematics_SCERecomb2_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -100,20 +100,20 @@ void Detector_Systematics_TPC() {
 
 		// ------------------------------------------------------------------------------------------------------------------
 	
-		NameOfSamples.push_back("CV"); // Reference plot
+		NameOfSamples.push_back("CVextra"); // Reference plot
 		Colors.push_back(kBlack); Markers.push_back(20);
 
 		// -------------------------------------------------------------------------------------------				
 
 		// TPC Detector Variations
 
-		NameOfSamples.push_back("X"); Colors.push_back(kGreen+2); Markers.push_back(22);
-		NameOfSamples.push_back("YZ"); Colors.push_back(kBlue); Markers.push_back(23);
-		NameOfSamples.push_back("ThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
-		NameOfSamples.push_back("ThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
+		//NameOfSamples.push_back("X"); Colors.push_back(kGreen+2); Markers.push_back(22);
+		//NameOfSamples.push_back("YZ"); Colors.push_back(kBlue); Markers.push_back(23);
+		//NameOfSamples.push_back("ThetaYZ"); Colors.push_back(kMagenta); Markers.push_back(29);
+		//NameOfSamples.push_back("ThetaXZ"); Colors.push_back(kOrange+7); Markers.push_back(47);
 		//NameOfSamples.push_back("dEdx"); Colors.push_back(410); Markers.push_back(48);
-		//NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
-		//NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);
+		NameOfSamples.push_back("Recombination2"); Colors.push_back(610); Markers.push_back(49);
+		NameOfSamples.push_back("SCE"); Colors.push_back(kCyan-7); Markers.push_back(33);
 
 		// ----------------------------------------------------------------------------------------
 
