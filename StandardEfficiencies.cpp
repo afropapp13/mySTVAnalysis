@@ -21,7 +21,6 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 	// -------------------------------------------------------------------------------------
 
 	TH1D::SetDefaultSumw2();
-	vector<TString> PlotNames;
 	gStyle->SetOptStat(0);	
 	TGaxis::SetMaxDigits(4);
 	TGaxis::SetExponentOffset(-0.05, 0., "y");	
@@ -45,16 +44,17 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
-	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
-	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("MuonCosThetaSingleBinPlot"); 
-	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot"); 
-	PlotNames.push_back("ProtonPhiPlot");
+//	vector<TString> PlotNames;
+//	PlotNames.push_back("DeltaPTPlot"); 
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonCosThetaPlot"); 
+//	PlotNames.push_back("MuonCosThetaSingleBinPlot"); 
+//	PlotNames.push_back("MuonPhiPlot");
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot"); 
+//	PlotNames.push_back("ProtonPhiPlot");
 //	PlotNames.push_back("ECalPlot");
 //	PlotNames.push_back("EQEPlot");
 //	PlotNames.push_back("Q2Plot");
@@ -74,10 +74,10 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
 	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
 
-	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-	PlotNames.push_back("CCQEProtonCosThetaPlot");
+//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+//	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	// -------------------------------------------------------------------------------------
 

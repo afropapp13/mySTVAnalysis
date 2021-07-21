@@ -252,7 +252,7 @@ void Genie_Systematics() {
 					PlotsReco[WhichSample][WhichPlot]->GetXaxis()->SetTitleOffset(1.);
 
 					PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetTitleOffset(1.27);
-					PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
+					PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 					PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 					PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
 					PlotsReco[WhichSample][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);

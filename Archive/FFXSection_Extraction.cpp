@@ -452,7 +452,7 @@ void FFXSection_Extraction(TString OverlaySample,int Universe = -1) {
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.18);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(5);

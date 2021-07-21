@@ -37,7 +37,6 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 	// -------------------------------------------------------------------------------------
 
 	TH1D::SetDefaultSumw2();
-	vector<TString> PlotNames;
 	gStyle->SetOptStat(0);
 
 	TString Subtract = "";
@@ -67,15 +66,16 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 	// -------------------------------------------------------------------------------------
 
-	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
-	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
-	PlotNames.push_back("ProtonPhiPlot");
+//	vector<TString> PlotNames;
+//	PlotNames.push_back("DeltaPTPlot"); 
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonCosThetaPlot"); 
+//	PlotNames.push_back("MuonPhiPlot");
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("ProtonPhiPlot");
 //	PlotNames.push_back("ECalPlot");
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
@@ -83,10 +83,10 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
 
-	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-	PlotNames.push_back("CCQEProtonCosThetaPlot");
+//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+//	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -467,7 +467,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleOffset(1.18);
-			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(PlotXAxis[WhichPlot]);
+			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetTitleSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetLabelSize(0.06);
 			PlotsCC1pReco[0][WhichPlot]->GetYaxis()->SetNdivisions(5);
@@ -538,10 +538,10 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 				TString Label = ToStringPOT(DataPOT)+" POT";
 
-				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"Unfolded MC uB Tune","f");
+				TLegendEntry* lMC = leg->AddEntry(PlotsCC1pReco[0][WhichPlot],"Unfolded MC","f");
 				lMC->SetTextColor(OverlayColor);
 
-				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"True MC uB Tune","l");			
+				TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[4][WhichPlot],"True MC","l");			
 				lGenie->SetTextColor(GenieColor);
 
 				leg->Draw();	
