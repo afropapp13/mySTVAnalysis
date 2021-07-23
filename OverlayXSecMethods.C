@@ -103,18 +103,18 @@ void OverlayXSecMethods() {
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
-	vector<TString> PlotName; 
-	PlotName.push_back("DeltaPTPlot");
-	PlotName.push_back("DeltaAlphaTPlot");
-	PlotName.push_back("DeltaPhiTPlot");
-	PlotName.push_back("MuonMomentumPlot");
-	PlotName.push_back("MuonCosThetaPlot");
-	PlotName.push_back("MuonPhiPlot");
-	PlotName.push_back("ProtonMomentumPlot");
-	PlotName.push_back("ProtonCosThetaPlot");
-	PlotName.push_back("ProtonPhiPlot");
+//	vector<TString> PlotName; 
+//	PlotName.push_back("DeltaPTPlot");
+//	PlotName.push_back("DeltaAlphaTPlot");
+//	PlotName.push_back("DeltaPhiTPlot");
+//	PlotName.push_back("MuonMomentumPlot");
+//	PlotName.push_back("MuonCosThetaPlot");
+//	PlotName.push_back("MuonPhiPlot");
+//	PlotName.push_back("ProtonMomentumPlot");
+//	PlotName.push_back("ProtonCosThetaPlot");
+//	PlotName.push_back("ProtonPhiPlot");
 
-	const int NPlots = PlotName.size();	
+	const int NPlots = PlotNames.size();	
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ void OverlayXSecMethods() {
 
 			// -----------------------------------------------------------------------------------------------------------------------------
 
-			TString CanvasName = "EEvsSVD_Comparison_"+PlotName[WhichPlot]+"_"+FileNames[WhichFile];
+			TString CanvasName = "EEvsSVD_Comparison_"+PlotNames[WhichPlot]+"_"+FileNames[WhichFile];
 			TCanvas* can = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			can->SetBottomMargin(0.17);
 			can->SetLeftMargin(0.17);
@@ -151,34 +151,34 @@ void OverlayXSecMethods() {
 
 			TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 
-			TH1D* Plots = (TH1D*)(f->Get("TotalReco"+PlotName[WhichPlot]));
+			TH1D* Plots = (TH1D*)(f->Get("TotalReco"+PlotNames[WhichPlot]));
 			Plots->SetLineColor(kBlack);
 			Plots->SetMarkerColor(kBlack);
 			PrettyPlot(Plots);
 			Plots->SetMarkerStyle(20);
-			Plots->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
+			Plots->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 
-			TH1D* PlotsUnfOnly = (TH1D*)(f->Get("UnfOnlyReco"+PlotName[WhichPlot]));
+			TH1D* PlotsUnfOnly = (TH1D*)(f->Get("UnfOnlyReco"+PlotNames[WhichPlot]));
 			PlotsUnfOnly->SetLineColor(kBlack);
 			PlotsUnfOnly->SetMarkerColor(kBlack);
 			PrettyPlot(PlotsUnfOnly);
 			PlotsUnfOnly->SetMarkerStyle(20);
 			PlotsUnfOnly->SetMarkerSize(1.);
-			PlotsUnfOnly->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
+			PlotsUnfOnly->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 
-			TH1D* PlotsStat = (TH1D*)(f->Get("Reco"+PlotName[WhichPlot]));
+			TH1D* PlotsStat = (TH1D*)(f->Get("Reco"+PlotNames[WhichPlot]));
 			PlotsStat->SetLineColor(kBlack);
 			PlotsStat->SetMarkerColor(kBlack);
 			PrettyPlot(PlotsStat);
 			PlotsStat->SetMarkerStyle(20);
-			PlotsStat->GetYaxis()->SetTitle(VarLabel[PlotName[WhichPlot]]);
+			PlotsStat->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 
 			// Wiener SVD
 
 			TFile* Wf = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 			
-			TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotName[WhichPlot])); // Plots with total uncertainty
-			TH1D* WhStat = (TH1D*)(Wf->Get("StatReco"+PlotName[WhichPlot])); // Plots with stat uncertainty
+			TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotNames[WhichPlot])); // Plots with total uncertainty
+			TH1D* WhStat = (TH1D*)(Wf->Get("StatReco"+PlotNames[WhichPlot])); // Plots with stat uncertainty
 
 			int n = Wh->GetXaxis()->GetNbins();
 			double Nuedges[n+1];   
@@ -186,8 +186,8 @@ void OverlayXSecMethods() {
 
 			TString Xtitle = Wh->GetXaxis()->GetTitle();
 			TString Ytitle = Wh->GetYaxis()->GetTitle();		
-			TH1D* Offset = new TH1D("Offset_"+PlotName[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
-			TH1D* StatOffset = new TH1D("StatOffset_"+PlotName[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
+			TH1D* Offset = new TH1D("Offset_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
+			TH1D* StatOffset = new TH1D("StatOffset_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
 
 			for (int WhichBin = 1; WhichBin <= n; WhichBin++ ) {
 

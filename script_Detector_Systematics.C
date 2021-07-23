@@ -19,7 +19,7 @@
 
 	// 500k for SCE / Recombination2 / dEdx 
 
-	WhichSampleArray.push_back("_CV");
+	WhichSampleArray.push_back("_CVextra");
 
 	WhichSampleArray.push_back("_Recombination2");
 	WhichSampleArray.push_back("_SCE");

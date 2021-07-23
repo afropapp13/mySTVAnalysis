@@ -15,17 +15,9 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"Stat\",\"Overlay9\",\"BeamOn9\",\"ExtBNB9\",\"OverlayDirt9\")");
 
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\")");
-
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"POT\")");
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"NTarget\")");
-
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"LY\")");
-
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"TPC\")");
-
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"SCERecomb2\")");
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"XSec\")");
 
@@ -35,7 +27,15 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"Dirt\")");
 
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"LY\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"TPC\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"SCERecomb2\")");
+
 	// -----------------------------------------------------------------------------------------
+
+//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\")");
 
 //	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
 

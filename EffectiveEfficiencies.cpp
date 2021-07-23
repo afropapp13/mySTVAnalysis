@@ -44,7 +44,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames;
+	vector<TString> PlotNamesClone = PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
@@ -62,16 +62,16 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
 
-	PlotNames.push_back("VertexXPlot");
-	PlotNames.push_back("VertexYPlot");
-	PlotNames.push_back("VertexZPlot");
+	PlotNamesClone.push_back("VertexXPlot");
+	PlotNamesClone.push_back("VertexYPlot");
+	PlotNamesClone.push_back("VertexZPlot");
 
-	PlotNames.push_back("EvPlot");
+	PlotNamesClone.push_back("EvPlot");
 
-	PlotNames.push_back("MuonTrueMomentumLongitudinalRatio");
-	PlotNames.push_back("ProtonTrueMomentumLongitudinalRatio");
-	PlotNames.push_back("MuonTrueMomentumTransverseRatio");
-	PlotNames.push_back("ProtonTrueMomentumTransverseRatio");
+	PlotNamesClone.push_back("MuonTrueMomentumLongitudinalRatio");
+	PlotNamesClone.push_back("ProtonTrueMomentumLongitudinalRatio");
+	PlotNamesClone.push_back("MuonTrueMomentumTransverseRatio");
+	PlotNamesClone.push_back("ProtonTrueMomentumTransverseRatio");
 
 //	PlotNames.push_back("CCQEMuonMomentumPlot"); 
 //	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
@@ -80,7 +80,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
-	const int N1DPlots = PlotNames.size();
+	const int N1DPlots = PlotNamesClone.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// ------------------------------------------------------------------------------------------------------------------------------------------
@@ -140,10 +140,10 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++){
 
-				TH1D* histTrue = (TH1D*)(TruthFileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
+				TH1D* histTrue = (TH1D*)(TruthFileSample[WhichSample]->Get("True"+PlotNamesClone[WhichPlot]));
 				CurrentPlotsTrue.push_back(histTrue);
 
-				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
+				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNamesClone[WhichPlot]));
 				CurrentPlotsTrueReco.push_back(histTrueReco);
 		
 			}
@@ -191,7 +191,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 					PlotsTrueReco[WhichSample][WhichPlot]->SetLineColor(kBlue);
 					PlotsTrueReco[WhichSample][WhichPlot]->SetLineWidth(3);
 
-					TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNames[WhichPlot];
+					TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNamesClone[WhichPlot];
 					TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 					PlotCanvas->cd();
 					PlotCanvas->SetBottomMargin(0.16);
@@ -221,7 +221,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 					// ----------------------------------------------------------------------------------------
 				
 					TString CanvasPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasPdfName = PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasPdfName = PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
 
 					delete PlotCanvas;
@@ -264,7 +264,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 					pEffPlot->Scale(100.);
 					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
-					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"Eff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 					PlotEffCanvas->cd();
 					PlotEffCanvas->SetBottomMargin(0.16);
@@ -285,7 +285,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 					textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasEffRatioName = "Eff"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasEffRatioName = "Eff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 
 					delete PlotEffCanvas;

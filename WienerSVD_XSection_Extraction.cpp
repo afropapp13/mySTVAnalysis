@@ -73,26 +73,26 @@ std::vector<TMatrixD> MatrixDecomp(int nbins,TVectorD matrix_pred,TMatrixD matri
 
 	}
 
-//cout << "Total matrix" << endl;
-//matrix_syst.Print();
-TCanvas* TotalCanvas = new TCanvas("Total","Total",205,34,1024,768);
-matrix_syst.Draw("coltz text");
+////cout << "Total matrix" << endl;
+////matrix_syst.Print();
+//TCanvas* TotalCanvas = new TCanvas("Total","Total",205,34,1024,768);
+//matrix_syst.Draw("coltz text");
 
-//cout << "Shape matrix" << endl;
-//matrix_shape.Print();
-TCanvas* ShapeCanvas = new TCanvas("Shape","Shape",205,34,1024,768);
-matrix_shape += matrix_mixed;
-matrix_shape.Draw("coltz text");
+////cout << "Shape matrix" << endl;
+////matrix_shape.Print();
+//TCanvas* ShapeCanvas = new TCanvas("Shape","Shape",205,34,1024,768);
+//matrix_shape += matrix_mixed;
+//matrix_shape.Draw("coltz text");
 
-//cout << "Mixed matrix" << endl;
-//matrix_mixed.Print(); 
-//TCanvas* MixedCanvas = new TCanvas("Mixed","Mixed",205,34,1024,768);
-//matrix_mixed.Draw("coltz");
+////cout << "Mixed matrix" << endl;
+////matrix_mixed.Print(); 
+////TCanvas* MixedCanvas = new TCanvas("Mixed","Mixed",205,34,1024,768);
+////matrix_mixed.Draw("coltz");
 
-//cout << "Norm matrix" << endl;
-//matrix_norm.Print(); 
-TCanvas* NormCanvas = new TCanvas("Norm","Norm",205,34,1024,768);
-matrix_norm.Draw("coltz text");
+////cout << "Norm matrix" << endl;
+////matrix_norm.Print(); 
+//TCanvas* NormCanvas = new TCanvas("Norm","Norm",205,34,1024,768);
+//matrix_norm.Draw("coltz text");
 
 	std::vector<TMatrixD> NormShapeVector = {matrix_norm,matrix_shape};
 	return NormShapeVector;
@@ -572,7 +572,7 @@ unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1)
 				unfStat->Draw("e1x0 same");			
 
 unfShapeOnly->SetLineColor(kOrange+7);
-unfShapeOnly->Draw("e1x0 same");			
+//unfShapeOnly->Draw("e1x0 same");			
 				
 			}
 

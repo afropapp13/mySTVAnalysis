@@ -1,59 +1,59 @@
 # Don't forget to run the effective efficiencies as well
 
-root -l script_CV.C
-root -l script_Detector_Systematics.C
-root -l script_G4_Systematics.C
-root -l script_Genie_Systematics.C
-root -l script_Flux_Systematics.C
+root -b script_CV.C
+root -b script_Detector_Systematics.C
+root -b script_G4_Systematics.C
+root -b script_Genie_Systematics.C
+root -b script_Flux_Systematics.C
 
 #################################################################################################################################
 
 # Now WienerSVD for GENIE CV / Nominal MC
 
-root -l script_WienerSVD_Systematics.C
-root -l WienerSVD_Merge_Covariances.cpp
-#root -l WienerSVD_QuantifyUnc.cpp # most likely to be removed 
-root -l script_WienerSVD_XSec.C
+root -b script_WienerSVD_Systematics.C
+root -b WienerSVD_Merge_Covariances.cpp
+#root -b WienerSVD_QuantifyUnc.cpp # most likely to be removed 
+root -b script_WienerSVD_XSec.C
 
 #################################################################################################################################
 #################################################################################################################################
 
 # Plotting the detector variation xsecs and storing the relevant systematics with respect to the CV sample
 
-root -l Detector_Systematics_LY.cpp
+root -b Detector_Systematics_LY.cpp
 
-root -l Detector_Systematics_TPC.cpp
+root -b Detector_Systematics_TPC.cpp
 
-root -l Detector_Systematics_SCERecomb2.cpp
+root -b Detector_Systematics_SCERecomb2.cpp
 
 # Plotting the nominal xsecs, adding the 2% POT uncertainty and storing the relevant systematics with respect to the CV sample
 
-root -l POT_Systematics.cpp
+root -b POT_Systematics.cpp
 
 # Plotting the nominal xsecs, adding the 1% NTarget uncertainty and storing the relevant systematics with respect to the CV sample
 
-root -l NTarget_Systematics.cpp
+root -b NTarget_Systematics.cpp
 
 # Covariance matrices only with diagonal elements filled with stat uncertainties
 
-root -l Stat_Systematics.cpp
+root -b Stat_Systematics.cpp
 
 # Storing the GEANT4 uncertainties
 
-root -l G4_Systematics.cpp
+root -b G4_Systematics.cpp
 
 # Storing the Genie uncertainties
 
-root -l Genie_Systematics.cpp
+root -b Genie_Systematics.cpp
 
 # Storing the Flux uncertainties
 
-root -l Flux_Systematics.cpp
+root -b Flux_Systematics.cpp
 
 #################################################################################################################################
 
 cd ../myEvents
-root -l PeLEE_Create1DPlotsTHStack_SubSpectrum.cpp
+root -b PeLEE_Create1DPlotsTHStack_SubSpectrum.cpp
 
 #locally
 ./PeLEE_Syst_DownloadEventRatePlots.sh
@@ -64,15 +64,15 @@ cd ../mySTVAnalysis
 
 # Plotting the final results / total uncertainties / putting everything together
 
-root -l Systematics.cpp
+root -b Systematics.cpp
 
 #################################################################################################################################
 
 # Use the difference between the 2 unfolding techniques as an extra uncertainty
 
-#root -l CovarianceMatrices_EEvsSVD.cpp
+#root -b CovarianceMatrices_EEvsSVD.cpp
 
-#root -l
+#root -b
 #.L WienerSVD_Merge_Covariances.cpp
 #WienerSVD_Merge_Covariances("Overlay9",true)
 
@@ -96,10 +96,10 @@ cd ../mySTVAnalysis/
 
 # (locally)
 
-root -l OverlayGenerators.cpp
-root -l OverlayXSecMethods.C
+root -b OverlayGenerators.cpp
+root -b OverlayXSecMethods.C
 
-root -l 
+root -b 
 .L ../myClasses/Util.C
 .L WienerSVD_OverlayGenerators.cpp
 WienerSVD_OverlayGenerators()
@@ -112,7 +112,7 @@ WienerSVD_OverlayGenerators(false,true)
 
 # Quantifying the systematics
 
-root -l
+root -b
 .L WienerSVD_Uncertainties.cpp
 
 WienerSVD_Uncertainties("Stat")
@@ -126,32 +126,32 @@ WienerSVD_Uncertainties("XSec")
 
 # We are not done yet, need to handle the multisims as well and MC / Sm/Eff unc
 
-root -l PrintFinalUnc.cpp
+root -b PrintFinalUnc.cpp
 
 ####################################################################
 
 # Fake data studies: we need the MC stat & xsec uncertainties only
 
 # Fake data with CC1p0pi NuWro as data sample # need to be tested 
-root -l 
+root -b 
 .L WienerSVD_CovarianceMatrices.cpp++
 WienerSVD_CovarianceMatrices("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 WienerSVD_CovarianceMatrices("XSec","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 # add the rest here after you verify that things are working for NuWro
 # do i need to play the same game with MC_Stat?
 
-root -l
+root -b
 .L script_WienerSVD_SmEff_Systematics.cpp++
 script_WienerSVD_SmEff_Systematics("SmEff_XSec","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 # add the rest here after you verify that things are working for NuWro
 
 # Merge the NuWro covariances # needs testing
-root -l
+root -b
 .L WienerSVD_Merge_Covariances.cpp++
 WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro") 
 
 # extract the xsecs # needs testing
-root -l 
+root -b 
 .L ../../myClasses/Util.C++
 .L ../../myClasses/WienerSVD.C++
 .L WienerSVD_XSection_Extraction.cpp++

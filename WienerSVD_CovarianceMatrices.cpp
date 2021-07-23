@@ -291,9 +291,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		// Until Run3 NuWro is produced
-		if ( Runs[WhichRun] == "Run3" && (BaseMC == "Overlay9NuWro" || BeamOnSample == "Overlay9NuWro") ) 
-			{ continue;}
+//		// Until Run3 NuWro is produced
+//		if ( Runs[WhichRun] == "Run3" && (BaseMC == "Overlay9NuWro" || BeamOnSample == "Overlay9NuWro") ) 
+//			{ continue;}
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -403,24 +403,35 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// -------------------------------------------------------------------------------------------------------
 
+			// Given that we want to construct fractional covariance matrices
+			// We have to be very careful as to what we are normalizing to
+			
+			// For the statistical uncertainties, normalize to BeamOn - ExtBNB - Dirt
+			// For the systematic uncertainties, normalize to CV (MC signal + MC bkg)
+
 			TH1D* DataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
+			DataPlot->Add(NonCC1pPlots[WhichPlot]);
+
 			TH1D* AltDataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
+			AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
 
 			if ( string(Syst).find("Stat") != std::string::npos ) {
 
 				if (Syst == "Stat") {
 
-					// Don't forget to subtract the cosmic part, the dirt and the nonCC1p part
+					// Don't forget to subtract the cosmic part and the dirt
+					// The MC uncertainties have already been taken care of with the MC event rate covariances
+
 					DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
 					AltDataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
 
 					DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 					DataPlot->Add(DirtPlots[WhichPlot],-1.);
-					DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					//DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
 
-					AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
-					AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
 
 				}
 
@@ -449,14 +460,15 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 					// Make a copy of the alternative "CC1p" plot
 					// Which was derived via the multiplication of the 
 					// CV truth plot times the corresponding response matrix for a given universe 
+					// and then add the beam related backgrounds in the given universe
 
 					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
 					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);
 					//AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot]);
 					//AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot]);
 
-					// Now subtract the CV bkgs
-					AltBeamOnPlots[WhichPlot][alt]->Add(NonCC1pPlots[WhichPlot],-1.);
+					// // Now subtract the CV bkgs
+					//AltBeamOnPlots[WhichPlot][alt]->Add(NonCC1pPlots[WhichPlot],-1.);
 					//AltBeamOnPlots[WhichPlot][alt]->Add(BeamOffPlots[WhichPlot],-1.);
 					//AltBeamOnPlots[WhichPlot][alt]->Add(DirtPlots[WhichPlot],-1.);
 
@@ -464,18 +476,26 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				if (Syst == "Dirt" || Syst == "MC_Dirt" || Syst == "SmEff_Dirt") {
 
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
-					//AltDataPlot->Add(BeamOffPlots[WhichPlot]);
+					// Start from the CV reco plot (MC signal + MC bkg)
+					DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+					// Add the CV dirt sample
+					DataPlot->Add(DirtPlots[WhichPlot]);
 
-					// Scale the dirt sample by 25% down
+					// Start from the modified reco plot (MC signal + MC bkg)
+					AltDataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
+					// Scale the dirt sample down by 25%
 					TH1D* DirtClone = (TH1D*)(DirtPlots[WhichPlot]->Clone());
 					DirtClone->Scale(0.75);
+					// Add the alternative dirt sample
 					AltDataPlot->Add(DirtClone);
 
-					// Now subtract the CV bkgs
-					AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
+					//AltDataPlot->Add(BeamOffPlots[WhichPlot]);
+
+					// // Now subtract the CV bkgs
+					//AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
 					//AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
-					AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
 
 				}
 
@@ -499,7 +519,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				EventRatePlotCanvas->SetBottomMargin(0.16);
 				EventRatePlotCanvas->SetLeftMargin(0.15);
 
-				TLegend* leg = new TLegend(0.12,0.91,0.9,0.99);
+				TLegend* leg = new TLegend(0.15,0.91,0.9,0.99);
 				leg->SetBorderSize(0);
 				leg->SetTextFont(FontStyle);
 				leg->SetTextSize(TextSize-0.02);
@@ -554,9 +574,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				DataPlot->Draw("p0 hist same");
 
-				// Closure Test 
-				ClosureTestCC1pPlots[WhichPlot]->SetMarkerColor(kMagenta);
-				ClosureTestCC1pPlots[WhichPlot]->Draw("p0 hist same");
+				// // Closure Test 
+				//ClosureTestCC1pPlots[WhichPlot]->SetMarkerColor(kMagenta);
+				//ClosureTestCC1pPlots[WhichPlot]->Draw("p0 hist same");
 
 				leg->Draw();
 
@@ -841,6 +861,21 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 							Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 							Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
+
+							// -------------------------------------------------------------------------------------------------------
+
+							if (	PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot" && 
+								(Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" ||
+								 Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2")
+							) {
+
+								TString CleanString = AltModels[alt];
+								CleanString = CleanString.ReplaceAll("_","");
+								cout << CleanString << " " << LocalCovEntry << endl;
+
+							}
+
+							// -------------------------------------------------------------------------------------------------------
 
 						}
 

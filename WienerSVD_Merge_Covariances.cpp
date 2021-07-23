@@ -201,7 +201,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	UncSources.push_back("Flux");
 	UncSources.push_back("Dirt");
 
-	UncSources.push_back("MC_Stat");
+//	UncSources.push_back("MC_Stat");
 
 	}
 
@@ -242,8 +242,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 //	vector<TH2D*> DirtCovariances;
 //	DirtCovariances.resize(NPlots);
 
-//	vector<TH2D*> SystCovariances;
-//	SystCovariances.resize(NPlots);	
+	vector<TH2D*> SystCovariances;
+	SystCovariances.resize(NPlots);	
 
 //	vector<TH2D*> ERCovariances;
 //	ERCovariances.resize(NPlots);
@@ -379,6 +379,11 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					else if (string(UncSources[WhichSample]).find("MC_Stat") != std::string::npos) { StatCovariances[WhichPlot]->Add(LocalCovMatrix); }
 					else { cout << "What is this stat covariance matrix ?" << endl; }
 				
+				} else {
+
+					if (WhichSample == 1) { SystCovariances[WhichPlot] = LocalCovMatrix; }
+					else { SystCovariances[WhichPlot]->Add(LocalCovMatrix); }
+
 				}
 
 				// -------------------------------------------------------------------------------------------------
