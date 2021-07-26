@@ -261,6 +261,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
 		vector<TH2D*> StatCovarianceMatrices; StatCovarianceMatrices.clear();	
+		vector<TH2D*> SystCovarianceMatrices; SystCovarianceMatrices.clear();	
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -363,8 +364,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// ------------------------------------------------------------------------------------------------
 
 			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
+
+			// Already flux-averaged rates
 			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
 			StatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("StatCovariance_"+PlotNames[WhichPlot]));
+			SystCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SystCovariance_"+PlotNames[WhichPlot]));
 
 			// -----------------------------------------------------------------------------------------------------
 
@@ -391,29 +395,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			int m = DataPlot->GetNbinsX();			
 			TString XTitle = DataPlot->GetXaxis()->GetTitle();
-			TString YTitle = DataPlot->GetYaxis()->GetTitle();			 
+			TString YTitle = DataPlot->GetYaxis()->GetTitle();	
 
-			// -------------------------------------------------------------------------------------------
-
-			// Move from the fractional covariance matrix to the regular covariance matrix
-			// by multiplying by the CV values (different for data/MC) in bins X & Y
-
-			for (int XBin = 1; XBin <= m; XBin++) {
-
-				double XCV = DataPlot->GetBinContent(XBin) / (IntegratedFlux * NTargets) * Units;
-
-				for (int YBin = 1; YBin <= m; YBin++) {
-
-					double YCV = DataPlot->GetBinContent(YBin) / (IntegratedFlux * NTargets) * Units;					
-
-					double CurrentCMEntry = CovarianceMatrices[WhichPlot]->GetBinContent(XBin,YBin);
-					double NewCMEntry = CurrentCMEntry * XCV * YCV;
-
-					CovarianceMatrices[WhichPlot]->SetBinContent(XBin,YBin,NewCMEntry);					
-
-				}
-
-			}
+			// Flux-averaged event rates
+			DataPlot->Scale(Units/(IntegratedFlux*NTargets));		 
 
 			// -------------------------------------------------------------------------------------------
 
@@ -430,7 +415,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			H2V(PlotsTrue[4][WhichPlot], signal);
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
-			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE);
+			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
 
 			// ------------------------------------------------------------------------------------------
 
@@ -473,6 +458,7 @@ std::vector<TMatrixD> NormShapeVector = MatrixDecomp(n,unfold,UnfoldCov);
 			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -481,8 +467,6 @@ TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[Whic
 			// --------------------------------------------------------------------------------------------------					
 
 			// Scaling by correct units & bin width division
-
-			unf->Scale(Units/(IntegratedFlux*NTargets));
 
 			for (int i = 1; i <= n;i++ ) { 
 

@@ -485,7 +485,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 
 			CloneDataMC->GetXaxis()->SetLabelSize(0.);
 			CloneDataMC->GetXaxis()->SetTitleSize(0.);		
-			CloneDataMC->GetYaxis()->SetRangeUser(0,2.2);
+			CloneDataMC->GetYaxis()->SetRangeUser(0.5,1.5);
 			CloneDataMC->GetYaxis()->SetTitle("Ratio To Data");
 			CloneDataMC->GetYaxis()->SetTitleSize(0.16);
 			CloneDataMC->GetYaxis()->SetTitleOffset(0.35);

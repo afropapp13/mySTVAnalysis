@@ -125,6 +125,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	vector <TH1D*> BeamOnPlots; BeamOnPlots.resize(N1DPlots);
 	vector <TH1D*> BeamOffPlots; BeamOffPlots.resize(N1DPlots);
 	vector <TH1D*> DirtPlots; DirtPlots.resize(N1DPlots);
+	vector<vector <TH2D*> > FracCovariances; FracCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));
 	vector<vector <TH2D*> > Covariances; Covariances.resize(NRuns,vector<TH2D*>(N1DPlots));
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -419,7 +420,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				if (Syst == "Stat") {
 
-					// Don't forget to subtract the cosmic part and the dirt
+					// Don't forget to subtract the cosmic part, the dirt and the NonCC1p bkgs
 					// The MC uncertainties have already been taken care of with the MC event rate covariances
 
 					DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
@@ -427,7 +428,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 					DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 					DataPlot->Add(DirtPlots[WhichPlot],-1.);
-					//DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
 
 					//AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 					//AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
@@ -682,11 +683,24 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// Declare the matrix & initialize the entries to 0
 
-			Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
+
+				FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,-1.,1.,1,-1.,1.);
+				Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,-1.,1.,1,-1.,1.);
+
+			} else {
+
+				FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+				Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+
+			}
 
 			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 
 				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
+
+					FracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
+					FracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
 
 					Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
 					Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
@@ -720,6 +734,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 					// -------------------------------------------------------------------------------------------------------
 					// -------------------------------------------------------------------------------------------------------
 
+					double CovFracEntry = -99.;
+					double CovFracError = -99.;
+
 					double CovEntry = -99.;
 					double CovError = -99.;
 
@@ -733,12 +750,15 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovEntry = TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+						CovFracEntry = TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+
 						// CovError = TMath::Max( TMath::Sqrt( 
 						// 	TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 						// 	TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
-						CovError = 1E-8;
 
+						CovFracError = 1E-8;
+						CovError = 1E-8;
 
 					} else if (Syst == "POT" || Syst == "MC_POT" || Syst == "SmEff_POT") {
 
@@ -748,10 +768,14 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
+						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
+						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+
 //						CovError = TMath::Max( TMath::Sqrt( 
 //							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 //							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
+
+						CovFracError = 1E-8;
 						CovError = 1E-8;
 
 
@@ -763,11 +787,14 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX ) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
+						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX ) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
+						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+
 //						CovError = TMath::Max( TMath::Sqrt( 
 //							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 //							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
+						CovFracError = 1E-8;
 						CovError = 1E-8;
 
 					} else if (Syst == "Stat" || Syst == "MC_Stat" || Syst == "SmEff_Stat") {
@@ -799,11 +826,14 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 						}
 
-						CovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryXCV) * ( (AltDataEntryY - DataEntryY) / DataEntryYCV),1E-8);
+						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryXCV) * ( (AltDataEntryY - DataEntryY) / DataEntryYCV),1E-8);
+						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+
 //						CovError = TMath::Max( TMath::Sqrt( 
 //							TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 //							TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
+						CovFracError = 1E-8;
 						CovError = 1E-8;
 
 					} else if (
@@ -819,7 +849,10 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 							if ( (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2" || Syst == "SmEff_SCERecomb2") 
 								&& Runs[WhichRun] == "Run1" && AltModels[alt] == "_CVextra") 
-								{ continue;}							
+								{ continue;}	
+						
+							double CurrentFracCovEntry = FracCovariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+							double CurrentFracCovError = FracCovariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
 
 							double CurrentCovEntry = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
 							double CurrentCovError = Covariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
@@ -840,40 +873,51 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 //							}
 
-							double LocalCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+							double LocalFracCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+							double LocalCovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 //							double LocalCovError = TMath::Max( TMath::Sqrt( 
 //								TMath::Power(DataEntryY - AltDataEntryY,2.) * ( TMath::Power(DataErrorX,2.) + TMath::Power(AltDataErrorX,2.) ) +
 //								TMath::Power(DataEntryX - AltDataEntryX,2.) * ( TMath::Power(DataErrorY,2.) + TMath::Power(AltDataErrorY,2.) ) ), 1E-10) ;
 
+							double LocalFracCovError = 1E-8;
 							double LocalCovError = 1E-8;
 
 							if (AltUniverses[alt] > 2) {
+
+								LocalFracCovEntry = LocalCovEntry * 1. / AltUniverses[alt];
+								LocalFracCovError = LocalCovError * 1. / AltUniverses[alt];
 
 								LocalCovEntry = LocalCovEntry * 1. / AltUniverses[alt];
 								LocalCovError = LocalCovError * 1. / AltUniverses[alt];
 
 							}
 
+							CovFracEntry = CurrentFracCovEntry + LocalFracCovEntry;
 							CovEntry = CurrentCovEntry + LocalCovEntry;
+
 //							CovError = TMath::Sqrt( TMath::Power(CurrentCovError,2.) + TMath::Power(LocalCovError,2.) );
+							CovFracError = 1E-8;
 							CovError = 1E-8;
+
+							FracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovFracEntry);
+							FracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovFracError);
 
 							Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 							Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
 
 							// -------------------------------------------------------------------------------------------------------
 
-							if (	PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot" && 
-								(Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" ||
-								 Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2")
-							) {
+//							if (	PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot" && 
+//								(Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" ||
+//								 Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2")
+//							) {
 
-								TString CleanString = AltModels[alt];
-								CleanString = CleanString.ReplaceAll("_","");
-								cout << CleanString << " " << LocalCovEntry << endl;
+//								TString CleanString = AltModels[alt];
+//								CleanString = CleanString.ReplaceAll("_","");
+//								cout << CleanString << " " << LocalCovEntry << endl;
 
-							}
+//							}
 
 							// -------------------------------------------------------------------------------------------------------
 
@@ -887,6 +931,9 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 					// Setting the elements of the Cov Matrix
 
+					FracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovFracEntry);
+					FracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovFracError);
+
 					Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 					Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
 
@@ -897,6 +944,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 			} // end of the loop over bin X
 			
 			FileCovarianceMatrices->cd();
+			FracCovariances[WhichRun][WhichPlot]->Write();
 			Covariances[WhichRun][WhichPlot]->Write();
 			
 			// ---------------------------------------------------------------------------------------	
@@ -915,38 +963,38 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				gStyle->SetMarkerSize(1.5);
 				gStyle->SetPaintTextFormat("4.3f");			
 				
-				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
-				Covariances[WhichRun][WhichPlot]->GetXaxis()->CenterTitle();
-				Covariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(8);
+				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
+				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
+				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
+				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
+				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->CenterTitle();
+				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(8);
 				
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->CenterTitle();
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetNdivisions(5);
-				Covariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->CenterTitle();
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetNdivisions(5);
+				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
 
-				Covariances[WhichRun][WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
+				FracCovariances[WhichRun][WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
 
-				double CovMax = TMath::Min(1.,1.05*Covariances[WhichRun][WhichPlot]->GetMaximum());
-				double CovMin = TMath::Min(0.,1.05*Covariances[WhichRun][WhichPlot]->GetMinimum());
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetRangeUser(CovMin,CovMax);
-	//			Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->CenterTitle();
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
-				Covariances[WhichRun][WhichPlot]->GetZaxis()->SetNdivisions(5);
+				double FracCovMax = TMath::Min(1.,1.05*FracCovariances[WhichRun][WhichPlot]->GetMaximum());
+				double FracCovMin = TMath::Min(0.,1.05*FracCovariances[WhichRun][WhichPlot]->GetMinimum());
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetRangeUser(FracCovMin,FracCovMax);
+	//			FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->CenterTitle();
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
+				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetNdivisions(5);
 
-				Covariances[WhichRun][WhichPlot]->SetMarkerColor(kWhite);			
-				Covariances[WhichRun][WhichPlot]->SetMarkerSize(1.5);
-	//			Covariances[WhichRun][WhichPlot]->Draw("text colz e"); 
-				Covariances[WhichRun][WhichPlot]->Draw("colz");
+				FracCovariances[WhichRun][WhichPlot]->SetMarkerColor(kWhite);			
+				FracCovariances[WhichRun][WhichPlot]->SetMarkerSize(1.5);
+	//			FracCovariances[WhichRun][WhichPlot]->Draw("text colz e"); 
+				FracCovariances[WhichRun][WhichPlot]->Draw("colz");
 				
 				PlotCanvas->SaveAs(PlotPath+BaseMC+"/WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				
