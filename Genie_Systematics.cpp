@@ -33,7 +33,7 @@ void Genie_Systematics() {
 	TGaxis::SetMaxDigits(4);
 	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
-	vector<TString> PlotNames;
+//	vector<TString> PlotNames;
 	SetOffsetAndSize();
 	
 	double TextSize = 0.07;
@@ -42,23 +42,23 @@ void Genie_Systematics() {
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------
 
-	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
-	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
-	PlotNames.push_back("ProtonPhiPlot");
+//	PlotNames.push_back("DeltaPTPlot"); 
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonCosThetaPlot"); 
+//	PlotNames.push_back("MuonPhiPlot");
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("ProtonPhiPlot");
 //	PlotNames.push_back("ECalPlot");
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-	PlotNames.push_back("CCQEProtonCosThetaPlot");
+//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+//	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
