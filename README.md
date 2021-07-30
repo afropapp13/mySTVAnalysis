@@ -110,26 +110,6 @@ WienerSVD_OverlayGenerators(false,true)
 
 #################################################################################################################################
 
-# Quantifying the systematics
-
-root -b
-.L WienerSVD_Uncertainties.cpp
-
-WienerSVD_Uncertainties("Stat")
-WienerSVD_Uncertainties("POT")
-WienerSVD_Uncertainties("NTarget")
-WienerSVD_Uncertainties("LY",true)
-WienerSVD_Uncertainties("TPC",true)
-WienerSVD_Uncertainties("Flux")
-WienerSVD_Uncertainties("G4")
-WienerSVD_Uncertainties("XSec")
-
-# We are not done yet, need to handle the multisims as well and MC / Sm/Eff unc
-
-root -b PrintFinalUnc.cpp
-
-####################################################################
-
 # Fake data studies: we need the MC stat & xsec uncertainties only
 
 # Fake data with CC1p0pi NuWro as data sample # need to be tested 

@@ -59,22 +59,22 @@ void BinByBinChi2() {
 	int DecimalAccuracy = 2;
 
 	TH1D::SetDefaultSumw2();
-	vector<TString> PlotNames;
+//	vector<TString> PlotNames;
 
 	TString PathToFiles = "myXSec/";
 	TString PathToCovFiles = "myMigrationMatrices/";	
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
-	PlotNames.push_back("DeltaPTPlot"); 
-	PlotNames.push_back("DeltaAlphaTPlot"); 
-	PlotNames.push_back("DeltaPhiTPlot");
-	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
-	PlotNames.push_back("ProtonPhiPlot");
+//	PlotNames.push_back("DeltaPTPlot"); 
+//	PlotNames.push_back("DeltaAlphaTPlot"); 
+//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonCosThetaPlot"); 
+//	PlotNames.push_back("MuonPhiPlot");
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("ProtonPhiPlot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -82,11 +82,12 @@ void BinByBinChi2() {
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	Runs.push_back("Run1");
+//	Runs.push_back("Run1");
 //	Runs.push_back("Run2");
 //	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
+	Runs.push_back("Combined");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
@@ -138,13 +139,10 @@ void BinByBinChi2() {
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 	
 	vector<TFile*> DataFileSample; DataFileSample.resize(NRuns);
-	vector<TFile*> CovarianceFiles; CovarianceFiles.resize(NRuns);			
 	
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		DataFileSample[WhichRun] = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
-			
-		CovarianceFiles[WhichRun] = TFile::Open(PathToCovFiles+UBCodeVersion+"/WienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 			
 	}		
 	
@@ -166,8 +164,6 @@ void BinByBinChi2() {
 			
 			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
 			TH1D* MCPlot = (TH1D*)(DataFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
-			
-			TH2D* Covariance = (TH2D*)(CovarianceFiles[WhichRun]->Get("TotalCovariance_"+PlotNames[WhichPlot]));			
 
 			int n = DataPlot->GetXaxis()->GetNbins();
 
