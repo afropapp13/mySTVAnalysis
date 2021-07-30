@@ -44,7 +44,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
-	vector<TString> PlotNamesClone = PlotNames;
+	vector<TString> PlotNamesClone;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
@@ -62,21 +62,23 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
 
-	PlotNamesClone.push_back("VertexXPlot");
-	PlotNamesClone.push_back("VertexYPlot");
-	PlotNamesClone.push_back("VertexZPlot");
+//	PlotNamesClone.push_back("VertexXPlot");
+//	PlotNamesClone.push_back("VertexYPlot");
+//	PlotNamesClone.push_back("VertexZPlot");
 
-	PlotNamesClone.push_back("EvPlot");
+//	PlotNamesClone.push_back("EvPlot");
 
-	PlotNamesClone.push_back("MuonTrueMomentumLongitudinalRatio");
-	PlotNamesClone.push_back("ProtonTrueMomentumLongitudinalRatio");
-	PlotNamesClone.push_back("MuonTrueMomentumTransverseRatio");
-	PlotNamesClone.push_back("ProtonTrueMomentumTransverseRatio");
+//	PlotNamesClone.push_back("MuonTrueMomentumLongitudinalRatio");
+//	PlotNamesClone.push_back("ProtonTrueMomentumLongitudinalRatio");
+//	PlotNamesClone.push_back("MuonTrueMomentumTransverseRatio");
+//	PlotNamesClone.push_back("ProtonTrueMomentumTransverseRatio");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNamesClone.push_back("CCQEMuonMomentumPlot"); 
+	PlotNamesClone.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNamesClone.push_back("CCQEProtonMomentumPlot"); 
+	PlotNamesClone.push_back("CCQEProtonCosThetaPlot");
+	PlotNamesClone.push_back("CCQEECalPlot");
+	PlotNamesClone.push_back("CCQEQ2Plot");
 
 	// -------------------------------------------------------------------------------------
 
@@ -129,10 +131,10 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
 			TString STVPath = PathToFiles+"/"+CutExtension+"/";
-			TString STVName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+			TString STVName = "CCQEStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
 			FileSample.push_back(TFile::Open(STVPath+STVName));
 			
-			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+			TString TrueSTVName = "TruthCCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 			TruthFileSample.push_back(TFile::Open(TrueSTVPath+TrueSTVName));
 
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
@@ -157,7 +159,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString EfficiencyName = "FileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
+			TString EfficiencyName = "CCQEFileEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
 			Name = FileEfficienciesPath + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
 
@@ -285,7 +287,7 @@ void EffectiveEfficiencies(TString OverlaySample, bool DetVar = false) {
 					textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]);
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasEffRatioName = "Eff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasEffRatioName = "CCQEEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 
 					delete PlotEffCanvas;

@@ -265,10 +265,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileResponseName = MigrationMatrixPath+"CCQEFileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
-		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = MigrationMatrixPath+"CCQEWienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
 
@@ -320,20 +320,20 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				NameOfSamples[WhichSample] == "OverlayDirt9"
 			) { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "CCQEStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			}
 			
 			if (NameOfSamples[WhichSample] == "Overlay9") { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+				TString FileName = "CCQEStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 				
 			}
 
 			if (NameOfSamples[WhichSample] == "GenieOverlay") { 
 			
-				TString FileName = "TruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				TString FileName = "TruthCCQEAnalysis_Overlay9_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 				
 			}
@@ -610,8 +610,8 @@ unfShapeOnly->SetLineColor(kOrange+7);
 			legData->Draw();
 			
 			TString CanvasPath = PlotPath+NameOfSamples[0];
-			TString FullCanvasName = "/WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
-			if (ClosureTest == true) { FullCanvasName = "/ClosureTest_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf"; }
+			TString FullCanvasName = "/CCQEWienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+			if (ClosureTest == true) { FullCanvasName = "/CCQEClosureTest_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf"; }
 			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);	
 			delete PlotCanvas;			
 
@@ -741,7 +741,7 @@ unfShapeOnly->SetLineColor(kOrange+7);
 				text->SetTextSize(0.06);
 				text->DrawTextNDC(0.47, 0.92, Runs[WhichRun]);
 
-				TString SmearCanvas = "/Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				TString SmearCanvas = "/CCQESmear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
 				delete SmearPlotCanvas;
 

@@ -33,7 +33,7 @@ void Genie_Systematics() {
 	TGaxis::SetMaxDigits(4);
 	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 	SetOffsetAndSize();
 	
 	double TextSize = 0.07;
@@ -55,10 +55,12 @@ void Genie_Systematics() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -112,7 +114,7 @@ void Genie_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString SystFileName = PathToSystematics+"Genie_Systematics_"+Runs[WhichRun]+".root";
+		TString SystFileName = PathToSystematics+"CCQEGenie_Systematics_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(SystFileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco;
@@ -156,7 +158,7 @@ void Genie_Systematics() {
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
 
-				FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+\
+				FileSample.push_back(TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+\
 						      Runs[WhichRun]+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 				vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
@@ -383,7 +385,7 @@ void Genie_Systematics() {
 
 				// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-				PlotCanvas->SaveAs(PlotPath+"BeamOn9/Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
+				PlotCanvas->SaveAs(PlotPath+"BeamOn9/CCQEGenie_Systematics_"+PlotNames[WhichPlot]+"_"\
 						   +Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+UBCodeVersion+".pdf");
 
 				delete PlotCanvas;
@@ -440,7 +442,7 @@ void Genie_Systematics() {
 				
 				latex.DrawLatexNDC(0.45,0.75, "#splitline{"+Label+"}{#mu & #sigma Of Universes}");						
 				
-				MeanStdPlotCanvas->SaveAs(PlotPath+"BeamOn9/MeanSt_Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
+				MeanStdPlotCanvas->SaveAs(PlotPath+"BeamOn9/CCQEMeanSt_Genie_Systematics_"+PlotNames[WhichPlot]+"_"\
 						   +Runs[WhichRun]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+UBCodeVersion+".pdf");
 						   
 				delete MeanStdPlotCanvas;		   
@@ -508,7 +510,7 @@ void Genie_Systematics() {
 				LabelRunGenieCovarianceMatrix[WhichPlot]->SetMarkerColor(kWhite);				
 				LabelRunGenieCovarianceMatrix[WhichPlot]->SetMarkerSize(1.2);
 				LabelRunGenieCovarianceMatrix[WhichPlot]->Draw("text coltz");
-				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_Genie_"+PlotNames[WhichPlot]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CCQECovMatrix_Genie_"+PlotNames[WhichPlot]+"_"+EventWeightLabels[WhichEventWeightLabel]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCov;
 
 				// ----------------------------------------------------------------------------------
@@ -537,7 +539,7 @@ void Genie_Systematics() {
 			
 		// Loop over the plots to store the relevant uncertainties in the file
 
-		TFile* OverlayFile = TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[0]+"_"+UBCodeVersion+".root","readonly");
+		TFile* OverlayFile = TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[0]+"_"+UBCodeVersion+".root","readonly");
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
@@ -587,7 +589,7 @@ void Genie_Systematics() {
 			OverallEventWeightCovMatrix->SetMarkerColor(kWhite);
 			OverallEventWeightCovMatrix->SetMarkerSize(1.2);
 			OverallEventWeightCovMatrix->Draw("text coltz");
-			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_Genie_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/CCQEOverallCovMatrix_Genie_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			delete OverallPlotCov;
 
 			// -------------------------------------------------------------------------

@@ -31,7 +31,7 @@ void Detector_Systematics_LY() {
 	TGaxis::SetMaxDigits(3);
 	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 
 	// ---------------------------------------------------------------------------------------------------------------------	
 
@@ -48,10 +48,12 @@ void Detector_Systematics_LY() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -85,7 +87,7 @@ void Detector_Systematics_LY() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = PathToSystematics+"Detector_Systematics_LY_"+Runs[WhichRun]+".root";
+		TString FileName = PathToSystematics+"CCQEDetector_Systematics_LY_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -122,11 +124,11 @@ void Detector_Systematics_LY() {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
+			FileSample.push_back(TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
@@ -319,7 +321,7 @@ void Detector_Systematics_LY() {
 				PlotRunDetLYCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
 				PlotRunDetLYCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
 				PlotRunDetLYCovarianceMatrix[WhichSample]->Draw("text coltz");
-				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_DetLY_"+PlotNames[WhichPlot]+"_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CCQECovMatrix_DetLY_"+PlotNames[WhichPlot]+"_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCov;
 
 				// -------------------------------------------------------------------------------------------
@@ -361,7 +363,7 @@ void Detector_Systematics_LY() {
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-			PlotCanvas->SaveAs(PlotPath+"BeamOn9/LY_Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"BeamOn9/CCQELY_Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			delete PlotCanvas;
 
@@ -408,7 +410,7 @@ void Detector_Systematics_LY() {
 			OverallLYDetCovMatrix->SetMarkerColor(kWhite);
 			OverallLYDetCovMatrix->SetMarkerSize(1.2);
 			OverallLYDetCovMatrix->Draw("text coltz");
-			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_DetLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/CCQEOverallCovMatrix_DetLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			delete OverallPlotCov;
 
 			// ----------------------------------------------------------------------------------

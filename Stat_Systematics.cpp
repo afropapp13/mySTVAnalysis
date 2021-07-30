@@ -27,7 +27,7 @@ using namespace Constants;
 void Stat_Systematics() {
 
 	TH1D::SetDefaultSumw2();
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -44,10 +44,12 @@ void Stat_Systematics() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -82,7 +84,7 @@ void Stat_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = PathToSystematics+"Stat_Systematics_"+Runs[WhichRun]+".root";
+		TString FileName = PathToSystematics+"CCQEStat_Systematics_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -239,7 +241,7 @@ void Stat_Systematics() {
 				PlotRunStatCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
 				PlotRunStatCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
 				PlotRunStatCovarianceMatrix[WhichSample]->Draw("text coltz");
-				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_Stat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CCQECovMatrix_Stat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCov;
 
 				// ----------------------------------------------------------------------------------------------------

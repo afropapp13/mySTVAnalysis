@@ -66,7 +66,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 	// -------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
@@ -83,10 +83,12 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 //	PlotNames.push_back("PMissPlot");
 //	PlotNames.push_back("PMissMinusPlot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -176,7 +178,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileEfficienciesName = "FileEfficiences_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileEfficienciesName = "CCQEFileEfficiences_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileEfficiences = new TFile(FileEfficienciesPath+FileEfficienciesName,"readonly");
 
 		const int NSamples = NameOfSamples.size();
@@ -196,20 +198,20 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 				NameOfSamples[WhichSample] == "OverlayDirt9"
 			) { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "CCQEStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			}
 			
 			if (NameOfSamples[WhichSample] == "Overlay9") { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+				TString FileName = "CCQEStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 				
 			}
 			
 			if (NameOfSamples[WhichSample] == "GenieOverlay") { 
 			
-				TString FileName = "TruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				TString FileName = "TruthCCQEAnalysis_Overlay9_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 				
 			}			
@@ -550,7 +552,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 				legData->Draw();
 			
 				TString CanvasPath = PlotPath+NameOfSamples[0];
-				TString FullCanvasName = "/XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				TString FullCanvasName = "/CCQEXSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				PlotCanvas->SaveAs(CanvasPath+FullCanvasName);
 
 				delete PlotCanvas;
@@ -569,7 +571,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 		// Store the extracted xsections
 
-		TString NameExtractedXSec = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[0]+"_"\
+		TString NameExtractedXSec = PathToExtractedXSec+"CCQEExtractedXSec_"+NameOfSamples[0]+"_"\
 			+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 

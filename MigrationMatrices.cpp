@@ -50,7 +50,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot"); 
@@ -64,10 +64,12 @@ void MigrationMatrices(TString OverlaySample) {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N2DPlots = PlotNames.size();
 	cout << "Number of 2D Plots = " << N2DPlots << endl;
@@ -104,7 +106,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"FileMigrationMatrices_"+\
+		TString FileName = MigrationMatrixPath+"CCQEFileMigrationMatrices_"+\
 				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileMigrationMatrices = new TFile(FileName,"recreate");
 
@@ -112,7 +114,7 @@ void MigrationMatrices(TString OverlaySample) {
 		
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
-			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
+			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/CCQEStudies_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+CutExtension+".root");
 
 		}
@@ -212,7 +214,7 @@ void MigrationMatrices(TString OverlaySample) {
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.8);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
-					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
+					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/CCQEMigrationMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				

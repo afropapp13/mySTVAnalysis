@@ -27,7 +27,7 @@ using namespace Constants;
 void POT_Systematics() {
 
 	TH1D::SetDefaultSumw2();
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -44,10 +44,12 @@ void POT_Systematics() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -82,7 +84,7 @@ void POT_Systematics() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = PathToSystematics+"POT_Systematics_"+Runs[WhichRun]+".root";
+		TString FileName = PathToSystematics+"CCQEPOT_Systematics_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -103,7 +105,7 @@ void POT_Systematics() {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToExtractedXSec+"/ExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
+			FileSample.push_back(TFile::Open(PathToExtractedXSec+"/CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 
@@ -276,7 +278,7 @@ void POT_Systematics() {
 				PlotRunPOTCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
 				PlotRunPOTCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
 				PlotRunPOTCovarianceMatrix[WhichSample]->Draw("text coltz");
-				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_POT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CCQECovMatrix_POT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCov;
 
 				// ----------------------------------------------------------------------------------------------------
@@ -305,7 +307,7 @@ void POT_Systematics() {
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-			PlotCanvas->SaveAs(PlotPath+"BeamOn9/POT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"BeamOn9/CCQEPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			delete PlotCanvas;
 
 			// ---------------------------------------------------------------------------------------------------------------------

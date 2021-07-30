@@ -31,7 +31,7 @@ void Detector_Systematics_TPC() {
 	TGaxis::SetMaxDigits(3);
 //	TGaxis::SetExponentOffset(-0.1, 1., "y");	
 	
-//	vector<TString> PlotNames; 
+	vector<TString> PlotNames; 
 
 	// -------------------------------------------------------------------------------------------------------------------------	
 
@@ -48,10 +48,12 @@ void Detector_Systematics_TPC() {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -85,7 +87,7 @@ void Detector_Systematics_TPC() {
 		// ------------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = PathToSystematics+"Detector_Systematics_TPC_"+Runs[WhichRun]+".root";
+		TString FileName = PathToSystematics+"CCQEDetector_Systematics_TPC_"+Runs[WhichRun]+".root";
 		TFile* SystFile = new TFile(FileName,"recreate");
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -126,11 +128,11 @@ void Detector_Systematics_TPC() {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			FileSample.push_back(TFile::Open(PathToExtractedXSec+"ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
+			FileSample.push_back(TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+NameOfSamples[WhichSample]+"_"+UBCodeVersion+".root"));
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
@@ -323,7 +325,7 @@ void Detector_Systematics_TPC() {
 				PlotRunDetTPCCovarianceMatrix[WhichSample]->SetMarkerColor(kWhite);				
 				PlotRunDetTPCCovarianceMatrix[WhichSample]->SetMarkerSize(1.2);
 				PlotRunDetTPCCovarianceMatrix[WhichSample]->Draw("text coltz");
-				PlotCov->SaveAs(PlotPath+"BeamOn9/CovMatrix_DetTPC_"+PlotNames[WhichPlot]+"_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+				PlotCov->SaveAs(PlotPath+"BeamOn9/CCQECovMatrix_DetTPC_"+PlotNames[WhichPlot]+"_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCov;
 
 				// -------------------------------------------------------------------------------------------
@@ -363,7 +365,7 @@ void Detector_Systematics_TPC() {
 
 			// Saving the canvas where the CV & SystVar predictions have been overlaid
 
-			PlotCanvas->SaveAs(PlotPath+"BeamOn9/TPC_Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(PlotPath+"BeamOn9/CCQETPC_Detector_Variations_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			delete PlotCanvas;
 
@@ -410,7 +412,7 @@ void Detector_Systematics_TPC() {
 			OverallTPCDetCovMatrix->SetMarkerColor(kWhite);
 			OverallTPCDetCovMatrix->SetMarkerSize(1.2);
 			OverallTPCDetCovMatrix->Draw("text coltz");
-			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/OverallCovMatrix_DetTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			OverallPlotCov->SaveAs(PlotPath+"BeamOn9/CCQEOverallCovMatrix_DetTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 			delete OverallPlotCov;
 
 			// ----------------------------------------------------------------------------------

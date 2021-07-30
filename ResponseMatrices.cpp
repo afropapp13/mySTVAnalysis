@@ -44,7 +44,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot"); 
@@ -59,10 +59,12 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 //	PlotNames.push_back("EQEPlot"); 
 //	PlotNames.push_back("Q2Plot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N2DPlots = PlotNames.size();
 	cout << "Number of 2D Plots = " << N2DPlots << endl;
@@ -113,7 +115,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"FileResponseMatrices_"+\
+		TString FileName = MigrationMatrixPath+"CCQEFileResponseMatrices_"+\
 				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileResponseMatrices = new TFile(FileName,"recreate");
 
@@ -121,17 +123,17 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 		
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
-			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
+			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/CCQEStudies_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
 
-			TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
+			TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthCCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
 
 			// Jul 8 2021: after discussion with Xin, if flux variations, the truth level should always be the CV
 
 			if (string(OverlaySample).find("fluxes") != std::string::npos) {
 
-				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
+				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthCCQEAnalysis_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
 
 			}
@@ -224,7 +226,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.8);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
-					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/ResponseMatrices_"+PlotNames[WhichPlot]
+					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/CCQEResponseMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				

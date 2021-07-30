@@ -34,7 +34,7 @@ void Systematics() {
 	int DecimalAccuracy = 2;
 
 	TH1D::SetDefaultSumw2();
-//	vector<TString> PlotNames;
+	vector<TString> PlotNames;
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -48,10 +48,12 @@ void Systematics() {
 //	PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
 
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEMuonMomentumPlot"); 
+	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
+	PlotNames.push_back("CCQEProtonMomentumPlot"); 
+	PlotNames.push_back("CCQEProtonCosThetaPlot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -87,14 +89,14 @@ void Systematics() {
 
 		// Systematics
 
-		NameOfSamples.push_back("Detector_Systematics_LY");
-		NameOfSamples.push_back("Detector_Systematics_TPC");
-		NameOfSamples.push_back("Detector_Systematics_SCERecomb2");
-		NameOfSamples.push_back("POT_Systematics");
-		NameOfSamples.push_back("NTarget_Systematics");
-		NameOfSamples.push_back("G4_Systematics");
-		NameOfSamples.push_back("Flux_Systematics");
-		NameOfSamples.push_back("Genie_Systematics");		
+		NameOfSamples.push_back("CCQEDetector_Systematics_LY");
+		NameOfSamples.push_back("CCQEDetector_Systematics_TPC");
+		NameOfSamples.push_back("CCQEDetector_Systematics_SCERecomb2");
+		NameOfSamples.push_back("CCQEPOT_Systematics");
+		NameOfSamples.push_back("CCQENTarget_Systematics");
+		NameOfSamples.push_back("CCQEG4_Systematics");
+		NameOfSamples.push_back("CCQEFlux_Systematics");
+		NameOfSamples.push_back("CCQEGenie_Systematics");		
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -113,10 +115,10 @@ void Systematics() {
 
 			if (WhichSample == 0) {
 
-				TString FileSampleName = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				TString FileSampleName = PathToExtractedXSec+"CCQEExtractedXSec_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 				if ( string(NameOfSamples[WhichSample]).find("LY") != std::string::npos || string(NameOfSamples[WhichSample]).find("TPC") != std::string::npos 
 					|| string(NameOfSamples[WhichSample]).find("SCERecomb2") != std::string::npos ) 
-					{ FileSampleName = PathToExtractedXSec+"ExtractedXSec_"+NameOfSamples[WhichSample]+"_Run3_"+UBCodeVersion+".root"; }
+					{ FileSampleName = PathToExtractedXSec+"CCQEExtractedXSec_"+NameOfSamples[WhichSample]+"_Run3_"+UBCodeVersion+".root"; }
 				FileSample.push_back(TFile::Open(FileSampleName,"update")); 
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
@@ -300,7 +302,7 @@ void Systematics() {
 
 			// Saving the canvas with the data (total uncertainties) vs overlay predictions
 
-			PlotCanvasSyst->SaveAs(PlotPath+"BeamOn9/TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvasSyst->SaveAs(PlotPath+"BeamOn9/CCQETotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 
 			delete PlotCanvasSyst;
 
