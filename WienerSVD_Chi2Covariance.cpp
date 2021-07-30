@@ -116,7 +116,7 @@ void CalcChiSquared(TH1D* h_model, TH1D* h_data, TH2D* cov, double &chi, int &nd
 
 // -----------------------------------------------------------------------------------------------
 
-void WienerSVD_Chi2Covariance() {
+void WienerSVD_Chi2Covariance(TString Var) {
 
 	int DecimalAccuracy = 2;
 
@@ -129,16 +129,46 @@ void WienerSVD_Chi2Covariance() {
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames;
-//	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
-//	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot"); 
+	vector<TString> PlotNames;
+
+	if (Var == "STV") {
+
+	PlotNames.push_back("DeltaPTPlot"); 
+	PlotNames.push_back("DeltaAlphaTPlot"); 
+	PlotNames.push_back("DeltaPhiTPlot");
+
+	PlotNames.push_back("MuonMomentumPlot"); 
+	PlotNames.push_back("MuonCosThetaPlot"); 
+	PlotNames.push_back("ProtonMomentumPlot"); 
+	PlotNames.push_back("ProtonCosThetaPlot");
+
+	} else if (Var == "Long") {
+
+//	PlotNames.push_back("DeltaPLPlot"); 
+	PlotNames.push_back("DeltaPnPlot"); 
+	PlotNames.push_back("DeltaPtxPlot"); 
+	PlotNames.push_back("DeltaPtyPlot"); 
+//	PlotNames.push_back("APlot"); 
+
+	PlotNames.push_back("kMissPlot");
+//	PlotNames.push_back("PMissPlot"); 
+//	PlotNames.push_back("PMissMinusPlot");
+
+	} else if (Var == "Kine") {
+
+	PlotNames.push_back("MuonMomentumPlot"); 
+	PlotNames.push_back("MuonCosThetaPlot"); 
 //	PlotNames.push_back("MuonPhiPlot");
-//	PlotNames.push_back("ProtonMomentumPlot"); 
-//	PlotNames.push_back("ProtonCosThetaPlot");
+	PlotNames.push_back("ProtonMomentumPlot"); 
+	PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
+
+	} else {  
+
+		cout << "What the heck do you want me to compute ?" << endl;
+		return;
+
+	}
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;

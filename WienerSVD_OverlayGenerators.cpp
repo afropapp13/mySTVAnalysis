@@ -118,6 +118,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 //	PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
 
+//	PlotNames.push_back("kMissPlot"); 
+
 //	PlotNames.push_back("CCQEMuonMomentumPlot"); 
 //	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
 //	PlotNames.push_back("CCQEProtonMomentumPlot"); 
@@ -258,17 +260,18 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
 			PlotCanvas->cd();
 
-			TPad *midPad = new TPad("midPad", "",0.005, 0.2, 0.995, 0.995);
+//			TPad *midPad = new TPad("midPad", "",0.005, 0.2, 0.995, 0.995);
+			TPad *midPad = new TPad("midPad", "",0.005, 0., 0.995, 0.995);
 			midPad->SetBottomMargin(0.14);
 			midPad->SetTopMargin(0.12);
 			midPad->SetLeftMargin(0.17);
 			midPad->Draw();
 
-			TPad *botPad = new TPad("botPad", "",0.005, 0., 0.995, 0.2);
-			botPad->SetBottomMargin(0.14);
-			botPad->SetTopMargin(0.);
-			botPad->SetLeftMargin(0.17);
-			botPad->Draw();
+//			TPad *botPad = new TPad("botPad", "",0.005, 0., 0.995, 0.2);
+//			botPad->SetBottomMargin(0.14);
+//			botPad->SetTopMargin(0.);
+//			botPad->SetLeftMargin(0.17);
+//			botPad->Draw();
 
 //			TLegend* leg = new TLegend(0.15,0.89,0.9,0.99);
 //			leg->SetBorderSize(0);
@@ -277,13 +280,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 //			leg->SetNColumns(4);
 //			leg->SetMargin(0.15);
 
-			TLegend* leg = new TLegend(0.58,0.58,0.78,0.85);
+			TLegend* leg = new TLegend(0.65,0.58,0.78,0.85);
 			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { leg = new TLegend(0.35,0.15,0.7,0.4); }
 			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot") 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
 
 			leg->SetBorderSize(0);
-			leg->SetTextSize(0.05);
+			leg->SetTextSize(0.04);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(1);
 			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { leg->SetNColumns(2); }
@@ -316,6 +319,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 
 			midPad->cd();
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // Total Unc
+
+			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);
+			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only		
 
 			// -----------------------------------------------------------------------------------------------------------------
@@ -430,10 +436,11 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 			TLegendEntry* lGenie_GENIEv2 = leg->AddEntry(PlotsTrue[6][WhichPlot],"v2.12.10","l");
 			PlotsTrue[6][WhichPlot]->Draw("hist same"); lGenie_GENIEv2->SetTextColor(GENIEv2Color);
 
-			TLegendEntry* lGenie_GENIEv3_0_4 = leg->AddEntry(PlotsTrue[8][WhichPlot],"v3.0.4 (G2018)","l");
-			PlotsTrue[8][WhichPlot]->Draw("hist same"); lGenie_GENIEv3_0_4->SetTextColor(GENIEv3_0_4_Color);
+//			TLegendEntry* lGenie_GENIEv3_0_4 = leg->AddEntry(PlotsTrue[8][WhichPlot],"v3.0.4 (G2018)","l");
+//			PlotsTrue[8][WhichPlot]->Draw("hist same"); lGenie_GENIEv3_0_4->SetTextColor(GENIEv3_0_4_Color);
 
-			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6 (G2018)","l");
+//			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6 (G2018)","l");
+			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6","l");
 			PlotsTrue[1][WhichPlot]->Draw("hist same"); lGenie->SetTextColor(Geniev3OutOfTheBoxColor);
 
 			// TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
@@ -449,8 +456,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[4][WhichPlot],"NuWro","l");
 			PlotsTrue[4][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
 
+
 			TLegendEntry* lGenie_GiBUU = leg->AddEntry(PlotsTrue[5][WhichPlot],"GiBUU","l");
 			PlotsTrue[5][WhichPlot]->Draw("hist same"); lGenie_GiBUU->SetTextColor(GiBUUColor);
+
 
 			TLegendEntry* lGenie_NEUT = leg->AddEntry(PlotsTrue[7][WhichPlot],"NEUT","l");
 			PlotsTrue[7][WhichPlot]->Draw("hist same"); lGenie_NEUT->SetTextColor(NEUTColor);
@@ -466,14 +475,15 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 
 //			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data","ep");
-			leg->AddEntry(PlotsReco[0][WhichPlot],Runs[WhichRun] + " " + Label,"");
+//			leg->AddEntry(PlotsReco[0][WhichPlot],Runs[WhichRun] + " " + Label,"");
+			leg->AddEntry(PlotsReco[0][WhichPlot],Label,"");
 
 			leg->Draw();
 
 			// ----------------------------------------------------------------------------------------------
 
 			// Now the ratios
-
+/*
 			botPad->cd();
 			botPad->SetGridx();
 			botPad->SetGridy();
@@ -541,7 +551,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 			CloneDataNEUT->Draw("same");
 
 			}
-
+*/
 			// ----------------------------------------------------------------------------------------------
 
 			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions

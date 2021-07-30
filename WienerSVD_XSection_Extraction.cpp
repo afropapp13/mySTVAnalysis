@@ -284,11 +284,25 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		TFile* ExtractedXSec = nullptr;
 		TString NameExtractedXSec = "";
 
+		// File to store xsecs for data release
+
+		TString XSecTxtName = PathToExtractedXSec+"TxtXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".txt";
+		ofstream myXSecTxtFile;
+
 		if (ClosureTest == false) {
 
 			NameExtractedXSec = PathToExtractedXSec+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"\
 				+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
 			ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
+
+			// ---------------------------------------------------------------------------------------------------------------------------------------
+
+			//File to store xsecs for data release
+
+			myXSecTxtFile.open(XSecTxtName);
+			myXSecTxtFile << std::fixed << std::setprecision(2);
+			myXSecTxtFile << Runs[WhichRun] << endl << endl;
+			myXSecTxtFile << "Bin #; Bin Low Edge; Bin High Edge; Bin Entry [10^{-38} cm^{2}]; Bin Error [10^{-38} cm^{2}]" << endl << endl;
 
 		}		
 
@@ -482,13 +496,26 @@ TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichR
 			unfStat = (TH1D*)(unf->Clone());
 unfShapeOnly = (TH1D*)(unf->Clone());
 
+			myXSecTxtFile << PlotNames[WhichPlot] << endl << endl;			
+
 			for (int i = 1; i <= n;i++ ) {
 
 				double CV = unf->GetBinContent(i);
-				unfStat->SetBinError(i, CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) ) );
+				double CVError = unf->GetBinError(i);
+				double LowEdge = unf->GetBinLowEdge(i);
+				double Width = unf->GetBinWidth(i);
+				double HighEdge = LowEdge + Width;
+
+//				double StatError = CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) * UnfoldCov(i-1,i-1) / covariance(i-1,i-1) );
+				double StatError = CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) );
+				unfStat->SetBinError(i, StatError);
 
 double CVBinWidth = unf->GetBinWidth(i);				
-unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / CVBinWidth );				
+unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / CVBinWidth );	
+
+				// Data release
+
+				myXSecTxtFile << i << "; " << LowEdge << "; " << HighEdge << "; " << CV << "; " << CVError << endl << endl;			
 
 			}															
 
@@ -574,7 +601,8 @@ unfShapeOnly->SetLineColor(kOrange+7);
 			legData->SetNColumns(1);
 			legData->SetMargin(0.1);			
 
-			legData->AddEntry(unf,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
+//			legData->AddEntry(unf,"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
+			legData->AddEntry(unf,"MicroBooNE Data " + Label,"ep");
 
 			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"MC uB Tune","l");
 			lMC->SetTextColor(OverlayColor);	
