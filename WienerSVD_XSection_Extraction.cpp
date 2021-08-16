@@ -116,6 +116,10 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 
 	int NBins = h->GetXaxis()->GetNbins();
 
+	// We want the number of events, as if the bin width is 1
+	double ExtraFactor = 1.;
+	if (NBins == 1) { ExtraFactor = 2.; }
+
 	for (int i = 0; i < NBins; i++) {
 
 		double CurrentEntry = h->GetBinContent(i+1);
@@ -201,8 +205,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
 	PlotNames.push_back("CCQEProtonMomentumPlot"); 
 	PlotNames.push_back("CCQEProtonCosThetaPlot");
-//	PlotNames.push_back("CCQEECalPlot");
-//	PlotNames.push_back("CCQEQ2Plot");
+	PlotNames.push_back("CCQEECalPlot");
+	PlotNames.push_back("CCQEQ2Plot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -249,7 +253,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
-		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);					
+//		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);					
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);					
 
 		// -------------------------------------------------------------------------------------		
 
@@ -512,8 +517,8 @@ unfShapeOnly = (TH1D*)(unf->Clone());
 				double StatError = CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) );
 				unfStat->SetBinError(i, StatError);
 
-double CVBinWidth = unf->GetBinWidth(i);				
-unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / CVBinWidth );	
+if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Width = 1.; }
+unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / Width );	
 
 				// Data release
 

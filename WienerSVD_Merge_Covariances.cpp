@@ -29,6 +29,58 @@ using namespace Constants;
 
 // -----------------------------------------------------------------------------------------------
 
+void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, TString Runs) {
+
+	TString CanvasName = "Total_"+PlotNames+OverlaySamples+"_"+Runs;
+	TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+	PlotCanvas->cd();
+	PlotCanvas->SetBottomMargin(0.16);
+	PlotCanvas->SetLeftMargin(0.15);
+	PlotCanvas->SetRightMargin(0.25);			
+	
+	gStyle->SetMarkerSize(1.5);
+	gStyle->SetPaintTextFormat("4.3f");			
+	
+	h->GetXaxis()->SetTitleFont(FontStyle);
+	h->GetXaxis()->SetLabelFont(FontStyle);
+	h->GetXaxis()->SetTitleSize(TextSize);
+	h->GetXaxis()->SetLabelSize(TextSize);			
+	h->GetXaxis()->CenterTitle();
+	h->GetXaxis()->SetNdivisions(5);
+	
+	h->GetYaxis()->SetLabelFont(FontStyle);
+	h->GetYaxis()->SetTitleFont(FontStyle);
+	h->GetYaxis()->SetTitleSize(TextSize);
+	h->GetYaxis()->SetLabelSize(TextSize);			
+	h->GetYaxis()->CenterTitle();
+	h->GetYaxis()->SetNdivisions(5);
+	h->GetYaxis()->SetTitleOffset(1.);			
+
+	h->SetTitle(Runs + Label + " Total");	
+
+	double FracCovMax = TMath::Min(1.,1.05 * h->GetMaximum());
+	double FracCovMin = TMath::Min(0.,1.05 * h->GetMinimum());
+	h->GetZaxis()->SetRangeUser(FracCovMin,FracCovMax);
+	h->GetZaxis()->CenterTitle();
+	h->GetZaxis()->SetTitleFont(FontStyle);
+	h->GetZaxis()->SetTitleSize(TextSize);
+	h->GetZaxis()->SetLabelFont(FontStyle);
+	h->GetZaxis()->SetLabelSize(TextSize-0.01);
+	h->GetZaxis()->SetNdivisions(5);
+
+	h->SetMarkerColor(kWhite);			
+	h->SetMarkerSize(1.5);
+	//h->Draw("text colz e"); 
+	h->Draw("colz");
+	
+	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
+	
+	delete PlotCanvas;
+
+}
+
+// -----------------------------------------------------------------------------------------------
+
 void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString UncSources,int Color, TLegend* leg) {
 
 	TH1D::SetDefaultSumw2();
@@ -513,60 +565,19 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
 				delete 	MCERPlotCanvas;
 
-			}
-			
-			// ---------------------------------------------------------------------------------------------
-			
-			if (StorePlots) {
+				// ---------------------------------------------------------------------------------------------
 
-				// Plotting Total Fractional Covariances
+				// Plot the 2D covariance matrices
 
-				TString CanvasName = "Total_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
-				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-				PlotCanvas->cd();
-				PlotCanvas->SetBottomMargin(0.16);
-				PlotCanvas->SetLeftMargin(0.15);
-				PlotCanvas->SetRightMargin(0.25);			
-				
-				gStyle->SetMarkerSize(1.5);
-				gStyle->SetPaintTextFormat("4.3f");			
-				
-				FracCovariances[WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-				FracCovariances[WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-				FracCovariances[WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-				FracCovariances[WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
-				FracCovariances[WhichPlot]->GetXaxis()->CenterTitle();
-				FracCovariances[WhichPlot]->GetXaxis()->SetNdivisions(5);
-				
-				FracCovariances[WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-				FracCovariances[WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-				FracCovariances[WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-				FracCovariances[WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
-				FracCovariances[WhichPlot]->GetYaxis()->CenterTitle();
-				FracCovariances[WhichPlot]->GetYaxis()->SetNdivisions(5);
-				FracCovariances[WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
+				PlotCov(Covariances[WhichPlot],"",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun]);
 
-				FracCovariances[WhichPlot]->SetTitle(Runs[WhichRun] + " Total");	
+				// ---------------------------------------------------------------------------------------------
 
-				double FracCovMax = TMath::Min(1.,1.05*FracCovariances[WhichPlot]->GetMaximum());
-				double FracCovMin = TMath::Min(0.,1.05*FracCovariances[WhichPlot]->GetMinimum());
-				FracCovariances[WhichPlot]->GetZaxis()->SetRangeUser(FracCovMin,FracCovMax);
-	//			FracCovariances[WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
-				FracCovariances[WhichPlot]->GetZaxis()->CenterTitle();
-				FracCovariances[WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
-				FracCovariances[WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
-				FracCovariances[WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-				FracCovariances[WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
-				FracCovariances[WhichPlot]->GetZaxis()->SetNdivisions(5);
+				// Plot the 2D fractional covariance matrices
 
-				FracCovariances[WhichPlot]->SetMarkerColor(kWhite);			
-				FracCovariances[WhichPlot]->SetMarkerSize(1.5);
-	//			FracCovariances[WhichPlot]->Draw("text colz e"); 
-				FracCovariances[WhichPlot]->Draw("colz");
-				
-				PlotCanvas->SaveAs(PlotPath+OverlaySample+"/WienerSVD_Total_CovarianceMatrices_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
-				
-				delete PlotCanvas;
+				PlotCov(FracCovariances[WhichPlot],"Frac",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun]);
+
+				// ---------------------------------------------------------------------------------------------
 
 			}
 		

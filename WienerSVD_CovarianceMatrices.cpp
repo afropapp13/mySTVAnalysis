@@ -23,6 +23,58 @@ using namespace Constants;
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
+void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TString BaseMC, TString Runs) {
+
+	TString CanvasName = Syst+"_"+PlotNames+BaseMC+"_"+Runs;
+	TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+	PlotCanvas->cd();
+	PlotCanvas->SetBottomMargin(0.16);
+	PlotCanvas->SetLeftMargin(0.15);
+	PlotCanvas->SetRightMargin(0.25);			
+	
+	gStyle->SetMarkerSize(1.5);
+	gStyle->SetPaintTextFormat("4.3f");			
+	
+	h->GetXaxis()->SetTitleFont(FontStyle);
+	h->GetXaxis()->SetLabelFont(FontStyle);
+	h->GetXaxis()->SetTitleSize(TextSize);
+	h->GetXaxis()->SetLabelSize(TextSize);			
+	h->GetXaxis()->CenterTitle();
+	h->GetXaxis()->SetNdivisions(8);
+	
+	h->GetYaxis()->SetLabelFont(FontStyle);
+	h->GetYaxis()->SetTitleFont(FontStyle);
+	h->GetYaxis()->SetTitleSize(TextSize);
+	h->GetYaxis()->SetLabelSize(TextSize);			
+	h->GetYaxis()->CenterTitle();
+	h->GetYaxis()->SetNdivisions(5);
+	h->GetYaxis()->SetTitleOffset(1.);			
+
+	h->SetTitle(Runs + " " + Syst);	
+
+	double CovMax = TMath::Min(1.,1.05 * h->GetMaximum());
+	double CovMin = TMath::Min(0.,1.05 * h->GetMinimum());
+	h->GetZaxis()->SetRangeUser(CovMin,CovMax);
+	h->GetZaxis()->CenterTitle();
+	h->GetZaxis()->SetTitleFont(FontStyle);
+	h->GetZaxis()->SetTitleSize(TextSize);
+	h->GetZaxis()->SetLabelFont(FontStyle);
+	h->GetZaxis()->SetLabelSize(TextSize-0.01);
+	h->GetZaxis()->SetNdivisions(5);
+
+	h->SetMarkerColor(kWhite);			
+	h->SetMarkerSize(1.5);
+	//h->Draw("text colz e"); 
+	h->Draw("colz");
+	
+	PlotCanvas->SaveAs(PlotPath+BaseMC+"/CCQEWienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+"_"+UBCodeVersion+".pdf");
+	
+	delete PlotCanvas;	
+
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------
+
 TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 	TH1D* TrueClone = (TH1D*)(True->Clone());
@@ -887,8 +939,8 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 							if (AltUniverses[alt] > 2) {
 
-								LocalFracCovEntry = LocalCovEntry * 1. / AltUniverses[alt];
-								LocalFracCovError = LocalCovError * 1. / AltUniverses[alt];
+								LocalFracCovEntry = LocalFracCovEntry * 1. / AltUniverses[alt];
+								LocalFracCovError = LocalFracCovError * 1. / AltUniverses[alt];
 
 								LocalCovEntry = LocalCovEntry * 1. / AltUniverses[alt];
 								LocalCovError = LocalCovError * 1. / AltUniverses[alt];
@@ -955,52 +1007,19 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			if (BaseMC == "Overlay9") {		
 		
-				TString CanvasName = Syst+"_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun];
-				TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
-				PlotCanvas->cd();
-				PlotCanvas->SetBottomMargin(0.16);
-				PlotCanvas->SetLeftMargin(0.15);
-				PlotCanvas->SetRightMargin(0.25);			
-				
-				gStyle->SetMarkerSize(1.5);
-				gStyle->SetPaintTextFormat("4.3f");			
-				
-				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleFont(FontStyle);
-				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelFont(FontStyle);
-				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetTitleSize(TextSize);
-				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetLabelSize(TextSize);			
-				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->CenterTitle();
-				FracCovariances[WhichRun][WhichPlot]->GetXaxis()->SetNdivisions(8);
-				
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelFont(FontStyle);
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleFont(FontStyle);
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleSize(TextSize);
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetLabelSize(TextSize);			
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->CenterTitle();
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetNdivisions(5);
-				FracCovariances[WhichRun][WhichPlot]->GetYaxis()->SetTitleOffset(1.);						
+				// ---------------------------------------------------------------------------------------------------------	
 
-				FracCovariances[WhichRun][WhichPlot]->SetTitle(Runs[WhichRun] + " " + Syst);	
+				// Store covariance matrices
 
-				double FracCovMax = TMath::Min(1.,1.05*FracCovariances[WhichRun][WhichPlot]->GetMaximum());
-				double FracCovMin = TMath::Min(0.,1.05*FracCovariances[WhichRun][WhichPlot]->GetMinimum());
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetRangeUser(FracCovMin,FracCovMax);
-	//			FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetTitle("[x10^{-76} cm^{4}]");
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->CenterTitle();
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleFont(FontStyle);
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetTitleSize(TextSize);
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetLabelSize(TextSize-0.01);
-				FracCovariances[WhichRun][WhichPlot]->GetZaxis()->SetNdivisions(5);
+				StoreCanvas(Covariances[WhichRun][WhichPlot], "", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun]);
 
-				FracCovariances[WhichRun][WhichPlot]->SetMarkerColor(kWhite);			
-				FracCovariances[WhichRun][WhichPlot]->SetMarkerSize(1.5);
-	//			FracCovariances[WhichRun][WhichPlot]->Draw("text colz e"); 
-				FracCovariances[WhichRun][WhichPlot]->Draw("colz");
-				
-				PlotCanvas->SaveAs(PlotPath+BaseMC+"/CCQEWienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
-				
-				delete PlotCanvas;	
+				// -------------------------------------------------------------------------------------------	
+
+				// Store fractional covariance matrices
+
+				StoreCanvas(FracCovariances[WhichRun][WhichPlot], "Frac", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun]);
+
+				// -------------------------------------------------------------------------------------------	
 
 			}		
 
