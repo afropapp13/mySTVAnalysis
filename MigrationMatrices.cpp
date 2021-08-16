@@ -209,7 +209,7 @@ void MigrationMatrices(TString OverlaySample) {
 
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
-					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.8);
+					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]

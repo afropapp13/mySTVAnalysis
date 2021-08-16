@@ -92,7 +92,7 @@ void PrettyPlot(TH1D* h) {
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
-void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
+void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bool PlotGENIEFSITweaks = false, bool PlotGENIEFlagTweaks = false, bool PlotGENIECT = false, bool PlotNuclModels = false) {
 
 	int DecimalAccuracy = 2;
 
@@ -104,6 +104,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 	TString Extra = "";
 	if (!PlotGENIE && PlotGen) { Extra = "OtherGen"; }
 	if (PlotGENIE && PlotGen) { Extra = "All"; }
+	if (!PlotGENIE && !PlotGen && PlotGENIEFSITweaks) { Extra = "GENIEFSITweaks"; }
+	if (!PlotGENIE && !PlotGen && PlotGENIEFlagTweaks) { Extra = "GENIEFlagTweaks"; }
+	if (!PlotGENIE && !PlotGen && PlotGENIECT) { Extra = "GENIEClosureTest"; }
+	if (!PlotGENIE && !PlotGen && PlotNuclModels) { Extra = "GENIENuclModels"; }
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -167,6 +171,14 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 		NameOfSamples.push_back("NEUT");
 		NameOfSamples.push_back("GENIEv3_0_4");
 
+		NameOfSamples.push_back("Genie_v3_0_6_Nominal");
+		NameOfSamples.push_back("Genie_v3_0_6_NoFSI");
+		NameOfSamples.push_back("Genie_v3_0_6_NoRPA");
+		NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb");
+		NameOfSamples.push_back("Genie_v3_0_6_hN2018");
+		NameOfSamples.push_back("Genie_v3_0_6_RFG");
+		NameOfSamples.push_back("Genie_v3_0_6_EffSF");
+
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
@@ -208,6 +220,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 				if (
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_Out_Of_The_Box" || 
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_uB_Tune_1" || 
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_Nominal" || 
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_NoFSI" || 
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_NoRPA" || 
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_NoCoulomb" || 
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_hN2018" ||
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG" ||  
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF" ||  
 					NameOfSamples[WhichSample] == "SuSav2" ||
 					NameOfSamples[WhichSample] == "GENIEv2" ||
 					NameOfSamples[WhichSample] == "GENIEv3_0_4"
@@ -281,7 +300,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 //			leg->SetMargin(0.15);
 
 			TLegend* leg = new TLegend(0.65,0.58,0.78,0.85);
-			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { leg = new TLegend(0.35,0.15,0.7,0.4); }
+			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { leg = new TLegend(0.25,0.15,0.8,0.4); }
 			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot") 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
 
@@ -417,6 +436,69 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 
 			// ---------------------------------------------------------------------------------------------------------
 
+			// GENIE v3.0.6 + ub Tune
+
+			Multiply(PlotsTrue[9][WhichPlot],Ac);
+
+			PlotsTrue[9][WhichPlot]->SetLineColor(NEUTColor);
+			PlotsTrue[9][WhichPlot]->SetMarkerColor(NEUTColor);
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			// GENIE v3.0.6 NoFSI + ub Tune
+
+			Multiply(PlotsTrue[10][WhichPlot],Ac);
+
+			PlotsTrue[10][WhichPlot]->SetLineColor(GiBUUColor);
+			PlotsTrue[10][WhichPlot]->SetMarkerColor(GiBUUColor);
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			// GENIE v3.0.6 NoRPA + ub Tune
+
+			Multiply(PlotsTrue[11][WhichPlot],Ac);
+
+			PlotsTrue[11][WhichPlot]->SetLineColor(NuWroColor);
+			PlotsTrue[11][WhichPlot]->SetMarkerColor(NuWroColor);
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			// GENIE v3.0.6 NoCoulomb + ub Tune
+
+			Multiply(PlotsTrue[12][WhichPlot],Ac);
+
+			PlotsTrue[12][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
+			PlotsTrue[12][WhichPlot]->SetMarkerColor(GENIEv3_0_4_Color);
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			// GENIE v3.0.6 hN2018 + ub Tune
+
+			Multiply(PlotsTrue[13][WhichPlot],Ac);
+
+			PlotsTrue[13][WhichPlot]->SetLineColor(GENIEv2Color);
+			PlotsTrue[13][WhichPlot]->SetMarkerColor(GENIEv2Color);
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			// GENIE v3.0.6 RFG + ub Tune
+
+			Multiply(PlotsTrue[14][WhichPlot],Ac);
+
+			PlotsTrue[14][WhichPlot]->SetLineColor(GiBUUColor);
+			PlotsTrue[14][WhichPlot]->SetMarkerColor(GiBUUColor);
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			// GENIE v3.0.6 EffSF + ub Tune
+
+			Multiply(PlotsTrue[15][WhichPlot],Ac);
+
+			PlotsTrue[15][WhichPlot]->SetLineColor(NuWroColor);
+			PlotsTrue[15][WhichPlot]->SetMarkerColor(NuWroColor);
+
+			// ---------------------------------------------------------------------------------------------------------
+
 			// Legend & Run / POT
 
 			double tor860_wcut = -99.;
@@ -429,6 +511,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 //			TString Label = ToString(tor860_wcut)+" POT (Stat #oplus Syst)";
 			TString Label = ToString(tor860_wcut)+" POT";
 
+			// ---------------------------------------------------------------------------------------------------------
 			// ---------------------------------------------------------------------------------------------------------
 
 			if (PlotGENIE) {
@@ -451,6 +534,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 
 			}
 
+			// ---------------------------------------------------------------------------------------------------------
+
 			if (PlotGen) {
 
 			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[4][WhichPlot],"NuWro","l");
@@ -466,9 +551,60 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false) {
 
 			}
 
+			// ---------------------------------------------------------------------------------------------------------
+
+			if (PlotGENIECT) {
+
+			TLegendEntry* lGenie_Nominal = leg->AddEntry(PlotsTrue[9][WhichPlot],"v3.0.6","l");
+			PlotsTrue[9][WhichPlot]->Draw("hist same"); lGenie_Nominal->SetTextColor(NEUTColor);
+
+			}
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			if (PlotGENIEFSITweaks) {
+
+			TLegendEntry* lGenie_NoFSI = leg->AddEntry(PlotsTrue[10][WhichPlot],"v3.0.6 NoFSI","l");
+			PlotsTrue[10][WhichPlot]->Draw("hist same"); lGenie_NoFSI->SetTextColor(GiBUUColor);
+
+			TLegendEntry* lGenie_hN2018 = leg->AddEntry(PlotsTrue[13][WhichPlot],"v3.0.6 hN2018","l");
+			PlotsTrue[13][WhichPlot]->Draw("hist same"); lGenie_hN2018->SetTextColor(GENIEv2Color);
+
+			}
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			if (PlotGENIEFlagTweaks) {
+
+			//TLegendEntry* lGenie_RFG = leg->AddEntry(PlotsTrue[14][WhichPlot],"v3.0.6 RFG","l");
+			//PlotsTrue[14][WhichPlot]->Draw("hist same"); lGenie_RFG->SetTextColor(Geniev3OutOfTheBoxColor);
+
+			TLegendEntry* lGenie_NoRPA = leg->AddEntry(PlotsTrue[11][WhichPlot],"v3.0.6 NoRPA","l");
+			PlotsTrue[11][WhichPlot]->Draw("hist same"); lGenie_NoRPA->SetTextColor(NuWroColor);
+
+			TLegendEntry* lGenie_NoCoulomb = leg->AddEntry(PlotsTrue[12][WhichPlot],"v3.0.6 NoCoulomb","l");
+			PlotsTrue[12][WhichPlot]->Draw("hist same"); lGenie_NoCoulomb->SetTextColor(GENIEv3_0_4_Color);
+
+			}
+
+			// ---------------------------------------------------------------------------------------------------------
+
+			if (PlotNuclModels) {
+
+			TLegendEntry* lGenie_RFG = leg->AddEntry(PlotsTrue[14][WhichPlot],"v3.0.6 RFG","l");
+			PlotsTrue[14][WhichPlot]->Draw("hist same"); lGenie_RFG->SetTextColor(GiBUUColor);
+
+			TLegendEntry* lGenie_EffSF = leg->AddEntry(PlotsTrue[15][WhichPlot],"v3.0.6 EffSF","l");
+			PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_EffSF->SetTextColor(NuWroColor);
+
+			}
+
+			// ---------------------------------------------------------------------------------------------------------
+
 			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],"MC uB Tune","l");
 			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(OverlayColor); 	
 
+			// ---------------------------------------------------------------------------------------------------------
 			// ---------------------------------------------------------------------------------------------------------
 
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Total

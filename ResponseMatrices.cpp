@@ -221,7 +221,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.1*Plots[WhichSample][WhichPlot]->GetMaximum());
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
-					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.8);
+					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/ResponseMatrices_"+PlotNames[WhichPlot]

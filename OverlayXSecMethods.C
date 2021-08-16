@@ -88,6 +88,7 @@ void OverlayXSecMethods() {
 	double TextSize = 0.06; 
 
 	gStyle->SetOptStat(0);	
+	gStyle->SetEndErrorSize(4);	
 
 	TString PathToFiles = "myXSec/";
 
@@ -142,7 +143,7 @@ void OverlayXSecMethods() {
 
 			// -----------------------------------------------------------------------------------------------------------------------------
 
-			TLegend* leg = new TLegend(0.05,0.92,0.95,0.98);
+			TLegend* leg = new TLegend(0.15,0.92,0.95,0.98);
 			leg->SetNColumns(2);		
 
 			// -----------------------------------------------------------------------------------------------------------------------------		
@@ -182,7 +183,7 @@ void OverlayXSecMethods() {
 
 			int n = Wh->GetXaxis()->GetNbins();
 			double Nuedges[n+1];   
-			for (int i = 0; i < n+1; i++) { Nuedges[i] = Wh->GetBinLowEdge(i+1) + 0.1 * Wh->GetBinWidth(i+1); }
+			for (int i = 0; i < n+1; i++) { Nuedges[i] = Wh->GetBinLowEdge(i+1) + 0.2 * Wh->GetBinWidth(i+1); }
 
 			TString Xtitle = Wh->GetXaxis()->GetTitle();
 			TString Ytitle = Wh->GetYaxis()->GetTitle();		
@@ -228,17 +229,28 @@ void OverlayXSecMethods() {
 			PlotsUnfOnly->GetYaxis()->SetRangeUser(min,max);
 			PlotsUnfOnly->GetYaxis()->SetTitleOffset(1.2);			
 
+// full unc
 //			Plots->Draw("p0 hist same");
-			PlotsUnfOnly->Draw("e same");
-			Offset->Draw("p0 hist same");
+			Plots->Draw("e1 same");
+			PlotsStat->Draw("e1 same");
+			Offset->Draw("e1 same");
+			StatOffset->Draw("e1 same");
+
+//// default
+////			Plots->Draw("p0 hist same");
+//			PlotsUnfOnly->Draw("e same");
+//			Offset->Draw("p0 hist same");
 
 //			Plots->Draw("e1 same");
 //			PlotsStat->Draw("e1 same");
 //			Offset->Draw("e1 same");
 //			StatOffset->Draw("e1 same");
 
-			leg->AddEntry(Plots,"EE BeamOn " + Label[WhichFile],"p");
-			leg->AddEntry(Offset,"SVD BeamOn " + Label[WhichFile],"p");			
+			leg->AddEntry(Plots,"EE BeamOn","p");
+			leg->AddEntry(Offset,"SVD BeamOn","p");
+
+//			leg->AddEntry(Plots,"EE BeamOn " + Label[WhichFile],"p");
+//			leg->AddEntry(Offset,"SVD BeamOn " + Label[WhichFile],"p");			
 
 			// -----------------------------------------------------------------------------------------------------------------------------
 

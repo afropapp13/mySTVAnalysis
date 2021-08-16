@@ -73,27 +73,6 @@ std::vector<TMatrixD> MatrixDecomp(int nbins,TVectorD matrix_pred,TMatrixD matri
 
 	}
 
-////cout << "Total matrix" << endl;
-////matrix_syst.Print();
-//TCanvas* TotalCanvas = new TCanvas("Total","Total",205,34,1024,768);
-//matrix_syst.Draw("coltz text");
-
-////cout << "Shape matrix" << endl;
-////matrix_shape.Print();
-//TCanvas* ShapeCanvas = new TCanvas("Shape","Shape",205,34,1024,768);
-//matrix_shape += matrix_mixed;
-//matrix_shape.Draw("coltz text");
-
-////cout << "Mixed matrix" << endl;
-////matrix_mixed.Print(); 
-////TCanvas* MixedCanvas = new TCanvas("Mixed","Mixed",205,34,1024,768);
-////matrix_mixed.Draw("coltz");
-
-////cout << "Norm matrix" << endl;
-////matrix_norm.Print(); 
-//TCanvas* NormCanvas = new TCanvas("Norm","Norm",205,34,1024,768);
-//matrix_norm.Draw("coltz text");
-
 	std::vector<TMatrixD> NormShapeVector = {matrix_norm,matrix_shape};
 	return NormShapeVector;
 
@@ -116,13 +95,17 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 
 	int NBins = h->GetXaxis()->GetNbins();
 
+	// We want the number of events, as if the bin width is 1
+	double ExtraFactor = 1.;
+	if (NBins == 1) { ExtraFactor = 2.; }
+
 	for (int i = 0; i < NBins; i++) {
 
 		double CurrentEntry = h->GetBinContent(i+1);
-		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1);
+		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1) * ExtraFactor;
 
 		double CurrentError = h->GetBinError(i+1);
-		double NewError = CurrentError * SF / h->GetBinWidth(i+1);
+		double NewError = CurrentError * SF / h->GetBinWidth(i+1) * ExtraFactor;
 
 		h->SetBinContent(i+1,NewEntry); 
 		h->SetBinError(i+1,NewError); 
@@ -247,8 +230,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
-		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);					
-
+//		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);					
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
+				
 		// -------------------------------------------------------------------------------------		
 
 		vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
@@ -381,8 +365,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			// Already flux-averaged rates
 			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
-			StatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("StatCovariance_"+PlotNames[WhichPlot]));
 			SystCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SystCovariance_"+PlotNames[WhichPlot]));
+			StatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("StatCovariance_"+PlotNames[WhichPlot]));
 
 			// -----------------------------------------------------------------------------------------------------
 
@@ -422,6 +406,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TVectorD measure(m);
 			TMatrixD response(m, n);
 			TMatrixD covariance(m, m);
+			TMatrixD statcovariance(m, m);
+			TMatrixD systcovariance(m, m);
 
 			// Convert input into mathematical formats, easy and clean to be processed. 
 			// Converted defined/implemented in source files, see include/Util.h
@@ -430,6 +416,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(StatCovarianceMatrices[WhichPlot], statcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SystCovarianceMatrices[WhichPlot], systcovariance, kTRUE); // X axis: True, Y axis: Reco
 
 			// ------------------------------------------------------------------------------------------
 
@@ -438,6 +426,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD AddSmear(n,n);
 			TVectorD WF(n);
 			TMatrixD UnfoldCov(n,n);
+			TMatrixD CovRotation(n,n);
 
 			// ------------------------------------------------------------------------------------------	
 
@@ -450,13 +439,15 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// Core implementation of Wiener-SVD
 			// AddSmear and WF to record the core information in the unfolding.
 
-			TVectorD unfold = WienerSVD(response, signal, measure, covariance, 2, 0, AddSmear, WF, UnfoldCov);
+			TVectorD unfold = WienerSVD(response, signal, measure, covariance, 2, 0, AddSmear, WF, UnfoldCov,CovRotation);
 
 			// --------------------------------------------------------------------------------------------------
 
-			// Uncertainty decomposition into shape / normalization / mixed uncertainty
-
-std::vector<TMatrixD> NormShapeVector = MatrixDecomp(n,unfold,UnfoldCov);
+			TMatrixD CovRotation_T (TMatrixD::kTransposed, CovRotation); 
+			TMatrixD UnfStatCov = CovRotation*statcovariance*CovRotation_T; 
+			TMatrixD UnfSystCov = CovRotation*systcovariance*CovRotation_T; 
+			// Decomposition of systematic uncertainties into shape / normalization uncertainty
+			std::vector<TMatrixD> NormShapeVector = MatrixDecomp(n,unfold,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -471,8 +462,8 @@ std::vector<TMatrixD> NormShapeVector = MatrixDecomp(n,unfold,UnfoldCov);
 		
 			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -485,6 +476,8 @@ TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichR
 			for (int i = 1; i <= n;i++ ) { 
 
 				double CVInBin = unf->GetBinContent(i);
+
+				// default / total uncertainty
 				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
 
 				unf->SetBinError(i, CovUnc );
@@ -495,6 +488,7 @@ TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichR
 
 			unfStat = (TH1D*)(unf->Clone());
 unfShapeOnly = (TH1D*)(unf->Clone());
+unfNormOnly = (TH1D*)(unf->Clone());
 
 			myXSecTxtFile << PlotNames[WhichPlot] << endl << endl;			
 
@@ -507,11 +501,20 @@ unfShapeOnly = (TH1D*)(unf->Clone());
 				double HighEdge = LowEdge + Width;
 
 //				double StatError = CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) * UnfoldCov(i-1,i-1) / covariance(i-1,i-1) );
-				double StatError = CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) );
-				unfStat->SetBinError(i, StatError);
+//				double StatError = CV * TMath::Sqrt(StatCovarianceMatrices[WhichPlot]->GetBinContent(i,i) );
 
-double CVBinWidth = unf->GetBinWidth(i);				
-unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / CVBinWidth );	
+				double StatError = TMath::Sqrt( UnfStatCov(i-1,i-1) ) / Width;
+//				double StatError = TMath::Sqrt( UnfoldCov(i-1,i-1) - UnfSystCov(i-1,i-1) ) / Width;
+
+				unfStat->SetBinError(i, StatError);
+// Set unc = stat + shape syst
+unf->SetBinError(i, TMath::Sqrt( NormShapeVector[1](i-1,i-1) + UnfStatCov(i-1,i-1) ) / Width );	
+//unf->SetBinError(i, TMath::Sqrt( NormShapeVector[1](i-1,i-1) ) / Width );	
+
+if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Width = 1.; }
+unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / Width );	
+unfNormOnly->SetBinContent(i,0.);	
+unfNormOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[0](i-1,i-1) ) ) / Width );
 
 				// Data release
 
@@ -556,9 +559,10 @@ unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1)
 			unf->SetMarkerStyle(20);
 			unf->SetMarkerSize(1.);	
 
+			// Draw the data points first to get the beautiful canvas 
 			PlotCanvas->cd();
 			if (ClosureTest == true) { unf->Draw("p0 hist"); }
-			else { unf->Draw("ex0"); }			
+			else { unf->Draw("e1x0"); }			
 
 			// The MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
 
@@ -573,6 +577,7 @@ unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1)
 			PlotCanvas->cd();					
 			TrueUnf->Draw("hist same");
 
+			// Plotting again so that the data points are on top 
 			PlotCanvas->cd();
 			if (ClosureTest == true) { unf->Draw("p0 hist same"); }
 			else { 
@@ -583,8 +588,15 @@ unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1)
 				unfStat->Draw("e1x0 same");			
 
 unfShapeOnly->SetLineColor(kOrange+7);
-//unfShapeOnly->Draw("e1x0 same");			
-				
+//unfShapeOnly->Draw("e1x0 same");
+
+unfNormOnly->SetFillColorAlpha(kGray+1, 0.45);
+unfNormOnly->SetLineColor(kGray+1);
+//unfNormOnly->SetFillStyle(3000);
+unfNormOnly->Draw("e2 hist same");			
+
+gPad->RedrawAxis();		
+		
 			}
 
 			// ------------------------------------------------------------------------------
@@ -594,7 +606,7 @@ unfShapeOnly->SetLineColor(kOrange+7);
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
-			TLegend* legData = new TLegend(0.15,0.89,0.95,0.98);
+			TLegend* legData = new TLegend(0.23,0.89,0.95,0.98);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.06);
 			legData->SetTextFont(FontStyle);

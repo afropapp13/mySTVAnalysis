@@ -268,6 +268,9 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 
 				double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
 
+				// We want the number of events, as if the bin width is 1
+				if (PlotNames[WhichPlot] == "MuonCosThetaPlot") { BinWidth = 1.; }
+
 				// -----------------------------------------------------------------------------------------------------------------
 
 				double ScalingFactor = Units / (IntegratedFlux * NTargets * BinWidth);

@@ -66,6 +66,10 @@ cd ../mySTVAnalysis
 
 root -b Systematics.cpp
 
+root -b
+.L ../myClasses/Util.C
+.x WienerSVD_DetectorVars.cpp
+
 #################################################################################################################################
 
 # Use the difference between the 2 unfolding techniques as an extra uncertainty
@@ -102,8 +106,18 @@ root -b OverlayXSecMethods.C
 root -b 
 .L ../myClasses/Util.C
 .L WienerSVD_OverlayGenerators.cpp
+#GENIE versions
 WienerSVD_OverlayGenerators()
+# AltGen
 WienerSVD_OverlayGenerators(false,true)
+#GENIE FSI tweaks
+WienerSVD_OverlayGenerators(false,false,true)
+#GENIE Flag tweaks
+WienerSVD_OverlayGenerators(false,false,false,true)
+#GENIE Closure Test
+WienerSVD_OverlayGenerators(false,false,false,false,true)
+#GENIE Nuclear model tweaks
+WienerSVD_OverlayGenerators(false,false,false,false,false,true)
 .x IntegratedXSecs.cpp
 .x WienerSVD_Chi2Covariance.cpp
 #.x BinByBinChi2.cpp
