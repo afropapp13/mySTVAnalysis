@@ -12,10 +12,8 @@ root -b script_Flux_Systematics.C
 
 root -b script_WienerSVD_Systematics.C
 root -b WienerSVD_Merge_Covariances.cpp
-#root -b WienerSVD_QuantifyUnc.cpp # most likely to be removed 
 root -b script_WienerSVD_XSec.C
 
-#################################################################################################################################
 #################################################################################################################################
 
 # Plotting the detector variation xsecs and storing the relevant systematics with respect to the CV sample
@@ -52,13 +50,13 @@ root -b Flux_Systematics.cpp
 
 #################################################################################################################################
 
-cd ../myEvents
-root -b PeLEE_Create1DPlotsTHStack_SubSpectrum.cpp
+#cd ../myEvents
+#root -b PeLEE_Create1DPlotsTHStack_SubSpectrum.cpp
 
-#locally
-./PeLEE_Syst_DownloadEventRatePlots.sh
+##locally
+#./PeLEE_Syst_DownloadEventRatePlots.sh
 
-cd ../mySTVAnalysis
+#cd ../mySTVAnalysis
 
 #################################################################################################################################
 
@@ -67,7 +65,7 @@ cd ../mySTVAnalysis
 root -b Systematics.cpp
 
 root -b
-.L ../myClasses/Util.C
+.L ../../myClasses/Util.C
 .x WienerSVD_DetectorVars.cpp
 
 #################################################################################################################################
@@ -89,9 +87,9 @@ root -b
 ./myDownloadScripts/DownloadXSec.sh
 ./myDownloadScripts/DownloadPlots.sh
 
-cd ../myEvents/
-./PeLEE_Syst_DownloadEventRatePlots.sh
-cd ../mySTVAnalysis/
+#cd ../myEvents/
+#./PeLEE_Syst_DownloadEventRatePlots.sh
+#cd ../mySTVAnalysis/
 
 #################################################################################################################################
 
@@ -118,28 +116,18 @@ WienerSVD_OverlayGenerators(false,false,false,true)
 WienerSVD_OverlayGenerators(false,false,false,false,true)
 #GENIE Nuclear model tweaks
 WienerSVD_OverlayGenerators(false,false,false,false,false,true)
+#NuWro Comparisons out-of-the-box vs larsoft
+WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)
+
 .x IntegratedXSecs.cpp
 .x WienerSVD_Chi2Covariance.cpp
 #.x BinByBinChi2.cpp
 
 #################################################################################################################################
 
-# Fake data studies: we need the MC stat & xsec uncertainties only
+# Fake data studies: we need the stat & xsec uncertainties only
 
-# Fake data with CC1p0pi NuWro as data sample # need to be tested 
-root -b 
-.L WienerSVD_CovarianceMatrices.cpp++
-WienerSVD_CovarianceMatrices("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
-WienerSVD_CovarianceMatrices("XSec","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
-# add the rest here after you verify that things are working for NuWro
-# do i need to play the same game with MC_Stat?
-
-root -b
-.L script_WienerSVD_SmEff_Systematics.cpp++
-script_WienerSVD_SmEff_Systematics("SmEff_XSec","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
-# add the rest here after you verify that things are working for NuWro
-
-# Merge the NuWro covariances # needs testing
+# Merge the NuWro covariances
 root -b
 .L WienerSVD_Merge_Covariances.cpp++
 WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro") 
@@ -148,8 +136,8 @@ WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro")
 root -b 
 .L ../../myClasses/Util.C++
 .L ../../myClasses/WienerSVD.C++
-.L WienerSVD_XSection_Extraction.cpp++
-WienerSVD_XSection_Extraction("",false,"Overlay9NuWro")
+.L FakeData_WienerSVD_XSection_Extraction.cpp++
+FakeData_WienerSVD_XSection_Extraction("","Overlay9NuWro")
 
 
 #################################################################################################################################
