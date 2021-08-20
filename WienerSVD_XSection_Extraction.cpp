@@ -392,8 +392,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TString XTitle = DataPlot->GetXaxis()->GetTitle();
 			TString YTitle = DataPlot->GetYaxis()->GetTitle();	
 
-			// Flux-averaged event rates
-			DataPlot->Scale(Units/(IntegratedFlux*NTargets));		 
+			// Flux-averaged event rates 
+			// both for the reco and for the true level spectrum
+			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
+			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));		 
 
 			// -------------------------------------------------------------------------------------------
 
@@ -538,18 +540,6 @@ unfNormOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[0](i-1,i-1) 
 			unf->GetYaxis()->SetTitleFont(FontStyle);			
 			unf->GetYaxis()->SetNdivisions(6);
 
-//			double MaxValue = unf->GetMaximum();
-//			int MaxValueBin = LocateBinWithValue(unf,MaxValue);
-			// double MaxValueError = unf->GetBinError(MaxValueBin);
-
-			// double MinValue = unf->GetMinimum();
-			// int MinValueBin = LocateBinWithValue(unf,MinValue);
-			// double MinValueError = unf->GetBinError(MinValueBin);			
-
-			// double min = TMath::Min(0., 0.8*(MinValue-MinValueError));
-			// double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));	
-			// if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" && ClosureTest == false) { max = TMath::Max(0., 1.5*(MaxValue+MaxValueError)); }					
-//			unf->GetYaxis()->SetRangeUser(min,max);
 			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,XSecRange[PlotNames[WhichPlot]].second);
 			unf->SetLineColor(BeamOnColor);
 			unf->SetMarkerColor(BeamOnColor);
@@ -568,7 +558,7 @@ unfNormOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[0](i-1,i-1) 
 			V2H(AcTrueUnfold, TrueUnf);
 
 			ReweightXSec(TrueUnf);
-			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
+//			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
 			PlotCanvas->cd();					

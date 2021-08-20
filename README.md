@@ -16,36 +16,27 @@ root -b script_WienerSVD_XSec.C
 
 #################################################################################################################################
 
-# Plotting the detector variation xsecs and storing the relevant systematics with respect to the CV sample
-
+# Plotting the detector variation xsecs and storing the relevant systematics with respect to the corresponding CV sample
 root -b Detector_Systematics_LY.cpp
-
 root -b Detector_Systematics_TPC.cpp
-
 root -b Detector_Systematics_SCERecomb2.cpp
 
 # Plotting the nominal xsecs, adding the 2% POT uncertainty and storing the relevant systematics with respect to the CV sample
-
 root -b POT_Systematics.cpp
 
 # Plotting the nominal xsecs, adding the 1% NTarget uncertainty and storing the relevant systematics with respect to the CV sample
-
 root -b NTarget_Systematics.cpp
 
 # Covariance matrices only with diagonal elements filled with stat uncertainties
-
 root -b Stat_Systematics.cpp
 
 # Storing the GEANT4 uncertainties
-
 root -b G4_Systematics.cpp
 
 # Storing the Genie uncertainties
-
 root -b Genie_Systematics.cpp
 
 # Storing the Flux uncertainties
-
 root -b Flux_Systematics.cpp
 
 #################################################################################################################################
@@ -68,6 +59,9 @@ root -b
 .L ../../myClasses/Util.C
 .x WienerSVD_DetectorVars.cpp
 
+# (locally)
+ ./myDownloadScripts/DownloadXSec.sh
+
 #################################################################################################################################
 
 # Use the difference between the 2 unfolding techniques as an extra uncertainty
@@ -80,12 +74,7 @@ root -b
 
 #################################################################################################################################
 
-# Download the relevant xsecs & plots
-
 # (locally)
-
-./myDownloadScripts/DownloadXSec.sh
-./myDownloadScripts/DownloadPlots.sh
 
 #cd ../myEvents/
 #./PeLEE_Syst_DownloadEventRatePlots.sh
@@ -95,11 +84,6 @@ root -b
 
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
-
-# (locally)
-
-root -b OverlayGenerators.cpp
-root -b OverlayXSecMethods.C
 
 root -b 
 .L ../myClasses/Util.C
@@ -139,6 +123,18 @@ root -b
 .L FakeData_WienerSVD_XSection_Extraction.cpp++
 FakeData_WienerSVD_XSection_Extraction("","Overlay9NuWro")
 
+
+#################################################################################################################################
+
+# Download the plots
+
+# (locally)
+
+./myDownloadScripts/DownloadXSec.sh
+./myDownloadScripts/DownloadPlots.sh
+
+root -b OverlayGenerators.cpp
+root -b OverlayXSecMethods.C
 
 #################################################################################################################################
 

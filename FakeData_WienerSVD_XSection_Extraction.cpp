@@ -287,7 +287,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			TString YTitle = DataPlot->GetYaxis()->GetTitle();	
 
 			// Flux-averaged event rates
-			DataPlot->Scale(Units/(IntegratedFlux*NTargets));		 
+			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
+			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));		 
 
 			// -------------------------------------------------------------------------------------------
 
@@ -400,7 +401,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			V2H(AcTrueUnfold, TrueUnf);
 
 			ReweightXSec(TrueUnf);
-			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
+//			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
 			PlotCanvas->cd();				
