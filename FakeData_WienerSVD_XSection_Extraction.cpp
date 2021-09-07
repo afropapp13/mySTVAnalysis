@@ -329,7 +329,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			// Core implementation of Wiener-SVD
 			// AddSmear and WF to record the core information in the unfolding.
 
-			TVectorD unfold = WienerSVD(response, signal, measure, covariance, 2, 0, AddSmear, WF, UnfoldCov,CovRotation);
+			TVectorD unfold = WienerSVD(response, signal, measure, covariance, 2, 0.5, AddSmear, WF, UnfoldCov,CovRotation);
 
 			// --------------------------------------------------------------------------------------------------
 

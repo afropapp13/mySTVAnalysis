@@ -11,7 +11,7 @@
 using namespace std;
 using namespace Constants;
 
-void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
+void ResponseMatrices(TString OverlaySample, bool DetVar = false, TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"FileResponseMatrices_"+\
+		TString FileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+\
 				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileResponseMatrices = new TFile(FileName,"recreate");
 
@@ -121,17 +121,17 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 		
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
-			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
+			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
 
-			TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
+			TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
 
 			// Jul 8 2021: after discussion with Xin, if flux variations, the truth level should always be the CV
 
 			if (string(OverlaySample).find("fluxes") != std::string::npos) {
 
-				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
+				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
 
 			}
@@ -224,7 +224,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
-					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/ResponseMatrices_"+PlotNames[WhichPlot]
+					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/"+Tune+"ResponseMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				

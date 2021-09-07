@@ -54,6 +54,8 @@ void script_CV() {
 
 		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\")");
 
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,\"NoTune\")");		
+
 //		gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
 //		gROOT->ProcessLine("WienerSVD_Stat_CovarianceMatrices(\""+WhichSampleArray[i]+"\")");

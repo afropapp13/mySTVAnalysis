@@ -51,6 +51,8 @@
 
 			gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
+			gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\",false,\"NoTune\")");		
+
 			//gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
 //			gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");

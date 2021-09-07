@@ -53,6 +53,8 @@
 
 		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true)");
 
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true,\"NoTune\")");		
+
 		//gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 
 //		gROOT->ProcessLine("FFEfficiencies(\""+WhichSampleArray[i]+"\")");

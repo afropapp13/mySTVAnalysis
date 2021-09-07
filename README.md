@@ -11,7 +11,15 @@ root -b script_Flux_Systematics.C
 # Now WienerSVD for GENIE CV / Nominal MC
 
 root -b script_WienerSVD_Systematics.C
+
 root -b WienerSVD_Merge_Covariances.cpp
+
+root -b script_WienerSVD_Systematics_NoTune.C
+
+root -b 
+.L WienerSVD_Merge_Covariances.cpp
+WienerSVD_Merge_Covariances("Overlay9", "",Tune = "NoTune")
+
 root -b script_WienerSVD_XSec.C
 
 #################################################################################################################################
@@ -59,9 +67,6 @@ root -b
 .L ../../myClasses/Util.C
 .x WienerSVD_DetectorVars.cpp
 
-# (locally)
- ./myDownloadScripts/DownloadXSec.sh
-
 #################################################################################################################################
 
 # Use the difference between the 2 unfolding techniques as an extra uncertainty
@@ -81,6 +86,27 @@ root -b
 #cd ../mySTVAnalysis/
 
 #################################################################################################################################
+
+# Fake data studies
+
+# We need the stat & xsec uncertainties only
+
+# Merge the NuWro covariances
+root -b
+.L WienerSVD_Merge_Covariances.cpp++
+WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro") 
+
+# extract the xsecs # needs testing
+root -b 
+.L ../../myClasses/Util.C++
+.L ../../myClasses/WienerSVD.C++
+.L FakeData_WienerSVD_XSection_Extraction.cpp++
+FakeData_WienerSVD_XSection_Extraction("","Overlay9NuWro")
+
+#################################################################################################################################
+
+# (locally)
+ ./myDownloadScripts/DownloadXSec.sh
 
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
@@ -107,22 +133,6 @@ WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)
 .x WienerSVD_Chi2Covariance.cpp
 #.x BinByBinChi2.cpp
 
-#################################################################################################################################
-
-# Fake data studies: we need the stat & xsec uncertainties only
-
-# Merge the NuWro covariances
-root -b
-.L WienerSVD_Merge_Covariances.cpp++
-WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro") 
-
-# extract the xsecs # needs testing
-root -b 
-.L ../../myClasses/Util.C++
-.L ../../myClasses/WienerSVD.C++
-.L FakeData_WienerSVD_XSection_Extraction.cpp++
-FakeData_WienerSVD_XSection_Extraction("","Overlay9NuWro")
-
 
 #################################################################################################################################
 
@@ -130,7 +140,6 @@ FakeData_WienerSVD_XSection_Extraction("","Overlay9NuWro")
 
 # (locally)
 
-./myDownloadScripts/DownloadXSec.sh
 ./myDownloadScripts/DownloadPlots.sh
 
 root -b OverlayGenerators.cpp

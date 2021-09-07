@@ -30,7 +30,7 @@ using namespace Constants;
 
 // -----------------------------------------------------------------------------------------------
 
-void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, TString Runs) {
+void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, TString Runs, TString Tune = "") {
 
 	TString CanvasName = "Total_"+PlotNames+OverlaySamples+"_"+Runs;
 	TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
@@ -74,7 +74,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	//h->Draw("text colz e"); 
 	h->Draw("colz");
 	
-	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
+	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
 	
 	delete PlotCanvas;
 
@@ -156,7 +156,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 // -----------------------------------------------------------------------------------------------
 
-void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "") {
+void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "", TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -273,7 +273,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString TotalFileCovarianceSpecName = BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
 		TFile* TotalFileCovarianceMatrices = new TFile(TotalFileCovarianceName,"recreate");
 
@@ -285,7 +285,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			TCanvas* MCERPlotCanvas = nullptr;
 			TLegend* legMC = nullptr;
-			TString MCERCanvasName = "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+			TString MCERCanvasName = Tune + "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 
 			if (StorePlots) {
 
@@ -318,7 +318,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				// Opening the file containing the covariance matrices for each one of the systematics
 
 //				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				TString FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs
@@ -328,7 +328,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
 
 //					FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
-					FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
+					FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
 
 				}
 
@@ -432,13 +432,13 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 				// Plot the 2D covariance matrices
 
-				PlotCov(CloneCovariances,"",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun]);
+				PlotCov(CloneCovariances,"",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun],Tune);
 
 				// ---------------------------------------------------------------------------------------------
 
 				// Plot the 2D fractional covariance matrices
 
-				PlotCov(CloneFracCovariances,"Frac",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun]);
+				PlotCov(CloneFracCovariances,"Frac",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun],Tune);
 
 				// ---------------------------------------------------------------------------------------------
 
