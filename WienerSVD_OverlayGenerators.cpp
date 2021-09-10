@@ -151,6 +151,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		vector<vector<TH1D*> > PlotsTotalReco; PlotsTotalReco.clear();
+		vector<vector<TH1D*> > PlotsNormOnly; PlotsNormOnly.clear();		
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
@@ -161,26 +162,24 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 	
 		// CV
 
-		NameOfSamples.push_back("Overlay9");                              // 1
+		NameOfSamples.push_back("Overlay9");                              // 0
 
-		NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");           // 2
-		NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");                // 3
-		NameOfSamples.push_back("SuSav2");                                // 4
-		NameOfSamples.push_back("NuWro");                                 // 5
-		NameOfSamples.push_back("GiBUU");                                 // 6
-		NameOfSamples.push_back("GENIEv2");                               // 7
-		NameOfSamples.push_back("NEUT");                                  // 8
-		NameOfSamples.push_back("GENIEv3_0_4");                           // 9
+		NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");           // 1
+		NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");                // 2
+		NameOfSamples.push_back("SuSav2");                                // 3
+		NameOfSamples.push_back("NuWro");                                 // 4
+		NameOfSamples.push_back("GiBUU");                                 // 5
+		NameOfSamples.push_back("GENIEv2");                               // 6
+		NameOfSamples.push_back("NEUT");                                  // 7
+		NameOfSamples.push_back("GENIEv3_0_4");                           // 8
 
-		NameOfSamples.push_back("Genie_v3_0_6_Nominal");                  // 10
-		NameOfSamples.push_back("Genie_v3_0_6_NoFSI");                    // 11
-		NameOfSamples.push_back("Genie_v3_0_6_NoRPA");                    // 12
-		NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb");                // 13
-		NameOfSamples.push_back("Genie_v3_0_6_hN2018");                   // 14
-		NameOfSamples.push_back("Genie_v3_0_6_RFG");                      // 15
-		NameOfSamples.push_back("Genie_v3_0_6_EffSF");                    // 16
-
-		NameOfSamples.push_back("Overlay9NuWro");                         // 17
+		NameOfSamples.push_back("Genie_v3_0_6_Nominal");                  // 9
+		NameOfSamples.push_back("Genie_v3_0_6_NoFSI");                    // 10
+		NameOfSamples.push_back("Genie_v3_0_6_NoRPA");                    // 11
+		NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb");                // 12
+		NameOfSamples.push_back("Genie_v3_0_6_hN2018");                   // 13
+		NameOfSamples.push_back("Genie_v3_0_6_RFG");                      // 14
+		NameOfSamples.push_back("Overlay9NuWro");                         // 15
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -192,6 +191,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
 			vector<TH1D*> CurrentPlotsTotalReco; CurrentPlotsTotalReco.clear();
+			vector<TH1D*> CurrentPlotsNormOnly; CurrentPlotsNormOnly.clear();			
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
@@ -207,6 +207,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 					TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(histTotalReco);
+
+					TH1D* histNormOnly = (TH1D*)(FileSample[WhichSample]->Get("NormOnlyReco"+PlotNames[WhichPlot]));
+					CurrentPlotsNormOnly.push_back(histNormOnly);					
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
@@ -225,6 +228,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 					//TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(nullptr);
+					CurrentPlotsNormOnly.push_back(nullptr);					
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
@@ -269,6 +273,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 					TH1D* histTotalReco = nullptr;
 					CurrentPlotsTotalReco.push_back(histTotalReco);
 
+					TH1D* histNormOnly = nullptr;
+					CurrentPlotsNormOnly.push_back(histNormOnly);					
+
 					TH1D* histReco = nullptr;
 					CurrentPlotsReco.push_back(histReco);
 
@@ -282,7 +289,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			}
 
-			PlotsTotalReco.push_back(CurrentPlotsTotalReco);		
+			PlotsTotalReco.push_back(CurrentPlotsTotalReco);
+			PlotsNormOnly.push_back(CurrentPlotsNormOnly);					
 			PlotsReco.push_back(CurrentPlotsReco);		
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
 			PlotsTrue.push_back(CurrentPlotsTrue);		
@@ -362,7 +370,12 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
-			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only		
+			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only
+			
+			PlotsNormOnly[0][WhichPlot]->SetFillColorAlpha(kGray+1, 0.45);	
+			PlotsNormOnly[0][WhichPlot]->SetLineColor(kGray+1);
+			PlotsNormOnly[0][WhichPlot]->SetMarkerColor(kGray+1);
+			PlotsNormOnly[0][WhichPlot]->Draw("e2 hist same"); // Norm unc Only					
 
 			// -----------------------------------------------------------------------------------------------------------------
 
@@ -511,22 +524,22 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			// ---------------------------------------------------------------------------------------------------------
 
-			// GENIE v3.0.6 EffSF + ub Tune
+			// // GENIE v3.0.6 EffSF + ub Tune
 
-			Multiply(PlotsTrue[15][WhichPlot],Ac);
+			// Multiply(PlotsTrue[15][WhichPlot],Ac);
 
-			PlotsTrue[15][WhichPlot]->SetLineColor(NuWroColor);
-			PlotsTrue[15][WhichPlot]->SetMarkerColor(NuWroColor);
+			// PlotsTrue[15][WhichPlot]->SetLineColor(NuWroColor);
+			// PlotsTrue[15][WhichPlot]->SetMarkerColor(NuWroColor);
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// NuWro // LarSoft
 
-			Multiply(PlotsTrue[16][WhichPlot],Ac);
+			Multiply(PlotsTrue[15][WhichPlot],Ac);
 
-			PlotsTrue[16][WhichPlot]->SetLineColor(NuWroColor);
-			PlotsTrue[16][WhichPlot]->SetMarkerColor(NuWroColor);
-			//PlotsTrue[16][WhichPlot]->SetLineWidth(3);
+			PlotsTrue[15][WhichPlot]->SetLineColor(NuWroColor);
+			PlotsTrue[15][WhichPlot]->SetMarkerColor(NuWroColor);
+			//PlotsTrue[15][WhichPlot]->SetLineWidth(3);
 
 			// ---------------------------------------------------------------------------------------------------------
 
@@ -569,8 +582,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			if (PlotGen) {
 
-			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[16][WhichPlot],"NuWro","l");
-			PlotsTrue[16][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
+			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[15][WhichPlot],"NuWro","l");
+			PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
 
 
 			TLegendEntry* lGenie_GiBUU = leg->AddEntry(PlotsTrue[5][WhichPlot],"GiBUU","l");
@@ -625,8 +638,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			TLegendEntry* lGenie_RFG = leg->AddEntry(PlotsTrue[14][WhichPlot],"v3.0.6 RFG","l");
 			PlotsTrue[14][WhichPlot]->Draw("hist same"); lGenie_RFG->SetTextColor(GiBUUColor);
 
-			TLegendEntry* lGenie_EffSF = leg->AddEntry(PlotsTrue[15][WhichPlot],"v3.0.6 EffSF","l");
-			PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_EffSF->SetTextColor(NuWroColor);
+			//TLegendEntry* lGenie_EffSF = leg->AddEntry(PlotsTrue[15][WhichPlot],"v3.0.6 EffSF","l");
+			//PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_EffSF->SetTextColor(NuWroColor);
 
 			}
 
@@ -634,8 +647,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			if (PlotNuWro) {
 
-			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[16][WhichPlot],"NuWro","l");
-			PlotsTrue[16][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
+			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[15][WhichPlot],"NuWro","l");
+			PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
 
 			TLegendEntry* lGenie_NuWroLArSoft = leg->AddEntry(PlotsTrue[4][WhichPlot],"NuWro Out-Of-The-Box","l");
 			PlotsTrue[4][WhichPlot]->Draw("hist same"); lGenie_NuWroLArSoft->SetTextColor(GiBUUColor);
