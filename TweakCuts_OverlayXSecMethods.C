@@ -78,7 +78,7 @@ void PrettyPlot(TH1D* h,int LineWidth = 2, int FontStyle = 132, int Ndivisions =
 
 }
 
-void OverlayXSecMethods() {
+void TweakCuts_OverlayXSecMethods() {
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -104,16 +104,12 @@ void OverlayXSecMethods() {
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames; 
-//	PlotNames.push_back("DeltaPTPlot");
-//	PlotNames.push_back("DeltaAlphaTPlot");
-//	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot");
-//	PlotNames.push_back("MuonCosThetaPlot");
-//	PlotNames.push_back("MuonPhiPlot");
-//	PlotNames.push_back("ProtonMomentumPlot");
-//	PlotNames.push_back("ProtonCosThetaPlot");
-//	PlotNames.push_back("ProtonPhiPlot");
+	// Watch out, we did it only for the DeltaPT plot
+
+	vector<TString> PlotNames; 
+	PlotNames.push_back("DeltaPTPlot");
+	PlotNames.push_back("DeltaAlphaTPlot");
+	PlotNames.push_back("DeltaPhiTPlot");		
 
 	const int NPlots = PlotNames.size();	
 
@@ -136,7 +132,7 @@ void OverlayXSecMethods() {
 
 			// -----------------------------------------------------------------------------------------------------------------------------
 
-			TString CanvasName = "EEvsSVD_Comparison_"+PlotNames[WhichPlot]+"_"+FileNames[WhichFile];
+			TString CanvasName = "TweakCuts_Comparison_"+PlotNames[WhichPlot]+"_"+FileNames[WhichFile];
 			TCanvas* can = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			can->SetBottomMargin(0.17);
 			can->SetLeftMargin(0.17);
@@ -148,39 +144,24 @@ void OverlayXSecMethods() {
 
 			// -----------------------------------------------------------------------------------------------------------------------------		
 
-			// EE
+			// Old proton pid score cut at 0
 
-			TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
+			TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+"_ProtonPIDCutAtZero.root","readonly");
 
-			TH1D* Plots = (TH1D*)(f->Get("TotalReco"+PlotNames[WhichPlot]));
+			TH1D* Plots = (TH1D*)(f->Get("RecoFullUnc"+PlotNames[WhichPlot]));
 			Plots->SetLineColor(kBlack);
+			Plots->SetLineStyle(kSolid);			
 			Plots->SetMarkerColor(kBlack);
 			PrettyPlot(Plots);
 			Plots->SetMarkerStyle(20);
+			Plots->SetTitle("");			
 			Plots->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 
-			TH1D* PlotsUnfOnly = (TH1D*)(f->Get("UnfOnlyReco"+PlotNames[WhichPlot]));
-			PlotsUnfOnly->SetLineColor(kBlack);
-			PlotsUnfOnly->SetMarkerColor(kBlack);
-			PrettyPlot(PlotsUnfOnly);
-			PlotsUnfOnly->SetMarkerStyle(20);
-			PlotsUnfOnly->SetMarkerSize(1.);
-			PlotsUnfOnly->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
-
-			TH1D* PlotsStat = (TH1D*)(f->Get("Reco"+PlotNames[WhichPlot])); // EE & Stat errors
-			PlotsStat->SetLineColor(kBlack);
-			PlotsStat->SetMarkerColor(kBlack);
-			PrettyPlot(PlotsStat);
-			PlotsStat->SetMarkerStyle(20);
-			PlotsStat->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
-
-			// Wiener SVD
+			// Old proton pid score cut at 0.05
 
 			TFile* Wf = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 			
-//			TH1D* Wh = (TH1D*)(Wf->Get("Reco"+PlotNames[WhichPlot])); // Plots with total uncertainty after Norm / Shape separation (Shape + Stat)
-			TH1D* Wh = (TH1D*)(Wf->Get("RecoFullUnc"+PlotNames[WhichPlot])); // Plots with total/full uncertainty (Norm + Shape + Stat)
-			TH1D* WhStat = (TH1D*)(Wf->Get("StatReco"+PlotNames[WhichPlot])); // Plots with stat uncertainty
+			TH1D* Wh = (TH1D*)(Wf->Get("RecoFullUnc"+PlotNames[WhichPlot])); // Plots with total uncertainty
 
 			int n = Wh->GetXaxis()->GetNbins();
 			double Nuedges[n+1];   
@@ -189,29 +170,20 @@ void OverlayXSecMethods() {
 			TString Xtitle = Wh->GetXaxis()->GetTitle();
 			TString Ytitle = Wh->GetYaxis()->GetTitle();		
 			TH1D* Offset = new TH1D("Offset_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
-			TH1D* StatOffset = new TH1D("StatOffset_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
 
 			for (int WhichBin = 1; WhichBin <= n; WhichBin++ ) {
 
 				Offset->SetBinContent(WhichBin, Wh->GetBinContent(WhichBin));
 				Offset->SetBinError(WhichBin, Wh->GetBinError(WhichBin));
 
-				StatOffset->SetBinContent(WhichBin, WhStat->GetBinContent(WhichBin));
-				StatOffset->SetBinError(WhichBin, WhStat->GetBinError(WhichBin));
-
 			}
 
 			Offset->SetLineColor(kRed);
+			Offset->SetLineStyle(kSolid);			
 			Offset->SetMarkerColor(kRed);
 			Offset->SetMarkerStyle(22);
 			Offset->SetMarkerSize(2.);				
 			PrettyPlot(Offset);
-
-			StatOffset->SetLineColor(kRed);
-			StatOffset->SetMarkerColor(kRed);
-			StatOffset->SetMarkerStyle(22);
-			StatOffset->SetMarkerSize(2.);				
-			PrettyPlot(StatOffset);
 
 			double MaxValue = TMath::Max(Plots->GetMaximum(),Offset->GetMaximum());
 			int MaxValueBin = LocateBinWithValue(Plots,MaxValue);
@@ -227,31 +199,11 @@ void OverlayXSecMethods() {
 			Plots->GetYaxis()->SetRangeUser(min,max);
 			Plots->GetYaxis()->SetTitleOffset(1.2);
 
-			PlotsUnfOnly->GetYaxis()->SetRangeUser(min,max);
-			PlotsUnfOnly->GetYaxis()->SetTitleOffset(1.2);			
-
-// full unc
-//			Plots->Draw("p0 hist same");
 			Plots->Draw("e1 same");
-			PlotsStat->Draw("e1 same");
 			Offset->Draw("e1 same");
-			StatOffset->Draw("e1 same");
 
-//// default
-////			Plots->Draw("p0 hist same");
-//			PlotsUnfOnly->Draw("e same");
-//			Offset->Draw("p0 hist same");
-
-//			Plots->Draw("e1 same");
-//			PlotsStat->Draw("e1 same");
-//			Offset->Draw("e1 same");
-//			StatOffset->Draw("e1 same");
-
-			leg->AddEntry(Plots,"EE BeamOn","p");
-			leg->AddEntry(Offset,"SVD BeamOn","p");
-
-//			leg->AddEntry(Plots,"EE BeamOn " + Label[WhichFile],"p");
-//			leg->AddEntry(Offset,"SVD BeamOn " + Label[WhichFile],"p");			
+			leg->AddEntry(Plots,"Score < 0","p");
+			leg->AddEntry(Offset,"Score < 0.05","p");
 
 			// -----------------------------------------------------------------------------------------------------------------------------
 
@@ -260,8 +212,8 @@ void OverlayXSecMethods() {
 			leg->SetTextFont(FontStyle);
 			leg->Draw();
 
-			can->SaveAs("myPlots/pdf/"+UBCodeVersion+"/BeamOn9/"+CanvasName+".pdf");
-			delete can;
+			//can->SaveAs("myPlots/pdf/"+UBCodeVersion+"/BeamOn9/"+CanvasName+".pdf");
+			//delete can;
 
 		} // End of the loop over the plots
 

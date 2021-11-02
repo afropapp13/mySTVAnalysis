@@ -66,7 +66,7 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
-void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString BeamOnSample = "") {
+void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", TString BeamOnSample = "BeamOn9") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -126,11 +126,12 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 	vector<TString> LabelsOfSamples;
 	vector<TString> NameOfSamples;
 
-	NameOfSamples.push_back("Overlay9"); if (OverlaySample != "") { NameOfSamples[0] = OverlaySample; }
-	NameOfSamples.push_back("BeamOn9");  if (BeamOnSample != "") { NameOfSamples[1] = BeamOnSample; }
+	NameOfSamples.push_back(OverlaySample);
+	NameOfSamples.push_back(BeamOnSample);
 	NameOfSamples.push_back("ExtBNB9"); 
 	NameOfSamples.push_back("OverlayDirt9");
-	NameOfSamples.push_back("GenieOverlay");	 
+	NameOfSamples.push_back("GenieOverlay");	
+	NameOfSamples.push_back("AltEventGen");	 
 
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -175,10 +176,15 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (OverlaySample == "NoTuneOverlay9") { FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		cout << "File Responses = " << FileResponseName << endl;
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
-		TString FileCovarianceName = MigrationMatrixPath+BeamOnSample+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (OverlaySample == "NoTuneOverlay9") 
+			{ FileCovarianceName = MigrationMatrixPath+"NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+		cout << "File Covariances = " << FileCovarianceName << endl;			
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -190,7 +196,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 
 		// Store the extracted xsections & associated files in dedicated file
 
-		TString NameExtractedXSec = PathToExtractedXSec+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
+		TString NameExtractedXSec = PathToExtractedXSec+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+Subtract+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -211,17 +217,36 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			
 			if (NameOfSamples[WhichSample] == "Overlay9") { 
 			
-			TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+			TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
 			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
 			}
 
+			if (NameOfSamples[WhichSample] == "NoTuneOverlay9") { 
+			
+			TString FileName = "NoTuneSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}			
+
 			if (NameOfSamples[WhichSample] == "GenieOverlay") { 
 			
-			TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-			FileSample.push_back(TFile::Open(PathToFiles+FileName));  
+				TString FileName = "TruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";					
+				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 			
 			}
+
+			if (NameOfSamples[WhichSample] == "AltEventGen") { 
+			
+				TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				if (BeamOnSample == "NoTuneOverlay9") { FileName = "NoTuneTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOnSample == "Overlay9NuWro") { FileName = "TruthSTVAnalysis_Overlay9NuWro_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+				if (BeamOnSample == "BeamOn9" && OverlaySample == "NoTuneOverlay9") 
+					{ FileName = "NoTuneTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+						
+				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
+			
+			}			
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
@@ -280,7 +305,9 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			// BeamOn = Alternative model for fake data studies in this case
 			// Thus we grab the CC1p part, without any subtractions
 
-			TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
+//			TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
+			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
+			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
 
 			int m = DataPlot->GetNbinsX();			
 			TString XTitle = DataPlot->GetXaxis()->GetTitle();
@@ -288,13 +315,15 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 
 			// Flux-averaged event rates
 			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
-			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));		 
+			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // CV
+			PlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // CV
 
 			// -------------------------------------------------------------------------------------------
 
 			// Construct vectors (for 1D histogram) and matrices (for 2D histogram) for input
 
 			TVectorD signal(n);
+			TVectorD altsignal(n);			
 			TVectorD measure(m);
 			TMatrixD response(m, n);
 			TMatrixD covariance(m, m);
@@ -305,6 +334,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			// Converted defined/implemented in source files, see include/Util.h
 
 			H2V(PlotsTrue[4][WhichPlot], signal);
+			H2V(PlotsTrue[5][WhichPlot], altsignal);			
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
@@ -354,12 +384,12 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 
 			for (int i = 1; i <= n;i++ ) { 
 
-			double CVInBin = unf->GetBinContent(i);
+				double CVInBin = unf->GetBinContent(i);
 
-			// default / total uncertainty
-			double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
+				// default / total uncertainty
+				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
 
-			unf->SetBinError(i, CovUnc );
+				unf->SetBinError(i, CovUnc );
 
 			}
 
@@ -384,28 +414,46 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			unf->GetYaxis()->SetTitleFont(FontStyle);			
 			unf->GetYaxis()->SetNdivisions(6);
 
-			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,XSecRange[PlotNames[WhichPlot]].second);
 			unf->SetLineColor(BeamOnColor);
 			unf->SetMarkerColor(BeamOnColor);
 			unf->SetMarkerStyle(20);
-			unf->SetMarkerSize(1.);	
+			unf->SetMarkerSize(1.);		
 
-			// Draw the data points first to get the beautiful canvas 
-			PlotCanvas->cd();
-			unf->Draw("e1x0");			
+			// ----------------------------------------//		
 
-			// The MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
+			// The Nominal MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
 
 			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD AcTrueUnfold = AddSmear * signal;
 			V2H(AcTrueUnfold, TrueUnf);
 
 			ReweightXSec(TrueUnf);
-//			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
-			PlotCanvas->cd();				
-			TrueUnf->Draw("hist same");
+
+			// ----------------------------------------//
+
+			// Same for the alternative MC CC1p prediction (NuWro et al)
+
+			TH1D* AltTrueUnf = new TH1D("AltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD AltAcTrueUnfold = AddSmear * altsignal;
+			V2H(AltAcTrueUnfold, AltTrueUnf);
+
+			ReweightXSec(AltTrueUnf);
+			AltTrueUnf->SetLineColor(kOrange+7);
+			AltTrueUnf->SetMarkerColor(kOrange+7);	
+
+			// ----------------------------------------//	
+
+			double max = 1.2 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
+			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);			
+
+			// Draw the data points first to get the beautiful canvas 
+			PlotCanvas->cd();
+			unf->Draw("e1x0");
+			//TrueUnf->Draw("hist same");
+			AltTrueUnf->Draw("hist same");
+
 
 			// Plotting again so that the data points are on top 
 			PlotCanvas->cd();
@@ -422,7 +470,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.06);
 			legData->SetTextFont(FontStyle);
-			legData->SetNColumns(1);
+			legData->SetNColumns(2);
 			legData->SetMargin(0.1);	
 
 			TString ReducedLabel = 	BeamOnSample;
@@ -430,13 +478,17 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 
 			legData->AddEntry(unf,"Unfolded " + PrintLabel,"ep");
 
-			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"True " + PrintLabel,"l");
-			lMC->SetTextColor(OverlayColor);	
+			//TLegendEntry* lMC = legData->AddEntry(TrueUnf,"True CV","l");
+			//lMC->SetTextColor(OverlayColor);
+
+			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"True " + PrintLabel,"l");
+			lAltMC->SetTextColor(kOrange+7);				
 
 			legData->Draw();
 			
-			TString CanvasPath = PlotPath+NameOfSamples[0];
+			TString CanvasPath = PlotPath+"Overlay9";
 			TString FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+			if (OverlaySample != "Overlay9") { FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+"_"+OverlaySample+".pdf"; }
 			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);	
 			delete PlotCanvas;			
 
@@ -511,7 +563,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			ExtractedXSec->cd();
 
 			unf->Write("Reco"+PlotNames[WhichPlot]);
-			TrueUnf->Write("True"+PlotNames[WhichPlot]);			
+			TrueUnf->Write("True"+PlotNames[WhichPlot]);
+			AltTrueUnf->Write("AltTrue"+PlotNames[WhichPlot]);						
 			smear->Write("Ac"+PlotNames[WhichPlot]);
 			unfcov->Write("UnfCov"+PlotNames[WhichPlot]);	
 			CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]);				
@@ -526,7 +579,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]);	
 
 			// ---------------------------------------------------------------------------------------------------------------------------
-
+/*
 			// Make the additional smearing matrix pretty
 
 			TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
@@ -564,9 +617,10 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "", TString 
 			text->DrawTextNDC(0.47, 0.92, Runs[WhichRun]);
 
 			TString SmearCanvas = "/"+BeamOnSample+"Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+			if (OverlaySample != "Overlay9") { SmearCanvas = "/"+BeamOnSample+"Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+"_"+OverlaySample+".pdf"; }
 			SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
 			delete SmearPlotCanvas;
-
+*/
 			// ---------------------------------------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots

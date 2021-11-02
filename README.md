@@ -5,6 +5,7 @@ root -b script_Detector_Systematics.C
 root -b script_G4_Systematics.C
 root -b script_Genie_Systematics.C
 root -b script_Flux_Systematics.C
+root -b script_MC_Stat_Systematics.C
 
 #################################################################################################################################
 
@@ -18,7 +19,7 @@ root -b script_WienerSVD_Systematics_NoTune.C
 
 root -b 
 .L WienerSVD_Merge_Covariances.cpp
-WienerSVD_Merge_Covariances("Overlay9", "",Tune = "NoTune")
+WienerSVD_Merge_Covariances("Overlay9", "","NoTune")
 
 root -b script_WienerSVD_XSec.C
 
@@ -79,7 +80,7 @@ root -b
 
 #################################################################################################################################
 
-# (locally)
+# (locally).L ../../myClasses/Util.C
 
 #cd ../myEvents/
 #./PeLEE_Syst_DownloadEventRatePlots.sh
@@ -91,17 +92,24 @@ root -b
 
 # We need the stat & xsec uncertainties only
 
+root -b
+.L FakeData_WienerSVD_StatCovarianceMatrices.cpp
+FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
+FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","NoTuneOverlay9","ExtBNB9","OverlayDirt9")
+
 # Merge the NuWro covariances
 root -b
 .L WienerSVD_Merge_Covariances.cpp++
-WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro") 
+WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro","Overlay9NuWro")
+WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","NoTuneOverlay9") 
 
 # extract the xsecs # needs testing
 root -b 
 .L ../../myClasses/Util.C++
 .L ../../myClasses/WienerSVD.C++
 .L FakeData_WienerSVD_XSection_Extraction.cpp++
-FakeData_WienerSVD_XSection_Extraction("","Overlay9NuWro")
+FakeData_WienerSVD_XSection_Extraction("Overlay9","Overlay9NuWro")
+FakeData_WienerSVD_XSection_Extraction("Overlay9","NoTuneOverlay9")
 
 #################################################################################################################################
 
@@ -129,8 +137,15 @@ WienerSVD_OverlayGenerators(false,false,false,false,false,true)
 #NuWro Comparisons out-of-the-box vs larsoft
 WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)
 
-.x IntegratedXSecs.cpp
-.x WienerSVD_Chi2Covariance.cpp
+#.x IntegratedXSecs.cpp
+
+root -b
+.L ../myClasses/Util.C
+.L WienerSVD_Chi2Covariance.cpp
+WienerSVD_Chi2Covariance("Kine")
+WienerSVD_Chi2Covariance("STV")
+WienerSVD_Chi2Covariance("Long")
+
 #.x BinByBinChi2.cpp
 
 
@@ -145,5 +160,10 @@ WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)
 root -b OverlayGenerators.cpp
 root -b OverlayXSecMethods.C
 
+# Comparison to WC
+root -b WC_OverlayXSecMethods.C
+
+# Comparison to MCC8
+root -b MCC8_OverlayXSecMethods.C
 #################################################################################################################################
 

@@ -485,6 +485,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			}
 
 			ReweightXSec(unf);
+			ReweightXSec(PlotsTrue[4][WhichPlot]);			
 
 			unfFullUnc = (TH1D*)(unf->Clone());
 			unfStat = (TH1D*)(unf->Clone());
@@ -568,6 +569,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			PlotCanvas->cd();
 			if (ClosureTest == true) { unf->Draw("p0 hist same"); }
 			else { 
+
+				// Draw the truth w/o the additional smearing
+				//PlotsTrue[4][WhichPlot]->SetLineColor(kMagenta);
+				//PlotsTrue[4][WhichPlot]->Draw("hist same");				
 				
 				unf->Draw("e1x0 same"); 
 
@@ -692,7 +697,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfNormOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
 				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
-				TrueUnf->Write("True"+PlotNames[WhichPlot]);			
+				TrueUnf->Write("True"+PlotNames[WhichPlot]);
+				PlotsTrue[4][WhichPlot]->Write("NoSmearTrue"+PlotNames[WhichPlot]);			
 				smear->Write("Ac"+PlotNames[WhichPlot]);
 				unfcov->Write("UnfCov"+PlotNames[WhichPlot]);	
 				CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]);					

@@ -59,7 +59,7 @@ void PrettyPlot(TH1D* h,int LineWidth = 2, int FontStyle = 132, int Ndivisions =
 
 }
 
-void OverlayXSec() {
+void OverlayMCC8XSec() {
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -90,11 +90,11 @@ void OverlayXSec() {
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 
-	TString PlotName = "DeltaPTPlot";
+//	TString PlotName = "DeltaPTPlot";
 //	TString PlotName = "DeltaAlphaTPlot";
 //	TString PlotName = "DeltaPhiTPlot";
 //	TString PlotName = "MuonMomentumPlot";
-//	TString PlotName = "MuonCosThetaPlot";
+	TString PlotName = "MuonCosThetaPlot";
 //	TString PlotName = "MuonPhiPlot";
 //	TString PlotName = "ProtonMomentumPlot";
 //	TString PlotName = "ProtonCosThetaPlot";

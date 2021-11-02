@@ -28,30 +28,6 @@ using namespace Constants;
 
 #include "../myClasses/Util.h"
 
-// --------------------------------------------------------------------------------------------------------------------------------------------
-
-void Multiply(TH1D* True, TH2D* SmearMatrix) {
-
-	TH1D* TrueClone = (TH1D*)(True->Clone());
-
-	int XBins = SmearMatrix->GetXaxis()->GetNbins();
-	int YBins = SmearMatrix->GetYaxis()->GetNbins();
-
-	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
-
-	TVectorD signal(XBins);
-	TMatrixD response(XBins,XBins);
-
-	H2V(True, signal);
-	H2M(SmearMatrix, response, kFALSE); // X axis: Reco, Y axis: True
-
-	TVectorD RecoSpace = response * signal;
-	V2H(RecoSpace, TrueClone);	
-
-	return TrueClone;
-
-}
-
 // -------------------------------------------------------------------------------------------------------------------------------------
 
 int LocateBinWithValue(TH1D* h, double Value) {
@@ -136,9 +112,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 	// ------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	//Runs.push_back("Run1");
+//	Runs.push_back("Run1");
 //	Runs.push_back("Run2");	
-	//Runs.push_back("Run3");
+//	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
 //	Runs.push_back("Run5");
 	Runs.push_back("Combined");
@@ -159,27 +135,68 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
 
 		vector<TString> NameOfSamples; NameOfSamples.clear();
-	
+		vector<int> Colors; Colors.clear();		
+		vector<TString> Labels; Labels.clear();
+
 		// CV
 
-		NameOfSamples.push_back("Overlay9");                              // 0
+		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("MC uB Tune");                     
 
-		NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");           // 1
-		NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");                // 2
-		NameOfSamples.push_back("SuSav2");                                // 3
-		NameOfSamples.push_back("NuWro");                                 // 4
-		NameOfSamples.push_back("GiBUU");                                 // 5
-		NameOfSamples.push_back("GENIEv2");                               // 6
-		NameOfSamples.push_back("NEUT");                                  // 7
-		NameOfSamples.push_back("GENIEv3_0_4");                           // 8
+		// -------------------------------------------------------------------------------------------------------------------		
 
-		NameOfSamples.push_back("Genie_v3_0_6_Nominal");                  // 9
-		NameOfSamples.push_back("Genie_v3_0_6_NoFSI");                    // 10
-		NameOfSamples.push_back("Genie_v3_0_6_NoRPA");                    // 11
-		NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb");                // 12
-		NameOfSamples.push_back("Genie_v3_0_6_hN2018");                   // 13
-		NameOfSamples.push_back("Genie_v3_0_6_RFG");                      // 14
-		NameOfSamples.push_back("Overlay9NuWro");                         // 15
+		if (PlotGENIE) {
+
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("v2.12.10");
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("v3.0.6 w/o tune");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("SuSav2");
+
+		}
+
+		// -------------------------------------------------------------------------------------------------------------------		
+
+		if (PlotGen) {
+
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU");
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT");
+
+		}	
+
+		// -------------------------------------------------------------------------------------------------------------------			
+
+		if (PlotGENIECT) {
+
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("v3.0.6 w/ tune");
+
+		}
+
+		// -------------------------------------------------------------------------------------------------------------------
+
+		if (PlotGENIEFSITweaks) {
+
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("v3.0.6 NoFSI w/ tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("v3.0.6 hN2018 w/ tune");
+
+		}
+
+		// -------------------------------------------------------------------------------------------------------------------
+
+		if (PlotGENIEFlagTweaks) {
+
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("v3.0.6 NoRPA w/ tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("v3.0.6 NoCoulomb w/ tune");
+
+		}
+
+		// -------------------------------------------------------------------------------------------------------------------
+
+		if (PlotNuclModels) {
+
+			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("v3.0.6 RFG w/ tune");			
+
+		}               
+
+		// -------------------------------------------------------------------------------------------------------------------
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -212,6 +229,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
+					if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { histReco = (TH1D*)(FileSample[WhichSample]->Get("RecoFullUnc"+PlotNames[WhichPlot])); }
 					CurrentPlotsReco.push_back(histReco);
 
 					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
@@ -304,6 +322,31 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
 
 			TH2D* Ac = (TH2D*)FileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
+			TH2D* Cov = (TH2D*)FileSample[0]->Get("UnfCov"+PlotNames[WhichPlot]);			
+
+			// -----------------------------------------------------------------------------------------------------------------------------
+
+			TH2D* CovClone = (TH2D*)(Cov->Clone()); 
+
+			int n = Cov->GetXaxis()->GetNbins();
+
+			for (int ix = 1; ix <= n; ix++) {
+
+				for (int iy = 1; iy <= n; iy++) {
+
+					double WidthX = Cov->GetXaxis()->GetBinWidth(ix);
+					double WidthY = Cov->GetYaxis()->GetBinWidth(iy);
+
+					double TwoDWidth = WidthX * WidthY;
+					double BinContent = Cov->GetBinContent(ix,iy);
+
+					CovClone->SetBinContent(ix,iy,BinContent/TwoDWidth);
+
+				}					
+
+			}	
+
+			// -----------------------------------------------------------------------------------------------------------------------------			
 
 			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
 			PlotCanvas->cd();
@@ -328,9 +371,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 //			leg->SetNColumns(4);
 //			leg->SetMargin(0.15);
 
-			TLegend* leg = new TLegend(0.65,0.58,0.78,0.85);
-			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { leg = new TLegend(0.25,0.15,0.8,0.4); }
-			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot") 
+			TLegend* leg = new TLegend(0.6,0.58,0.73,0.85);
+			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot" || PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { leg = new TLegend(0.25,0.2,0.8,0.4); }
+			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot") 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
 
 			leg->SetBorderSize(0);
@@ -351,15 +394,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			double MaxValueError = PlotsReco[0][WhichPlot]->GetBinError(MaxValueBin);
 
 			double MinValue = PlotsReco[0][WhichPlot]->GetMinimum();
-			// int MinValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MinValue);
-			// double MinValueError = PlotsReco[0][WhichPlot]->GetBinError(MinValueBin);			
-
-			// double min = TMath::Min(0., 0.8*(MinValue-MinValueError));
-			// double min = TMath::Min(0., 0.8*MinValue);			
-			// double max = TMath::Max(0., 1.2*(MaxValue+MaxValueError));													
+													
 			PlotsReco[0][WhichPlot]->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,XSecRange[PlotNames[WhichPlot]].second);
 
-			//PlotsReco[0][WhichPlot]->SetLineWidth(2);
 			PlotsReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.);
@@ -375,173 +412,48 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			PlotsNormOnly[0][WhichPlot]->SetFillColorAlpha(kGray+1, 0.45);	
 			PlotsNormOnly[0][WhichPlot]->SetLineColor(kGray+1);
 			PlotsNormOnly[0][WhichPlot]->SetMarkerColor(kGray+1);
-			PlotsNormOnly[0][WhichPlot]->Draw("e2 hist same"); // Norm unc Only					
+			if (PlotNames[WhichPlot] != "MuonCosThetaSingleBinPlot") { PlotsNormOnly[0][WhichPlot]->Draw("e2 hist same"); } // Norm unc Only					
 
 			// -----------------------------------------------------------------------------------------------------------------
 
 			// Overlay
 
-			//PlotsTrue[0][WhichPlot]->SetLineWidth(3);
 			PrettyPlot(PlotsTrue[0][WhichPlot]);
-			PlotsTrue[0][WhichPlot]->SetLineColor(OverlayColor);
-			PlotsTrue[0][WhichPlot]->SetMarkerColor(OverlayColor);
-			//PlotsTrue[0][WhichPlot]->SetFillColor(OverlayColor);
+			PlotsTrue[0][WhichPlot]->SetLineColor(Colors[0]);
+			PlotsTrue[0][WhichPlot]->SetMarkerColor(Colors[0]);
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			// Genie v3.0.6 Out Of The Box
+			// arrays for NSamples
 
-			Multiply(PlotsTrue[1][WhichPlot],Ac);
+			double Chi2[NSamples];			
+			int Ndof[NSamples];
+			double pval[NSamples];
 
-			PlotsTrue[1][WhichPlot]->SetLineColor(Geniev3OutOfTheBoxColor);
-			PlotsTrue[1][WhichPlot]->SetMarkerColor(Geniev3OutOfTheBoxColor);
-			//PlotsTrue[1][WhichPlot]->SetLineWidth(3);
+			// Clones for the NSamples-1 model predictions
+			// index 0 corresponds to nominal overlay
 
-			// -----------------------------------------------------------------------------------------------------------------
+			TH1D* Clone[NSamples-1];			
 
-			// Genie v3.0.6 MicroBooNE Tune v1
+			for (int WhichSample = 1; WhichSample < NSamples; WhichSample++) {
 
-			Multiply(PlotsTrue[2][WhichPlot],Ac);
+				Clone[WhichSample-1] = Multiply(PlotsTrue[WhichSample][WhichPlot],Ac);
+				//Clone[WhichSample-1] = PlotsTrue[WhichSample][WhichPlot];				
+				Clone[WhichSample-1]->SetLineColor(Colors[WhichSample]);
+				Clone[WhichSample-1]->SetMarkerColor(Colors[WhichSample]);
 
-			PlotsTrue[2][WhichPlot]->SetLineColor(GenieColor);
-			PlotsTrue[2][WhichPlot]->SetMarkerColor(GenieColor);
-			//PlotsTrue[2][WhichPlot]->SetLineWidth(3);
-			//PlotsTrue[2][WhichPlot]->Draw("hist same");
+				Clone[WhichSample-1]->Draw("hist same");		
 
-			// -----------------------------------------------------------------------------------------------------------------
+				CalcChiSquared(Clone[WhichSample-1],PlotsReco[0][WhichPlot],Cov,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
+				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],2) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
+//				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample] + Chi2NdofAlt,"l");
+				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l");
+				lGenie->SetTextColor(Colors[WhichSample]); 										
 
-			// Genie SuSav2
+			}
 
-			Multiply(PlotsTrue[3][WhichPlot],Ac);
-
-			PlotsTrue[3][WhichPlot]->SetLineColor(SuSav2Color);
-			PlotsTrue[3][WhichPlot]->SetMarkerColor(SuSav2Color);
-			//PlotsTrue[3][WhichPlot]->SetLineWidth(3);
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// NuWro
-
-			Multiply(PlotsTrue[4][WhichPlot],Ac);
-
-			PlotsTrue[4][WhichPlot]->SetLineColor(GiBUUColor);
-			PlotsTrue[4][WhichPlot]->SetMarkerColor(GiBUUColor);
-			//PlotsTrue[4][WhichPlot]->SetLineWidth(3);
 
 			// -----------------------------------------------------------------------------------------------------------------
-
-			// GiBUU
-
-			Multiply(PlotsTrue[5][WhichPlot],Ac);
-
-			PlotsTrue[5][WhichPlot]->SetLineColor(GiBUUColor);
-			PlotsTrue[5][WhichPlot]->SetMarkerColor(GiBUUColor);
-			//PlotsTrue[5][WhichPlot]->SetLineWidth(3);
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE v2
-
-			Multiply(PlotsTrue[6][WhichPlot],Ac);
-
-			PlotsTrue[6][WhichPlot]->SetLineColor(GENIEv2Color);
-			PlotsTrue[6][WhichPlot]->SetMarkerColor(GENIEv2Color);
-			//PlotsTrue[6][WhichPlot]->SetLineWidth(3);
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// NEUT
-
-			Multiply(PlotsTrue[7][WhichPlot],Ac);
-
-			PlotsTrue[7][WhichPlot]->SetLineColor(NEUTColor);
-			PlotsTrue[7][WhichPlot]->SetMarkerColor(NEUTColor);
-			//PlotsTrue[7][WhichPlot]->SetLineWidth(3);
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.4
-
-			Multiply(PlotsTrue[8][WhichPlot],Ac);
-
-			PlotsTrue[8][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
-			PlotsTrue[8][WhichPlot]->SetMarkerColor(GENIEv3_0_4_Color);
-			//PlotsTrue[8][WhichPlot]->SetLineWidth(3);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 + ub Tune
-
-			Multiply(PlotsTrue[9][WhichPlot],Ac);
-
-			PlotsTrue[9][WhichPlot]->SetLineColor(NEUTColor);
-			PlotsTrue[9][WhichPlot]->SetMarkerColor(NEUTColor);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 NoFSI + ub Tune
-
-			Multiply(PlotsTrue[10][WhichPlot],Ac);
-
-			PlotsTrue[10][WhichPlot]->SetLineColor(GiBUUColor);
-			PlotsTrue[10][WhichPlot]->SetMarkerColor(GiBUUColor);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 NoRPA + ub Tune
-
-			Multiply(PlotsTrue[11][WhichPlot],Ac);
-
-			PlotsTrue[11][WhichPlot]->SetLineColor(NuWroColor);
-			PlotsTrue[11][WhichPlot]->SetMarkerColor(NuWroColor);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 NoCoulomb + ub Tune
-
-			Multiply(PlotsTrue[12][WhichPlot],Ac);
-
-			PlotsTrue[12][WhichPlot]->SetLineColor(GENIEv3_0_4_Color);
-			PlotsTrue[12][WhichPlot]->SetMarkerColor(GENIEv3_0_4_Color);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 hN2018 + ub Tune
-
-			Multiply(PlotsTrue[13][WhichPlot],Ac);
-
-			PlotsTrue[13][WhichPlot]->SetLineColor(GENIEv2Color);
-			PlotsTrue[13][WhichPlot]->SetMarkerColor(GENIEv2Color);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// GENIE v3.0.6 RFG + ub Tune
-
-			Multiply(PlotsTrue[14][WhichPlot],Ac);
-
-			PlotsTrue[14][WhichPlot]->SetLineColor(GiBUUColor);
-			PlotsTrue[14][WhichPlot]->SetMarkerColor(GiBUUColor);
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			// // GENIE v3.0.6 EffSF + ub Tune
-
-			// Multiply(PlotsTrue[15][WhichPlot],Ac);
-
-			// PlotsTrue[15][WhichPlot]->SetLineColor(NuWroColor);
-			// PlotsTrue[15][WhichPlot]->SetMarkerColor(NuWroColor);
-
-			// -----------------------------------------------------------------------------------------------------------------
-
-			// NuWro // LarSoft
-
-			Multiply(PlotsTrue[15][WhichPlot],Ac);
-
-			PlotsTrue[15][WhichPlot]->SetLineColor(NuWroColor);
-			PlotsTrue[15][WhichPlot]->SetMarkerColor(NuWroColor);
-			//PlotsTrue[15][WhichPlot]->SetLineWidth(3);
-
-			// ---------------------------------------------------------------------------------------------------------
 
 			// Legend & Run / POT
 
@@ -552,198 +464,26 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			if (Runs[WhichRun] == "Run4") { tor860_wcut = Fulltor860_wcut_Run4; }
 			if (Runs[WhichRun] == "Run5") { tor860_wcut = Fulltor860_wcut_Run5; }
 			if (Runs[WhichRun] == "Combined") { tor860_wcut = Fulltor860_wcut_Combined; }
-//			TString Label = ToString(tor860_wcut)+" POT (Stat #oplus Syst)";
 			TString Label = ToString(tor860_wcut)+" POT";
 
 			// ---------------------------------------------------------------------------------------------------------
-			// ---------------------------------------------------------------------------------------------------------
 
-			if (PlotGENIE) {
-
-			TLegendEntry* lGenie_GENIEv2 = leg->AddEntry(PlotsTrue[6][WhichPlot],"v2.12.10","l");
-			PlotsTrue[6][WhichPlot]->Draw("hist same"); lGenie_GENIEv2->SetTextColor(GENIEv2Color);
-
-//			TLegendEntry* lGenie_GENIEv3_0_4 = leg->AddEntry(PlotsTrue[8][WhichPlot],"v3.0.4 (G2018)","l");
-//			PlotsTrue[8][WhichPlot]->Draw("hist same"); lGenie_GENIEv3_0_4->SetTextColor(GENIEv3_0_4_Color);
-
-//			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6 (G2018)","l");
-			TLegendEntry* lGenie = leg->AddEntry(PlotsTrue[1][WhichPlot],"v3.0.6","l");
-			PlotsTrue[1][WhichPlot]->Draw("hist same"); lGenie->SetTextColor(Geniev3OutOfTheBoxColor);
-
-			// TLegendEntry* lGenie_uBTunev1 = leg->AddEntry(PlotsTrue[2][WhichPlot],"v3.0.6 (uB Tune v1)","l");
-//			PlotsTrue[2][WhichPlot]->Draw("hist same"); lGenie_uBTunev1->SetTextColor(GenieColor);
-
-			TLegendEntry* lGenie_SuSav2 = leg->AddEntry(PlotsTrue[3][WhichPlot],"SuSav2","l");
-			PlotsTrue[3][WhichPlot]->Draw("hist same"); lGenie_SuSav2->SetTextColor(SuSav2Color);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			if (PlotGen) {
-
-			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[15][WhichPlot],"NuWro","l");
-			PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
-
-
-			TLegendEntry* lGenie_GiBUU = leg->AddEntry(PlotsTrue[5][WhichPlot],"GiBUU","l");
-			PlotsTrue[5][WhichPlot]->Draw("hist same"); lGenie_GiBUU->SetTextColor(GiBUUColor);
-
-
-			TLegendEntry* lGenie_NEUT = leg->AddEntry(PlotsTrue[7][WhichPlot],"NEUT","l");
-			PlotsTrue[7][WhichPlot]->Draw("hist same"); lGenie_NEUT->SetTextColor(NEUTColor);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			if (PlotGENIECT) {
-
-			TLegendEntry* lGenie_Nominal = leg->AddEntry(PlotsTrue[9][WhichPlot],"v3.0.6","l");
-			PlotsTrue[9][WhichPlot]->Draw("hist same"); lGenie_Nominal->SetTextColor(NEUTColor);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			if (PlotGENIEFSITweaks) {
-
-			TLegendEntry* lGenie_NoFSI = leg->AddEntry(PlotsTrue[10][WhichPlot],"v3.0.6 NoFSI","l");
-			PlotsTrue[10][WhichPlot]->Draw("hist same"); lGenie_NoFSI->SetTextColor(GiBUUColor);
-
-			TLegendEntry* lGenie_hN2018 = leg->AddEntry(PlotsTrue[13][WhichPlot],"v3.0.6 hN2018","l");
-			PlotsTrue[13][WhichPlot]->Draw("hist same"); lGenie_hN2018->SetTextColor(GENIEv2Color);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			if (PlotGENIEFlagTweaks) {
-
-			//TLegendEntry* lGenie_RFG = leg->AddEntry(PlotsTrue[14][WhichPlot],"v3.0.6 RFG","l");
-			//PlotsTrue[14][WhichPlot]->Draw("hist same"); lGenie_RFG->SetTextColor(Geniev3OutOfTheBoxColor);
-
-			TLegendEntry* lGenie_NoRPA = leg->AddEntry(PlotsTrue[11][WhichPlot],"v3.0.6 NoRPA","l");
-			PlotsTrue[11][WhichPlot]->Draw("hist same"); lGenie_NoRPA->SetTextColor(NuWroColor);
-
-			TLegendEntry* lGenie_NoCoulomb = leg->AddEntry(PlotsTrue[12][WhichPlot],"v3.0.6 NoCoulomb","l");
-			PlotsTrue[12][WhichPlot]->Draw("hist same"); lGenie_NoCoulomb->SetTextColor(GENIEv3_0_4_Color);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			if (PlotNuclModels) {
-
-			TLegendEntry* lGenie_RFG = leg->AddEntry(PlotsTrue[14][WhichPlot],"v3.0.6 RFG","l");
-			PlotsTrue[14][WhichPlot]->Draw("hist same"); lGenie_RFG->SetTextColor(GiBUUColor);
-
-			//TLegendEntry* lGenie_EffSF = leg->AddEntry(PlotsTrue[15][WhichPlot],"v3.0.6 EffSF","l");
-			//PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_EffSF->SetTextColor(NuWroColor);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			if (PlotNuWro) {
-
-			TLegendEntry* lGenie_NuWro = leg->AddEntry(PlotsTrue[15][WhichPlot],"NuWro","l");
-			PlotsTrue[15][WhichPlot]->Draw("hist same"); lGenie_NuWro->SetTextColor(NuWroColor);
-
-			TLegendEntry* lGenie_NuWroLArSoft = leg->AddEntry(PlotsTrue[4][WhichPlot],"NuWro Out-Of-The-Box","l");
-			PlotsTrue[4][WhichPlot]->Draw("hist same"); lGenie_NuWroLArSoft->SetTextColor(GiBUUColor);
-
-			}
-
-			// ---------------------------------------------------------------------------------------------------------
-
-			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],"MC uB Tune","l");
-			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(OverlayColor); 	
+			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],Cov,Chi2[0],Ndof[0],pval[0]);
+			TString Chi2NdofNom = " (" + to_string_with_precision(Chi2[0],2) + "/" + TString(std::to_string(Ndof[0])) +")";
+//			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
+			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
+			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(Colors[0]); 	
 
 			// ---------------------------------------------------------------------------------------------------------
 			// ---------------------------------------------------------------------------------------------------------
 
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Total
 
-//			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data","ep");
-//			leg->AddEntry(PlotsReco[0][WhichPlot],Runs[WhichRun] + " " + Label,"");
 			leg->AddEntry(PlotsReco[0][WhichPlot],Label,"");
 
 			leg->Draw();
 
-			// ----------------------------------------------------------------------------------------------
-
-			// Now the ratios
-/*
-			botPad->cd();
-			botPad->SetGridx();
-			botPad->SetGridy();
-
-			// MC
-
-			TH1D* CloneDataMC = (TH1D*)(PlotsTrue[0][WhichPlot]->Clone());
-			CloneDataMC->Divide(PlotsReco[0][WhichPlot]);
-
-			CloneDataMC->GetXaxis()->SetLabelSize(0.);
-			CloneDataMC->GetXaxis()->SetTitleSize(0.);		
-			CloneDataMC->GetYaxis()->SetRangeUser(0.5,1.5);
-			CloneDataMC->GetYaxis()->SetTitle("Ratio To Data");
-			CloneDataMC->GetYaxis()->SetTitleSize(0.16);
-			CloneDataMC->GetYaxis()->SetTitleOffset(0.35);
-			CloneDataMC->GetYaxis()->SetLabelSize(0.2);
-			CloneDataMC->Draw();
-
-			if (PlotGENIE) {
-
-			// v2
-
-			TH1D* CloneDatav2 = (TH1D*)(PlotsTrue[6][WhichPlot]->Clone());
-			CloneDatav2->Divide(PlotsReco[0][WhichPlot]);
-			CloneDatav2->Draw("same");
-
-			// v3.0.4
-
-			TH1D* CloneDatav304 = (TH1D*)(PlotsTrue[8][WhichPlot]->Clone());
-			CloneDatav304->Divide(PlotsReco[0][WhichPlot]);
-			CloneDatav304->Draw("same");
-
-			// v3.0.6
-
-			TH1D* CloneDatav306 = (TH1D*)(PlotsTrue[1][WhichPlot]->Clone());
-			CloneDatav306->Divide(PlotsReco[0][WhichPlot]);
-			CloneDatav306->Draw("same");
-
-			// SuSav2
-
-			TH1D* CloneDataSuSav2 = (TH1D*)(PlotsTrue[3][WhichPlot]->Clone());
-			CloneDataSuSav2->Divide(PlotsReco[0][WhichPlot]);
-			CloneDataSuSav2->Draw("same");
-
-			}
-
-			if (PlotGen) {
-
-			// NuWro
-
-			TH1D* CloneDataNuWro = (TH1D*)(PlotsTrue[4][WhichPlot]->Clone());
-			CloneDataNuWro->Divide(PlotsReco[0][WhichPlot]);
-			CloneDataNuWro->Draw("same");
-
-			// GiBUU
-
-			TH1D* CloneDataGiBUU = (TH1D*)(PlotsTrue[5][WhichPlot]->Clone());
-			CloneDataGiBUU->Divide(PlotsReco[0][WhichPlot]);
-			CloneDataGiBUU->Draw("same");
-
-			// NEUT
-
-			TH1D* CloneDataNEUT = (TH1D*)(PlotsTrue[7][WhichPlot]->Clone());
-			CloneDataNEUT->Divide(PlotsReco[0][WhichPlot]);
-			CloneDataNEUT->Draw("same");
-
-			}
-*/
 			// ----------------------------------------------------------------------------------------------
 
 			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions

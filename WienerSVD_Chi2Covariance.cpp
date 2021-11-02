@@ -27,93 +27,6 @@ using namespace Constants;
 
 #include "../myClasses/Util.h"
 
-// --------------------------------------------------------------------------------------------------------------------------------------------
-
-void Multiply(TH1D* True, TH2D* SmearMatrix) {
-
-	TH1D* TrueClone = (TH1D*)(True->Clone());
-
-	int XBins = SmearMatrix->GetXaxis()->GetNbins();
-	int YBins = SmearMatrix->GetYaxis()->GetNbins();
-
-	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
-
-	TVectorD signal(XBins);
-	TMatrixD response(XBins,XBins);
-
-	H2V(True, signal);
-	H2M(SmearMatrix, response, kFALSE); // X axis: Reco, Y axis: True
-
-	TVectorD RecoSpace = response * signal;
-	V2H(RecoSpace, TrueClone);	
-
-	return TrueClone;
-
-}
-
-// -----------------------------------------------------------------------------------------------
-
-void CalcChiSquared(TH1D* h_model, TH1D* h_data, TH2D* cov, double &chi, int &ndof, double &pval) {
-
-	// Clone them so we can scale them 
-
-	TH1D* h_model_clone = (TH1D*)h_model->Clone();
-	TH1D* h_data_clone  = (TH1D*)h_data->Clone();
-	TH2D* h_cov_clone   = (TH2D*)cov->Clone();
-
-	// Getting covariance matrix in TMatrix form
-
-	TMatrix cov_m;
-	cov_m.Clear();
-	cov_m.ResizeTo(h_cov_clone->GetNbinsX(), h_cov_clone->GetNbinsX());
-
-	// loop over rows
-
-	for (int i = 0; i < h_cov_clone->GetNbinsX(); i++) {
-
-		// loop over columns
-
-		for (int j = 0; j < h_cov_clone->GetNbinsY(); j++) {
-
-			cov_m[i][j] = h_cov_clone->GetBinContent(i+1, j+1);
-		
-		}
-	
-	}
-
-	// Inverting the covariance matrix
-
-	cov_m.SetTol(1.e-23);
-	TMatrix inverse_cov_m = cov_m.Invert();
-	inverse_cov_m.SetTol(1.e-23);
-
-	// Calculating the chi2 = Summation_ij{ (x_i - mu_j)*E_ij^(-1)*(x_j - mu_j)  }
-	// x = data, mu = model, E^(-1) = inverted covariance matrix 
-
-	chi = 0;
-	
-	for (int i = 0; i < h_cov_clone->GetNbinsX(); i++) {
-
-		for (int j = 0; j < h_cov_clone->GetNbinsY(); j++) {
-
-			chi += (h_data_clone->GetBinContent(i+1) - h_model_clone->GetBinContent(i+1)) * inverse_cov_m[i][j] * (h_data_clone->GetBinContent(j+1) - h_model_clone->GetBinContent(j+1));
- 
-		}
- 
-	}
-
-	ndof = h_data_clone->GetNbinsX();
-	pval = TMath::Prob(chi, ndof);
-
-	//std::cout << "Chi2/dof: " << chi << "/" << h_data_clone->GetNbinsX() << " = " << chi/double(ndof) <<  std::endl;
-	//std::cout << "p-value: " <<  pval << "\n" <<  std::endl;
-
-	delete h_model_clone;
-	delete h_data_clone;
-	delete h_cov_clone;
-
-}
-
 // -----------------------------------------------------------------------------------------------
 
 void WienerSVD_Chi2Covariance(TString Var) {
@@ -123,7 +36,6 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	TH1D::SetDefaultSumw2();
 
 	TString PathToFiles = "myXSec/";
-	TString PathToCovFiles = "myMigrationMatrices/";
 
 	std::cout.precision(3);	
 
@@ -137,30 +49,30 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	PlotNames.push_back("DeltaAlphaTPlot"); 
 	PlotNames.push_back("DeltaPhiTPlot");
 
-	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
+//	PlotNames.push_back("MuonMomentumPlot"); 
+//	PlotNames.push_back("MuonCosThetaPlot"); 
+//	PlotNames.push_back("ProtonMomentumPlot"); 
+//	PlotNames.push_back("ProtonCosThetaPlot");
 
 	} else if (Var == "Long") {
 
 //	PlotNames.push_back("DeltaPLPlot"); 
-	PlotNames.push_back("DeltaPnPlot"); 
+	PlotNames.push_back("DeltaPnPlot"); 	
 	PlotNames.push_back("DeltaPtxPlot"); 
 	PlotNames.push_back("DeltaPtyPlot"); 
+	PlotNames.push_back("kMissPlot");	
 //	PlotNames.push_back("APlot"); 
 
-	PlotNames.push_back("kMissPlot");
 //	PlotNames.push_back("PMissPlot"); 
 //	PlotNames.push_back("PMissMinusPlot");
 
 	} else if (Var == "Kine") {
 
 	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot"); 
+	//PlotNames.push_back("MuonCosThetaPlot"); 
 //	PlotNames.push_back("MuonPhiPlot");
-	PlotNames.push_back("ProtonMomentumPlot"); 
-	PlotNames.push_back("ProtonCosThetaPlot");
+	//PlotNames.push_back("ProtonMomentumPlot"); 
+	//PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
 
 	} else {  
@@ -195,15 +107,15 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 //	NameOfSamples.push_back("Overlay9");
 
-	NameOfSamples.push_back("GENIEv3_0_4"); SampleLabel.push_back("v3.0.4");
+/*	NameOfSamples.push_back("GENIEv3_0_4"); SampleLabel.push_back("v3.0.4");
 	NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box"); SampleLabel.push_back("v3.0.6");
 //	NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");
-	NameOfSamples.push_back("GENIEv2"); SampleLabel.push_back("v2.12.10");
+	NameOfSamples.push_back("GENIEv2"); SampleLabel.push_back("v2.12.10");*/
 	NameOfSamples.push_back("SuSav2"); SampleLabel.push_back("SuSav2");
-	NameOfSamples.push_back("GiBUU"); SampleLabel.push_back("GiBUU");
+/*	NameOfSamples.push_back("GiBUU"); SampleLabel.push_back("GiBUU");
 	NameOfSamples.push_back("NEUT"); SampleLabel.push_back("NEUT");
 	NameOfSamples.push_back("NuWro"); SampleLabel.push_back("NuWro");
-
+*/
 	const int NSamples = NameOfSamples.size();
 	
 	vector<TFile*> FileSample; FileSample.resize(NSamples);
@@ -244,13 +156,14 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
 	double Chi2[NRuns][N1DPlots][NSamples+1];
-	double Ndof[NRuns][N1DPlots][NSamples+1];
+	int Ndof[NRuns][N1DPlots][NSamples+1];
+	double PVal[NRuns][N1DPlots][NSamples+1];	
 	
 	// -----------------------------------------------------------------------------------------------------------------------------------------
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
-		cout << endl;
+		cout << endl;	
 
 		// -----------------------------------------------------------------------------------------------------------------------------
 
@@ -268,9 +181,15 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 			// -----------------------------------------------------------------------------------------------------------------
 			
-			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
+//TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
+//PlotCanvas->cd();			
+
+			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
 			TH1D* MCPlot = (TH1D*)(DataFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
 			
+//DataPlot->Draw("e1x0 same");
+//MCPlot->Draw("hist same");
+
 			TH2D* Covariance = (TH2D*)(DataFileSample[WhichRun]->Get("UnfCov"+PlotNames[WhichPlot]));
 
 			TH2D* CovarianceClone = (TH2D*)(Covariance->Clone()); 
@@ -279,10 +198,9 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 			for (int ix = 1; ix <= n; ix++) {
 
-				double WidthX = Covariance->GetXaxis()->GetBinWidth(ix);
-
 				for (int iy = 1; iy <= n; iy++) {
 
+					double WidthX = Covariance->GetXaxis()->GetBinWidth(ix);
 					double WidthY = Covariance->GetYaxis()->GetBinWidth(iy);
 
 					double TwoDWidth = WidthX * WidthY;
@@ -294,25 +212,15 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 			}			
 
-			// ----------------------------------------------------------------------------------------------------
-					
-			vector<TH1D*> Plots; Plots.resize(NSamples);	
-
-			double chi = -99.;
-			int ndof = -99;
-			double pval = -99.;				
-			
 			// ----------------------------------------------------------------------------------------------------	
 
 			//cout << "MC" << endl;
-			CalcChiSquared(MCPlot,DataPlot,CovarianceClone,chi,ndof,pval);
-
-			Chi2[WhichRun][WhichPlot][0] = chi;
-			Ndof[WhichRun][WhichPlot][0] = ndof;
+			CalcChiSquared(MCPlot,DataPlot,CovarianceClone,Chi2[WhichRun][WhichPlot][0],Ndof[WhichRun][WhichPlot][0],PVal[WhichRun][WhichPlot][0]);
 
 			// ----------------------------------------------------------------------------------------------------	
 
-			// Watch out!!! We need to divide by 2D bin width		
+			vector<TH1D*> Plots; Plots.resize(NSamples);
+			vector<TH1D*> Clone; Clone.resize(NSamples);
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
@@ -320,12 +228,14 @@ void WienerSVD_Chi2Covariance(TString Var) {
 			
 				Plots[WhichSample] = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot])); 	
 
-				Multiply(Plots[WhichSample],Ac);
-				CalcChiSquared(Plots[WhichSample],DataPlot,CovarianceClone,chi,ndof,pval);
-
-				Chi2[WhichRun][WhichPlot][WhichSample+1] = chi;
-				Ndof[WhichRun][WhichPlot][WhichSample+1] = ndof;							
+				Clone[WhichSample] = Multiply(Plots[WhichSample],Ac);
+				CalcChiSquared(Clone[WhichSample],DataPlot,CovarianceClone,Chi2[WhichRun][WhichPlot][WhichSample+1],Ndof[WhichRun][WhichPlot][WhichSample+1],PVal[WhichRun][WhichPlot][WhichSample+1]);
+//				CalcChiSquared(Plots[WhichSample],DataPlot,CovarianceClone,Chi2[WhichRun][WhichPlot][WhichSample+1],Ndof[WhichRun][WhichPlot][WhichSample+1],PVal[WhichRun][WhichPlot][WhichSample+1]);						
 				
+//Clone[WhichSample]->SetLineColor(WhichSample+2);				
+//Clone[WhichSample]->Draw("hist same");
+//cout << "alternative chi2 = " << Chi2Func(Clone[WhichSample],MCPlot) << endl;
+
 			}
 
 			// ----------------------------------------------------------------------------------------------------			

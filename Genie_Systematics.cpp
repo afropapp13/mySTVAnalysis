@@ -373,11 +373,12 @@ void Genie_Systematics() {
 
 				double tor860_wcut = -99.;
 
-				if (Runs[WhichRun] == "Run1") { tor860_wcut = tor860_wcut_Run1; }
-				if (Runs[WhichRun] == "Run2") { tor860_wcut = tor860_wcut_Run2; }
-				if (Runs[WhichRun] == "Run3") { tor860_wcut = tor860_wcut_Run3; }
-				if (Runs[WhichRun] == "Run4") { tor860_wcut = tor860_wcut_Run4; }
-				if (Runs[WhichRun] == "Run5") { tor860_wcut = tor860_wcut_Run5; }
+				if (Runs[WhichRun] == "Run1") { tor860_wcut = Fulltor860_wcut_Run1; }
+				if (Runs[WhichRun] == "Run2") { tor860_wcut = Fulltor860_wcut_Run2; }
+				if (Runs[WhichRun] == "Run3") { tor860_wcut = Fulltor860_wcut_Run3; }
+				if (Runs[WhichRun] == "Run4") { tor860_wcut = Fulltor860_wcut_Run4; }
+				if (Runs[WhichRun] == "Run5") { tor860_wcut = Fulltor860_wcut_Run5; }
+				if (Runs[WhichRun] == "Combined") { tor860_wcut = Fulltor860_wcut_Combined; }
 
 				TString Label = Runs[WhichRun] + " " +ToString(tor860_wcut)+" POT";
 				latex.DrawLatexNDC(0.45,0.75, "#splitline{"+Label+"}{"+ToString(NUniverses[WhichEventWeightLabel])+" Universes}");				

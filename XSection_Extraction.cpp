@@ -160,7 +160,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);													
 		
-		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);	
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
 		//cout << Runs[WhichRun] << " integrated flux = " << IntegratedFlux << endl;		
 
 		// -------------------------------------------------------------------------------------		
@@ -269,7 +269,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 				double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
 
 				// We want the number of events, as if the bin width is 1
-				if (PlotNames[WhichPlot] == "MuonCosThetaPlot") { BinWidth = 1.; }
+				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { BinWidth = 1.; }
 
 				// -----------------------------------------------------------------------------------------------------------------
 

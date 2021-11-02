@@ -132,15 +132,20 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		unc->GetYaxis()->SetTitleOffset(1.);				
 		unc->GetYaxis()->SetRangeUser(0.,34.);
 
-		if (PlotName == "DeltaPTPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }
-//		if (PlotName == "DeltaAlphaTPlot") { unc->GetYaxis()->SetRangeUser(0.,14.); }
-		if (PlotName == "DeltaPhiTPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }
+		if (PlotName == "DeltaPTPlot") { unc->GetYaxis()->SetRangeUser(0.,44.); }
+		if (PlotName == "DeltaAlphaTPlot") { unc->GetYaxis()->SetRangeUser(0.,18.); }
+		if (PlotName == "DeltaPhiTPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
 		if (PlotName == "MuonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
-		if (PlotName == "MuonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,24.); }
-		if (PlotName == "MuonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }	
-		if (PlotName == "ProtonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
-		if (PlotName == "ProtonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }	
+		if (PlotName == "MuonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }
+		if (PlotName == "MuonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }
+		if (PlotName == "MuonCosThetaSingleBinPlot") { unc->GetYaxis()->SetRangeUser(0.,14.); }			
+		if (PlotName == "ProtonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }
+		if (PlotName == "ProtonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,29.); }	
 		if (PlotName == "ProtonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }	
+		if (PlotName == "DeltaPnPlot") { unc->GetYaxis()->SetRangeUser(0.,43.); }
+		if (PlotName == "DeltaPtyPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }	
+		if (PlotName == "PMissMinusPlot") { unc->GetYaxis()->SetRangeUser(0.,49.); }
+		if (PlotName == "ECalPlot") { unc->GetYaxis()->SetRangeUser(0.,49.); }							
 					
 		unc->SetLineWidth(2);		
 		unc->SetLineColor(Colors[Color+1]);
@@ -222,23 +227,23 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 	if (BeamOn9 != "") { // Fake data study, we need only the Stat & XSec covariances
 
-	UncSources.push_back("Stat");
-	UncSources.push_back("XSec");
+		UncSources.push_back("Stat");
+		UncSources.push_back("XSec");
+		UncSources.push_back("MC_Stat");	
 
 	} else {
 
-	UncSources.push_back("Stat");
-	UncSources.push_back("LY");
-	UncSources.push_back("TPC");
-	UncSources.push_back("SCERecomb2");
-	UncSources.push_back("XSec");
-	UncSources.push_back("G4");
-	UncSources.push_back("Flux");
-	UncSources.push_back("Dirt");
-	UncSources.push_back("POT"); 
-	UncSources.push_back("NTarget");
-
-//	UncSources.push_back("MC_Stat");
+		UncSources.push_back("Stat");
+		UncSources.push_back("LY");
+		UncSources.push_back("TPC");
+		UncSources.push_back("SCERecomb2");
+		UncSources.push_back("XSec");
+		UncSources.push_back("G4");
+		UncSources.push_back("Flux");
+		UncSources.push_back("Dirt");
+		UncSources.push_back("POT"); 
+		UncSources.push_back("NTarget");
+		UncSources.push_back("MC_Stat");
 
 	}
 
@@ -274,6 +279,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
 		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOn9 != "") { TotalFileCovarianceSpecName = Tune + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
 		TFile* TotalFileCovarianceMatrices = new TFile(TotalFileCovarianceName,"recreate");
 
@@ -318,7 +324,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				// Opening the file containing the covariance matrices for each one of the systematics
 
 //				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				TString FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				if (BeamOn9 != "" && UncSources[WhichSample] == "Stat") { FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs
