@@ -223,23 +223,23 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 	if (BeamOn9 != "") { // Fake data study, we need only the Stat & XSec covariances
 
-	UncSources.push_back("Stat");
-	UncSources.push_back("XSec");
+		UncSources.push_back("Stat");
+		UncSources.push_back("XSec");
+		UncSources.push_back("MC_Stat");	
 
 	} else {
 
-	UncSources.push_back("Stat");
-	UncSources.push_back("LY");
-	UncSources.push_back("TPC");
-	UncSources.push_back("SCERecomb2");
-	UncSources.push_back("XSec");
-	UncSources.push_back("G4");
-	UncSources.push_back("Flux");
-	UncSources.push_back("Dirt");
-	UncSources.push_back("POT"); 
-	UncSources.push_back("NTarget");
-
-//	UncSources.push_back("MC_Stat");
+		UncSources.push_back("Stat");
+		UncSources.push_back("LY");
+		UncSources.push_back("TPC");
+		UncSources.push_back("SCERecomb2");
+		UncSources.push_back("XSec");
+		UncSources.push_back("G4");
+		UncSources.push_back("Flux");
+		UncSources.push_back("Dirt");
+		UncSources.push_back("POT"); 
+		UncSources.push_back("NTarget");
+		UncSources.push_back("MC_Stat");
 
 	}
 

@@ -162,7 +162,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);													
 		
-		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface) * (SoftFidSurface / Nominal_UB_XY_Surface);	
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
 		//cout << Runs[WhichRun] << " integrated flux = " << IntegratedFlux << endl;		
 
 		// -------------------------------------------------------------------------------------		
