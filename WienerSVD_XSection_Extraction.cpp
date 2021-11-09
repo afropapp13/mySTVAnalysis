@@ -403,7 +403,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			TVectorD signal(n);
 			TVectorD measure(m);
-			TMatrixD response(m, n);
+			TMatrixD response(m, n);		
 			TMatrixD covariance(m, m);
 			TMatrixD statcovariance(m, m);
 			TMatrixD systcovariance(m, m);
@@ -550,7 +550,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// Draw the data points first to get the beautiful canvas 
 			PlotCanvas->cd();
 			if (ClosureTest == true) { unf->Draw("p0 hist"); }
-			else { unf->Draw("e1x0"); }			
+			else { unf->Draw("e1x0"); }		
+
+			// -------------------------------------- //	
 
 			// The MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
 
@@ -563,7 +565,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
 			PlotCanvas->cd();					
-			TrueUnf->Draw("hist same");
+			TrueUnf->Draw("hist same");		
+
+			// -------------------------------------- //						
 
 			// Plotting again so that the data points are on top 
 			PlotCanvas->cd();
@@ -688,7 +692,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			// ---------------------------------------------------------------------------------------------------------------------------
     
-			if (ClosureTest == false ) {
+			if (ClosureTest == false) {
 
 				ExtractedXSec->cd();
 
@@ -710,7 +714,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				//absError->Write("AbsErr"+PlotNames[WhichPlot]);
 				//MSE->Write("MSE"+PlotNames[WhichPlot]);
 				//MSE2->Write("MSE2"+PlotNames[WhichPlot]);
-				ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]);	
+				ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]);
 
 				// ---------------------------------------------------------------------------------------------------------------------------
 

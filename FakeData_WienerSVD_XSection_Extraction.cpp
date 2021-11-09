@@ -435,10 +435,14 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			// Same for the alternative MC CC1p prediction (NuWro et al)
 
+			TH1D* NoSmearAltTrueUnf = new TH1D("NoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* AltTrueUnf = new TH1D("AltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD NoSmearAltTrueUnfold = altsignal;
 			TVectorD AltAcTrueUnfold = AddSmear * altsignal;
+			V2H(NoSmearAltTrueUnfold, NoSmearAltTrueUnf);
 			V2H(AltAcTrueUnfold, AltTrueUnf);
 
+			ReweightXSec(NoSmearAltTrueUnf);
 			ReweightXSec(AltTrueUnf);
 			AltTrueUnf->SetLineColor(kOrange+7);
 			AltTrueUnf->SetMarkerColor(kOrange+7);	
@@ -564,6 +568,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			unf->Write("Reco"+PlotNames[WhichPlot]);
 			TrueUnf->Write("True"+PlotNames[WhichPlot]);
+			NoSmearAltTrueUnf->Write("NoSmearAltTrue"+PlotNames[WhichPlot]);
 			AltTrueUnf->Write("AltTrue"+PlotNames[WhichPlot]);						
 			smear->Write("Ac"+PlotNames[WhichPlot]);
 			unfcov->Write("UnfCov"+PlotNames[WhichPlot]);	

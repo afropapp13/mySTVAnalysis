@@ -98,7 +98,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 //	PlotNames.push_back("ProtonMomentumPlot"); 
 //	PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
-
+//	PlotNames.push_back("DeltaPnPlot");
+//	PlotNames.push_back("DeltaPtxPlot");
+//	PlotNames.push_back("DeltaPtyPlot");
 //	PlotNames.push_back("kMissPlot"); 
 
 //	PlotNames.push_back("CCQEMuonMomentumPlot"); 
@@ -251,7 +253,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
 
-					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
+					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("NoSmearAltTrue"+PlotNames[WhichPlot]));
 					CurrentPlotsTrue.push_back(histTrue);
 		
 				}
@@ -403,6 +405,17 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
 
 			midPad->cd();
+
+			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { 
+
+				PlotsReco[0][WhichPlot]->GetXaxis()->SetTitle("");
+				PlotsReco[0][WhichPlot]->GetXaxis()->SetLabelSize(0.);
+				PlotsReco[0][WhichPlot]->GetXaxis()->SetTickSize(0.);								
+
+				PlotsReco[0][WhichPlot]->GetYaxis()->SetTitle("#sigma #left[10^{-38} #frac{cm^{2}}{Ar}#right]");
+
+			}
+
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // Total Unc
 
 			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);

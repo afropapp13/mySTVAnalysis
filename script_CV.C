@@ -54,7 +54,9 @@ void script_CV() {
 
 		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,\"NoTune\")");		
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,\"NoTune\")");
+
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,\"TwiceMEC\")");				
 
 //		gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 

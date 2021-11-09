@@ -2,7 +2,7 @@
 
 export OutPutDir=/uboone/data/users/$UserID/mySTVAnalysis/myMigrationMatrices/$UBCode
 
-declare -a arrRun=("Run1" "Run3")
+declare -a arrRun=("Run1" "Run2" "Run3" "Combined")
 
 # Loop over the run numbers
 
