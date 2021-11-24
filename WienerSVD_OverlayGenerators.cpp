@@ -68,7 +68,10 @@ void PrettyPlot(TH1D* h) {
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
-void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bool PlotGENIEFSITweaks = false, bool PlotGENIEFlagTweaks = false, bool PlotGENIECT = false, bool PlotNuclModels = false, bool PlotNuWro = false) {
+void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, 
+								 bool PlotGENIEFSITweaks = false, bool PlotGENIEFlagTweaks = false, 
+								 bool PlotGENIECT = false, bool PlotNuclModels = false, 
+								 bool PlotNuWro = false, bool PlotNominal = false) {
 
 	int DecimalAccuracy = 2;
 
@@ -85,6 +88,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 	if (!PlotGENIE && !PlotGen && PlotGENIECT) { Extra = "GENIEClosureTest"; }
 	if (!PlotGENIE && !PlotGen && PlotNuclModels) { Extra = "GENIENuclModels"; }
 	if (!PlotGENIE && !PlotGen && PlotNuWro) { Extra = "NuWro"; }
+	if (!PlotGENIE && !PlotGen && PlotNominal) { Extra = "Nominal"; }	
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -203,7 +207,11 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		// -------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
+
+		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
+
+		//----------------------------------------//
 
 		// Open the files and grap the relevant plots
 
@@ -317,16 +325,24 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 		}
 
-		// -----------------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 
 		// Loop over the plots
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
 
+			//----------------------------------------//
+
 			TH2D* Ac = (TH2D*)FileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
 			TH2D* Cov = (TH2D*)FileSample[0]->Get("UnfCov"+PlotNames[WhichPlot]);			
 
-			// -----------------------------------------------------------------------------------------------------------------------------
+			//----------------------------------------//
+
+			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));
+
+			//----------------------------------------//
+
+			// The covariance matrix needs to be scaled by the 2D bin width
 
 			TH2D* CovClone = (TH2D*)(Cov->Clone()); 
 
@@ -340,13 +356,35 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 					double WidthY = Cov->GetYaxis()->GetBinWidth(iy);
 
 					double TwoDWidth = WidthX * WidthY;
-					double BinContent = Cov->GetBinContent(ix,iy);
+//					double TwoDWidth = 1.;
 
-					CovClone->SetBinContent(ix,iy,BinContent/TwoDWidth);
+					double BinContent = Cov->GetBinContent(ix,iy);
+					double NewBinContent = BinContent/TwoDWidth;
+
+					// Only for the diagonal elements
+					// Add the unfolding uncertainty
+					// On top of everything else
+					// That is done both for the final xsec result and for the unfolded covariance
+					if (ix == iy) { 
+						
+						// unfolded covariance matrix
+						double UnfUncBin = UncHist->GetBinContent(ix);
+						NewBinContent = TMath::Sqrt( TMath::Power(NewBinContent,2.) + TMath::Power(UnfUncBin,2.) ) ; 
+
+						// xsec uncertainty
+						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
+						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
+						//PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+						
+					}
+
+					CovClone->SetBinContent(ix,iy,NewBinContent);
 
 				}					
 
 			}	
+
+			//CovClone->Draw("coltz text");
 
 			// -----------------------------------------------------------------------------------------------------------------------------			
 
@@ -373,7 +411,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 //			leg->SetNColumns(4);
 //			leg->SetMargin(0.15);
 
-			TLegend* leg = new TLegend(0.6,0.58,0.73,0.85);
+			TLegend* leg = new TLegend(0.58,0.58,0.71,0.85);
 			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot" || PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { leg = new TLegend(0.25,0.2,0.8,0.4); }
 			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot") 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
@@ -403,6 +441,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.);
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
+			PlotsReco[0][WhichPlot]->SetLineWidth(1);			
 
 			midPad->cd();
 
@@ -416,10 +455,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			}
 
-			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // Total Unc
+			//------------------------------//
+
+			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // Total Unc (Shape + Stat)
 
 			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
+			PlotsTotalReco[0][WhichPlot]->SetLineWidth(1);			
 			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only
 			
 			PlotsNormOnly[0][WhichPlot]->SetFillColorAlpha(kGray+1, 0.45);	
@@ -444,7 +486,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 			double pval[NSamples];
 
 			// Clones for the NSamples-1 model predictions
-			// index 0 corresponds to nominal overlay
+			// index 0 corresponds to nominal overlay / CV
 
 			TH1D* Clone[NSamples-1];			
 
@@ -457,8 +499,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 				Clone[WhichSample-1]->Draw("hist same");		
 
-				CalcChiSquared(Clone[WhichSample-1],PlotsReco[0][WhichPlot],Cov,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
+//				CalcChiSquared(PlotsTrue[WhichSample][WhichPlot],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
+				CalcChiSquared(Clone[WhichSample-1],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
 				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],2) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
+				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofAlt = ""; } 
 //				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample] + Chi2NdofAlt,"l");
 				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l");
 				lGenie->SetTextColor(Colors[WhichSample]); 										
@@ -481,8 +525,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, bo
 
 			// ---------------------------------------------------------------------------------------------------------
 
-			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],Cov,Chi2[0],Ndof[0],pval[0]);
+			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],CovClone,Chi2[0],Ndof[0],pval[0]);
 			TString Chi2NdofNom = " (" + to_string_with_precision(Chi2[0],2) + "/" + TString(std::to_string(Ndof[0])) +")";
+			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofNom = ""; }			
 //			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
 			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
 			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(Colors[0]); 	

@@ -23,12 +23,14 @@ void script_WienerSVD_XSec() {
 	for (int i = 0;i < (int)(WhichSampleArray.size()); i++) {
 
 		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\")");
-		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",false,\"\",\"NoTune\")");		
+		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",false,\"\",\"NoTune\")");
+		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",false,\"\",\"TwiceMEC\")");				
 
 		// Closure test
 
 		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true)");
-		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true,\"\",\"NoTune\")");			
+		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true,\"\",\"NoTune\")");
+		gROOT->ProcessLine("WienerSVD_XSection_Extraction(\""+WhichSampleArray[i]+"\",true,\"\",\"TwiceMEC\")");					
 
 	}
 

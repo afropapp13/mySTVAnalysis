@@ -27,7 +27,7 @@ using namespace Constants;
 
 #include "../myClasses/Util.h"
 
-// -----------------------------------------------------------------------------------------------
+//------------------------------//
 
 void WienerSVD_Chi2Covariance(TString Var) {
 
@@ -39,7 +39,7 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 	std::cout.precision(3);	
 
-	// ---------------------------------------------------------------------------------------------------------------------------
+	//------------------------------//
 
 	vector<TString> PlotNames;
 
@@ -60,7 +60,7 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	PlotNames.push_back("DeltaPnPlot"); 	
 	PlotNames.push_back("DeltaPtxPlot"); 
 	PlotNames.push_back("DeltaPtyPlot"); 
-	PlotNames.push_back("kMissPlot");	
+//	PlotNames.push_back("kMissPlot");	
 //	PlotNames.push_back("APlot"); 
 
 //	PlotNames.push_back("PMissPlot"); 
@@ -69,10 +69,10 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	} else if (Var == "Kine") {
 
 	PlotNames.push_back("MuonMomentumPlot"); 
-	//PlotNames.push_back("MuonCosThetaPlot"); 
+	PlotNames.push_back("MuonCosThetaPlot"); 
 //	PlotNames.push_back("MuonPhiPlot");
-	//PlotNames.push_back("ProtonMomentumPlot"); 
-	//PlotNames.push_back("ProtonCosThetaPlot");
+	PlotNames.push_back("ProtonMomentumPlot"); 
+	PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
 
 	} else {  
@@ -85,7 +85,7 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// ------------------------------------------------------------------------------------------------------------------------------
+	//------------------------------//
 
 	vector<TString> Runs;
 	//Runs.push_back("Run1");
@@ -98,7 +98,7 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------
+	//------------------------------//
 
 	vector<TString> NameOfSamples; NameOfSamples.clear();
 	vector<TString> SampleLabel; SampleLabel.clear();
@@ -107,15 +107,15 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 //	NameOfSamples.push_back("Overlay9");
 
-/*	NameOfSamples.push_back("GENIEv3_0_4"); SampleLabel.push_back("v3.0.4");
+	NameOfSamples.push_back("GENIEv3_0_4"); SampleLabel.push_back("v3.0.4");
 	NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box"); SampleLabel.push_back("v3.0.6");
 //	NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");
-	NameOfSamples.push_back("GENIEv2"); SampleLabel.push_back("v2.12.10");*/
+	NameOfSamples.push_back("GENIEv2"); SampleLabel.push_back("v2.12.10");
 	NameOfSamples.push_back("SuSav2"); SampleLabel.push_back("SuSav2");
-/*	NameOfSamples.push_back("GiBUU"); SampleLabel.push_back("GiBUU");
+	NameOfSamples.push_back("GiBUU"); SampleLabel.push_back("GiBUU");
 	NameOfSamples.push_back("NEUT"); SampleLabel.push_back("NEUT");
 	NameOfSamples.push_back("NuWro"); SampleLabel.push_back("NuWro");
-*/
+
 	const int NSamples = NameOfSamples.size();
 	
 	vector<TFile*> FileSample; FileSample.resize(NSamples);
@@ -143,7 +143,7 @@ void WienerSVD_Chi2Covariance(TString Var) {
 	
 	}		
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------
+	//------------------------------//
 	
 	vector<TFile*> DataFileSample; DataFileSample.resize(NRuns);		
 	
@@ -153,42 +153,49 @@ void WienerSVD_Chi2Covariance(TString Var) {
 			
 	}		
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------
+	//------------------------------//
 
 	double Chi2[NRuns][N1DPlots][NSamples+1];
 	int Ndof[NRuns][N1DPlots][NSamples+1];
 	double PVal[NRuns][N1DPlots][NSamples+1];	
+
+	//----------------------------------------//
+
+	TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");	
 	
-	// -----------------------------------------------------------------------------------------------------------------------------------------
+	//------------------------------//
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		cout << endl;	
 
-		// -----------------------------------------------------------------------------------------------------------------------------
+		//------------------------------//
 
 		// Loop over the plots
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
 
-			// -----------------------------------------------------------------------------------------------------------------
+			//------------------------------//
 
 			TH2D* Ac = (TH2D*)DataFileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
 
-			// -----------------------------------------------------------------------------------------------------------------
+			//----------------------------------------//
 
-			//cout << PlotNames[WhichPlot] << endl << endl;
+			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));			
 
-			// -----------------------------------------------------------------------------------------------------------------
-			
-//TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
-//PlotCanvas->cd();			
+			//------------------------------//
+
+			//cout << PlotNames[WhichPlot] << endl << endl;			
+			//TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
+			//PlotCanvas->cd();			
 
 			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
 			TH1D* MCPlot = (TH1D*)(DataFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
 			
-//DataPlot->Draw("e1x0 same");
-//MCPlot->Draw("hist same");
+			//DataPlot->Draw("e1x0 same");
+			//MCPlot->Draw("hist same");
+
+			//------------------------------//
 
 			TH2D* Covariance = (TH2D*)(DataFileSample[WhichRun]->Get("UnfCov"+PlotNames[WhichPlot]));
 
@@ -205,8 +212,21 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 					double TwoDWidth = WidthX * WidthY;
 					double BinContent = Covariance->GetBinContent(ix,iy);
+					double NewBinContent = BinContent/TwoDWidth;
 
-					CovarianceClone->SetBinContent(ix,iy,BinContent/TwoDWidth);
+					// Only for the diagonal elements
+					// Add the unfolding uncertainty
+					// On top of everything else
+					// That is done both for the final xsec result and for the unfolded covariance
+					if (ix == iy) { 
+						
+						// unfolded covariance matrix
+						double UnfUncBin = UncHist->GetBinContent(ix);
+						NewBinContent = TMath::Sqrt( TMath::Power(NewBinContent,2.) + TMath::Power(UnfUncBin,2.) ) ; 
+
+					}										
+
+					CovarianceClone->SetBinContent(ix,iy,NewBinContent);
 
 				}					
 

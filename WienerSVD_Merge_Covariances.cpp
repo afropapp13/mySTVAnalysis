@@ -269,6 +269,9 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	vector<TH2D*> StatCovariances;
 	StatCovariances.resize(NPlots);
 
+	vector<TH2D*> MCStatCovariances;
+	MCStatCovariances.resize(NPlots);	
+
 	vector<TH2D*> SystCovariances;
 	SystCovariances.resize(NPlots);	
 
@@ -374,6 +377,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					if (WhichSample == 1) { SystCovariances[WhichPlot] = LocalCovMatrix; FracSystCovariances[WhichPlot] = LocalFracCovMatrix; }
 					else { SystCovariances[WhichPlot]->Add(LocalCovMatrix); FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
 
+					if (UncSources[WhichSample] == "MC_Stat") { MCStatCovariances[WhichPlot] = LocalCovMatrix; }
+
 				}
 
 				// --------------------------------------------------------------------------------
@@ -401,6 +406,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			TotalFileCovarianceMatrices->cd();
 
+			MCStatCovariances[WhichPlot]->Write("MCStatCovariance_"+PlotNames[WhichPlot]);
 			StatCovariances[WhichPlot]->Write("StatCovariance_"+PlotNames[WhichPlot]);
 			FracStatCovariances[WhichPlot]->Write("FracStatCovariance_"+PlotNames[WhichPlot]);
 

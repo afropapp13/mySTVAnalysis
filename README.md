@@ -16,10 +16,12 @@ root -b script_WienerSVD_Systematics.C
 root -b WienerSVD_Merge_Covariances.cpp
 
 root -b script_WienerSVD_Systematics_NoTune.C
+root -b script_WienerSVD_Systematics_TwiceMEC.C
 
 root -b 
 .L WienerSVD_Merge_Covariances.cpp
 WienerSVD_Merge_Covariances("Overlay9", "","NoTune")
+WienerSVD_Merge_Covariances("Overlay9", "","TwiceMEC")
 
 root -b script_WienerSVD_XSec.C
 
@@ -96,20 +98,28 @@ root -b
 .L FakeData_WienerSVD_StatCovarianceMatrices.cpp
 FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","NoTuneOverlay9","ExtBNB9","OverlayDirt9")
+FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","TwiceMECOverlay9","ExtBNB9","OverlayDirt9")
 
-# Merge the NuWro covariances
+# Merge the alternative MC covariances
 root -b
 .L WienerSVD_Merge_Covariances.cpp++
 WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro","Overlay9NuWro")
-WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","NoTuneOverlay9") 
+WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","NoTuneOverlay9")
+WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","TwiceMECOverlay9") 
 
-# extract the xsecs # needs testing
+# Fake data study
 root -b 
 .L ../../myClasses/Util.C++
 .L ../../myClasses/WienerSVD.C++
 .L FakeData_WienerSVD_XSection_Extraction.cpp++
 FakeData_WienerSVD_XSection_Extraction("Overlay9","Overlay9NuWro")
 FakeData_WienerSVD_XSection_Extraction("Overlay9","NoTuneOverlay9")
+FakeData_WienerSVD_XSection_Extraction("Overlay9","TwiceMECOverlay9")
+
+
+# mixed study: alternative MC & fake data (NuWro)
+FakeData_WienerSVD_XSection_Extraction("NoTuneOverlay9","Overlay9NuWro")
+FakeData_WienerSVD_XSection_Extraction("TwiceMECOverlay9","Overlay9NuWro")
 
 #################################################################################################################################
 
@@ -136,6 +146,8 @@ WienerSVD_OverlayGenerators(false,false,false,false,true)
 WienerSVD_OverlayGenerators(false,false,false,false,false,true)
 #NuWro Comparisons out-of-the-box vs larsoft
 WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)
+#Just data vs Nominal MC
+WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)
 
 #.x IntegratedXSecs.cpp
 

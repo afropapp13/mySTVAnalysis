@@ -59,15 +59,15 @@ void BinByBinChi2() {
 	int DecimalAccuracy = 2;
 
 	TH1D::SetDefaultSumw2();
-//	vector<TString> PlotNames;
 
 	TString PathToFiles = "myXSec/";
 	TString PathToCovFiles = "myMigrationMatrices/";	
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
+	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
+	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
 //	PlotNames.push_back("MuonMomentumPlot"); 
 //	PlotNames.push_back("MuonCosThetaPlot"); 
@@ -158,14 +158,18 @@ void BinByBinChi2() {
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			cout << PlotNames[WhichPlot] << endl << endl;
+			cout << endl << PlotNames[WhichPlot] << endl << endl;
 
 			// -----------------------------------------------------------------------------------------------------------------
 			
-			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
+			TH1D* DataPlot = (TH1D*)(DataFileSample[WhichRun]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
 			TH1D* MCPlot = (TH1D*)(DataFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
+			TH2D* Ac = (TH2D*)DataFileSample[WhichRun]->Get("Ac"+PlotNames[WhichPlot]);
 
 			int n = DataPlot->GetXaxis()->GetNbins();
+
+			DataPlot->Draw("e1x0 same");
+			MCPlot->Draw("hist same");
 
 			// -----------------------------------------------------------------------------------------------------------------
 					
@@ -174,8 +178,9 @@ void BinByBinChi2() {
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 			
 				Plots[WhichSample] = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot])); 
+				TH1D* Clone = Multiply(Plots[WhichSample],Ac);
 
-				double chi2 = Chi2(Plots[WhichSample],DataPlot);							
+				double chi2 = Chi2(Clone,DataPlot);							
 				
 				cout << NameOfSamples[WhichSample] << "   chi2 / dof = " << chi2 << " / " << n << endl;
 

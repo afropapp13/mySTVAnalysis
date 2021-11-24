@@ -173,17 +173,21 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
+		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();		
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
 		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		if (OverlaySample == "NoTuneOverlay9") { FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		if (OverlaySample == "TwiceMECOverlay9") { FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
 		cout << "File Responses = " << FileResponseName << endl;
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
 		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		if (OverlaySample == "NoTuneOverlay9") 
 			{ FileCovarianceName = MigrationMatrixPath+"NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+		if (OverlaySample == "TwiceMECOverlay9") 
+			{ FileCovarianceName = MigrationMatrixPath+"TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }				
 		cout << "File Covariances = " << FileCovarianceName << endl;			
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
 
@@ -227,7 +231,14 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			TString FileName = "NoTuneSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
 			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
-			}			
+			}
+
+			if (NameOfSamples[WhichSample] == "TwiceMECOverlay9") { 
+			
+			TString FileName = "TwiceMECSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}						
 
 			if (NameOfSamples[WhichSample] == "GenieOverlay") { 
 			
@@ -240,9 +251,12 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			
 				TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 				if (BeamOnSample == "NoTuneOverlay9") { FileName = "NoTuneTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOnSample == "TwiceMECOverlay9") { FileName = "TwiceMECTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
 				if (BeamOnSample == "Overlay9NuWro") { FileName = "TruthSTVAnalysis_Overlay9NuWro_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
 				if (BeamOnSample == "BeamOn9" && OverlaySample == "NoTuneOverlay9") 
-					{ FileName = "NoTuneTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+					{ FileName = "NoTuneTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOnSample == "BeamOn9" && OverlaySample == "TwiceMECOverlay9") 
+					{ FileName = "TwiceMECTruthSTVAnalysis_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }						
 						
 				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 			
@@ -290,8 +304,9 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			// Already flux-averaged rates
 			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
+			MCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));			
 
-			// -----------------------------------------------------------------------------------------------------
+			//----------------------------------------//
 
 			// True CC1p Signal MC // No detector/ reconstruction / smearing effects
 
@@ -305,9 +320,9 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			// BeamOn = Alternative model for fake data studies in this case
 			// Thus we grab the CC1p part, without any subtractions
 
-//			TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
-			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
-			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
+			TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
+//			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
+//			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
 
 			int m = DataPlot->GetNbinsX();			
 			TString XTitle = DataPlot->GetXaxis()->GetTitle();
@@ -327,6 +342,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			TVectorD measure(m);
 			TMatrixD response(m, n);
 			TMatrixD covariance(m, m);
+			TMatrixD mcstatcovariance(m, m);			
 			TMatrixD statcovariance(m, m);
 			TMatrixD systcovariance(m, m);
 
@@ -338,6 +354,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(MCStatCovarianceMatrices[WhichPlot], mcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
 
 			// ------------------------------------------------------------------------------------------
 
@@ -376,20 +393,18 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			// --------------------------------------------------------------------------------------------------
 
-			V2H(unfold, unf);
+			V2H(unfold, unf); 			
 
-			// --------------------------------------------------------------------------------------------------				
+			// --------------------------------------------------------------------------------------------------						
 
-			// Scaling by correct units & bin width division
+			// Scaling by correct units & bin width divi
 
 			for (int i = 1; i <= n;i++ ) { 
 
-				double CVInBin = unf->GetBinContent(i);
-
 				// default / total uncertainty
+				// XSec / Stat / MC Stat unc
 				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
-
-				unf->SetBinError(i, CovUnc );
+				unf->SetBinError(i, CovUnc );								
 
 			}
 
@@ -417,7 +432,25 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			unf->SetLineColor(BeamOnColor);
 			unf->SetMarkerColor(BeamOnColor);
 			unf->SetMarkerStyle(20);
-			unf->SetMarkerSize(1.);		
+			unf->SetMarkerSize(1.);	
+
+			//----------------------------------------//
+
+			// Unfolded MC Stat covariance
+			TMatrixD CovRotation_T (TMatrixD::kTransposed, CovRotation); 
+			TMatrixD UnfMCStatCov = CovRotation*mcstatcovariance*CovRotation_T; 				
+
+			TH1D* unfMCStat = (TH1D*)(unf->Clone());	
+
+			for (int i = 1; i <= n;i++ ) { 
+
+				double BinWidth = unf->GetBinWidth(i);			
+
+				// Only unfolded MC Stat unc
+				double MCStatCovUnc = TMath::Sqrt(UnfMCStatCov(i-1,i-1) ) / BinWidth;
+				unfMCStat->SetBinError(i, MCStatCovUnc );				
+
+			}						
 
 			// ----------------------------------------//		
 
@@ -450,18 +483,21 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			// ----------------------------------------//	
 
 			double max = 1.2 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
-			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);			
+//			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);
+			unfMCStat->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);			
 
 			// Draw the data points first to get the beautiful canvas 
 			PlotCanvas->cd();
-			unf->Draw("e1x0");
+			//unf->Draw("e1x0"); // Full unc : XSec + Stat + MC Stat
+			unfMCStat->Draw("e1x0"); // Only MC Stat
 			//TrueUnf->Draw("hist same");
 			AltTrueUnf->Draw("hist same");
 
 
 			// Plotting again so that the data points are on top 
 			PlotCanvas->cd();
-			unf->Draw("e1x0 same"); 
+			//unf->Draw("e1x0 same"); // Full unc : XSec + Stat + MC Stat
+			unfMCStat->Draw("e1x0 same"); // Only MC Stat
 
 			// ------------------------------------------------------------------------------
 
@@ -566,13 +602,14 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			ExtractedXSec->cd();
 
-			unf->Write("Reco"+PlotNames[WhichPlot]);
-			TrueUnf->Write("True"+PlotNames[WhichPlot]);
-			NoSmearAltTrueUnf->Write("NoSmearAltTrue"+PlotNames[WhichPlot]);
-			AltTrueUnf->Write("AltTrue"+PlotNames[WhichPlot]);						
-			smear->Write("Ac"+PlotNames[WhichPlot]);
-			unfcov->Write("UnfCov"+PlotNames[WhichPlot]);	
-			CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]);				
+			unf->Write("Reco"+PlotNames[WhichPlot]); // "Data" xsec
+			unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]); // "Data" only with MC stat uncertainties		
+			TrueUnf->Write("True"+PlotNames[WhichPlot]); // MC after multiplication by Ac
+			NoSmearAltTrueUnf->Write("NoSmearAltTrue"+PlotNames[WhichPlot]); // alternative MC w/o multiplication by Ac
+			AltTrueUnf->Write("AltTrue"+PlotNames[WhichPlot]); // alternative MC with multiplication by Ac
+			smear->Write("Ac"+PlotNames[WhichPlot]); // additional smearing matrix
+			unfcov->Write("UnfCov"+PlotNames[WhichPlot]); // unfolded covariance matrix
+			CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]); // covariance matrix		
 			//wiener->Write("Wiener"+PlotNames[WhichPlot]);
 			//diff->Write("Diff"+PlotNames[WhichPlot]);
 			//bias->Write("Bias"+PlotNames[WhichPlot]);
@@ -581,7 +618,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			//absError->Write("AbsErr"+PlotNames[WhichPlot]);
 			//MSE->Write("MSE"+PlotNames[WhichPlot]);
 			//MSE2->Write("MSE2"+PlotNames[WhichPlot]);
-			ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]);	
+			ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]); // response matrix
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 /*

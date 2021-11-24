@@ -243,7 +243,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
-		vector<TH2D*> StatCovarianceMatrices; StatCovarianceMatrices.clear();	
+		vector<TH2D*> StatCovarianceMatrices; StatCovarianceMatrices.clear();
+		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();			
 		vector<TH2D*> SystCovarianceMatrices; SystCovarianceMatrices.clear();	
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -274,6 +275,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		if (ClosureTest == false) {
 
 			NameExtractedXSec = PathToExtractedXSec+Tune+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
+			if (Tune != "") 
+				{ NameExtractedXSec = PathToExtractedXSec+"AltMC"+Tune+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root"; }
 			ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 			// ---------------------------------------------------------------------------------------------------------------------------------------
@@ -364,6 +367,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
 			SystCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SystCovariance_"+PlotNames[WhichPlot]));
 			StatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("StatCovariance_"+PlotNames[WhichPlot]));
+			MCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));			
 
 			// -----------------------------------------------------------------------------------------------------
 
@@ -405,6 +409,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TVectorD measure(m);
 			TMatrixD response(m, n);		
 			TMatrixD covariance(m, m);
+			TMatrixD mcstatcovariance(m, m);
 			TMatrixD statcovariance(m, m);
 			TMatrixD systcovariance(m, m);
 
@@ -415,6 +420,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(MCStatCovarianceMatrices[WhichPlot], mcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(StatCovarianceMatrices[WhichPlot], statcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(SystCovarianceMatrices[WhichPlot], systcovariance, kTRUE); // X axis: True, Y axis: Reco
 
@@ -443,6 +449,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// --------------------------------------------------------------------------------------------------
 
 			TMatrixD CovRotation_T (TMatrixD::kTransposed, CovRotation); 
+			TMatrixD UnfMCStatCov = CovRotation*mcstatcovariance*CovRotation_T;
 			TMatrixD UnfStatCov = CovRotation*statcovariance*CovRotation_T; 
 			TMatrixD UnfSystCov = CovRotation*systcovariance*CovRotation_T; 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
@@ -461,6 +468,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		
 			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfFullUnc = new TH1D("unfFullUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfMCStat = new TH1D("unfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
@@ -489,6 +497,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			unfFullUnc = (TH1D*)(unf->Clone());
 			unfStat = (TH1D*)(unf->Clone());
+			unfMCStat = (TH1D*)(unf->Clone());			
 			unfShapeOnly = (TH1D*)(unf->Clone());
 			unfNormOnly = (TH1D*)(unf->Clone());
 
@@ -504,6 +513,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 				double StatError = TMath::Sqrt( UnfStatCov(i-1,i-1) ) / Width;
 				unfStat->SetBinError(i, StatError);
+
+				double MCStatError = TMath::Sqrt( UnfMCStatCov(i-1,i-1) ) / Width;
+				unfMCStat->SetBinError(i, MCStatError);				
 
 				// Set unc = stat + shape syst
 				unf->SetBinError(i, TMath::Sqrt( NormShapeVector[1](i-1,i-1) + UnfStatCov(i-1,i-1) ) / Width );	
@@ -699,6 +711,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unf->Write("Reco"+PlotNames[WhichPlot]);
 				unfShapeOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
 				unfNormOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
+				unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]);
 				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
 				TrueUnf->Write("True"+PlotNames[WhichPlot]);

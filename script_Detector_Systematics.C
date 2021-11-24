@@ -53,7 +53,8 @@
 
 		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true)");
 
-		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true,\"NoTune\")");		
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true,\"NoTune\")");
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",true,\"TwiceMEC\")");				
 
 		//gROOT->ProcessLine("CovarianceMatrices(\""+WhichSampleArray[i]+"\")");
 

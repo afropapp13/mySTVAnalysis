@@ -11,12 +11,8 @@ for RunNumber in "${arrRun[@]}"
 do
 
 	##############################################################################
-
-	scp $UserID@$UBgpvm:$OutPutDir/ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/
-	scp $UserID@$UBgpvm:$OutPutDir/CCQEWienerSVD_ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/	
-	scp $UserID@$UBgpvm:$OutPutDir/WienerSVD_ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/	
-	scp $UserID@$UBgpvm:$OutPutDir/*NuWro*WienerSVD_ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/	
-	scp $UserID@$UBgpvm:$OutPutDir/NoTuneOverlay9WienerSVD_ExtractedXSec_Overlay9_${RunNumber}_${UBCode}.root ./myXSec/$UBCode/
+	
+	scp $UserID@$UBgpvm:$OutPutDir/*ExtractedXSec*${RunNumber}_${UBCode}.root ./myXSec/$UBCode/		
 	
 	##############################################################################
 
