@@ -246,15 +246,15 @@ void WienerSVD_Chi2Covariance(TString Var) {
 
 				//cout << NameOfSamples[WhichSample] << endl;
 			
-				Plots[WhichSample] = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot])); 	
+				Plots[WhichSample] = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot])); 
 
+				// Remove the bin width multiplication
+				UnReweight(Plots[WhichSample]);					
+				// Apply the additional smearing matrix Ac
 				Clone[WhichSample] = Multiply(Plots[WhichSample],Ac);
+				// Divide again by the bin width
+				Reweight(Clone[WhichSample]);
 				CalcChiSquared(Clone[WhichSample],DataPlot,CovarianceClone,Chi2[WhichRun][WhichPlot][WhichSample+1],Ndof[WhichRun][WhichPlot][WhichSample+1],PVal[WhichRun][WhichPlot][WhichSample+1]);
-//				CalcChiSquared(Plots[WhichSample],DataPlot,CovarianceClone,Chi2[WhichRun][WhichPlot][WhichSample+1],Ndof[WhichRun][WhichPlot][WhichSample+1],PVal[WhichRun][WhichPlot][WhichSample+1]);						
-				
-//Clone[WhichSample]->SetLineColor(WhichSample+2);				
-//Clone[WhichSample]->Draw("hist same");
-//cout << "alternative chi2 = " << Chi2Func(Clone[WhichSample],MCPlot) << endl;
 
 			}
 

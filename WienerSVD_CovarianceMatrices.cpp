@@ -581,7 +581,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				DataPlot->GetXaxis()->SetLabelSize(TextSize);
 				DataPlot->GetXaxis()->SetNdivisions(6);
 
-				DataPlot->GetYaxis()->SetTitle("# Events / "+ToString(DataPOT));
+				DataPlot->GetYaxis()->SetTitle("Flux Ave Events / "+ToString(DataPOT));
 				DataPlot->GetYaxis()->CenterTitle();
 				DataPlot->GetYaxis()->SetTitleFont(FontStyle);
 				DataPlot->GetYaxis()->SetTitleSize(TextSize);
@@ -647,7 +647,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 					EventRatePlotCanvas->SetBottomMargin(0.16);
 					EventRatePlotCanvas->SetLeftMargin(0.15);
 
-					TLegend* leg = new TLegend(0.12,0.91,0.9,0.99);
+					TLegend* leg = new TLegend(0.32,0.91,0.9,0.99);
 					leg->SetBorderSize(0);
 					leg->SetTextFont(FontStyle);
 					leg->SetTextSize(TextSize-0.02);
@@ -660,7 +660,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 					DataPlot->GetXaxis()->SetLabelSize(TextSize);
 					DataPlot->GetXaxis()->SetNdivisions(6);
 
-					DataPlot->GetYaxis()->SetTitle("# Events / "+ToString(DataPOT));
+					DataPlot->GetYaxis()->SetTitle("Flux Ave Events / "+ToString(DataPOT));
 					DataPlot->GetYaxis()->CenterTitle();
 					DataPlot->GetYaxis()->SetTitleFont(FontStyle);
 					DataPlot->GetYaxis()->SetTitleSize(TextSize);

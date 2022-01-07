@@ -230,7 +230,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
-		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);
+		//cout << Runs[WhichRun] << " Integrated flux = " << IntegratedFlux << endl;
 				
 		// -------------------------------------------------------------------------------------		
 
@@ -562,7 +563,14 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// Draw the data points first to get the beautiful canvas 
 			PlotCanvas->cd();
 			if (ClosureTest == true) { unf->Draw("p0 hist"); }
-			else { unf->Draw("e1x0"); }		
+			else { unf->Draw("e1x0"); }	
+
+			TLatex *textSlice = new TLatex();
+			textSlice->SetTextFont(FontStyle);
+			textSlice->SetTextSize(0.09);
+			TString PlotNameDuplicate = PlotNames[WhichPlot];
+			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
+			textSlice->DrawLatexNDC(0.14, 0.8, LatexLabel[ReducedPlotName]);				
 
 			// -------------------------------------- //	
 

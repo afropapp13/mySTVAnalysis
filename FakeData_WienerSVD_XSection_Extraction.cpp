@@ -133,7 +133,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 	NameOfSamples.push_back("GenieOverlay");	
 	NameOfSamples.push_back("AltEventGen");	 
 
-	// -----------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 	vector<TString> Runs;
 //	Runs.push_back("Run1");
@@ -146,23 +146,30 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
-	// -------------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 	// CV Flux File
 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 
-	// -------------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//	
+
+	// open the file that contains the unfolding uncertainty
+
+	TString NameUnfUnc = PathToExtractedXSec+"WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+Subtract+".root";
+	TFile* FileUnfUnc = TFile::Open(NameUnfUnc,"readonly");			
+
+	//----------------------------------------//
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
-		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);					
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
 			
-		// -------------------------------------------------------------------------------------		
+		//----------------------------------------//
 
 		vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
 
@@ -171,6 +178,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 
+		vector<TH1D*> UnfUnc; UnfUnc.clear();
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
 		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();		
@@ -298,7 +306,11 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
 
-			// ------------------------------------------------------------------------------------------------
+			//----------------------------------------//			
+
+			UnfUnc.push_back((TH1D*)FileUnfUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));			
+
+			//----------------------------------------//
 
 			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
 
@@ -397,18 +409,18 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			// --------------------------------------------------------------------------------------------------						
 
-			// Scaling by correct units & bin width divi
+			// Setting the uncertainty using the fake data matrix: Stat + MC Stat + XSec
 
 			for (int i = 1; i <= n;i++ ) { 
 
 				// default / total uncertainty
 				// XSec / Stat / MC Stat unc
 				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
-				unf->SetBinError(i, CovUnc );								
+				unf->SetBinError(i, CovUnc );							
 
 			}
 
-			ReweightXSec(unf);
+			ReweightXSec(unf);		
 
 			// ------------------------------------------------------------------------------------
 
@@ -446,9 +458,19 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 				double BinWidth = unf->GetBinWidth(i);			
 
-				// Only unfolded MC Stat unc
-				double MCStatCovUnc = TMath::Sqrt(UnfMCStatCov(i-1,i-1) ) / BinWidth;
-				unfMCStat->SetBinError(i, MCStatCovUnc );				
+				//// Only unfolded MC Stat unc
+				//double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
+				//unfMCStat->SetBinError(i, MCStatCovUnc );	
+
+				// Unfolding uncertainty
+				double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
+				unfMCStat->SetBinError(i, BinUnfUnc );		
+
+				//// Unfolding + Regular fake data uncertainty
+				//double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
+				//double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
+				//double JointUnc = TMath::Sqrt( TMath::Power(BinUnfUnc,2.) + TMath::Power(MCStatCovUnc,2.) );
+				//unfMCStat->SetBinError(i, JointUnc );									
 
 			}						
 

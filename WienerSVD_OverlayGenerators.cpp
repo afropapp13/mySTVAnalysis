@@ -9,6 +9,8 @@
 #include <TEfficiency.h>
 #include <TMath.h>
 #include <TLatex.h>
+#include <TMatrixD.h>
+#include <TVectorD.h>
 
 #include <iostream>
 #include <vector>
@@ -209,6 +211,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		//----------------------------------------//
 
+		// Unfolding uncertainty
+
 		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
 
 		//----------------------------------------//
@@ -321,7 +325,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			PlotsNormOnly.push_back(CurrentPlotsNormOnly);					
 			PlotsReco.push_back(CurrentPlotsReco);		
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
-			PlotsTrue.push_back(CurrentPlotsTrue);		
+			PlotsTrue.push_back(CurrentPlotsTrue);	
 
 		}
 
@@ -411,10 +415,12 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 //			leg->SetNColumns(4);
 //			leg->SetMargin(0.15);
 
-			TLegend* leg = new TLegend(0.58,0.58,0.71,0.85);
-			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot" || PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { leg = new TLegend(0.25,0.2,0.8,0.4); }
+			TLegend* leg = new TLegend(0.6,0.58,0.71,0.85);
+			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot" || PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { leg = new TLegend(0.25,0.2,0.8,0.45); }
 			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot") 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
+
+			if (PlotNominal) { leg = new TLegend(0.6,0.68,0.71,0.85); }
 
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
@@ -492,7 +498,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 			for (int WhichSample = 1; WhichSample < NSamples; WhichSample++) {
 
+				// Remove the bin width multiplication
+				UnReweight(PlotsTrue[WhichSample][WhichPlot]);
+				// Apply the additional smearing matrix Ac
 				Clone[WhichSample-1] = Multiply(PlotsTrue[WhichSample][WhichPlot],Ac);
+				// Divide again by the bin width
+				Reweight(Clone[WhichSample-1]);
+
 				//Clone[WhichSample-1] = PlotsTrue[WhichSample][WhichPlot];				
 				Clone[WhichSample-1]->SetLineColor(Colors[WhichSample]);
 				Clone[WhichSample-1]->SetMarkerColor(Colors[WhichSample]);
@@ -503,14 +515,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				CalcChiSquared(Clone[WhichSample-1],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
 				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],2) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
 				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofAlt = ""; } 
-//				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample] + Chi2NdofAlt,"l");
-				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l");
+				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample] + Chi2NdofAlt,"l");
+//				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l");
 				lGenie->SetTextColor(Colors[WhichSample]); 										
 
 			}
 
-
-			// -----------------------------------------------------------------------------------------------------------------
+			//----------------------------------------//
 
 			// Legend & Run / POT
 
@@ -528,8 +539,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],CovClone,Chi2[0],Ndof[0],pval[0]);
 			TString Chi2NdofNom = " (" + to_string_with_precision(Chi2[0],2) + "/" + TString(std::to_string(Ndof[0])) +")";
 			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofNom = ""; }			
-//			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
-			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
+			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
+//			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
 			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(Colors[0]); 	
 
 			// ---------------------------------------------------------------------------------------------------------
@@ -538,7 +549,24 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // BeamOn Stat Total
 
 			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data","ep");
+
+			if (PlotNames[WhichPlot] != "MuonCosThetaSingleBinPlot") { 
+				
+				leg->AddEntry(PlotsTotalReco[0][WhichPlot],"(Stat #oplus Shape Unc)","");
+			
+			} else {
+
+				leg->AddEntry(PlotsTotalReco[0][WhichPlot],"(Total Unc)","");
+
+			}
+
 			leg->AddEntry(PlotsReco[0][WhichPlot],Label,"");
+
+			if (PlotNames[WhichPlot] != "MuonCosThetaSingleBinPlot") { 
+				
+				leg->AddEntry(PlotsNormOnly[0][WhichPlot],"Norm Unc","f"); 
+			
+			}			
 
 			leg->Draw();
 

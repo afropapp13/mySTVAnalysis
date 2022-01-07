@@ -124,7 +124,16 @@ FakeData_WienerSVD_XSection_Extraction("TwiceMECOverlay9","Overlay9NuWro")
 #################################################################################################################################
 
 # (locally)
- ./myDownloadScripts/DownloadXSec.sh
+./myDownloadScripts/DownloadXSec.sh
+# Unfolding Uncertainty 
+cd Playground
+root -b ModelIndepedent_XSecMethod.C
+cd ../myXSec/v08_00_00_52/
+scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
+
+root -b NuWro_ModelIndepedent_XSecMethod.C
+
+cd ../..
 
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs

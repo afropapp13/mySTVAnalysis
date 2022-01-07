@@ -100,21 +100,12 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 		TH1D* unc = new TH1D("unc_"+PlotName+"_"+Run+"_"+UncSources,";"+TitleX+";Uncertainty [%]",n,Nuedges);	
 
-		double SumBins = 0.;
-		double SumWeightBins = 0.;
+        for (int i = 1; i <= n; i++) {
 
-		for (int i = 1; i <= n; i++) { 
+            double CovValue = LocalCovMatrix->GetBinContent(i,i);
+            unc->SetBinContent(i,TMath::Sqrt(CovValue)*100.);
 
-			double CovValue = LocalCovMatrix->GetBinContent(i,i);	
-			unc->SetBinContent(i,TMath::Sqrt(CovValue)*100.);
-
-			double BinWidth = unc->GetBinWidth(i);
-			double BinCont = unc->GetBinContent(i);
-
-			SumBins += BinWidth;
-			SumWeightBins += BinCont*BinWidth;
-			
-		}
+        }
 
 		unc->GetXaxis()->SetTitleFont(FontStyle);
 		unc->GetXaxis()->SetLabelFont(FontStyle);
@@ -129,23 +120,33 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		unc->GetYaxis()->SetLabelSize(TextSize);	
 		unc->GetYaxis()->CenterTitle();
 		unc->GetYaxis()->SetNdivisions(5);
-		unc->GetYaxis()->SetTitleOffset(1.);				
+		unc->GetYaxis()->SetTitleOffset(0.7);				
 		unc->GetYaxis()->SetRangeUser(0.,34.);
 
-		if (PlotName == "DeltaPTPlot") { unc->GetYaxis()->SetRangeUser(0.,44.); }
+		if (PlotName == "DeltaPTPlot") { unc->GetYaxis()->SetRangeUser(0.,46.); }
 		if (PlotName == "DeltaAlphaTPlot") { unc->GetYaxis()->SetRangeUser(0.,18.); }
 		if (PlotName == "DeltaPhiTPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
 		if (PlotName == "MuonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
 		if (PlotName == "MuonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }
-		if (PlotName == "MuonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }
-		if (PlotName == "MuonCosThetaSingleBinPlot") { unc->GetYaxis()->SetRangeUser(0.,14.); }			
+		if (PlotName == "MuonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }			
 		if (PlotName == "ProtonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }
 		if (PlotName == "ProtonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,29.); }	
 		if (PlotName == "ProtonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }	
+		if (PlotName == "DeltaPLPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }
 		if (PlotName == "DeltaPnPlot") { unc->GetYaxis()->SetRangeUser(0.,43.); }
+		if (PlotName == "DeltaPtxPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }		
 		if (PlotName == "DeltaPtyPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }	
 		if (PlotName == "PMissMinusPlot") { unc->GetYaxis()->SetRangeUser(0.,49.); }
-		if (PlotName == "ECalPlot") { unc->GetYaxis()->SetRangeUser(0.,49.); }							
+		if (PlotName == "ECalPlot") { unc->GetYaxis()->SetRangeUser(0.,69.); }	
+
+		if (PlotName == "MuonCosThetaSingleBinPlot") { 
+
+			unc->GetXaxis()->SetTitleSize(0.);
+			unc->GetXaxis()->SetLabelSize(0.);			
+
+			unc->GetYaxis()->SetRangeUser(0.,12.); 
+			
+		}								
 					
 		unc->SetLineWidth(2);		
 		unc->SetLineColor(Colors[Color+1]);
@@ -300,10 +301,12 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 				// Create canvases for MC event rates			
 
-				MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
+//				MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,1024,768);
+				MCERPlotCanvas = new TCanvas(MCERCanvasName,MCERCanvasName,205,34,2000,1000);
 				MCERPlotCanvas->SetBottomMargin(0.16);
-				MCERPlotCanvas->SetLeftMargin(0.15);
-				MCERPlotCanvas->SetRightMargin(0.25);
+				MCERPlotCanvas->SetLeftMargin(0.1);
+//				MCERPlotCanvas->SetRightMargin(0.25);
+				MCERPlotCanvas->SetRightMargin(0.05);
 				MCERPlotCanvas->SetTopMargin(0.15);			
 
 				legMC = new TLegend(0.15,0.89,0.9,0.99);
@@ -316,9 +319,11 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			// ----------------------------------------------------------------------------------------------------
 
-			// Loop over the samples
+			// Loop over the samples / sources of uncertainty
 
 			int Counter = 0; // Counter for colors
+
+			TH2D* DetFracCovMatrix = nullptr; // matrix for all detector variations
 
 			for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
@@ -391,8 +396,49 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 					if ( !( string(UncSources[WhichSample]).find("POT") != std::string::npos || string(UncSources[WhichSample]).find("NTarget") != std::string::npos ) ) {
 
-						ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],Counter,leg);
-						Counter++;
+						//----------------------------------------//
+
+						// Only for the single bin plot
+
+						if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
+
+							// Merge the detector variations
+
+							if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC" || UncSources[WhichSample] == "SCERecomb2") {
+
+								if (UncSources[WhichSample] == "LY") {
+
+									DetFracCovMatrix = LocalFracCovMatrix;
+
+								} else if (UncSources[WhichSample] == "TPC") {
+
+									//DetFracCovMatrix->Add(LocalFracCovMatrix);
+
+								} else { // SCERecomb2
+
+									//DetFracCovMatrix->Add(LocalFracCovMatrix);
+									ReturnUncPlot(DetFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],"Det",Counter,leg);
+									Counter++;									
+
+								}
+
+
+							} else { // Explicitly include evenrything else
+
+								ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],Counter,leg);
+								Counter++;
+
+							}
+
+
+						} else { // For all the other plots
+
+							ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],Counter,leg);
+							Counter++;
+
+						}
+
+						//----------------------------------------//
 
 					}				
 
