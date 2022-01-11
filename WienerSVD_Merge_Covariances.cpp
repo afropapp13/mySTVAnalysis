@@ -137,7 +137,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		if (PlotName == "DeltaPtxPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }		
 		if (PlotName == "DeltaPtyPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }	
 		if (PlotName == "PMissMinusPlot") { unc->GetYaxis()->SetRangeUser(0.,49.); }
-		if (PlotName == "ECalPlot") { unc->GetYaxis()->SetRangeUser(0.,69.); }	
+		if (PlotName == "ECalPlot") { unc->GetYaxis()->SetRangeUser(0.,109.); }	
 
 		if (PlotName == "MuonCosThetaSingleBinPlot") { 
 

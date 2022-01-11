@@ -18,7 +18,7 @@
 
 #include  "/home/afroditi/Dropbox/PhD/Secondary_Code/CenterAxisTitle.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/SetOffsetAndSize.cpp"
-#include "/home/afroditi/Dropbox/PhD/Secondary_Code/mySimFunctions.cpp"
+//#include "/home/afroditi/Dropbox/PhD/Secondary_Code/mySimFunctions.cpp"
 #include "/home/afroditi/Dropbox/PhD/Secondary_Code/MakeMyPlotPretty.cpp"
 
 #include "../myClasses/Constants.h"
@@ -329,7 +329,7 @@ void OverlayGenerators() {
 			// ---------------------------------------------------------------------------------------------------------
 
 			// Legend & Run / POT
-
+/*
 			double tor860_wcut = -99.;
 			if (Runs[WhichRun] == "Run1") { tor860_wcut = Fulltor860_wcut_Run1; }
 			if (Runs[WhichRun] == "Run2") { tor860_wcut = Fulltor860_wcut_Run2; }
@@ -338,6 +338,7 @@ void OverlayGenerators() {
 			if (Runs[WhichRun] == "Run5") { tor860_wcut = Fulltor860_wcut_Run5; }
 			if (Runs[WhichRun] == "Combined") { tor860_wcut = Fulltor860_wcut_Combined; }
 			TString Label = ToString(tor860_wcut)+" POT (Stat #oplus Syst)";
+			*/
 
 			TLegendEntry* lGenie_GENIEv2 = leg->AddEntry(PlotsTrue[6][WhichPlot],"v2.12.10","l");
 			lGenie_GENIEv2->SetTextColor(GENIEv2Color);
@@ -371,7 +372,8 @@ void OverlayGenerators() {
 
 //			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data " + Runs[WhichRun] + " " + Label,"ep");
 			leg->AddEntry(PlotsReco[0][WhichPlot],"MicroBooNE Data","ep");
-			leg->AddEntry(PlotsReco[0][WhichPlot],Runs[WhichRun] + " " + Label,"");
+//			leg->AddEntry(PlotsReco[0][WhichPlot],Runs[WhichRun] + " " + Label,"");
+			leg->AddEntry(PlotsReco[0][WhichPlot],Runs[WhichRun],"");			
 
 			leg->Draw();
 

@@ -133,6 +133,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 	
+	/*
 	// If flux universe, glad the relevant flux universe histo
 
 	if ( Universe != -1 && string(OverlaySample).find("fluxes") != std::string::npos ) {
@@ -151,6 +152,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 		HistoFlux = (TH1D*)(FluxFile->Get(FluxHistoName));
 
 	}
+	*/
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 

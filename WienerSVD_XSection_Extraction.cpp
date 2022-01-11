@@ -567,10 +567,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			TLatex *textSlice = new TLatex();
 			textSlice->SetTextFont(FontStyle);
-			textSlice->SetTextSize(0.09);
+			textSlice->SetTextSize(0.06);
 			TString PlotNameDuplicate = PlotNames[WhichPlot];
 			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
-			textSlice->DrawLatexNDC(0.14, 0.8, LatexLabel[ReducedPlotName]);				
+			textSlice->DrawLatexNDC(0.24, 0.8, LatexLabel[ReducedPlotName]);				
 
 			// -------------------------------------- //	
 

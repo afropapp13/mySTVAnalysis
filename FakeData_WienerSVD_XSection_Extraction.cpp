@@ -460,17 +460,23 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 				//// Only unfolded MC Stat unc
 				//double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
-				//unfMCStat->SetBinError(i, MCStatCovUnc );	
+				//unfMCStat->SetBinError(i, MCStatCovUnc );		
 
-				// Unfolding uncertainty
-				double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
-				unfMCStat->SetBinError(i, BinUnfUnc );		
+				if ( BeamOnSample == "Overlay9NuWro") {
 
-				//// Unfolding + Regular fake data uncertainty
-				//double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
-				//double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
-				//double JointUnc = TMath::Sqrt( TMath::Power(BinUnfUnc,2.) + TMath::Power(MCStatCovUnc,2.) );
-				//unfMCStat->SetBinError(i, JointUnc );									
+					//// Unfolding + Regular fake data uncertainty for NuWro
+					double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
+					double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
+					double JointUnc = TMath::Sqrt( TMath::Power(BinUnfUnc,2.) + TMath::Power(MCStatCovUnc,2.) );
+					unfMCStat->SetBinError(i, JointUnc );	
+
+				} else {
+
+					// Unfolding uncertainty only
+					double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
+					unfMCStat->SetBinError(i, BinUnfUnc );	
+
+				}												
 
 			}						
 

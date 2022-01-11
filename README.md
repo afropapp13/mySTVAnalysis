@@ -21,6 +21,8 @@ root -b script_WienerSVD_Systematics_TwiceMEC.C
 root -b 
 .L WienerSVD_Merge_Covariances.cpp
 WienerSVD_Merge_Covariances("Overlay9", "","NoTune")
+
+root -b
 WienerSVD_Merge_Covariances("Overlay9", "","TwiceMEC")
 
 root -b script_WienerSVD_XSec.C
@@ -107,6 +109,19 @@ WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro","Overlay9NuWro")
 WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","NoTuneOverlay9")
 WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","TwiceMECOverlay9") 
 
+#################################################################################################################################
+
+# (locally)
+./myDownloadScripts/DownloadXSec.sh
+# Unfolding Uncertainty 
+cd Playground
+root -b ModelIndepedent_XSecMethod.C
+cd ../myXSec/v08_00_00_52/
+scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
+cd ../..
+
+#################################################################################################################################
+
 # Fake data study
 root -b 
 .L ../../myClasses/Util.C++
@@ -121,20 +136,18 @@ FakeData_WienerSVD_XSection_Extraction("Overlay9","TwiceMECOverlay9")
 FakeData_WienerSVD_XSection_Extraction("NoTuneOverlay9","Overlay9NuWro")
 FakeData_WienerSVD_XSection_Extraction("TwiceMECOverlay9","Overlay9NuWro")
 
-#################################################################################################################################
+ root -b FakeData_XSection_Extraction.cpp
 
 # (locally)
 ./myDownloadScripts/DownloadXSec.sh
-# Unfolding Uncertainty 
 cd Playground
-root -b ModelIndepedent_XSecMethod.C
-cd ../myXSec/v08_00_00_52/
-scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
-
 root -b NuWro_ModelIndepedent_XSecMethod.C
+root -b CompareUnc.C
+cd ..
 
-cd ../..
+#################################################################################################################################
 
+# (locally)
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
 
@@ -169,14 +182,17 @@ WienerSVD_Chi2Covariance("Long")
 
 #.x BinByBinChi2.cpp
 
+# (locally)
+root -b
+.L CompareGenerators.cpp
+CompareGenerators()
+CompareGenerators(false,true)
 
 #################################################################################################################################
 
 # Download the plots
 
 # (locally)
-
-./myDownloadScripts/DownloadPlots.sh
 
 root -b OverlayGenerators.cpp
 root -b OverlayXSecMethods.C
@@ -186,5 +202,8 @@ root -b WC_OverlayXSecMethods.C
 
 # Comparison to MCC8
 root -b MCC8_OverlayXSecMethods.C
+
+./myDownloadScripts/DownloadPlots.sh
+
 #################################################################################################################################
 

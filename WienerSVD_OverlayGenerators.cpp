@@ -148,15 +148,15 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		// CV
 
-		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("MC uB Tune");                     
+		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a + uB Tune"); //Labels.push_back("MC uB Tune");                     
 
 		// -------------------------------------------------------------------------------------------------------------------		
 
 		if (PlotGENIE) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("v2.12.10");
-			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("v3.0.6 w/o tune");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("SuSav2");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v2.12.10");
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("GENIE v3.0.6 G21_10b_00_000");
 
 		}
 
@@ -164,9 +164,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGen) {
 
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro");			
-			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU");
-			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT");
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro 19.02.1");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
 
 		}	
 
@@ -174,7 +174,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGENIECT) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("v3.0.6 w/ tune");
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a");
 
 		}
 
@@ -182,8 +182,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGENIEFSITweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("v3.0.6 NoFSI w/ tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("v3.0.6 hN2018 w/ tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a NoFSI + uB tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3.0.6 G18_10b_02_11a + uB tune");
 
 		}
 
@@ -191,8 +191,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGENIEFlagTweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("v3.0.6 NoRPA w/ tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("v3.0.6 NoCoulomb w/ tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a No RPA + uB tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a No Coulomb + uB tune");
 
 		}
 
@@ -200,7 +200,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotNuclModels) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("v3.0.6 RFG w/ tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3.0.6 G18_10a_02_11a RFG + uB tune");			
 
 		}               
 
@@ -415,12 +415,23 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 //			leg->SetNColumns(4);
 //			leg->SetMargin(0.15);
 
-			TLegend* leg = new TLegend(0.6,0.58,0.71,0.85);
+			TLegend* leg = new TLegend(0.5,0.58,0.71,0.85);
 			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot" || PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { leg = new TLegend(0.25,0.2,0.8,0.45); }
-			if (PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot") 
+			if (
+				PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || 
+				PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot" ||
+				PlotNames[WhichPlot] == "DeltaAlphaT_DeltaPT_0_20To0_40Plot" || PlotNames[WhichPlot] == "DeltaAlphaT_DeltaPT_0_40To1_00Plot" ||
+				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_20To0_40Plot" ||
+				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_Minus1_00To0_00Plot" || PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_00To0_50Plot" ||
+				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_50To0_75Plot" ||
+				PlotNames[WhichPlot] == "MuonMomentum_MuonCosTheta_0_75To1_00Plot" ||
+				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_Minus0_15To0_15Plot" || PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_0_15To0_55Plot" ||
+				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_40To1_00Plot"
+				) 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
 
 			if (PlotNominal) { leg = new TLegend(0.6,0.68,0.71,0.85); }
+			if (PlotNominal && PlotNames[WhichPlot] == "DeltaPtyPlot") { leg = new TLegend(0.2,0.58,0.5,0.85); }			
 
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
@@ -569,6 +580,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			}			
 
 			leg->Draw();
+
+			TLatex *textSlice = new TLatex();
+			textSlice->SetTextFont(FontStyle);
+			textSlice->SetTextSize(0.06);
+			TString PlotNameDuplicate = PlotNames[WhichPlot];
+			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
+			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ReducedPlotName]);			
 
 			// ----------------------------------------------------------------------------------------------
 
