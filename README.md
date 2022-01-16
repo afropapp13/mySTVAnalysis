@@ -23,6 +23,7 @@ root -b
 WienerSVD_Merge_Covariances("Overlay9", "","NoTune")
 
 root -b
+.L WienerSVD_Merge_Covariances.cpp
 WienerSVD_Merge_Covariances("Overlay9", "","TwiceMEC")
 
 root -b script_WienerSVD_XSec.C

@@ -370,6 +370,10 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
 				TH2D* LocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalFracCovMatrixName) );
 
+				LocalCovMatrix->SetDirectory(0);
+				LocalFracCovMatrix->SetDirectory(0);
+				CovFiles[WhichSample]->Close();
+
 				// -------------------------------------------------------------------------------------------------
 
 				// Stat
