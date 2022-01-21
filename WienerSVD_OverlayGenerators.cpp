@@ -73,7 +73,7 @@ void PrettyPlot(TH1D* h) {
 void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, 
 								 bool PlotGENIEFSITweaks = false, bool PlotGENIEFlagTweaks = false, 
 								 bool PlotGENIECT = false, bool PlotNuclModels = false, 
-								 bool PlotNuWro = false, bool PlotNominal = false) {
+								 bool PlotNuWro = false, bool PlotNominal = false, bool GiBUUComp = false) {
 
 	int DecimalAccuracy = 2;
 
@@ -90,7 +90,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 	if (!PlotGENIE && !PlotGen && PlotGENIECT) { Extra = "GENIEClosureTest"; }
 	if (!PlotGENIE && !PlotGen && PlotNuclModels) { Extra = "GENIENuclModels"; }
 	if (!PlotGENIE && !PlotGen && PlotNuWro) { Extra = "NuWro"; }
-	if (!PlotGENIE && !PlotGen && PlotNominal) { Extra = "Nominal"; }	
+	if (!PlotGENIE && !PlotGen && PlotNominal) { Extra = "Nominal"; }
+	if (!PlotGENIE && !PlotGen && GiBUUComp) { Extra = "GiBUUComp"; }		
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 
@@ -425,8 +426,12 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_Minus1_00To0_00Plot" || PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_00To0_50Plot" ||
 				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_50To0_75Plot" ||
 				PlotNames[WhichPlot] == "MuonMomentum_MuonCosTheta_0_75To1_00Plot" ||
-				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_Minus0_45ToMinus0_15Plot" ||
-				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_Minus0_15To0_15Plot" || PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_0_15To0_55Plot" ||
+				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_Minus0_55ToMinus0_15Plot" ||
+				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_Minus0_15To0_15Plot" || 
+				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_0_15To0_55Plot" ||
+				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_75ToMinus0_15Plot" ||
+				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_15To0_15Plot" ||		
+				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_0_15To0_45Plot" ||										
 				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_40To1_00Plot"
 				) 
 				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
