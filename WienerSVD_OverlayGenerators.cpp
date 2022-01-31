@@ -62,9 +62,27 @@ void PrettyPlot(TH1D* h) {
 	h->GetYaxis()->SetLabelFont(FontStyle);
 	h->GetYaxis()->SetTitleFont(FontStyle);
 	h->GetYaxis()->SetNdivisions(8);
-	h->GetYaxis()->SetTitleOffset(1.2);
+	h->GetYaxis()->SetTitleOffset(1.35);
 	h->GetYaxis()->SetTitleSize(0.06);
 	h->GetYaxis()->SetLabelSize(0.06);
+
+	TString PlotName = h->GetName();
+
+	PlotName.ReplaceAll("unf_","");
+	PlotName.ReplaceAll("TrueUnf_","");
+	PlotName.ReplaceAll("True_","");
+	PlotName.ReplaceAll("True","");
+	PlotName.ReplaceAll("NoSmearAlt","");			
+
+	PlotName.ReplaceAll("_Run1","");
+	PlotName.ReplaceAll("_Run2","");
+	PlotName.ReplaceAll("_Run3","");
+	PlotName.ReplaceAll("_Run4","");
+	PlotName.ReplaceAll("_Run4a","");	
+	PlotName.ReplaceAll("_Run5","");
+	PlotName.ReplaceAll("_Combined","");		
+
+	h->Scale(1./MultiDimScaleFactor[PlotName]);
 
 }
 
@@ -115,6 +133,20 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 //	PlotNames.push_back("CCQEProtonMomentumPlot"); 
 //	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
+//	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot");	
+//	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot");
+//	PlotNames.push_back("SerialMuonMomentum_MuonCosThetaPlot");
+//	PlotNames.push_back("SerialProtonMomentum_ProtonCosThetaPlot");
+//	PlotNames.push_back("SerialDeltaAlphaT_MuonCosThetaPlot");
+//	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot");
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot");	
+//	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot");
+//	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");	
+//	PlotNames.push_back("SerialECal_DeltaPTPlot");
+//	PlotNames.push_back("SerialProtonCosTheta_MuonCosThetaPlot");
+//	PlotNames.push_back("SerialDeltaPty_DeltaPtxPlot");	
+//	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot");
+
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
@@ -149,15 +181,15 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		// CV
 
-		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("GENIE v3.0.6 G1810a0211aTune"); //Labels.push_back("MC uB Tune");                     
+		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("GENIE v3 G18 Tune"); //Labels.push_back("MC uB Tune");                     
 
 		// -------------------------------------------------------------------------------------------------------------------		
 
 		if (PlotGENIE) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v2.12.10");
-			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("GENIE v3.0.6 G1810a0211a");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("GENIE v3.0.6 G2110b00000");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v2");
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("GENIE v3.0.6 G18");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("GENIE v3 G21");
 
 		}
 
@@ -175,7 +207,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGENIECT) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3.0.6 G1810a0211a");
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
 
 		}
 
@@ -183,8 +215,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGENIEFSITweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3.0.6 G1810a0211aNoFSITune");			
-			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3.0.6 G1810b0211aTune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
 
 		}
 
@@ -192,8 +224,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotGENIEFlagTweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3.0.6 G1810a0211aNoRPATune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3.0.6 G1810a0211aNoCoulombTune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");
 
 		}
 
@@ -201,7 +233,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		if (PlotNuclModels) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3.0.6 G1810a0211aRFGTune");			
+			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
 
 		}               
 
@@ -339,11 +371,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			//----------------------------------------//
 
 			TH2D* Ac = (TH2D*)FileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
-			TH2D* Cov = (TH2D*)FileSample[0]->Get("UnfCov"+PlotNames[WhichPlot]);			
+			TH2D* Cov = (TH2D*)FileSample[0]->Get("UnfCov"+PlotNames[WhichPlot]);	
+			Cov->Scale(1./TMath::Power(MultiDimScaleFactor[PlotNames[WhichPlot]],2.)); // includes scaling factor for multi dimensional analysis		
 
 			//----------------------------------------//
 
 			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));
+			UncHist->Scale(1./MultiDimScaleFactor[PlotNames[WhichPlot]]); // includes scaling factor for multi dimensional analysis
 
 			//----------------------------------------//
 
@@ -400,7 +434,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			TPad *midPad = new TPad("midPad", "",0.005, 0., 0.995, 0.995);
 			midPad->SetBottomMargin(0.14);
 			midPad->SetTopMargin(0.12);
-			midPad->SetLeftMargin(0.17);
+			midPad->SetLeftMargin(0.19);
 			midPad->Draw();
 
 //			TPad *botPad = new TPad("botPad", "",0.005, 0., 0.995, 0.2);
@@ -416,7 +450,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 //			leg->SetNColumns(4);
 //			leg->SetMargin(0.15);
 
-			TLegend* leg = new TLegend(0.5,0.58,0.71,0.85);
+			TLegend* leg = new TLegend(0.6,0.58,0.7,0.85);
+			TLegend* legChi2 = new TLegend(0.78,0.72,0.88,0.85);			
 			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot" || PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { leg = new TLegend(0.25,0.2,0.8,0.45); }
 			if (
 				PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || 
@@ -432,9 +467,29 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_75ToMinus0_15Plot" ||
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_15To0_15Plot" ||		
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_0_15To0_45Plot" ||										
-				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_40To1_00Plot"
-				) 
-				{ leg = new TLegend(0.2,0.58,0.5,0.85); }
+				PlotNames[WhichPlot] == "SerialDeltaPT_MuonCosThetaPlot" ||	
+				PlotNames[WhichPlot] == "SerialMuonMomentum_MuonCosThetaPlot" ||
+				PlotNames[WhichPlot] == "SerialProtonMomentum_ProtonCosThetaPlot" ||
+				PlotNames[WhichPlot] == "SerialDeltaPtx_DeltaPtyPlot" ||
+				PlotNames[WhichPlot] == "SerialDeltaPty_DeltaPtxPlot" ||
+				PlotNames[WhichPlot] == "SerialDeltaAlphaT_MuonCosThetaPlot" ||
+				PlotNames[WhichPlot] == "SerialDeltaAlphaT_ProtonCosThetaPlot" ||	
+				PlotNames[WhichPlot] == "DeltaAlphaT_ProtonCosTheta_Minus1_00To0_00Plot" ||
+				PlotNames[WhichPlot] == "DeltaAlphaT_ProtonCosTheta_0_00To0_50Plot" ||
+				PlotNames[WhichPlot] == "DeltaAlphaT_ProtonCosTheta_0_50To0_75Plot" ||				
+				PlotNames[WhichPlot] == "DeltaAlphaT_ProtonCosTheta_0_75To1_00Plot" ||		
+				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_Minus1_00To0_00Plot" ||
+				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_0_00To0_50Plot" ||
+				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_0_50To0_75Plot" ||
+				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_0_75To1_00Plot" ||	
+				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_40To1_00Plot" ||																																															
+				PlotNames[WhichPlot] == "SerialDeltaPT_ProtonCosThetaPlot"	
+				) { 
+					
+					leg = new TLegend(0.2,0.58,0.3,0.85); 
+					legChi2 = new TLegend(0.38,0.72,0.48,0.85);					
+					
+			}
 
 			if (PlotNominal) { leg = new TLegend(0.6,0.68,0.71,0.85); }
 			if (PlotNominal && PlotNames[WhichPlot] == "DeltaPtyPlot") { leg = new TLegend(0.2,0.58,0.5,0.85); }			
@@ -446,11 +501,18 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { leg->SetNColumns(2); }
 			leg->SetMargin(0.15);
 
+			legChi2->SetBorderSize(0);
+			legChi2->SetTextSize(0.03);
+			legChi2->SetTextFont(FontStyle);
+			legChi2->SetNColumns(1);
+			if (PlotNames[WhichPlot] == "MuonPhiPlot" || PlotNames[WhichPlot] == "ProtonPhiPlot") { legChi2->SetNColumns(2); }
+			legChi2->SetMargin(0.15);			
+
 			// ------------------------------------------------------------------------------------------------------------------
 
 			// BeamOn Total Uncertainty
 
-			PrettyPlot(PlotsReco[0][WhichPlot]);
+			PrettyPlot(PlotsReco[0][WhichPlot]); // includes scaling factor for multi dimensional analysis
 
 			double MaxValue = PlotsReco[0][WhichPlot]->GetMaximum();
 			int MaxValueBin = LocateBinWithValue(PlotsReco[0][WhichPlot],MaxValue);
@@ -464,7 +526,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			PlotsReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsReco[0][WhichPlot]->SetMarkerSize(1.);
 			PlotsReco[0][WhichPlot]->SetMarkerStyle(20);
-			PlotsReco[0][WhichPlot]->SetLineWidth(1);			
+			PlotsReco[0][WhichPlot]->SetLineWidth(1);	
+			PlotsReco[0][WhichPlot]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);					
 
 			midPad->cd();
 
@@ -477,16 +540,40 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotsReco[0][WhichPlot]->GetYaxis()->SetTitle("#sigma #left[10^{-38} #frac{cm^{2}}{Ar}#right]");
 
 			}
+			
+			//------------------------------//
+
+			// The N-dimensional analysis has been developed based on the bin number, not the actual range
+
+			if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+				TString XaxisTitle = PlotsReco[0][WhichPlot]->GetXaxis()->GetTitle();
+				XaxisTitle.ReplaceAll("deg","bin #");
+				XaxisTitle.ReplaceAll("GeV/c","bin #");
+				XaxisTitle.ReplaceAll("GeV","bin #");				
+				PlotsReco[0][WhichPlot]->GetXaxis()->SetTitle(XaxisTitle);
+
+				TString YaxisTitle = VarLabel[PlotNames[WhichPlot]];
+				YaxisTitle.ReplaceAll("deg","");
+				YaxisTitle.ReplaceAll("GeV/c","");
+				YaxisTitle.ReplaceAll("GeV","");
+				YaxisTitle.ReplaceAll("/c","");
+				YaxisTitle.ReplaceAll("^{2}","");												
+				PlotsReco[0][WhichPlot]->GetYaxis()->SetTitle(YaxisTitle);				
+
+			}			
 
 			//------------------------------//
 
 			PlotsReco[0][WhichPlot]->Draw("e1x0 same"); // Total Unc (Shape + Stat)
 
+			PrettyPlot(PlotsTotalReco[0][WhichPlot]); // includes scaling factor for multi dimensional analysis
 			PlotsTotalReco[0][WhichPlot]->SetLineColor(BeamOnColor);
 			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsTotalReco[0][WhichPlot]->SetLineWidth(1);			
 			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only
 			
+			PrettyPlot(PlotsNormOnly[0][WhichPlot]); // includes scaling factor for multi dimensional analysis			
 			PlotsNormOnly[0][WhichPlot]->SetFillColorAlpha(kGray+1, 0.45);	
 			PlotsNormOnly[0][WhichPlot]->SetLineColor(kGray+1);
 			PlotsNormOnly[0][WhichPlot]->SetMarkerColor(kGray+1);
@@ -496,7 +583,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 			// Overlay
 
-			PrettyPlot(PlotsTrue[0][WhichPlot]);
+			PrettyPlot(PlotsTrue[0][WhichPlot]); // includes scaling factor for multi dimensional analysis
 			PlotsTrue[0][WhichPlot]->SetLineColor(Colors[0]);
 			PlotsTrue[0][WhichPlot]->SetMarkerColor(Colors[0]);
 
@@ -526,15 +613,18 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				Clone[WhichSample-1]->SetLineColor(Colors[WhichSample]);
 				Clone[WhichSample-1]->SetMarkerColor(Colors[WhichSample]);
 
+				PrettyPlot(Clone[WhichSample-1]); // includes scaling factor for multi dimensional analysis
 				Clone[WhichSample-1]->Draw("hist same");		
 
 //				CalcChiSquared(PlotsTrue[WhichSample][WhichPlot],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
 				CalcChiSquared(Clone[WhichSample-1],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
-				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],1) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
+				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],2) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
 				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofAlt = ""; } 
-				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample] + Chi2NdofAlt,"l");
-//				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l");
+//				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample] + Chi2NdofAlt,"l");
+				TLegendEntry* lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l");
 				lGenie->SetTextColor(Colors[WhichSample]); 										
+				TLegendEntry* lGenieChi2 = legChi2->AddEntry(Clone[WhichSample-1],Chi2NdofAlt,"");
+				lGenieChi2->SetTextColor(Colors[WhichSample]);
 
 			}
 
@@ -554,11 +644,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			// ---------------------------------------------------------------------------------------------------------
 
 			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],CovClone,Chi2[0],Ndof[0],pval[0]);
-			TString Chi2NdofNom = " (" + to_string_with_precision(Chi2[0],1) + "/" + TString(std::to_string(Ndof[0])) +")";
+			TString Chi2NdofNom = " (" + to_string_with_precision(Chi2[0],2) + "/" + TString(std::to_string(Ndof[0])) +")";
 			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofNom = ""; }			
-			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
-//			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
-			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(Colors[0]); 	
+//			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
+			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
+			PlotsTrue[0][WhichPlot]->Draw("hist same"); lGenie_GenieOverlay->SetTextColor(Colors[0]); 
+			TLegendEntry* lGenie_GenieOverlayChi2 = legChi2->AddEntry(PlotsTrue[0][WhichPlot],Chi2NdofNom,"");
+			lGenie_GenieOverlayChi2->SetTextColor(Colors[0]);				
 
 			// ---------------------------------------------------------------------------------------------------------
 			// ---------------------------------------------------------------------------------------------------------
@@ -585,7 +677,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			
 			}			
 
-			leg->Draw();
+			legChi2->Draw();
+			leg->Draw();			
 
 			TLatex *textSlice = new TLatex();
 			textSlice->SetTextFont(FontStyle);

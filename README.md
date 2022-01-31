@@ -152,25 +152,8 @@ cd ..
 # Overlay BeamOn / MC results for different runs
 # The cross sections should be independent of the runs
 
-root -b 
-.L ../myClasses/Util.C
-.L WienerSVD_OverlayGenerators.cpp
-#GENIE versions
-WienerSVD_OverlayGenerators()
-# AltGen
-WienerSVD_OverlayGenerators(false,true)
-#GENIE FSI tweaks
-WienerSVD_OverlayGenerators(false,false,true)
-#GENIE Flag tweaks
-WienerSVD_OverlayGenerators(false,false,false,true)
-#GENIE Closure Test
-WienerSVD_OverlayGenerators(false,false,false,false,true)
-#GENIE Nuclear model tweaks
-WienerSVD_OverlayGenerators(false,false,false,false,false,true)
-#NuWro Comparisons out-of-the-box vs larsoft
-WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)
-#Just data vs Nominal MC
-WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)
+root -b script_WienerSVD_OverlayGenerators.C
+root -b script_MultiDimWienerSVD_OverlayGenerators.C
 
 #.x IntegratedXSecs.cpp
 

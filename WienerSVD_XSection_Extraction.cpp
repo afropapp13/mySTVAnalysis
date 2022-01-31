@@ -18,6 +18,7 @@
 #include <sstream>
 #include <string>
 
+#include "ubana/myClasses/Tools.h"
 #include "ubana/myClasses/Constants.h"
 #include "ubana/myClasses/Util.h"
 #include "ubana/myClasses/WienerSVD.h"
@@ -27,56 +28,11 @@ using namespace Constants;
 
 #include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
 
-// -------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------//
 
-std::vector<TMatrixD> MatrixDecomp(int nbins,TVectorD matrix_pred,TMatrixD matrix_syst) {
-
-	// MiniBooNE note from Mike Schaevitz
-	// https://microboone-docdb.fnal.gov/cgi-bin/sso/RetrieveFile?docid=5926&filename=tn253.pdf&version=1
-	
-	TMatrixD matrix_shape(nbins, nbins);
-	TMatrixD matrix_mixed(nbins, nbins);
-	TMatrixD matrix_norm(nbins, nbins);
-
-	///
-	double N_T = 0;
-	for (int idx = 0; idx < nbins; idx++) { N_T += matrix_pred(idx); }
-
-	///
-	double M_kl = 0;
-
-	for (int i = 0; i < nbins; i++) {
-		
-		for (int j = 0; j < nbins; j++) {
-			
-			M_kl += matrix_syst(i,j);
-	
-		}
-
-	}
-
-	///
-	for (int i = 0; i < nbins; i++) {
-
-		for (int j = 0; j < nbins; j++) {	
-  
-			double N_i = matrix_pred(i);
-			double N_j = matrix_pred(j);
-			double M_ij = matrix_syst(i,j);	  
-			double M_ik = 0; for(int k=0; k<nbins; k++) M_ik += matrix_syst(i,k);
-			double M_kj = 0; for(int k=0; k<nbins; k++) M_kj += matrix_syst(k,j);
-			matrix_shape(i,j) = M_ij - N_j*M_ik/N_T - N_i*M_kj/N_T + N_i*N_j*M_kl/N_T/N_T;
-			matrix_mixed(i,j) = N_j*M_ik/N_T + N_i*M_kj/N_T - 2*N_i*N_j*M_kl/N_T/N_T;	
-			matrix_norm(i,j) = N_i*N_j*M_kl/N_T/N_T;
-
-		}
-
-	}
-
-	std::vector<TMatrixD> NormShapeVector = {matrix_norm,matrix_shape};
-	return NormShapeVector;
-
-}
+// For multi dimentional development
+// Don't forget to divide by the slice range
+// That is NOT done in this module !!!
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -216,12 +172,18 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
-	// -------------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 	// CV Flux File
 
 	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
+
+	//----------------------------------------//
+
+	// For the systematics decomposition into stat /shape / norm 
+
+	Tools tools;
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -454,7 +416,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD UnfStatCov = CovRotation*statcovariance*CovRotation_T; 
 			TMatrixD UnfSystCov = CovRotation*systcovariance*CovRotation_T; 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
-			std::vector<TMatrixD> NormShapeVector = MatrixDecomp(n,unfold,UnfSystCov);
+			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,unfold,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------
 

@@ -13,6 +13,7 @@ void script_WienerSVD_XSec() {
 
 	// -----------------------------------------------------------------------------------------
 
+	gROOT->ProcessLine(".L ../../myClasses/Tools.cxx++");
 	gROOT->ProcessLine(".L ../../myClasses/Util.C++");
 	gROOT->ProcessLine(".L ../../myClasses/WienerSVD.C++");
 
