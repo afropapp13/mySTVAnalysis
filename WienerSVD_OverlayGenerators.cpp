@@ -407,13 +407,15 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					if (ix == iy) { 
 						
 						// unfolded covariance matrix
-						double UnfUncBin = UncHist->GetBinContent(ix);
-						NewBinContent = TMath::Sqrt( TMath::Power(NewBinContent,2.) + TMath::Power(UnfUncBin,2.) ) ; 
+//						double UnfUncBin = UncHist->GetBinContent(ix);
+						double UnfUncBin = 0.;
+
+						NewBinContent = TMath::Sqrt( NewBinContent + TMath::Power(UnfUncBin,2.) ) ; 
 
 						// xsec uncertainty
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
 						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
-						//PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+						PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
 						
 					}
 
@@ -486,8 +488,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "SerialDeltaPT_ProtonCosThetaPlot"	
 				) { 
 					
-					leg = new TLegend(0.2,0.58,0.3,0.85); 
-					legChi2 = new TLegend(0.38,0.72,0.48,0.85);					
+					leg = new TLegend(0.22,0.58,0.32,0.85); 
+					legChi2 = new TLegend(0.4,0.72,0.5,0.85);					
 					
 			}
 

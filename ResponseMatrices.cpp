@@ -217,7 +217,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false, TString Tune =
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(5);				
 
-					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
+					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun] + " Response Matrix");	
 
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.1*Plots[WhichSample][WhichPlot]->GetMaximum());
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				

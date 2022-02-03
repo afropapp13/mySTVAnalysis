@@ -57,7 +57,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	h->GetYaxis()->SetNdivisions(5);
 	h->GetYaxis()->SetTitleOffset(1.);			
 
-	h->SetTitle(Runs + Label + " Total");	
+	h->SetTitle(Runs + Label + " Total Covariance Matrix");	
 
 	double FracCovMax = TMath::Min(1.,1.05 * h->GetMaximum());
 	double FracCovMin = TMath::Min(0.,1.05 * h->GetMinimum());

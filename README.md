@@ -153,7 +153,8 @@ cd ..
 # The cross sections should be independent of the runs
 
 root -b script_WienerSVD_OverlayGenerators.C
-root -b script_MultiDimWienerSVD_OverlayGenerators.C
+root -b script_TwoDimWienerSVD_OverlayGenerators.C
+root -b script_ThreeDimWienerSVD_OverlayGenerators.C
 
 #.x IntegratedXSecs.cpp
 
@@ -174,8 +175,6 @@ CompareGenerators(false,true)
 
 #################################################################################################################################
 
-# Download the plots
-
 # (locally)
 
 root -b OverlayGenerators.cpp
@@ -187,6 +186,7 @@ root -b WC_OverlayXSecMethods.C
 # Comparison to MCC8
 root -b MCC8_OverlayXSecMethods.C
 
+# Download the plots
 ./myDownloadScripts/DownloadPlots.sh
 
 #################################################################################################################################
