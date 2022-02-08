@@ -17,6 +17,8 @@
 	//NuWro Comparisons out-of-the-box vs larsoft
 	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,true)");
 	//Just data vs Nominal MC
-	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)");		
+	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)");	
+	//All
+	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,true)");		
 
 }

@@ -201,6 +201,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
+		vector<vector<TH1D*> > QEPlotsTrue; QEPlotsTrue.clear();
+		vector<vector<TH1D*> > MECPlotsTrue; MECPlotsTrue.clear();
+		vector<vector<TH1D*> > RESPlotsTrue; RESPlotsTrue.clear();
+		vector<vector<TH1D*> > DISPlotsTrue; DISPlotsTrue.clear();
+		vector<vector<TH1D*> > COHPlotsTrue; COHPlotsTrue.clear();										
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 
@@ -288,6 +293,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
+			vector<TH1D*> QECurrentPlotsTrue; QECurrentPlotsTrue.clear();
+			vector<TH1D*> MECCurrentPlotsTrue; MECCurrentPlotsTrue.clear();
+			vector<TH1D*> RESCurrentPlotsTrue; RESCurrentPlotsTrue.clear();
+			vector<TH1D*> DISCurrentPlotsTrue; DISCurrentPlotsTrue.clear();
+			vector<TH1D*> COHCurrentPlotsTrue; COHCurrentPlotsTrue.clear();															
 			vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
 
@@ -306,11 +316,31 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 				TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 				CurrentPlotsTrue.push_back(histTrue);
+
+				TH1D* QEhistTrue = (TH1D*)(FileSample[WhichSample]->Get("QETrue"+PlotNames[WhichPlot]));
+				QECurrentPlotsTrue.push_back(QEhistTrue);
+
+				TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECTrue"+PlotNames[WhichPlot]));
+				MECCurrentPlotsTrue.push_back(MEChistTrue);	
+
+				TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("RESTrue"+PlotNames[WhichPlot]));
+				RESCurrentPlotsTrue.push_back(REShistTrue);
+
+				TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISTrue"+PlotNames[WhichPlot]));
+				DISCurrentPlotsTrue.push_back(DIShistTrue);
+
+				TH1D* COHhistTrue = (TH1D*)(FileSample[WhichSample]->Get("COHTrue"+PlotNames[WhichPlot]));
+				COHCurrentPlotsTrue.push_back(COHhistTrue);																			
 		
 			} // End of the loop over the plots
 
 			PlotsReco.push_back(CurrentPlotsReco);		
-			PlotsTrue.push_back(CurrentPlotsTrue);		
+			PlotsTrue.push_back(CurrentPlotsTrue);
+			QEPlotsTrue.push_back(QECurrentPlotsTrue);
+			MECPlotsTrue.push_back(MECCurrentPlotsTrue);
+			RESPlotsTrue.push_back(RESCurrentPlotsTrue);
+			DISPlotsTrue.push_back(DISCurrentPlotsTrue);
+			COHPlotsTrue.push_back(COHCurrentPlotsTrue);																	
 			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
 
@@ -362,13 +392,23 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// Flux-averaged event rates 
 			// both for the reco and for the true level spectrum
 			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
-			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));		 
+			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			QEPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			MECPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			RESPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			DISPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			COHPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));																	 
 
 			// -------------------------------------------------------------------------------------------
 
 			// Construct vectors (for 1D histogram) and matrices (for 2D histogram) for input
 
 			TVectorD signal(n);
+			TVectorD QEsignal(n);
+			TVectorD MECsignal(n);
+			TVectorD RESsignal(n);
+			TVectorD DISsignal(n);
+			TVectorD COHsignal(n);															
 			TVectorD measure(m);
 			TMatrixD response(m, n);		
 			TMatrixD covariance(m, m);
@@ -380,6 +420,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// Converted defined/implemented in source files, see include/Util.h
 
 			H2V(PlotsTrue[4][WhichPlot], signal);
+			H2V(QEPlotsTrue[4][WhichPlot], QEsignal);
+			H2V(MECPlotsTrue[4][WhichPlot], MECsignal);
+			H2V(RESPlotsTrue[4][WhichPlot], RESsignal);
+			H2V(DISPlotsTrue[4][WhichPlot], DISsignal);
+			H2V(COHPlotsTrue[4][WhichPlot], COHsignal);												
+
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
@@ -456,7 +502,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			}
 
 			ReweightXSec(unf);
-			ReweightXSec(PlotsTrue[4][WhichPlot]);			
+			ReweightXSec(PlotsTrue[4][WhichPlot]);
+			ReweightXSec(QEPlotsTrue[4][WhichPlot]);
+			ReweightXSec(MECPlotsTrue[4][WhichPlot]);
+			ReweightXSec(RESPlotsTrue[4][WhichPlot]);
+			ReweightXSec(DISPlotsTrue[4][WhichPlot]);
+			ReweightXSec(COHPlotsTrue[4][WhichPlot]);																		
 
 			unfFullUnc = (TH1D*)(unf->Clone());
 			unfStat = (TH1D*)(unf->Clone());
@@ -542,7 +593,33 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TVectorD AcTrueUnfold = AddSmear * signal;
 			V2H(AcTrueUnfold, TrueUnf);
 
+			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD QEAcTrueUnfold = AddSmear * QEsignal;
+			V2H(QEAcTrueUnfold, QETrueUnf);
+
+			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD MECAcTrueUnfold = AddSmear * MECsignal;
+			V2H(MECAcTrueUnfold, MECTrueUnf);
+
+			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD RESAcTrueUnfold = AddSmear * RESsignal;
+			V2H(RESAcTrueUnfold, RESTrueUnf);
+
+			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD DISAcTrueUnfold = AddSmear * DISsignal;
+			V2H(DISAcTrueUnfold, DISTrueUnf);
+
+			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD COHAcTrueUnfold = AddSmear * COHsignal;
+			V2H(COHAcTrueUnfold, COHTrueUnf);															
+
 			ReweightXSec(TrueUnf);
+			ReweightXSec(QETrueUnf);
+			ReweightXSec(MECTrueUnf);			
+			ReweightXSec(RESTrueUnf);
+			ReweightXSec(DISTrueUnf);			
+			ReweightXSec(COHTrueUnf);
+
 //			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
@@ -685,7 +762,17 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
 				TrueUnf->Write("True"+PlotNames[WhichPlot]);
-				PlotsTrue[4][WhichPlot]->Write("NoSmearTrue"+PlotNames[WhichPlot]);			
+				QETrueUnf->Write("QETrue"+PlotNames[WhichPlot]);
+				MECTrueUnf->Write("MECTrue"+PlotNames[WhichPlot]);
+				RESTrueUnf->Write("RESTrue"+PlotNames[WhichPlot]);
+				DISTrueUnf->Write("DISTrue"+PlotNames[WhichPlot]);				
+				COHTrueUnf->Write("COHTrue"+PlotNames[WhichPlot]);				
+				PlotsTrue[4][WhichPlot]->Write("NoSmearTrue"+PlotNames[WhichPlot]);
+				QEPlotsTrue[4][WhichPlot]->Write("QENoSmearTrue"+PlotNames[WhichPlot]);
+				MECPlotsTrue[4][WhichPlot]->Write("MECNoSmearTrue"+PlotNames[WhichPlot]);
+				RESPlotsTrue[4][WhichPlot]->Write("RESNoSmearTrue"+PlotNames[WhichPlot]);
+				DISPlotsTrue[4][WhichPlot]->Write("DISNoSmearTrue"+PlotNames[WhichPlot]);
+				COHPlotsTrue[4][WhichPlot]->Write("COHNoSmearTrue"+PlotNames[WhichPlot]);																			
 				smear->Write("Ac"+PlotNames[WhichPlot]);
 				unfcov->Write("UnfCov"+PlotNames[WhichPlot]);	
 				CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]);					

@@ -175,6 +175,11 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
+		vector<vector<TH1D*> > QEPlotsTrue; QEPlotsTrue.clear();
+		vector<vector<TH1D*> > MECPlotsTrue; MECPlotsTrue.clear();
+		vector<vector<TH1D*> > RESPlotsTrue; RESPlotsTrue.clear();
+		vector<vector<TH1D*> > DISPlotsTrue; DISPlotsTrue.clear();
+		vector<vector<TH1D*> > COHPlotsTrue; COHPlotsTrue.clear();		
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 
@@ -272,6 +277,11 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
+			vector<TH1D*> QECurrentPlotsTrue; QECurrentPlotsTrue.clear();
+			vector<TH1D*> MECCurrentPlotsTrue; MECCurrentPlotsTrue.clear();
+			vector<TH1D*> RESCurrentPlotsTrue; RESCurrentPlotsTrue.clear();
+			vector<TH1D*> DISCurrentPlotsTrue; DISCurrentPlotsTrue.clear();
+			vector<TH1D*> COHCurrentPlotsTrue; COHCurrentPlotsTrue.clear();			
 			vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
 
@@ -279,22 +289,42 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-			TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
-			CurrentPlotsReco.push_back(histReco);
+				TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
+				CurrentPlotsReco.push_back(histReco);
 
-			TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
-			CurrentPlotsBkgReco.push_back(histBkgReco);
+				TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsBkgReco.push_back(histBkgReco);
 
-			TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-			CurrentPlotsCC1pReco.push_back(histCC1pReco);
+				TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsCC1pReco.push_back(histCC1pReco);
 
-			TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
-			CurrentPlotsTrue.push_back(histTrue);
+				TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
+				CurrentPlotsTrue.push_back(histTrue);
+
+				TH1D* QEhistTrue = (TH1D*)(FileSample[WhichSample]->Get("QETrue"+PlotNames[WhichPlot]));
+				QECurrentPlotsTrue.push_back(QEhistTrue);
+
+				TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECTrue"+PlotNames[WhichPlot]));
+				MECCurrentPlotsTrue.push_back(MEChistTrue);	
+
+				TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("RESTrue"+PlotNames[WhichPlot]));
+				RESCurrentPlotsTrue.push_back(REShistTrue);
+
+				TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISTrue"+PlotNames[WhichPlot]));
+				DISCurrentPlotsTrue.push_back(DIShistTrue);
+
+				TH1D* COHhistTrue = (TH1D*)(FileSample[WhichSample]->Get("COHTrue"+PlotNames[WhichPlot]));
+				COHCurrentPlotsTrue.push_back(COHhistTrue);					
 		
 			} // End of the loop over the plots
 
 			PlotsReco.push_back(CurrentPlotsReco);		
-			PlotsTrue.push_back(CurrentPlotsTrue);		
+			PlotsTrue.push_back(CurrentPlotsTrue);	
+			QEPlotsTrue.push_back(QECurrentPlotsTrue);
+			MECPlotsTrue.push_back(MECCurrentPlotsTrue);
+			RESPlotsTrue.push_back(RESCurrentPlotsTrue);
+			DISPlotsTrue.push_back(DISCurrentPlotsTrue);
+			COHPlotsTrue.push_back(COHCurrentPlotsTrue);				
 			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
 
@@ -343,14 +373,35 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			// Flux-averaged event rates
 			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
 			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // CV
-			PlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // CV
+			QEPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			MECPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			RESPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			DISPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			COHPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+
+			PlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // Alt CV
+			QEPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			MECPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			RESPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			DISPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			COHPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));			
 
 			// -------------------------------------------------------------------------------------------
 
 			// Construct vectors (for 1D histogram) and matrices (for 2D histogram) for input
 
 			TVectorD signal(n);
-			TVectorD altsignal(n);			
+			TVectorD QEsignal(n);
+			TVectorD MECsignal(n);
+			TVectorD RESsignal(n);
+			TVectorD DISsignal(n);
+			TVectorD COHsignal(n);			
+			TVectorD altsignal(n);
+			TVectorD QEaltsignal(n);
+			TVectorD MECaltsignal(n);
+			TVectorD RESaltsignal(n);
+			TVectorD DISaltsignal(n);
+			TVectorD COHaltsignal(n);						
 			TVectorD measure(m);
 			TMatrixD response(m, n);
 			TMatrixD covariance(m, m);
@@ -362,7 +413,19 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			// Converted defined/implemented in source files, see include/Util.h
 
 			H2V(PlotsTrue[4][WhichPlot], signal);
-			H2V(PlotsTrue[5][WhichPlot], altsignal);			
+			H2V(QEPlotsTrue[4][WhichPlot], QEsignal);
+			H2V(MECPlotsTrue[4][WhichPlot], MECsignal);
+			H2V(RESPlotsTrue[4][WhichPlot], RESsignal);
+			H2V(DISPlotsTrue[4][WhichPlot], DISsignal);
+			H2V(COHPlotsTrue[4][WhichPlot], COHsignal);
+
+			H2V(PlotsTrue[5][WhichPlot], altsignal);
+			H2V(QEPlotsTrue[5][WhichPlot], QEaltsignal);
+			H2V(MECPlotsTrue[5][WhichPlot], MECaltsignal);
+			H2V(RESPlotsTrue[5][WhichPlot], RESaltsignal);
+			H2V(DISPlotsTrue[5][WhichPlot], DISaltsignal);
+			H2V(COHPlotsTrue[5][WhichPlot], COHaltsignal);			
+
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
@@ -488,7 +551,33 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			TVectorD AcTrueUnfold = AddSmear * signal;
 			V2H(AcTrueUnfold, TrueUnf);
 
+			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD QEAcTrueUnfold = AddSmear * QEsignal;
+			V2H(QEAcTrueUnfold, QETrueUnf);
+
+			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD MECAcTrueUnfold = AddSmear * MECsignal;
+			V2H(MECAcTrueUnfold, MECTrueUnf);
+
+			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD RESAcTrueUnfold = AddSmear * RESsignal;
+			V2H(RESAcTrueUnfold, RESTrueUnf);
+
+			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD DISAcTrueUnfold = AddSmear * DISsignal;
+			V2H(DISAcTrueUnfold, DISTrueUnf);
+
+			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD COHAcTrueUnfold = AddSmear * COHsignal;
+			V2H(COHAcTrueUnfold, COHTrueUnf);			
+
 			ReweightXSec(TrueUnf);
+			ReweightXSec(QETrueUnf);
+			ReweightXSec(MECTrueUnf);			
+			ReweightXSec(RESTrueUnf);
+			ReweightXSec(DISTrueUnf);			
+			ReweightXSec(COHTrueUnf);
+			
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
 
@@ -503,8 +592,54 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			V2H(NoSmearAltTrueUnfold, NoSmearAltTrueUnf);
 			V2H(AltAcTrueUnfold, AltTrueUnf);
 
+			TH1D* QENoSmearAltTrueUnf = new TH1D("QENoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* QEAltTrueUnf = new TH1D("QEAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD QENoSmearAltTrueUnfold = QEaltsignal;
+			TVectorD QEAltAcTrueUnfold = AddSmear * QEaltsignal;
+			V2H(QENoSmearAltTrueUnfold, QENoSmearAltTrueUnf);
+			V2H(QEAltAcTrueUnfold, QEAltTrueUnf);
+
+			TH1D* MECNoSmearAltTrueUnf = new TH1D("MECNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* MECAltTrueUnf = new TH1D("MECAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD MECNoSmearAltTrueUnfold = MECaltsignal;
+			TVectorD MECAltAcTrueUnfold = AddSmear * MECaltsignal;
+			V2H(MECNoSmearAltTrueUnfold, MECNoSmearAltTrueUnf);
+			V2H(MECAltAcTrueUnfold, MECAltTrueUnf);
+
+			TH1D* RESNoSmearAltTrueUnf = new TH1D("RESNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* RESAltTrueUnf = new TH1D("RESAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD RESNoSmearAltTrueUnfold = RESaltsignal;
+			TVectorD RESAltAcTrueUnfold = AddSmear * RESaltsignal;
+			V2H(RESNoSmearAltTrueUnfold, RESNoSmearAltTrueUnf);
+			V2H(RESAltAcTrueUnfold, RESAltTrueUnf);
+
+			TH1D* DISNoSmearAltTrueUnf = new TH1D("DISNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* DISAltTrueUnf = new TH1D("DISAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD DISNoSmearAltTrueUnfold = DISaltsignal;
+			TVectorD DISAltAcTrueUnfold = AddSmear * DISaltsignal;
+			V2H(DISNoSmearAltTrueUnfold, DISNoSmearAltTrueUnf);
+			V2H(DISAltAcTrueUnfold, DISAltTrueUnf);
+
+			TH1D* COHNoSmearAltTrueUnf = new TH1D("COHNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* COHAltTrueUnf = new TH1D("COHAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD COHNoSmearAltTrueUnfold = COHaltsignal;
+			TVectorD COHAltAcTrueUnfold = AddSmear * COHaltsignal;
+			V2H(COHNoSmearAltTrueUnfold, COHNoSmearAltTrueUnf);
+			V2H(COHAltAcTrueUnfold, COHAltTrueUnf);															
+
 			ReweightXSec(NoSmearAltTrueUnf);
 			ReweightXSec(AltTrueUnf);
+			ReweightXSec(QENoSmearAltTrueUnf);
+			ReweightXSec(QEAltTrueUnf);
+			ReweightXSec(MECNoSmearAltTrueUnf);
+			ReweightXSec(MECAltTrueUnf);
+			ReweightXSec(RESNoSmearAltTrueUnf);
+			ReweightXSec(RESAltTrueUnf);
+			ReweightXSec(DISNoSmearAltTrueUnf);
+			ReweightXSec(DISAltTrueUnf);
+			ReweightXSec(COHNoSmearAltTrueUnf);
+			ReweightXSec(COHAltTrueUnf);															
+
 			AltTrueUnf->SetLineColor(kOrange+7);
 			AltTrueUnf->SetMarkerColor(kOrange+7);	
 
@@ -633,8 +768,23 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			unf->Write("Reco"+PlotNames[WhichPlot]); // "Data" xsec
 			unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]); // "Data" only with MC stat uncertainties		
 			TrueUnf->Write("True"+PlotNames[WhichPlot]); // MC after multiplication by Ac
+			QETrueUnf->Write("QETrue"+PlotNames[WhichPlot]);
+			MECTrueUnf->Write("MECTrue"+PlotNames[WhichPlot]);
+			RESTrueUnf->Write("RESTrue"+PlotNames[WhichPlot]);
+			DISTrueUnf->Write("DISTrue"+PlotNames[WhichPlot]);				
+			COHTrueUnf->Write("COHTrue"+PlotNames[WhichPlot]);			
 			NoSmearAltTrueUnf->Write("NoSmearAltTrue"+PlotNames[WhichPlot]); // alternative MC w/o multiplication by Ac
+			QENoSmearAltTrueUnf->Write("QENoSmearAltTrue"+PlotNames[WhichPlot]);	
+			MECNoSmearAltTrueUnf->Write("MECNoSmearAltTrue"+PlotNames[WhichPlot]);
+			RESNoSmearAltTrueUnf->Write("RESNoSmearAltTrue"+PlotNames[WhichPlot]);
+			DISNoSmearAltTrueUnf->Write("DISNoSmearAltTrue"+PlotNames[WhichPlot]);
+			COHNoSmearAltTrueUnf->Write("COHNoSmearAltTrue"+PlotNames[WhichPlot]);									
 			AltTrueUnf->Write("AltTrue"+PlotNames[WhichPlot]); // alternative MC with multiplication by Ac
+			QEAltTrueUnf->Write("QEAltTrue"+PlotNames[WhichPlot]);
+			MECAltTrueUnf->Write("MECAltTrue"+PlotNames[WhichPlot]);
+			RESAltTrueUnf->Write("RESAltTrue"+PlotNames[WhichPlot]);
+			DISAltTrueUnf->Write("DISAltTrue"+PlotNames[WhichPlot]);
+			COHAltTrueUnf->Write("COHAltTrue"+PlotNames[WhichPlot]);												
 			smear->Write("Ac"+PlotNames[WhichPlot]); // additional smearing matrix
 			unfcov->Write("UnfCov"+PlotNames[WhichPlot]); // unfolded covariance matrix
 			CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]); // covariance matrix		

@@ -156,6 +156,11 @@ root -b script_WienerSVD_OverlayGenerators.C
 root -b script_TwoDimWienerSVD_OverlayGenerators.C
 root -b script_ThreeDimWienerSVD_OverlayGenerators.C
 
+hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/v08_00_00_52/GenXSec/All_XSecs_*_Combined_v08_00_00_52.root
+
+root -b GeneratorBand.cxx
+root -b DataGeneratorBreakdown.cxx
+
 #.x IntegratedXSecs.cpp
 
 root -b

@@ -30,7 +30,7 @@ using namespace Constants;
 
 #include "../myClasses/Util.h"
 
-// -------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------//
 
 int LocateBinWithValue(TH1D* h, double Value) {
 
@@ -47,7 +47,7 @@ int LocateBinWithValue(TH1D* h, double Value) {
 
 }
 
-// -------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------//
 
 void PrettyPlot(TH1D* h) {
 
@@ -86,12 +86,16 @@ void PrettyPlot(TH1D* h) {
 
 }
 
-// -------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------//
 
 void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false, 
 								 bool PlotGENIEFSITweaks = false, bool PlotGENIEFlagTweaks = false, 
 								 bool PlotGENIECT = false, bool PlotNuclModels = false, 
-								 bool PlotNuWro = false, bool PlotNominal = false, bool GiBUUComp = false) {
+								 bool PlotNuWro = false, bool PlotNominal = false, 
+								 bool GiBUUComp = false, bool All = false
+								) {
+
+	//----------------------------------------//
 
 	int DecimalAccuracy = 2;
 
@@ -99,6 +103,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 	gStyle->SetEndErrorSize(4);		
 
 	TString PathToFiles = "myXSec/";
+
+	//----------------------------------------//
 
 	TString Extra = "";
 	if (!PlotGENIE && PlotGen) { Extra = "OtherGen"; }
@@ -109,9 +115,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 	if (!PlotGENIE && !PlotGen && PlotNuclModels) { Extra = "GENIENuclModels"; }
 	if (!PlotGENIE && !PlotGen && PlotNuWro) { Extra = "NuWro"; }
 	if (!PlotGENIE && !PlotGen && PlotNominal) { Extra = "Nominal"; }
-	if (!PlotGENIE && !PlotGen && GiBUUComp) { Extra = "GiBUUComp"; }		
+	if (!PlotGENIE && !PlotGen && GiBUUComp) { Extra = "GiBUUComp"; }
+	if (!PlotGENIE && !PlotGen && All) { Extra = "AllGens"; }			
 
-	// ---------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 //	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
@@ -150,20 +157,21 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// ------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 	vector<TString> Runs;
 //	Runs.push_back("Run1");
 //	Runs.push_back("Run2");	
 //	Runs.push_back("Run3");
 //	Runs.push_back("Run4");
+//	Runs.push_back("Run4a");
 //	Runs.push_back("Run5");
 	Runs.push_back("Combined");
 
 	int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
@@ -172,6 +180,11 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
+		vector<vector<TH1D*> > QEPlotsTrue; QEPlotsTrue.clear();
+		vector<vector<TH1D*> > MECPlotsTrue; MECPlotsTrue.clear();
+		vector<vector<TH1D*> > RESPlotsTrue; RESPlotsTrue.clear();
+		vector<vector<TH1D*> > DISPlotsTrue; DISPlotsTrue.clear();	
+		vector<vector<TH1D*> > COHPlotsTrue; COHPlotsTrue.clear();									
 
 		gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t"); SetOffsetAndSize();
 
@@ -183,7 +196,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("GENIE v3 G18 Tune"); //Labels.push_back("MC uB Tune");                     
 
-		// -------------------------------------------------------------------------------------------------------------------		
+		//----------------------------------------//	
 
 		if (PlotGENIE) {
 
@@ -193,7 +206,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		}
 
-		// -------------------------------------------------------------------------------------------------------------------		
+		//----------------------------------------//		
 
 		if (PlotGen) {
 
@@ -203,7 +216,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		}	
 
-		// -------------------------------------------------------------------------------------------------------------------			
+		//----------------------------------------//			
 
 		if (PlotGENIECT) {
 
@@ -211,7 +224,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		}
 
-		// -------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 
 		if (PlotGENIEFSITweaks) {
 
@@ -220,7 +233,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		}
 
-		// -------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 
 		if (PlotGENIEFlagTweaks) {
 
@@ -229,15 +242,34 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		}
 
-		// -------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 
 		if (PlotNuclModels) {
 
 			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
 
-		}               
+		}  
 
-		// -------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
+
+		if (All) {
+
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v2");
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("GENIE v3.0.6 G18");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("GENIE v3 G21");
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro 19.02.1");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+
+		}		             
+
+		//----------------------------------------//
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
@@ -250,6 +282,21 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		//----------------------------------------//
 
+		// File to store all the generator predictions
+
+		TFile* fGenXSec = nullptr;
+		TString GenXSecName = PathToFiles+UBCodeVersion+"/GenXSec/All_XSecs_1D_" + Runs[WhichRun] + "_"+UBCodeVersion+".root";
+
+		// If All == true	
+
+		if (All) {
+
+			fGenXSec = TFile::Open(GenXSecName,"recreate");
+
+		}	
+
+		//----------------------------------------//
+
 		// Open the files and grap the relevant plots
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
@@ -259,6 +306,11 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
+			vector<TH1D*> QECurrentPlotsTrue; QECurrentPlotsTrue.clear();
+			vector<TH1D*> MECCurrentPlotsTrue; MECCurrentPlotsTrue.clear();	
+			vector<TH1D*> RESCurrentPlotsTrue; RESCurrentPlotsTrue.clear();
+			vector<TH1D*> DISCurrentPlotsTrue; DISCurrentPlotsTrue.clear();	
+			vector<TH1D*> COHCurrentPlotsTrue; COHCurrentPlotsTrue.clear();													
 
 			// CV With Statistical Uncertainties
 
@@ -281,6 +333,17 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 					CurrentPlotsTrue.push_back(histTrue);
+
+					TH1D* QEhistTrue = (TH1D*)(FileSample[WhichSample]->Get("QETrue"+PlotNames[WhichPlot]));
+					QECurrentPlotsTrue.push_back(QEhistTrue);
+					TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECTrue"+PlotNames[WhichPlot]));
+					MECCurrentPlotsTrue.push_back(MEChistTrue);
+					TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("RESTrue"+PlotNames[WhichPlot]));
+					RESCurrentPlotsTrue.push_back(REShistTrue);
+					TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISTrue"+PlotNames[WhichPlot]));
+					DISCurrentPlotsTrue.push_back(DIShistTrue);
+					TH1D* COHhistTrue = (TH1D*)(FileSample[WhichSample]->Get("COHTrue"+PlotNames[WhichPlot]));
+					COHCurrentPlotsTrue.push_back(COHhistTrue);																									
 		
 				}
 
@@ -300,6 +363,17 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("NoSmearAltTrue"+PlotNames[WhichPlot]));
 					CurrentPlotsTrue.push_back(histTrue);
+
+					TH1D* QEhistTrue = (TH1D*)(FileSample[WhichSample]->Get("QENoSmearAltTrue"+PlotNames[WhichPlot]));
+					QECurrentPlotsTrue.push_back(QEhistTrue);
+					TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECNoSmearAltTrue"+PlotNames[WhichPlot]));
+					MECCurrentPlotsTrue.push_back(MEChistTrue);
+					TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("NoSmearAlt"+PlotNames[WhichPlot]));
+					RESCurrentPlotsTrue.push_back(REShistTrue);
+					TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISNoSmearAltTrue"+PlotNames[WhichPlot]));
+					DISCurrentPlotsTrue.push_back(DIShistTrue);
+					TH1D* COHhistTrue = (TH1D*)(FileSample[WhichSample]->Get("COHNoSmearAltTrue"+PlotNames[WhichPlot]));
+					COHCurrentPlotsTrue.push_back(COHhistTrue);					
 		
 				}
 
@@ -349,6 +423,17 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 					TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 					CurrentPlotsTrue.push_back(histTrue);
+
+					TH1D* QEhistTrue = (TH1D*)(FileSample[WhichSample]->Get("QETrue"+PlotNames[WhichPlot]));
+					QECurrentPlotsTrue.push_back(QEhistTrue);
+					TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECTrue"+PlotNames[WhichPlot]));
+					MECCurrentPlotsTrue.push_back(MEChistTrue);
+					TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("RESTrue"+PlotNames[WhichPlot]));
+					RESCurrentPlotsTrue.push_back(REShistTrue);
+					TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISTrue"+PlotNames[WhichPlot]));
+					DISCurrentPlotsTrue.push_back(DIShistTrue);
+					TH1D* COHhistTrue = (TH1D*)(FileSample[WhichSample]->Get("COHTrue"+PlotNames[WhichPlot]));
+					COHCurrentPlotsTrue.push_back(COHhistTrue);					
 		
 				}
 
@@ -358,7 +443,13 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			PlotsNormOnly.push_back(CurrentPlotsNormOnly);					
 			PlotsReco.push_back(CurrentPlotsReco);		
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
-			PlotsTrue.push_back(CurrentPlotsTrue);	
+			PlotsTrue.push_back(CurrentPlotsTrue);
+
+			QEPlotsTrue.push_back(QEPlotsTrue);			
+			MECPlotsTrue.push_back(MECPlotsTrue);
+			RESPlotsTrue.push_back(RESPlotsTrue);
+			DISPlotsTrue.push_back(DISPlotsTrue);
+			COHPlotsTrue.push_back(COHPlotsTrue);		
 
 		}
 
@@ -438,19 +529,6 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			midPad->SetTopMargin(0.12);
 			midPad->SetLeftMargin(0.19);
 			midPad->Draw();
-
-//			TPad *botPad = new TPad("botPad", "",0.005, 0., 0.995, 0.2);
-//			botPad->SetBottomMargin(0.14);
-//			botPad->SetTopMargin(0.);
-//			botPad->SetLeftMargin(0.17);
-//			botPad->Draw();
-
-//			TLegend* leg = new TLegend(0.15,0.89,0.9,0.99);
-//			leg->SetBorderSize(0);
-//			leg->SetTextSize(0.04);
-//			leg->SetTextFont(FontStyle);
-//			leg->SetNColumns(4);
-//			leg->SetMargin(0.15);
 
 			TLegend* leg = new TLegend(0.6,0.58,0.7,0.85);
 			TLegend* legChi2 = new TLegend(0.78,0.72,0.88,0.85);			
@@ -583,7 +661,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 			// -----------------------------------------------------------------------------------------------------------------
 
-			// Overlay
+			// Overlay GENIE v3 + Tune
 
 			PrettyPlot(PlotsTrue[0][WhichPlot]); // includes scaling factor for multi dimensional analysis
 			PlotsTrue[0][WhichPlot]->SetLineColor(Colors[0]);
@@ -606,10 +684,25 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 				// Remove the bin width multiplication
 				UnReweight(PlotsTrue[WhichSample][WhichPlot]);
+				UnReweight(QEPlotsTrue[WhichSample][WhichPlot]);	
+				UnReweight(MECPlotsTrue[WhichSample][WhichPlot]);
+				UnReweight(RESPlotsTrue[WhichSample][WhichPlot]);	
+				UnReweight(DISPlotsTrue[WhichSample][WhichPlot]);	
+				UnReweight(COHPlotsTrue[WhichSample][WhichPlot]);																	
 				// Apply the additional smearing matrix Ac
 				Clone[WhichSample-1] = Multiply(PlotsTrue[WhichSample][WhichPlot],Ac);
+				QEPlotsTrue[WhichSample][WhichPlot] = Multiply(QEPlotsTrue[WhichSample][WhichPlot],Ac);		
+				MECPlotsTrue[WhichSample][WhichPlot] = Multiply(MECPlotsTrue[WhichSample][WhichPlot],Ac);	
+				RESPlotsTrue[WhichSample][WhichPlot] = Multiply(RESPlotsTrue[WhichSample][WhichPlot],Ac);	
+				DISPlotsTrue[WhichSample][WhichPlot] = Multiply(DISPlotsTrue[WhichSample][WhichPlot],Ac);
+				COHPlotsTrue[WhichSample][WhichPlot] = Multiply(COHPlotsTrue[WhichSample][WhichPlot],Ac);												
 				// Divide again by the bin width
 				Reweight(Clone[WhichSample-1]);
+				Reweight(QEPlotsTrue[WhichSample][WhichPlot]);
+				Reweight(MECPlotsTrue[WhichSample][WhichPlot]);
+				Reweight(RESPlotsTrue[WhichSample][WhichPlot]);
+				Reweight(DISPlotsTrue[WhichSample][WhichPlot]);
+				Reweight(COHPlotsTrue[WhichSample][WhichPlot]);																		
 
 				//Clone[WhichSample-1] = PlotsTrue[WhichSample][WhichPlot];				
 				Clone[WhichSample-1]->SetLineColor(Colors[WhichSample]);
@@ -679,7 +772,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			
 			}			
 
-			legChi2->Draw();
+// PUT IT BACK !!!!!!!!!!!!!!!!!!!!!!!
+//			legChi2->Draw();
 			leg->Draw();			
 
 			TLatex *textSlice = new TLatex();
@@ -687,9 +781,47 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			textSlice->SetTextSize(0.06);
 			TString PlotNameDuplicate = PlotNames[WhichPlot];
 			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
-			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ReducedPlotName]);			
+			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ReducedPlotName]);	
 
-			// ----------------------------------------------------------------------------------------------
+			//----------------------------------------//
+
+			// If the option All == true is activated, store all the relevant xsecs in a file
+
+			if (All) {
+
+				fGenXSec->cd();
+
+				// Data
+				PlotsReco[0][WhichPlot]->Write("StatShape_" + PlotNames[WhichPlot]);
+				PlotsNormOnly[0][WhichPlot]->Write("NormOnly_" + PlotNames[WhichPlot]);
+				PlotsTotalReco[0][WhichPlot]->Write("StatOnly_" + PlotNames[WhichPlot]);
+
+				// Overlay GENIE
+				PlotsTrue[0][WhichPlot]->Write("OverlayGENIE_" + PlotNames[WhichPlot]);
+				QEPlotsTrue[0][WhichPlot]->Write("QEOverlayGENIE_" + PlotNames[WhichPlot]);
+				MECPlotsTrue[0][WhichPlot]->Write("MECOverlayGENIE_" + PlotNames[WhichPlot]);	
+				RESPlotsTrue[0][WhichPlot]->Write("RESOverlayGENIE_" + PlotNames[WhichPlot]);
+				DISPlotsTrue[0][WhichPlot]->Write("DISOverlayGENIE_" + PlotNames[WhichPlot]);	
+				COHPlotsTrue[0][WhichPlot]->Write("COHOverlayGENIE_" + PlotNames[WhichPlot]);																		
+
+				// Store the remaining generator xsecs
+				// 0 is the overlay that has been stored above
+				// Thus going up to NSamples - 1
+
+				for (int igen = 0; igen < NSamples - 1; igen++ ) {
+
+					Clone[igen]->Write(NameOfSamples[igen] + "_" + PlotNames[WhichPlot]);
+					QEPlotsTrue[igen][WhichPlot]->Write("QE" + NameOfSamples[igen] + PlotNames[WhichPlot]);
+					MECPlotsTrue[igen][WhichPlot]->Write("MEC" + NameOfSamples[igen] + PlotNames[WhichPlot]);
+					RESPlotsTrue[igen][WhichPlot]->Write("RES" + NameOfSamples[igen] + PlotNames[WhichPlot]);
+					DISPlotsTrue[igen][WhichPlot]->Write("DIS" + NameOfSamples[igen] + PlotNames[WhichPlot]);										
+					COHPlotsTrue[igen][WhichPlot]->Write("COH" + NameOfSamples[igen] + PlotNames[WhichPlot]);															
+
+				}
+
+			}		
+
+			//----------------------------------------//
 
 			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions
 
@@ -697,9 +829,20 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 			delete PlotCanvas;
 
-			// ----------------------------------------------------------------------------------------------
+			//----------------------------------------//
 
 		} // End of the loop over the plots
+
+		//----------------------------------------//
+
+		if (All) {
+
+			fGenXSec->Close();
+			cout << endl << GenXSecName << " file created" << endl << endl;	
+
+		}	
+
+		//----------------------------------------//					
 
 	} // End of the loop over the runs	
 

@@ -72,6 +72,23 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	h->SetMarkerColor(kWhite);			
 	h->SetMarkerSize(1.5);
 	//h->Draw("text colz e"); 
+
+	if (string(PlotNames).find("Serial") != std::string::npos) {	
+
+		TString XaxisTitle = h->GetXaxis()->GetTitle();
+		XaxisTitle.ReplaceAll("deg","bin #");
+		XaxisTitle.ReplaceAll("GeV/c","bin #");
+		XaxisTitle.ReplaceAll("GeV","bin #");				
+		h->GetXaxis()->SetTitle(XaxisTitle);
+
+		TString YaxisTitle = h->GetYaxis()->GetTitle();
+		YaxisTitle.ReplaceAll("deg","bin #");
+		YaxisTitle.ReplaceAll("GeV/c","bin #");
+		YaxisTitle.ReplaceAll("GeV","bin #");				
+		h->GetYaxis()->SetTitle(YaxisTitle);									
+
+	}
+
 	h->Draw("colz");
 	
 	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
