@@ -121,38 +121,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 	//----------------------------------------//
 
 //	vector<TString> PlotNames;
-//	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
-//	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot"); 
-//	PlotNames.push_back("MuonPhiPlot");
-//	PlotNames.push_back("ProtonMomentumPlot"); 
-//	PlotNames.push_back("ProtonCosThetaPlot");
-//	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("DeltaPnPlot");
-//	PlotNames.push_back("DeltaPtxPlot");
-//	PlotNames.push_back("DeltaPtyPlot");
-//	PlotNames.push_back("kMissPlot"); 
-
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
-
-//	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot");	
-//	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot");
-//	PlotNames.push_back("SerialMuonMomentum_MuonCosThetaPlot");
-//	PlotNames.push_back("SerialProtonMomentum_ProtonCosThetaPlot");
-//	PlotNames.push_back("SerialDeltaAlphaT_MuonCosThetaPlot");
-//	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot");
-//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot");	
-//	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot");
-//	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");	
-//	PlotNames.push_back("SerialECal_DeltaPTPlot");
-//	PlotNames.push_back("SerialProtonCosTheta_MuonCosThetaPlot");
-//	PlotNames.push_back("SerialDeltaPty_DeltaPtxPlot");	
-//	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot");
+//	PlotNames.push_back("DeltaPTPlot");
+//	PlotNames.push_back("DeltaAlphaTPlot");
+//	PlotNames.push_back("DeltaPhiTPlot");		 
+	if (All) { PlotNames = OneDimXSec; }
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -261,11 +233,11 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
 			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
 			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
 			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
+			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
 
 		}		             
 
@@ -368,7 +340,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					QECurrentPlotsTrue.push_back(QEhistTrue);
 					TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECNoSmearAltTrue"+PlotNames[WhichPlot]));
 					MECCurrentPlotsTrue.push_back(MEChistTrue);
-					TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("NoSmearAlt"+PlotNames[WhichPlot]));
+					TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("RESNoSmearAltTrue"+PlotNames[WhichPlot]));
 					RESCurrentPlotsTrue.push_back(REShistTrue);
 					TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISNoSmearAltTrue"+PlotNames[WhichPlot]));
 					DISCurrentPlotsTrue.push_back(DIShistTrue);
@@ -445,11 +417,11 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
 			PlotsTrue.push_back(CurrentPlotsTrue);
 
-			QEPlotsTrue.push_back(QEPlotsTrue);			
-			MECPlotsTrue.push_back(MECPlotsTrue);
-			RESPlotsTrue.push_back(RESPlotsTrue);
-			DISPlotsTrue.push_back(DISPlotsTrue);
-			COHPlotsTrue.push_back(COHPlotsTrue);		
+			QEPlotsTrue.push_back(QECurrentPlotsTrue);			
+			MECPlotsTrue.push_back(MECCurrentPlotsTrue);
+			RESPlotsTrue.push_back(RESCurrentPlotsTrue);
+			DISPlotsTrue.push_back(DISCurrentPlotsTrue);
+			COHPlotsTrue.push_back(COHCurrentPlotsTrue);		
 
 		}
 
@@ -498,10 +470,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					if (ix == iy) { 
 						
 						// unfolded covariance matrix
-//						double UnfUncBin = UncHist->GetBinContent(ix);
-						double UnfUncBin = 0.;
+						double UnfUncBin = UncHist->GetBinContent(ix);
+//						double UnfUncBin = 0.;
 
-						NewBinContent = TMath::Sqrt( NewBinContent + TMath::Power(UnfUncBin,2.) ) ; 
+						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ; 
 
 						// xsec uncertainty
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
@@ -772,8 +744,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			
 			}			
 
-// PUT IT BACK !!!!!!!!!!!!!!!!!!!!!!!
-//			legChi2->Draw();
+			legChi2->Draw();
 			leg->Draw();			
 
 			TLatex *textSlice = new TLatex();
@@ -781,7 +752,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			textSlice->SetTextSize(0.06);
 			TString PlotNameDuplicate = PlotNames[WhichPlot];
 			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
-			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ReducedPlotName]);	
+			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ ReducedPlotName ] );	
 
 			//----------------------------------------//
 
@@ -790,6 +761,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			if (All) {
 
 				fGenXSec->cd();
+
+				// Unfolded covariance matrix
+				CovClone->Write("UnfCov_" + PlotNames[WhichPlot]);
 
 				// Data
 				PlotsReco[0][WhichPlot]->Write("StatShape_" + PlotNames[WhichPlot]);
@@ -806,16 +780,16 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 				// Store the remaining generator xsecs
 				// 0 is the overlay that has been stored above
-				// Thus going up to NSamples - 1
 
-				for (int igen = 0; igen < NSamples - 1; igen++ ) {
+				for (int igen = 1; igen < NSamples; igen++ ) {
 
-					Clone[igen]->Write(NameOfSamples[igen] + "_" + PlotNames[WhichPlot]);
-					QEPlotsTrue[igen][WhichPlot]->Write("QE" + NameOfSamples[igen] + PlotNames[WhichPlot]);
-					MECPlotsTrue[igen][WhichPlot]->Write("MEC" + NameOfSamples[igen] + PlotNames[WhichPlot]);
-					RESPlotsTrue[igen][WhichPlot]->Write("RES" + NameOfSamples[igen] + PlotNames[WhichPlot]);
-					DISPlotsTrue[igen][WhichPlot]->Write("DIS" + NameOfSamples[igen] + PlotNames[WhichPlot]);										
-					COHPlotsTrue[igen][WhichPlot]->Write("COH" + NameOfSamples[igen] + PlotNames[WhichPlot]);															
+					TString GenName = NameOfSamples[igen] + "_" + PlotNames[WhichPlot];
+					Clone[igen-1]->Write(GenName);
+					QEPlotsTrue[igen][WhichPlot]->Write("QE" + GenName);
+					MECPlotsTrue[igen][WhichPlot]->Write("MEC" + GenName);
+					RESPlotsTrue[igen][WhichPlot]->Write("RES" + GenName);
+					DISPlotsTrue[igen][WhichPlot]->Write("DIS" + GenName);										
+					COHPlotsTrue[igen][WhichPlot]->Write("COH" + GenName);															
 
 				}
 

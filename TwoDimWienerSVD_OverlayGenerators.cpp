@@ -238,11 +238,11 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
 			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
 			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
 			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
+			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
 
 		}			             
 
@@ -595,9 +595,11 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					double WidthY = Cov->GetYaxis()->GetBinWidth(iy);
 
 					double TwoDWidth = WidthX * WidthY;
-//					double TwoDWidth = 1.;
 
 					double BinContent = Cov->GetBinContent(ix,iy);
+					// Division by bin width already included
+					// Still need to include scaling due to slice range
+					// That is done in Tools::Get2DHistoBins
 					double NewBinContent = BinContent/TwoDWidth;
 
 					// Only for the diagonal elements
@@ -607,10 +609,9 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					if (ix == iy) { 
 						
 						// unfolded covariance matrix
-//						double UnfUncBin = UncHist->GetBinContent(ix);
-						double UnfUncBin = 0.;
-						NewBinContent = TMath::Sqrt( NewBinContent + TMath::Power(UnfUncBin,2.) ) ; 
-//cout << "NewBinContent = " << NewBinContent << " UnfUncBin = " << UnfUncBin << endl;
+						double UnfUncBin = UncHist->GetBinContent(ix);
+//						double UnfUncBin = 0.;
+						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ; 
 
 						// xsec uncertainty
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
@@ -780,7 +781,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					PlotNames[WhichPlot] == "SerialDeltaPty_DeltaPtxPlot" ||
 					PlotNames[WhichPlot] == "SerialProtonCosTheta_MuonCosThetaPlot" ||
 					PlotNames[WhichPlot] == "SerialDeltaAlphaT_MuonCosThetaPlot" ||
-					(PlotNames[WhichPlot] == "SerialMuonMomentum_MuonCosThetaPlot" && NDimSlice == 3) ||					
+					(PlotNames[WhichPlot] == "SerialMuonMomentum_MuonCosThetaPlot" && NDimSlice == 3) ||
+					(PlotNames[WhichPlot] == "SerialDeltaPn_DeltaPTPlot" && NDimSlice == 2) ||										
 					PlotNames[WhichPlot] == "SerialDeltaAlphaT_ProtonCosThetaPlot"
 					) { 
 						
@@ -939,8 +941,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 				leg->AddEntry(BeamOnStatShape[WhichPlot][NDimSlice],Label,"");
 				leg->AddEntry(BeamOnNormOnly[WhichPlot][NDimSlice],"Norm Unc","f");
 
-// PUT IT BACK!!!!!!!!!!!!!!!!!
-//				legChi2->Draw();
+				legChi2->Draw();
 				leg->Draw();			
 
 				TLatex *textSlice = new TLatex();
@@ -958,6 +959,9 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 					fGenXSec->cd();
 
+					// Unfolded covariance matrix
+					SliceCovMatrix->Write("UnfCov_" + NameCopy);					
+
 					// Data
 					BeamOnStatShape[WhichPlot][NDimSlice]->Write("StatShape_" + NameCopy);
 					BeamOnNormOnly[WhichPlot][NDimSlice]->Write("NormOnly_" + NameCopy);
@@ -972,17 +976,17 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					COHMC[WhichPlot][NDimSlice][0]->Write("COHOverlayGENIE_" + NameCopy);																									
 
 					// Store the remaining generator xsecs
-					// 0 is the overlay that has been stored above
-					// Thus going up to NSamples - 1
+					// Start from 1, the GENIE Overlay = 0 has been stored above
 
-					for (int igen = 0; igen < NSamples - 1; igen++ ) {
+					for (int igen = 1; igen < NSamples; igen++ ) {
 
-						MC[WhichPlot][NDimSlice][igen]->Write(NameOfSamples[igen] + "_" + NameCopy);
-						QEMC[WhichPlot][NDimSlice][igen]->Write("QE" + NameOfSamples[igen] + "_" + NameCopy);
-						MECMC[WhichPlot][NDimSlice][igen]->Write("MEC" + NameOfSamples[igen] + "_" + NameCopy);
-						RESMC[WhichPlot][NDimSlice][igen]->Write("RES" + NameOfSamples[igen] + "_" + NameCopy);
-						DISMC[WhichPlot][NDimSlice][igen]->Write("DIS" + NameOfSamples[igen] + "_" + NameCopy);
-						COHMC[WhichPlot][NDimSlice][igen]->Write("COH" + NameOfSamples[igen] + "_" + NameCopy);																														
+						TString GenName = NameOfSamples[igen] + "_" + NameCopy;
+						MC[WhichPlot][NDimSlice][igen]->Write(GenName);
+						QEMC[WhichPlot][NDimSlice][igen]->Write("QE" + GenName);
+						MECMC[WhichPlot][NDimSlice][igen]->Write("MEC" + GenName);
+						RESMC[WhichPlot][NDimSlice][igen]->Write("RES" + GenName);
+						DISMC[WhichPlot][NDimSlice][igen]->Write("DIS" + GenName);
+						COHMC[WhichPlot][NDimSlice][igen]->Write("COH" + GenName);																														
 
 					}
 

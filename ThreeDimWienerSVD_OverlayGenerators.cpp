@@ -224,11 +224,11 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
 			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
 			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
 			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
+			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
+			//NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
 
 		}		           
 
@@ -439,12 +439,24 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 			SliceDiscriminators.clear();
 			SliceBinning.clear();	
 
-			int StartIndex = 0;			
+			int StartIndex = 0;	
+			// Determine the global start bin number
+			int GlobalIndex = 0;				
 
 			if (PlotNames[WhichPlot] == "SerialECal_DeltaPTDeltaAlphaTPlot") {
 
 				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaAlphaT);
 				SliceBinning.push_back(TwoDArrayNBinsECalInDeltaPTDeltaAlphaTSlices[FirstDiscrIndex]);
+
+				for (int ig = 0; ig < FirstDiscrIndex; ig++) {
+
+					for (int icolumn = 0; icolumn < TwoDArrayNBinsECalInDeltaPTDeltaAlphaTSlices[ig].size(); icolumn++) {
+
+						GlobalIndex += TwoDArrayNBinsECalInDeltaPTDeltaAlphaTSlices[ig][icolumn].size()-1;
+
+					}
+
+				}				
 
 			}	
 
@@ -453,6 +465,16 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				SliceDiscriminators.push_back(TwoDArrayNBinsMuonMomentum);
 				SliceBinning.push_back(TwoDArrayNBinsECalInMuonCosThetaMuonMomentumSlices[FirstDiscrIndex]);
 
+				for (int ig = 0; ig < FirstDiscrIndex; ig++) {
+
+					for (int icolumn = 0; icolumn < TwoDArrayNBinsECalInMuonCosThetaMuonMomentumSlices[ig].size(); icolumn++) {
+
+						GlobalIndex += TwoDArrayNBinsECalInMuonCosThetaMuonMomentumSlices[ig][icolumn].size()-1;
+
+					}
+
+				}
+
 			}
 
 			if (PlotNames[WhichPlot] == "SerialECal_ProtonCosThetaProtonMomentumPlot") {
@@ -460,7 +482,17 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				SliceDiscriminators.push_back(TwoDArrayNBinsProtonMomentum);
 				SliceBinning.push_back(TwoDArrayNBinsECalInProtonCosThetaProtonMomentumSlices[FirstDiscrIndex]);
 
-			}																																	
+				for (int ig = 0; ig < FirstDiscrIndex; ig++) {
+
+					for (int icolumn = 0; icolumn < TwoDArrayNBinsECalInProtonCosThetaProtonMomentumSlices[ig].size(); icolumn++) {
+
+						GlobalIndex += TwoDArrayNBinsECalInProtonCosThetaProtonMomentumSlices[ig][icolumn].size()-1;
+
+					}
+
+				}
+
+			}																																			
 
 			//----------------------------------------//
 
@@ -499,7 +531,6 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					double WidthY = Cov->GetYaxis()->GetBinWidth(iy);
 
 					double TwoDWidth = WidthX * WidthY;
-//					double TwoDWidth = 1.;
 
 					double BinContent = Cov->GetBinContent(ix,iy);
 					double NewBinContent = BinContent/TwoDWidth;
@@ -511,10 +542,9 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					if (ix == iy) { 
 						
 						// unfolded covariance matrix
-//						double UnfUncBin = UncHist->GetBinContent(ix);
-						double UnfUncBin = 0.;
-						NewBinContent = TMath::Sqrt( NewBinContent + TMath::Power(UnfUncBin,2.) ) ; 
-//cout << "NewBinContent = " << NewBinContent << " UnfUncBin = " << UnfUncBin << endl;
+						double UnfUncBin = UncHist->GetBinContent(ix);
+//						double UnfUncBin = 0.;
+						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.); 
 
 						// xsec uncertainty
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
@@ -565,9 +595,9 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 						double BinValue = SliceBinning.at(0).at(iSliceDiscrimSize).at(iBin);
 						// First bin number for a given slice
-						if (iBin == 0) { SerialVectorLowBin.push_back(BinCounter); }
+						if (iBin == 0) { SerialVectorLowBin.push_back(GlobalIndex + BinCounter); }
 						// Last bin number for a given slice
-						if (iBin == SliceDiscrimValue-2) { SerialVectorHighBin.push_back(BinCounter); }	
+						if (iBin == SliceDiscrimValue-2) { SerialVectorHighBin.push_back(GlobalIndex + BinCounter); }	
 
 						// Storing the binning for a specific slice
 						SerialVectorRanges.push_back(BinValue);
@@ -843,8 +873,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				leg->AddEntry(BeamOnStatShape[WhichPlot][NDimSlice],Label,"");
 				leg->AddEntry(BeamOnNormOnly[WhichPlot][NDimSlice],"Norm Unc","f");
 
-// PUT IT BACK !!!!!!!!!!!!!!1
-//				legChi2->Draw();
+				legChi2->Draw();
 				leg->Draw();			
 
 				TLatex *textSlice = new TLatex();
@@ -862,6 +891,9 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 					fGenXSec->cd();
 
+					// Unfolded covariance matrix
+					SliceCovMatrix->Write("UnfCov_" + NameCopy);					
+
 					// Data
 					BeamOnStatShape[WhichPlot][NDimSlice]->Write("StatShape_" + NameCopy);
 					BeamOnNormOnly[WhichPlot][NDimSlice]->Write("NormOnly_" + NameCopy);
@@ -876,12 +908,17 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					COHMC[WhichPlot][NDimSlice][0]->Write("COHOverlayGENIE_" + NameCopy);					
 
 					// Store the remaining generator xsecs
-					// 0 is the overlay that has been stored above
-					// Thus going up to NSamples - 1
+					// Start from 1, the GENIE Overlay = 0 has been stored above
 
-					for (int igen = 0; igen < NSamples - 1; igen++ ) {
+					for (int igen = 1; igen < NSamples; igen++ ) {
 
-						MC[WhichPlot][NDimSlice][igen]->Write(NameOfSamples[igen] + "_" + NameCopy);
+						TString GenName = NameOfSamples[igen] + "_" + NameCopy;
+						MC[WhichPlot][NDimSlice][igen]->Write(GenName);
+						QEMC[WhichPlot][NDimSlice][igen]->Write("QE" + GenName);
+						MECMC[WhichPlot][NDimSlice][igen]->Write("MEC" + GenName);
+						RESMC[WhichPlot][NDimSlice][igen]->Write("RES" + GenName);
+						DISMC[WhichPlot][NDimSlice][igen]->Write("DIS" + GenName);
+						COHMC[WhichPlot][NDimSlice][igen]->Write("COH" + GenName);						
 
 					}
 

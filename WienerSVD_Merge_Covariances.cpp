@@ -272,26 +272,23 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TH2D*> FracCovariances;
-	FracCovariances.resize(NPlots);
+	vector<TH2D*> FracCovariances; FracCovariances.resize(NPlots);
+	vector<TH2D*> FracStatCovariances; FracStatCovariances.resize(NPlots);
+	vector<TH2D*> FracSystCovariances; FracSystCovariances.resize(NPlots);
 
-	vector<TH2D*> FracStatCovariances;
-	FracStatCovariances.resize(NPlots);
-
-	vector<TH2D*> FracSystCovariances;
-	FracSystCovariances.resize(NPlots);
-
-	vector<TH2D*> Covariances;
-	Covariances.resize(NPlots);
-
-	vector<TH2D*> StatCovariances;
-	StatCovariances.resize(NPlots);
-
-	vector<TH2D*> MCStatCovariances;
-	MCStatCovariances.resize(NPlots);	
-
-	vector<TH2D*> SystCovariances;
-	SystCovariances.resize(NPlots);	
+	vector<TH2D*> Covariances; Covariances.resize(NPlots);
+	vector<TH2D*> StatCovariances; StatCovariances.resize(NPlots);
+	vector<TH2D*> MCStatCovariances; MCStatCovariances.resize(NPlots);	
+	vector<TH2D*> SystCovariances; SystCovariances.resize(NPlots);	
+	vector<TH2D*> LYCovariances; LYCovariances.resize(NPlots);	
+	vector<TH2D*> TPCCovariances; TPCCovariances.resize(NPlots);
+	vector<TH2D*> SCERecomb2Covariances; SCERecomb2Covariances.resize(NPlots);
+	vector<TH2D*> XSecCovariances; XSecCovariances.resize(NPlots);
+	vector<TH2D*> G4Covariances; G4Covariances.resize(NPlots);
+	vector<TH2D*> FluxCovariances; FluxCovariances.resize(NPlots);
+	vector<TH2D*> DirtCovariances; DirtCovariances.resize(NPlots);	
+	vector<TH2D*> POTCovariances; POTCovariances.resize(NPlots);
+	vector<TH2D*> NTargetCovariances; NTargetCovariances.resize(NPlots);							
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -404,6 +401,16 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					else { SystCovariances[WhichPlot]->Add(LocalCovMatrix); FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
 
 					if (UncSources[WhichSample] == "MC_Stat") { MCStatCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "LY") { LYCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "TPC") { TPCCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "SCERecomb2") { SCERecomb2Covariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "XSec") { XSecCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "G4") { G4Covariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "Flux") { FluxCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "Dirt") { DirtCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "POT") { POTCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "NTarget") { NTargetCovariances[WhichPlot] = LocalCovMatrix; }															
+					
 
 				}
 
@@ -443,7 +450,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 								}
 
-
 							} else { // Explicitly include evenrything else
 
 								ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],Counter,leg);
@@ -474,6 +480,17 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 			TotalFileCovarianceMatrices->cd();
 
 			MCStatCovariances[WhichPlot]->Write("MCStatCovariance_"+PlotNames[WhichPlot]);
+
+			LYCovariances[WhichPlot]->Write("LYCovariance_"+PlotNames[WhichPlot]);
+			TPCCovariances[WhichPlot]->Write("TPCCovariance_"+PlotNames[WhichPlot]);			
+			SCERecomb2Covariances[WhichPlot]->Write("SCERecomb2Covariance_"+PlotNames[WhichPlot]);			
+			XSecCovariances[WhichPlot]->Write("XSecCovariance_"+PlotNames[WhichPlot]);
+			G4Covariances[WhichPlot]->Write("G4Covariance_"+PlotNames[WhichPlot]);			
+			FluxCovariances[WhichPlot]->Write("FluxCovariance_"+PlotNames[WhichPlot]);
+			DirtCovariances[WhichPlot]->Write("DirtCovariance_"+PlotNames[WhichPlot]);
+			POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);			
+			NTargetCovariances[WhichPlot]->Write("NTargetCovariance_"+PlotNames[WhichPlot]);			
+
 			StatCovariances[WhichPlot]->Write("StatCovariance_"+PlotNames[WhichPlot]);
 			FracStatCovariances[WhichPlot]->Write("FracStatCovariance_"+PlotNames[WhichPlot]);
 

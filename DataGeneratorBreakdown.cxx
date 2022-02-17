@@ -36,9 +36,8 @@ void DataGeneratorBreakdown() {
 
 	vector<TString> PlotNames;
 	PlotNames = MultiDimXSec;
-//	PlotNames.push_back("SerialECal_DeltaPTPlot_0");
-//	PlotNames.push_back("SerialECal_DeltaPTPlot_1");	 
-//	PlotNames.push_back("SerialECal_DeltaPTPlot_2");
+//	PlotNames.push_back("DeltaPTPlot");
+//	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_0");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -52,7 +51,11 @@ void DataGeneratorBreakdown() {
 	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("GENIE v3 G18 Tune");
 	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU 2021");
 	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT v5.4.0");
-	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro 19.02.1");	
+	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro 19.02.1");
+	MCSampleBand.push_back("GENIEv2"); Label.push_back("GENIE v2");
+	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("GENIE v3.0.6 G18 (No Tune)");					
+	MCSampleBand.push_back("SuSav2"); Label.push_back("GENIE v3 G21");
+	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("GENIE v3 G18 hN Tune");
 
 	int NMC = MCSampleBand.size();
 
@@ -105,6 +108,39 @@ void DataGeneratorBreakdown() {
 				PlotCanvas->Draw();
 
 				TLegend* leg = new TLegend(0.6,0.6,0.7,0.85);
+
+			if (
+				PlotNames[iplot] == "MuonCosThetaPlot" ||
+				PlotNames[iplot] == "ProtonCosThetaPlot" ||								
+				PlotNames[iplot] == "SerialDeltaPtx_DeltaPtyPlot_2" ||				
+				PlotNames[iplot] == "SerialDeltaPn_DeltaPTPlot_2" ||
+				PlotNames[iplot] == "SerialDeltaAlphaT_DeltaPTPlot_1" ||
+				PlotNames[iplot] == "SerialDeltaAlphaT_DeltaPTPlot_2" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_ProtonCosThetaPlot_0" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_ProtonCosThetaPlot_1" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_ProtonCosThetaPlot_2" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_ProtonCosThetaPlot_3" ||
+				PlotNames[iplot] == "SerialDeltaAlphaT_MuonCosThetaPlot_0" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_MuonCosThetaPlot_1" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_MuonCosThetaPlot_2" ||				
+				PlotNames[iplot] == "SerialDeltaAlphaT_MuonCosThetaPlot_3" ||
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_0" ||				
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_1" ||				
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_2" ||				
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_3" ||				
+				PlotNames[iplot] == "SerialMuonMomentum_MuonCosThetaPlot_2" ||				
+				PlotNames[iplot] == "SerialMuonMomentum_MuonCosThetaPlot_3" ||				
+				PlotNames[iplot] == "DeltaPtyPlot" ||
+				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_0" ||
+				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_1" ||
+				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_2"
+			) {
+
+					leg = new TLegend(0.22,0.58,0.32,0.85);
+
+			}
+			
+
 				leg->SetBorderSize(0);
 				leg->SetTextSize(0.03);
 				leg->SetTextFont(FontStyle);
@@ -128,6 +164,7 @@ void DataGeneratorBreakdown() {
 				THStack* thstack = new THStack(THStackName,"");				
 
 				// Starting from 1, 0 corresponds to all the events 
+				// 1 = QE, 2 = MEC, 3 = RES, 4 = DIS, 5 = COH 
 
 				for (int imc = 1; imc < NInte; imc++) {	
 
@@ -154,9 +191,9 @@ void DataGeneratorBreakdown() {
 				BeamOnStatOnly->Draw("e1x0 same");
 
 				TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-				BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);	
-				BeamOnNormOnly->SetLineColor(kGray+1);
-				BeamOnNormOnly->SetMarkerColor(kGray+1);			
+				BeamOnNormOnly->SetFillColorAlpha(kMagenta-9, 0.45);	
+				BeamOnNormOnly->SetLineColor(kMagenta-9);
+				BeamOnNormOnly->SetMarkerColor(kMagenta-9);			
 				BeamOnNormOnly->Draw("e2 same");						
 
 				//----------------------------------------//	
@@ -170,7 +207,7 @@ void DataGeneratorBreakdown() {
 				TLatex *textSlice = new TLatex();
 				textSlice->SetTextFont(FontStyle);
 				textSlice->SetTextSize(0.06);
-				textSlice->DrawLatexNDC(0.24, 0.92, Label[igen] + ", " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
+				textSlice->DrawLatexNDC(0.2, 0.92, Label[igen] + "    " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
 
 				//----------------------------------------//
 

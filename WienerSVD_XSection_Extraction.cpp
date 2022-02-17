@@ -72,23 +72,6 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 }
 
 // -------------------------------------------------------------------------------------------------------------------------------------
-/*
-int LocateBinWithValue(TH1D* h, double Value) {
-
-	int NBins = h->GetXaxis()->GetNbins();
-
-	for (int i = 1; i <= NBins; i++) {
-
-		double CurrentEntry = h->GetBinContent(i);
-		if (CurrentEntry == Value) { return i; } 
-
-	}
-
-	return -99;
-
-}
-*/
-// -------------------------------------------------------------------------------------------------------------------------------------
 
 void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest = false, TString BeamOnSample = "", TString Tune = "") {
 
@@ -100,8 +83,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 	gStyle->SetEndErrorSize(4);	
 
 	TString Subtract = "";
-//	TString Subtract = "_BUnsubtracted";
-
 	int DecimalAccuracy = 2;
 
 	// -------------------------------------------------------------------------------------
@@ -214,6 +195,15 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		vector<TH2D*> StatCovarianceMatrices; StatCovarianceMatrices.clear();
 		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();			
 		vector<TH2D*> SystCovarianceMatrices; SystCovarianceMatrices.clear();	
+		vector<TH2D*> LYCovarianceMatrices; LYCovarianceMatrices.clear();
+		vector<TH2D*> TPCCovarianceMatrices; TPCCovarianceMatrices.clear();
+		vector<TH2D*> SCERecomb2CovarianceMatrices; SCERecomb2CovarianceMatrices.clear();
+		vector<TH2D*> XSecCovarianceMatrices; XSecCovarianceMatrices.clear();
+		vector<TH2D*> FluxCovarianceMatrices; FluxCovarianceMatrices.clear();
+		vector<TH2D*> G4CovarianceMatrices; G4CovarianceMatrices.clear();
+		vector<TH2D*> DirtCovarianceMatrices; DirtCovarianceMatrices.clear();
+		vector<TH2D*> POTCovarianceMatrices; POTCovarianceMatrices.clear();
+		vector<TH2D*> NTargetCovarianceMatrices; NTargetCovarianceMatrices.clear();				
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -360,7 +350,17 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
 			SystCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SystCovariance_"+PlotNames[WhichPlot]));
 			StatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("StatCovariance_"+PlotNames[WhichPlot]));
-			MCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));			
+			MCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
+
+			LYCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("LYCovariance_"+PlotNames[WhichPlot]));
+			TPCCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TPCCovariance_"+PlotNames[WhichPlot]));
+			SCERecomb2CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SCERecomb2Covariance_"+PlotNames[WhichPlot]));
+			XSecCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
+			FluxCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
+			G4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
+			DirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
+			POTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
+			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));																		
 
 			// -----------------------------------------------------------------------------------------------------
 
@@ -415,6 +415,15 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD mcstatcovariance(m, m);
 			TMatrixD statcovariance(m, m);
 			TMatrixD systcovariance(m, m);
+			TMatrixD lycovariance(m, m);	
+			TMatrixD tpccovariance(m, m);
+			TMatrixD scerecomb2covariance(m, m);
+			TMatrixD fluxcovariance(m, m);	
+			TMatrixD xseccovariance(m, m);
+			TMatrixD g4covariance(m, m);
+			TMatrixD dirtcovariance(m, m);	
+			TMatrixD potcovariance(m, m);
+			TMatrixD ntargetcovariance(m, m);									
 
 			// Convert input into mathematical formats, easy and clean to be processed. 
 			// Converted defined/implemented in source files, see include/Util.h
@@ -432,6 +441,16 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			H2M(MCStatCovarianceMatrices[WhichPlot], mcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(StatCovarianceMatrices[WhichPlot], statcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(SystCovarianceMatrices[WhichPlot], systcovariance, kTRUE); // X axis: True, Y axis: Reco
+
+			H2M(LYCovarianceMatrices[WhichPlot], lycovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(TPCCovarianceMatrices[WhichPlot], tpccovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SCERecomb2CovarianceMatrices[WhichPlot], scerecomb2covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(FluxCovarianceMatrices[WhichPlot], fluxcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(XSecCovarianceMatrices[WhichPlot], xseccovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(G4CovarianceMatrices[WhichPlot], g4covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(DirtCovarianceMatrices[WhichPlot], dirtcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(POTCovarianceMatrices[WhichPlot], potcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(NTargetCovarianceMatrices[WhichPlot], ntargetcovariance, kTRUE); // X axis: True, Y axis: Reco																		
 
 			// ------------------------------------------------------------------------------------------
 
@@ -461,6 +480,16 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD UnfMCStatCov = CovRotation*mcstatcovariance*CovRotation_T;
 			TMatrixD UnfStatCov = CovRotation*statcovariance*CovRotation_T; 
 			TMatrixD UnfSystCov = CovRotation*systcovariance*CovRotation_T; 
+			TMatrixD UnfLYCov = CovRotation*lycovariance*CovRotation_T;
+			TMatrixD UnfTPCCov = CovRotation*tpccovariance*CovRotation_T;
+			TMatrixD UnfSCERecomb2Cov = CovRotation*scerecomb2covariance*CovRotation_T;
+			TMatrixD UnfFluxCov = CovRotation*fluxcovariance*CovRotation_T;
+			TMatrixD UnfXSecCov = CovRotation*xseccovariance*CovRotation_T;
+			TMatrixD UnfG4Cov = CovRotation*g4covariance*CovRotation_T;
+			TMatrixD UnfDirtCov = CovRotation*dirtcovariance*CovRotation_T;
+			TMatrixD UnfPOTCov = CovRotation*potcovariance*CovRotation_T;
+			TMatrixD UnfNTargetCov = CovRotation*ntargetcovariance*CovRotation_T;			
+
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
 			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,unfold,UnfSystCov);
 
@@ -481,6 +510,15 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfLY = new TH1D("unfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfTPC = new TH1D("unfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfSCERecomb2 = new TH1D("unfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfFlux = new TH1D("unfFlux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfXSec = new TH1D("unfXSec_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfG4 = new TH1D("unfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfDirt = new TH1D("unfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfPOT = new TH1D("unfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);												
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -515,6 +553,16 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			unfShapeOnly = (TH1D*)(unf->Clone());
 			unfNormOnly = (TH1D*)(unf->Clone());
 
+			unfLY = (TH1D*)(unf->Clone());
+			unfTPC = (TH1D*)(unf->Clone());
+			unfSCERecomb2 = (TH1D*)(unf->Clone());
+			unfFlux = (TH1D*)(unf->Clone());
+			unfXSec = (TH1D*)(unf->Clone());
+			unfG4 = (TH1D*)(unf->Clone());
+			unfDirt = (TH1D*)(unf->Clone());
+			unfPOT = (TH1D*)(unf->Clone());
+			unfNTarget = (TH1D*)(unf->Clone());												
+
 			myXSecTxtFile << PlotNames[WhichPlot] << endl << endl;			
 
 			for (int i = 1; i <= n;i++ ) {
@@ -541,6 +589,39 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / Width );	
 				unfNormOnly->SetBinContent(i,0.);	
 				unfNormOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[0](i-1,i-1) ) ) / Width );
+
+				//----------------------------------------//
+
+				// Sources of uncertainty
+
+				double LYError = TMath::Sqrt( UnfLYCov(i-1,i-1) ) / Width;
+				unfLY->SetBinError(i, LYError);
+
+				double TPCError = TMath::Sqrt( UnfTPCCov(i-1,i-1) ) / Width;
+				unfTPC->SetBinError(i, TPCError);
+
+				double SCERecomb2Error = TMath::Sqrt( UnfSCERecomb2Cov(i-1,i-1) ) / Width;
+				unfSCERecomb2->SetBinError(i, SCERecomb2Error);
+
+				double FluxError = TMath::Sqrt( UnfFluxCov(i-1,i-1) ) / Width;
+				unfFlux->SetBinError(i, FluxError);
+
+				double XSecError = TMath::Sqrt( UnfXSecCov(i-1,i-1) ) / Width;
+				unfXSec->SetBinError(i, XSecError);
+
+				double G4Error = TMath::Sqrt( UnfG4Cov(i-1,i-1) ) / Width;
+				unfG4->SetBinError(i, G4Error);
+
+				double DirtError = TMath::Sqrt( UnfDirtCov(i-1,i-1) ) / Width;
+				unfDirt->SetBinError(i, DirtError);
+
+				double POTError = TMath::Sqrt( UnfPOTCov(i-1,i-1) ) / Width;
+				unfPOT->SetBinError(i, POTError);
+
+				double NTargetError = TMath::Sqrt( UnfNTargetCov(i-1,i-1) ) / Width;
+				unfNTarget->SetBinError(i, NTargetError);																				
+
+				//----------------------------------------//				
 
 				// Data release
 
@@ -620,7 +701,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			ReweightXSec(DISTrueUnf);			
 			ReweightXSec(COHTrueUnf);
 
-//			TrueUnf->Scale(Units/(IntegratedFlux*NTargets));
 			TrueUnf->SetLineColor(OverlayColor);
 			TrueUnf->SetMarkerColor(OverlayColor);	
 			PlotCanvas->cd();					
@@ -760,6 +840,15 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfNormOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
 				unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]);
 				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
+				unfLY->Write("LYReco"+PlotNames[WhichPlot]);
+				unfTPC->Write("TPCReco"+PlotNames[WhichPlot]);
+				unfSCERecomb2->Write("SCERecomb2Reco"+PlotNames[WhichPlot]);
+				unfFlux->Write("FluxReco"+PlotNames[WhichPlot]);
+				unfXSec->Write("XSecReco"+PlotNames[WhichPlot]);
+				unfG4->Write("G4Reco"+PlotNames[WhichPlot]);
+				unfDirt->Write("DirtReco"+PlotNames[WhichPlot]);
+				unfPOT->Write("POTReco"+PlotNames[WhichPlot]);
+				unfNTarget->Write("NTargetReco"+PlotNames[WhichPlot]);								
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
 				TrueUnf->Write("True"+PlotNames[WhichPlot]);
 				QETrueUnf->Write("QETrue"+PlotNames[WhichPlot]);

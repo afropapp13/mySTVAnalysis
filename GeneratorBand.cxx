@@ -122,6 +122,26 @@ void GeneratorBand() {
 			PlotCanvas->Draw();
 
 			TLegend* leg = new TLegend(0.6,0.65,0.7,0.85);
+
+			if (
+				PlotNames[iplot] == "DeltaPtyPlot" ||
+				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_0" ||
+				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_1" ||
+				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_2" ||								
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_0" ||
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_1" ||
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_2" ||
+				PlotNames[iplot] == "SerialProtonCosTheta_MuonCosThetaPlot_3" ||												
+				PlotNames[iplot] == "SerialDeltaPn_DeltaPTPlot_2" ||
+				PlotNames[iplot] == "SerialDeltaAlphaT_DeltaPTPlot_1" ||
+				PlotNames[iplot] == "SerialMuonMomentum_MuonCosThetaPlot_3" ||
+				PlotNames[iplot] == "SerialProtonMomentum_ProtonCosThetaPlot_3"								
+			) { 
+					
+					leg = new TLegend(0.22,0.58,0.32,0.85); 				
+					
+			}
+
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.03);
 			leg->SetTextFont(FontStyle);

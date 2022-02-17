@@ -146,6 +146,9 @@ root -b NuWro_ModelIndepedent_XSecMethod.C
 root -b CompareUnc.C
 cd ..
 
+#locally
+# run all the event generators
+
 #################################################################################################################################
 
 # (locally)
@@ -156,6 +159,7 @@ root -b script_WienerSVD_OverlayGenerators.C
 root -b script_TwoDimWienerSVD_OverlayGenerators.C
 root -b script_ThreeDimWienerSVD_OverlayGenerators.C
 
+rm myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root
 hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/v08_00_00_52/GenXSec/All_XSecs_*_Combined_v08_00_00_52.root
 
 root -b GeneratorBand.cxx
