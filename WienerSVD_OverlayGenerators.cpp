@@ -147,6 +147,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
+		vector<vector<TH1D*> > PlotsXSecReco; PlotsXSecReco.clear();
 		vector<vector<TH1D*> > PlotsTotalReco; PlotsTotalReco.clear();
 		vector<vector<TH1D*> > PlotsNormOnly; PlotsNormOnly.clear();		
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -273,6 +274,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
+			vector<TH1D*> CurrentPlotsXSecReco; CurrentPlotsXSecReco.clear();
 			vector<TH1D*> CurrentPlotsTotalReco; CurrentPlotsTotalReco.clear();
 			vector<TH1D*> CurrentPlotsNormOnly; CurrentPlotsNormOnly.clear();			
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
@@ -295,6 +297,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 					TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(histTotalReco);
+
+					TH1D* histXSecReco = (TH1D*)(FileSample[WhichSample]->Get("XSecReco"+PlotNames[WhichPlot]));
+					CurrentPlotsXSecReco.push_back(histXSecReco);					
 
 					TH1D* histNormOnly = (TH1D*)(FileSample[WhichSample]->Get("NormOnlyReco"+PlotNames[WhichPlot]));
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
@@ -328,7 +333,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 					//TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(nullptr);
-					CurrentPlotsNormOnly.push_back(nullptr);					
+					CurrentPlotsNormOnly.push_back(nullptr);
+					CurrentPlotsXSecReco.push_back(nullptr);										
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
@@ -384,6 +390,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					TH1D* histTotalReco = nullptr;
 					CurrentPlotsTotalReco.push_back(histTotalReco);
 
+					TH1D* histXSecReco = nullptr;
+					CurrentPlotsXSecReco.push_back(histXSecReco);					
+
 					TH1D* histNormOnly = nullptr;
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
 
@@ -411,6 +420,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 			}
 
+			PlotsXSecReco.push_back(CurrentPlotsXSecReco);
 			PlotsTotalReco.push_back(CurrentPlotsTotalReco);
 			PlotsNormOnly.push_back(CurrentPlotsNormOnly);					
 			PlotsReco.push_back(CurrentPlotsReco);		
@@ -509,8 +519,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "DeltaAlphaTPlot" || PlotNames[WhichPlot] == "MuonCosThetaPlot" || 
 				PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot" ||
 				PlotNames[WhichPlot] == "DeltaAlphaT_DeltaPT_0_20To0_40Plot" || PlotNames[WhichPlot] == "DeltaAlphaT_DeltaPT_0_40To1_00Plot" ||
+				PlotNames[WhichPlot] == "ECal_ProtonCosTheta_0_50To0_75_ProtonMomentum_0_70To1_00Plot" ||
 				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_20To0_40Plot" ||
-				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_Minus1_00To0_00Plot" || PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_00To0_50Plot" ||
+				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_Minus1_00To0_00Plot" || 
+				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_00To0_50Plot" ||
 				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_50To0_75Plot" ||
 				PlotNames[WhichPlot] == "MuonMomentum_MuonCosTheta_0_75To1_00Plot" ||
 				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_Minus0_55ToMinus0_15Plot" ||
@@ -518,7 +530,9 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "DeltaPty_DeltaPtx_0_15To0_55Plot" ||
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_75ToMinus0_15Plot" ||
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_15To0_15Plot" ||		
-				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_0_15To0_45Plot" ||										
+				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_0_15To0_45Plot" ||	
+				PlotNames[WhichPlot] == "SerialECal_MuonCosThetaMuonMomentumPlot" ||
+				PlotNames[WhichPlot] == "SerialECal_ProtonCosThetaProtonMomentumPlot" ||																	
 				PlotNames[WhichPlot] == "SerialDeltaPT_MuonCosThetaPlot" ||	
 				PlotNames[WhichPlot] == "SerialMuonMomentum_MuonCosThetaPlot" ||
 				PlotNames[WhichPlot] == "SerialProtonMomentum_ProtonCosThetaPlot" ||
@@ -624,6 +638,15 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			PlotsTotalReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
 			PlotsTotalReco[0][WhichPlot]->SetLineWidth(1);			
 			PlotsTotalReco[0][WhichPlot]->Draw("e1x0 same"); // Stat Only
+
+			PrettyPlot(PlotsXSecReco[0][WhichPlot]); // includes scaling factor for multi dimensional analysis
+			PlotsXSecReco[0][WhichPlot]->SetLineColor(BeamOnColor);
+			PlotsXSecReco[0][WhichPlot]->SetMarkerColor(BeamOnColor);
+			PlotsXSecReco[0][WhichPlot]->SetLineWidth(1);
+			PlotsXSecReco[0][WhichPlot]->SetMarkerSize(1.);
+			PlotsXSecReco[0][WhichPlot]->SetMarkerStyle(20);
+			PlotsXSecReco[0][WhichPlot]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);									
+			//PlotsXSecReco[0][WhichPlot]->Draw("e1x0 same"); // XSec Only			
 			
 			PrettyPlot(PlotsNormOnly[0][WhichPlot]); // includes scaling factor for multi dimensional analysis			
 			PlotsNormOnly[0][WhichPlot]->SetFillColorAlpha(kGray+1, 0.45);	
@@ -744,7 +767,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			
 			}			
 
-			legChi2->Draw();
+			if (PlotNames[WhichPlot] != "MuonCosThetaSingleBinPlot") { legChi2->Draw(); }
 			leg->Draw();			
 
 			TLatex *textSlice = new TLatex();
@@ -766,9 +789,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				CovClone->Write("UnfCov_" + PlotNames[WhichPlot]);
 
 				// Data
-				PlotsReco[0][WhichPlot]->Write("StatShape_" + PlotNames[WhichPlot]);
-				PlotsNormOnly[0][WhichPlot]->Write("NormOnly_" + PlotNames[WhichPlot]);
-				PlotsTotalReco[0][WhichPlot]->Write("StatOnly_" + PlotNames[WhichPlot]);
+				PlotsReco[0][WhichPlot]->Write("StatShape_" + PlotNames[WhichPlot]); // Stat + Shape
+				PlotsNormOnly[0][WhichPlot]->Write("NormOnly_" + PlotNames[WhichPlot]); // Norm only
+				PlotsTotalReco[0][WhichPlot]->Write("StatOnly_" + PlotNames[WhichPlot]); // Stat only
+				PlotsXSecReco[0][WhichPlot]->Write("XSecOnly_" + PlotNames[WhichPlot]); // Stat only				
 
 				// Overlay GENIE
 				PlotsTrue[0][WhichPlot]->Write("OverlayGENIE_" + PlotNames[WhichPlot]);

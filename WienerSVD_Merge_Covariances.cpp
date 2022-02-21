@@ -243,7 +243,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 	vector<TString> UncSources;
 
-	if (BeamOn9 != "") { // Fake data study, we need only the Stat & XSec covariances
+	if (BeamOn9 != "") { // Fake data study, we need only the Stat/MC_Stat & XSec covariances
 
 		UncSources.push_back("Stat");
 		UncSources.push_back("XSec");
@@ -481,15 +481,19 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			MCStatCovariances[WhichPlot]->Write("MCStatCovariance_"+PlotNames[WhichPlot]);
 
-			LYCovariances[WhichPlot]->Write("LYCovariance_"+PlotNames[WhichPlot]);
-			TPCCovariances[WhichPlot]->Write("TPCCovariance_"+PlotNames[WhichPlot]);			
-			SCERecomb2Covariances[WhichPlot]->Write("SCERecomb2Covariance_"+PlotNames[WhichPlot]);			
-			XSecCovariances[WhichPlot]->Write("XSecCovariance_"+PlotNames[WhichPlot]);
-			G4Covariances[WhichPlot]->Write("G4Covariance_"+PlotNames[WhichPlot]);			
-			FluxCovariances[WhichPlot]->Write("FluxCovariance_"+PlotNames[WhichPlot]);
-			DirtCovariances[WhichPlot]->Write("DirtCovariance_"+PlotNames[WhichPlot]);
-			POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);			
-			NTargetCovariances[WhichPlot]->Write("NTargetCovariance_"+PlotNames[WhichPlot]);			
+			if (BeamOn9 == "") {
+
+				LYCovariances[WhichPlot]->Write("LYCovariance_"+PlotNames[WhichPlot]);
+				TPCCovariances[WhichPlot]->Write("TPCCovariance_"+PlotNames[WhichPlot]);			
+				SCERecomb2Covariances[WhichPlot]->Write("SCERecomb2Covariance_"+PlotNames[WhichPlot]);			
+				XSecCovariances[WhichPlot]->Write("XSecCovariance_"+PlotNames[WhichPlot]);
+				G4Covariances[WhichPlot]->Write("G4Covariance_"+PlotNames[WhichPlot]);			
+				FluxCovariances[WhichPlot]->Write("FluxCovariance_"+PlotNames[WhichPlot]);
+				DirtCovariances[WhichPlot]->Write("DirtCovariance_"+PlotNames[WhichPlot]);
+				POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);			
+				NTargetCovariances[WhichPlot]->Write("NTargetCovariance_"+PlotNames[WhichPlot]);
+
+			}			
 
 			StatCovariances[WhichPlot]->Write("StatCovariance_"+PlotNames[WhichPlot]);
 			FracStatCovariances[WhichPlot]->Write("FracStatCovariance_"+PlotNames[WhichPlot]);

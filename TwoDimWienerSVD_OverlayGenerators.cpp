@@ -122,7 +122,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot");
 	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot");		
 	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot");
-	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");	
+	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");
+	PlotNames.push_back("SerialDeltaPn_DeltaAlphaTPlot");		
 	PlotNames.push_back("SerialProtonCosTheta_MuonCosThetaPlot");
 	PlotNames.push_back("SerialDeltaPty_DeltaPtxPlot");	
 	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot");
@@ -152,6 +153,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
+		vector<vector<TH1D*> > PlotsXSecReco; PlotsXSecReco.clear();
 		vector<vector<TH1D*> > PlotsTotalReco; PlotsTotalReco.clear();
 		vector<vector<TH1D*> > PlotsNormOnly; PlotsNormOnly.clear();		
 		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
@@ -278,6 +280,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
+			vector<TH1D*> CurrentPlotsXSecReco; CurrentPlotsXSecReco.clear();
 			vector<TH1D*> CurrentPlotsTotalReco; CurrentPlotsTotalReco.clear();
 			vector<TH1D*> CurrentPlotsNormOnly; CurrentPlotsNormOnly.clear();			
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
@@ -300,6 +303,9 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 					TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(histTotalReco);
+
+					TH1D* histXSecReco = (TH1D*)(FileSample[WhichSample]->Get("XSecReco"+PlotNames[WhichPlot]));
+					CurrentPlotsXSecReco.push_back(histTotalReco);					
 
 					TH1D* histNormOnly = (TH1D*)(FileSample[WhichSample]->Get("NormOnlyReco"+PlotNames[WhichPlot]));
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
@@ -333,7 +339,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 					//TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(nullptr);
-					CurrentPlotsNormOnly.push_back(nullptr);					
+					CurrentPlotsNormOnly.push_back(nullptr);
+					CurrentPlotsXSecReco.push_back(nullptr);										
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
@@ -416,6 +423,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 			}
 
+			PlotsXSecReco.push_back(CurrentPlotsXSecReco);
 			PlotsTotalReco.push_back(CurrentPlotsTotalReco);
 			PlotsNormOnly.push_back(CurrentPlotsNormOnly);					
 			PlotsReco.push_back(CurrentPlotsReco);		
@@ -434,6 +442,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		// Loop over the plots
 
+		vector< vector<TH1D*> > BeamOnXSec;
 		vector< vector<TH1D*> > BeamOnStatShape;
 		vector< vector<TH1D*> > BeamOnStatOnly;
 		vector< vector<TH1D*> > BeamOnNormOnly;
@@ -523,6 +532,13 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 			}	
 
+			if (PlotNames[WhichPlot] == "SerialDeltaPn_DeltaAlphaTPlot") {
+
+				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaAlphaT); 
+				SliceBinning.push_back(TwoDArrayNBinsDeltaPnInDeltaAlphaTSlices);
+
+			}			
+
 			if (PlotNames[WhichPlot] == "SerialECal_DeltaPTPlot") {
 
 				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaPT); 
@@ -560,6 +576,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 			//----------------------------------------//
 
+			BeamOnXSec.resize(N1DPlots);
 			BeamOnStatShape.resize(N1DPlots);
 			BeamOnStatOnly.resize(N1DPlots);
 			BeamOnNormOnly.resize(N1DPlots);							
@@ -682,6 +699,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 			//------------------------------------//
 
+			BeamOnXSec[WhichPlot].resize(NSlices);
 			BeamOnStatShape[WhichPlot].resize(NSlices);
 			BeamOnStatOnly[WhichPlot].resize(NSlices);
 			BeamOnNormOnly[WhichPlot].resize(NSlices);
@@ -917,7 +935,21 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 				BeamOnNormOnly[WhichPlot][NDimSlice]->SetFillColorAlpha(kGray+1, 0.45);	
 				BeamOnNormOnly[WhichPlot][NDimSlice]->SetLineColor(kGray+1);
 				BeamOnNormOnly[WhichPlot][NDimSlice]->SetMarkerColor(kGray+1);
-				BeamOnNormOnly[WhichPlot][NDimSlice]->Draw("e2 same");				
+				BeamOnNormOnly[WhichPlot][NDimSlice]->Draw("e2 same");		
+
+				//------------------------------//
+
+				// XSec Only
+
+				BeamOnXSec[WhichPlot][NDimSlice] = tools.GetHistoBins(PlotsXSecReco[0][WhichPlot],SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning,"XSecOnly");
+				PrettyPlot(BeamOnXSec[WhichPlot][NDimSlice]); // includes scaling factor for multi dimensional analysis		
+				BeamOnXSec[WhichPlot][NDimSlice]->SetLineColor(BeamOnColor);
+				BeamOnXSec[WhichPlot][NDimSlice]->SetMarkerColor(BeamOnColor);
+				BeamOnXSec[WhichPlot][NDimSlice]->SetLineWidth(1);		
+				BeamOnXSec[WhichPlot][NDimSlice]->SetMarkerSize(1.);
+				BeamOnXSec[WhichPlot][NDimSlice]->SetMarkerStyle(20);	
+				BeamOnXSec[WhichPlot][NDimSlice]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);		
+				BeamOnXSec[WhichPlot][NDimSlice]->GetYaxis()->SetRangeUser(XSecRange[ MapUncorCor[ NameCopy ] ].first,XSecRange[ MapUncorCor[ NameCopy ] ].second);																
 
 				// -----------------------------------------------------------------------------------------------------------------			
 
@@ -966,6 +998,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					BeamOnStatShape[WhichPlot][NDimSlice]->Write("StatShape_" + NameCopy);
 					BeamOnNormOnly[WhichPlot][NDimSlice]->Write("NormOnly_" + NameCopy);
 					BeamOnStatOnly[WhichPlot][NDimSlice]->Write("StatOnly_" + NameCopy);
+					BeamOnXSec[WhichPlot][NDimSlice]->Write("XSecOnly_" + NameCopy);					
 
 					// Overlay GENIE
 					MC[WhichPlot][NDimSlice][0]->Write("OverlayGENIE_" + NameCopy);

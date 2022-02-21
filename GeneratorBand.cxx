@@ -121,9 +121,11 @@ void GeneratorBand() {
 			PlotCanvas->SetLeftMargin(0.19);
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.6,0.65,0.7,0.85);
+			TLegend* leg = new TLegend(0.6,0.7,0.7,0.85);
 
 			if (
+				PlotNames[iplot] == "MuonCosThetaPlot" ||
+				PlotNames[iplot] == "ProtonCosThetaPlot" ||				
 				PlotNames[iplot] == "DeltaPtyPlot" ||
 				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_0" ||
 				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_1" ||
@@ -138,7 +140,7 @@ void GeneratorBand() {
 				PlotNames[iplot] == "SerialProtonMomentum_ProtonCosThetaPlot_3"								
 			) { 
 					
-					leg = new TLegend(0.22,0.58,0.32,0.85); 				
+					leg = new TLegend(0.22,0.7,0.32,0.85); 				
 					
 			}
 
@@ -150,10 +152,15 @@ void GeneratorBand() {
 
 			//----------------------------------------//
 
-			// Get the shape + stat data plot & plot it
+			// Get the data only with xsec uncertainties & plot
 
-			TH1D* BeamOnShapeStat = (TH1D*)( fXSec->Get("StatShape_" + PlotNames[iplot]) );
-			BeamOnShapeStat->Draw("e1x0 same");
+			TH1D* BeamOnXSec = (TH1D*)( fXSec->Get("XSecOnly_" + PlotNames[iplot]) );
+
+			BeamOnXSec->GetXaxis()->CenterTitle();
+
+			BeamOnXSec->GetYaxis()->CenterTitle();
+
+			BeamOnXSec->Draw("e1x0 same");
 
 			//----------------------------------------//
 
@@ -173,7 +180,7 @@ void GeneratorBand() {
 
 			// Index 1 = Bin number, Index 2 = mc sample
 			std::vector< std::vector<double> > BinEntries;
-			int NBins = BeamOnShapeStat->GetXaxis()->GetNbins();
+			int NBins = BeamOnXSec->GetXaxis()->GetNbins();
 			BinEntries.resize(NBins);
 
 			for (int ibin = 0; ibin < NBins; ibin++) {
@@ -193,8 +200,8 @@ void GeneratorBand() {
 			// Store the min values & the spread = max - min 
 			// On a bin-by-bin basis
 
-			TH1D* MinValuePlot = (TH1D*)( BeamOnShapeStat->Clone() );
-			TH1D* SpreadPlot = (TH1D*)( BeamOnShapeStat->Clone() );			
+			TH1D* MinValuePlot = (TH1D*)( BeamOnXSec->Clone() );
+			TH1D* SpreadPlot = (TH1D*)( BeamOnXSec->Clone() );			
 
 			GetMinAndSpread(MinValuePlot,SpreadPlot,BinEntries);
 
@@ -206,32 +213,21 @@ void GeneratorBand() {
 			thstack->Add(MinValuePlot,"hist");
 			thstack->Draw("same");
 
-			SpreadPlot->SetLineColor(OverlayColor);
+			SpreadPlot->SetLineColor(kWhite);
 			SpreadPlot->SetFillColorAlpha(OverlayColor, 0.45);			
 			thstack->Add(SpreadPlot,"hist");
 			thstack->Draw("same");			
 
 			//----------------------------------------//	
 
-			// Plot the stat+shape again 
-			// And then the stat only & norm only on top of that
+			// Plot the xsec beam on plot again 
 
-			BeamOnShapeStat->Draw("e1x0 same");
-
-			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
-			BeamOnStatOnly->Draw("e1x0 same");
-
-			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-			BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);	
-			BeamOnNormOnly->SetLineColor(kGray+1);
-			BeamOnNormOnly->SetMarkerColor(kGray+1);			
-			BeamOnNormOnly->Draw("e2 same");						
+			BeamOnXSec->Draw("e1x0 same");					
 
 			//----------------------------------------//	
 
-			leg->AddEntry(BeamOnShapeStat,"MicroBooNE Data","ep");	
-			leg->AddEntry(BeamOnShapeStat,"(Stat #oplus Shape Unc)","");
-			leg->AddEntry(BeamOnNormOnly,"Norm Unc","f");
+			leg->AddEntry(BeamOnXSec,"MicroBooNE Data","ep");	
+			leg->AddEntry(BeamOnXSec,"(XSec Unc)","");
 			leg->AddEntry(SpreadPlot,"Generator Spread","f");				
 
 			leg->Draw();
@@ -239,7 +235,9 @@ void GeneratorBand() {
 			TLatex *textSlice = new TLatex();
 			textSlice->SetTextFont(FontStyle);
 			textSlice->SetTextSize(0.06);
-			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
+			textSlice->DrawLatexNDC(0.24, 0.92, LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);	
+
+			gPad->RedrawAxis();					
 
 			//----------------------------------------//
 

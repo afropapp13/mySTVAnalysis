@@ -1,5 +1,3 @@
-# Don't forget to run the effective efficiencies as well
-
 root -b script_CV.C
 root -b script_Detector_Systematics.C
 root -b script_G4_Systematics.C
@@ -9,14 +7,11 @@ root -b script_MC_Stat_Systematics.C
 
 #################################################################################################################################
 
-# Now WienerSVD for GENIE CV / Nominal MC
-
 root -b script_WienerSVD_Systematics.C
-
-root -b WienerSVD_Merge_Covariances.cpp
-
 root -b script_WienerSVD_Systematics_NoTune.C
 root -b script_WienerSVD_Systematics_TwiceMEC.C
+
+root -b WienerSVD_Merge_Covariances.cpp
 
 root -b 
 .L WienerSVD_Merge_Covariances.cpp
@@ -147,7 +142,7 @@ root -b CompareUnc.C
 cd ..
 
 #locally
-# run all the event generators
+# run all the event generators !!!!!!!!!!!!!!!
 
 #################################################################################################################################
 
@@ -159,7 +154,6 @@ root -b script_WienerSVD_OverlayGenerators.C
 root -b script_TwoDimWienerSVD_OverlayGenerators.C
 root -b script_ThreeDimWienerSVD_OverlayGenerators.C
 
-rm myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root
 hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/v08_00_00_52/GenXSec/All_XSecs_*_Combined_v08_00_00_52.root
 
 root -b GeneratorBand.cxx
@@ -167,12 +161,12 @@ root -b DataGeneratorBreakdown.cxx
 
 #.x IntegratedXSecs.cpp
 
-root -b
-.L ../myClasses/Util.C
-.L WienerSVD_Chi2Covariance.cpp
-WienerSVD_Chi2Covariance("Kine")
-WienerSVD_Chi2Covariance("STV")
-WienerSVD_Chi2Covariance("Long")
+#root -b
+#.L ../myClasses/Util.C
+#.L WienerSVD_Chi2Covariance.cpp
+#WienerSVD_Chi2Covariance("Kine")
+#WienerSVD_Chi2Covariance("STV")
+#WienerSVD_Chi2Covariance("Long")
 
 #.x BinByBinChi2.cpp
 

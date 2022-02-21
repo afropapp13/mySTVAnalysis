@@ -110,6 +110,7 @@ void DataGeneratorBreakdown() {
 				TLegend* leg = new TLegend(0.6,0.6,0.7,0.85);
 
 			if (
+				PlotNames[iplot] == "DeltaAlphaTPlot" ||
 				PlotNames[iplot] == "MuonCosThetaPlot" ||
 				PlotNames[iplot] == "ProtonCosThetaPlot" ||								
 				PlotNames[iplot] == "SerialDeltaPtx_DeltaPtyPlot_2" ||				
@@ -131,6 +132,8 @@ void DataGeneratorBreakdown() {
 				PlotNames[iplot] == "SerialMuonMomentum_MuonCosThetaPlot_2" ||				
 				PlotNames[iplot] == "SerialMuonMomentum_MuonCosThetaPlot_3" ||				
 				PlotNames[iplot] == "DeltaPtyPlot" ||
+				PlotNames[iplot] == "SerialECal_MuonCosThetaMuonMomentumPlot_11" ||
+				PlotNames[iplot] == "SerialECal_ProtonCosThetaProtonMomentumPlot_8" ||								
 				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_0" ||
 				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_1" ||
 				PlotNames[iplot] == "SerialDeltaPty_DeltaPtxPlot_2"
