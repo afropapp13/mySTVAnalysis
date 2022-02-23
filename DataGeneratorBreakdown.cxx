@@ -48,14 +48,16 @@ void DataGeneratorBreakdown() {
 
 	vector<TString> MCSampleBand; vector<TString> Label;
 
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("GENIE v3 G18 Tune");
-	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU 2021");
-	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT v5.4.0");
-	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro 19.02.1");
-	MCSampleBand.push_back("GENIEv2"); Label.push_back("GENIE v2");
-	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("GENIE v3.0.6 G18 (No Tune)");					
-	MCSampleBand.push_back("SuSav2"); Label.push_back("GENIE v3 G21");
-	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("GENIE v3 G18 hN Tune");
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18 Tune");
+	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU");
+	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
+	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
+	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2");
+	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("G18 No Tune");					
+	MCSampleBand.push_back("SuSav2"); Label.push_back("G21");
+	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("G18 hN Tune");
+	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI Tune");
+	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA Tune");	
 
 	int NMC = MCSampleBand.size();
 
@@ -214,7 +216,7 @@ void DataGeneratorBreakdown() {
 
 				//----------------------------------------//
 
-				PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/InteractionBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+				PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/InteractionBreakdown/InteractionBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCanvas;						
 
 			} // End of the loop over the generators

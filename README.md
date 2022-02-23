@@ -170,24 +170,23 @@ root -b DataGeneratorBreakdown.cxx
 
 #.x BinByBinChi2.cpp
 
-# (locally)
-root -b
-.L CompareGenerators.cpp
-CompareGenerators()
-CompareGenerators(false,true)
+# (locally) Pure generator comparisons
+#root -b
+#.L CompareGenerators.cpp
+#CompareGenerators()
+#CompareGenerators(false,true)
 
 #################################################################################################################################
 
-# (locally)
-
-root -b OverlayGenerators.cpp
-root -b OverlayXSecMethods.C
+# (locally) Effective efficiency
+#root -b OverlayGenerators.cpp
+#root -b OverlayXSecMethods.C
 
 # Comparison to WC
-root -b WC_OverlayXSecMethods.C
+#root -b WC_OverlayXSecMethods.C
 
 # Comparison to MCC8
-root -b MCC8_OverlayXSecMethods.C
+#root -b MCC8_OverlayXSecMethods.C
 
 # Download the plots
 ./myDownloadScripts/DownloadPlots.sh
