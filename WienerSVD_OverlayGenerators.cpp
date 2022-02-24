@@ -520,6 +520,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "ProtonCosThetaPlot" || PlotNames[WhichPlot] == "DeltaPtyPlot" ||
 				PlotNames[WhichPlot] == "DeltaAlphaT_DeltaPT_0_20To0_40Plot" || PlotNames[WhichPlot] == "DeltaAlphaT_DeltaPT_0_40To1_00Plot" ||
 				PlotNames[WhichPlot] == "ECal_ProtonCosTheta_0_50To0_75_ProtonMomentum_0_70To1_00Plot" ||
+				PlotNames[WhichPlot] == "ECal_MuonCosTheta_0_75To1_00_MuonMomentum_0_60To1_20Plot" ||
+				PlotNames[WhichPlot] == "ECal_MuonCosTheta_0_50To0_75_MuonMomentum_0_60To1_20Plot" ||								
 				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_20To0_40Plot" ||
 				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_Minus1_00To0_00Plot" || 
 				PlotNames[WhichPlot] == "DeltaAlphaT_MuonCosTheta_0_00To0_50Plot" ||

@@ -47,20 +47,6 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 	vector<TString> PlotNamesClone = PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
-//	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot"); 
-//	PlotNames.push_back("MuonCosThetaSingleBinPlot"); 
-//	PlotNames.push_back("MuonPhiPlot");
-//	PlotNames.push_back("ProtonMomentumPlot"); 
-//	PlotNames.push_back("ProtonCosThetaPlot"); 
-//	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot");
-//	PlotNames.push_back("EQEPlot");
-//	PlotNames.push_back("Q2Plot");
-//	PlotNames.push_back("kMissPlot");
-//	PlotNames.push_back("PMissPlot");
-//	PlotNames.push_back("PMissMinusPlot");
 
 	PlotNamesClone.push_back("VertexXPlot");
 	PlotNamesClone.push_back("VertexYPlot");
@@ -73,11 +59,6 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 	PlotNamesClone.push_back("ProtonTrueMomentumLongitudinalRatio");
 	PlotNamesClone.push_back("MuonTrueMomentumTransverseRatio");
 	PlotNamesClone.push_back("ProtonTrueMomentumTransverseRatio");
-
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	// -------------------------------------------------------------------------------------
 

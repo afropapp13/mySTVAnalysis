@@ -119,19 +119,6 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 //	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
-//	PlotNames.push_back("DeltaPhiTPlot"); 
-//	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonPhiPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot");
-//	PlotNames.push_back("MuonCosThetaSingleBinPlot");
-//	PlotNames.push_back("ProtonMomentumPlot"); 
-//	PlotNames.push_back("ProtonPhiPlot"); 
-//	PlotNames.push_back("ProtonCosThetaPlot");
-
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	const int N1DPlots = PlotNames.size();
 		
@@ -730,7 +717,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// Declare the matrix & initialize the entries to 0
 
-			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
+			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot" || NBins == 1) {
 
 				FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,-1.,1.,1,-1.,1.);
 				Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,-1.,1.,1,-1.,1.);
