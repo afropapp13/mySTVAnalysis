@@ -11,6 +11,7 @@
 	// PlotName, First Discriminator (e.g. DeltaPT) , First Discriminator  (e.g. DeltaAlphaT)
 
 	PlotNames.push_back("SerialECal_DeltaPTDeltaAlphaTPlot"); NumberFirstDiscrSlices.push_back(3); NumberSecondDiscrSlices.push_back(4);
+	PlotNames.push_back("SerialECal_DeltaPtxDeltaPtyPlot"); NumberFirstDiscrSlices.push_back(3); NumberSecondDiscrSlices.push_back(3);	
 	PlotNames.push_back("SerialECal_MuonCosThetaMuonMomentumPlot"); NumberFirstDiscrSlices.push_back(4); NumberSecondDiscrSlices.push_back(3);
 	PlotNames.push_back("SerialECal_ProtonCosThetaProtonMomentumPlot"); NumberFirstDiscrSlices.push_back(4); NumberSecondDiscrSlices.push_back(3);		
 

@@ -128,6 +128,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 	PlotNames.push_back("SerialDeltaPty_DeltaPtxPlot");	
 	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot");
 	PlotNames.push_back("SerialECal_DeltaPTPlot");
+	PlotNames.push_back("SerialECal_DeltaPtxPlot");
+	PlotNames.push_back("SerialECal_DeltaPtyPlot");		
 	PlotNames.push_back("SerialECal_DeltaAlphaTPlot");
 
 	//----------------------------------------//	
@@ -546,6 +548,20 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 			}	
 
+			if (PlotNames[WhichPlot] == "SerialECal_DeltaPtxPlot") {
+
+				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaPtx); 
+				SliceBinning.push_back(TwoDArrayNBinsECalInDeltaPtxSlices);
+
+			}
+
+			if (PlotNames[WhichPlot] == "SerialECal_DeltaPtyPlot") {
+
+				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaPty); 
+				SliceBinning.push_back(TwoDArrayNBinsECalInDeltaPtySlices);
+
+			}						
+
 			if (PlotNames[WhichPlot] == "SerialECal_DeltaAlphaTPlot") {
 
 				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaAlphaT); 
@@ -789,7 +805,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 				PlotCanvas->cd();
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
-				PlotCanvas->SetLeftMargin(0.18);
+				PlotCanvas->SetLeftMargin(0.19);
 
 				TLegend* leg = new TLegend(0.6,0.58,0.7,0.85);
 				TLegend* legChi2 = new TLegend(0.78,0.72,0.88,0.85);			

@@ -119,20 +119,9 @@ cd ../..
 #################################################################################################################################
 
 # Fake data study
-root -b 
-.L ../../myClasses/Util.C++
-.L ../../myClasses/WienerSVD.C++
-.L FakeData_WienerSVD_XSection_Extraction.cpp++
-FakeData_WienerSVD_XSection_Extraction("Overlay9","Overlay9NuWro")
-FakeData_WienerSVD_XSection_Extraction("Overlay9","NoTuneOverlay9")
-FakeData_WienerSVD_XSection_Extraction("Overlay9","TwiceMECOverlay9")
+root -b script_FakeData.C
 
-
-# mixed study: alternative MC & fake data (NuWro)
-FakeData_WienerSVD_XSection_Extraction("NoTuneOverlay9","Overlay9NuWro")
-FakeData_WienerSVD_XSection_Extraction("TwiceMECOverlay9","Overlay9NuWro")
-
- root -b FakeData_XSection_Extraction.cpp
+root -b FakeData_XSection_Extraction.cpp
 
 # (locally)
 ./myDownloadScripts/DownloadXSec.sh
@@ -142,7 +131,7 @@ root -b CompareUnc.C
 cd ..
 
 #locally
-# run all the event generators !!!!!!!!!!!!!!!
+# run ALL the event generators !!!!!!!!!!!!!!!
 
 #################################################################################################################################
 
