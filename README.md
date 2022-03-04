@@ -118,7 +118,7 @@ cd ../..
 
 #################################################################################################################################
 
-# Fake data study
+# Fake data studies
 root -b script_FakeData.C
 
 root -b FakeData_XSection_Extraction.cpp
@@ -147,6 +147,8 @@ hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/
 
 root -b GeneratorBand.cxx
 root -b DataGeneratorBreakdown.cxx
+
+./myDownloadScripts/CopyBreakDown.sh
 
 #.x IntegratedXSecs.cpp
 

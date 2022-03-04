@@ -11,7 +11,7 @@
 	//GENIE Flag tweaks
 	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,true)");
 	//GENIE Closure Test
-	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,true)");			
+	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,true)");		
 	//GENIE Nuclear model tweaks
 	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,true)");
 	//NuWro Comparisons out-of-the-box vs larsoft
@@ -19,6 +19,6 @@
 	//Just data vs Nominal MC
 	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)");	
 	//All
-	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,true)");		
+	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,true)");
 
 }

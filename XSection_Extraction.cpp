@@ -284,7 +284,7 @@ void XSection_Extraction(TString OverlaySample,int Universe = -1, bool DetVar = 
 				double EffectiveEfficiencyXBin = PlotsTEfficiency[0][WhichPlot]->GetBinContent(WhichXBin+1);
 				double EffectiveEfficiencyXBinError = PlotsTEfficiency[0][WhichPlot]->GetBinError(WhichXBin+1);
 
-				if (EffectiveEfficiencyXBin == 0) { cout << "Bin with 0 efficiency" << endl; }
+				if (EffectiveEfficiencyXBin == 0) { cout << "Bin " << WhichXBin << " in plot " << PlotNames[WhichPlot] <<  " has 0 efficiency" << endl; }
 
 				// -----------------------------------------------------------------------------------------------------------------
 

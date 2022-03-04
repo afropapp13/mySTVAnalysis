@@ -175,15 +175,15 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		// CV
 
-		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("GENIE v3 G18 Tune"); //Labels.push_back("MC uB Tune");                     
+		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("G18 Tune"); //Labels.push_back("MC uB Tune");                     
 
 		//----------------------------------------//
 
 		if (PlotGENIE) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v2");
-			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("GENIE v3.0.6 G18");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("GENIE v3 G21");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2");
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("G18");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21");
 
 		}
 
@@ -191,9 +191,9 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		if (PlotGen) {
 
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro 19.02.1");			
-			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
-			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU");
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT");
 
 		}	
 
@@ -201,7 +201,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		if (PlotGENIECT) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18 Nom");
 
 		}
 
@@ -209,8 +209,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		if (PlotGENIEFSITweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("G18 hN Tune");
 
 		}
 
@@ -218,8 +218,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		if (PlotGENIEFlagTweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("G18 No Coulomb Tune");
 
 		}
 
@@ -227,7 +227,10 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		if (PlotNuclModels) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+//			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");	
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2");
+			NameOfSamples.push_back("GENIEv2LFG"); Colors.push_back(GiBUUColor); Labels.push_back("Gv2 LFG");	
+			NameOfSamples.push_back("GENIEv2EffSF"); Colors.push_back(NEUTColor); Labels.push_back("Gv2 EffSF");		
 
 		}  
 
@@ -235,18 +238,26 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 		if (All) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v2");
-			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("GENIE v3.0.6 G18");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("GENIE v3 G21");
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro 19.02.1");			
-			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU 2021");
-			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT v5.4.0");
-			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("GENIE v3 G18");
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 No FSI Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("GENIE v3 G18 hN Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("GENIE v3 G18 No RPA Tune");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2");
+			NameOfSamples.push_back("GENIEv2LFG"); Colors.push_back(GiBUUColor); Labels.push_back("Gv2 LFG");	
+			NameOfSamples.push_back("GENIEv2EffSF"); Colors.push_back(NEUTColor); Labels.push_back("Gv2 EffSF");			
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("G18 No Tune");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21");
+			NameOfSamples.push_back("G21hA"); Colors.push_back(SuSav2Color); Labels.push_back("G21hA");
+			NameOfSamples.push_back("G21G4"); Colors.push_back(SuSav2Color); Labels.push_back("G21G4");	
+			NameOfSamples.push_back("G21NoFSI"); Colors.push_back(SuSav2Color); Labels.push_back("G21NoFSI");						
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU");
+			NameOfSamples.push_back("GiBUUNoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUUNoFSI");
+			NameOfSamples.push_back("GiBUUTscaling"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUUTscaling");						
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT");
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18 Nom");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("G18 hN Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA Tune");
 			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("GENIE v3 G18 No Coulomb Tune");			
-			//NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("GENIE v3 G18 RFG Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_EffSF"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF Tune");
 
 		}			             
 
@@ -378,7 +389,12 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG" ||  
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF" ||  
 					NameOfSamples[WhichSample] == "SuSav2" ||
+					NameOfSamples[WhichSample] == "G21hA" ||
+					NameOfSamples[WhichSample] == "G21G4" ||
+					NameOfSamples[WhichSample] == "G21NoFSI" ||										
 					NameOfSamples[WhichSample] == "GENIEv2" ||
+					NameOfSamples[WhichSample] == "GENIEv2LFG" ||
+					NameOfSamples[WhichSample] == "GENIEv2EffSF" ||					
 					NameOfSamples[WhichSample] == "GENIEv3_0_4"
 				) {
 					FileSample.push_back(TFile::Open("../myGenieAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); 
@@ -389,6 +405,9 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 				if (NameOfSamples[WhichSample] == "GiBUU") 
 					{ FileSample.push_back(TFile::Open("../myGiBUUAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
+
+				if (NameOfSamples[WhichSample] == "GiBUUNoFSI" || NameOfSamples[WhichSample] == "GiBUUTscaling") 
+					{ FileSample.push_back(TFile::Open("../myROOTGiBUU/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }					
 
 				if (NameOfSamples[WhichSample] == "NEUT") 
 					{ FileSample.push_back(TFile::Open("../myNEUTAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
