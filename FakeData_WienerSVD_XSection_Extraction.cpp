@@ -468,7 +468,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			// --------------------------------------------------------------------------------------------------
 
-			V2H(unfold, unf); 			
+			V2H(unfold, unf); 	
+			M2H(UnfoldCov, unfcov);		
 
 			// --------------------------------------------------------------------------------------------------						
 
@@ -647,22 +648,45 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			double max = 1.2 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
 //			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);
-			unfMCStat->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);			
+			unfMCStat->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);	
+
+			//------------------------------//
+
+			// The N-dimensional analysis has been developed based on the bin number, not the actual range
+
+			if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+				TString XaxisTitle = unfMCStat->GetXaxis()->GetTitle();
+				XaxisTitle.ReplaceAll("deg","bin #");
+				XaxisTitle.ReplaceAll("GeV/c","bin #");
+				XaxisTitle.ReplaceAll("GeV","bin #");				
+				unfMCStat->GetXaxis()->SetTitle(XaxisTitle);
+
+				TString YaxisTitle = VarLabel[PlotNames[WhichPlot]];
+				YaxisTitle.ReplaceAll("deg","");
+				YaxisTitle.ReplaceAll("GeV/c","");
+				YaxisTitle.ReplaceAll("GeV","");
+				YaxisTitle.ReplaceAll("/c","");
+				YaxisTitle.ReplaceAll("^{2}","");												
+				unfMCStat->GetYaxis()->SetTitle(YaxisTitle);				
+
+			}			
+
+			//------------------------------//					
 
 			// Draw the data points first to get the beautiful canvas 
 			PlotCanvas->cd();
 			//unf->Draw("e1x0"); // Full unc : XSec + Stat + MC Stat
 			unfMCStat->Draw("e1x0"); // Only MC Stat
-			//TrueUnf->Draw("hist same");
+			TrueUnf->Draw("hist same");
 			AltTrueUnf->Draw("hist same");
-
 
 			// Plotting again so that the data points are on top 
 			PlotCanvas->cd();
 			//unf->Draw("e1x0 same"); // Full unc : XSec + Stat + MC Stat
 			unfMCStat->Draw("e1x0 same"); // Only MC Stat
 
-			// ------------------------------------------------------------------------------
+			//------------------------------//
 
 			// Legend & POT Normalization
 
@@ -671,20 +695,72 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			TLegend* legData = new TLegend(0.23,0.89,0.95,0.98);
 			legData->SetBorderSize(0);
-			legData->SetTextSize(0.06);
+			legData->SetTextSize(0.05);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(2);
-			legData->SetMargin(0.1);	
+			legData->SetMargin(0.1);
+
+			//------------------------------//
+
+			// Chi2 calculation
+
+			double FDChi2, FDpval; int FDNdof;
+			double CVChi2, CVpval; int CVNdof;	
+
+			TH2D* CovClone = (TH2D*)(unfcov->Clone());
+
+			for (int ix = 1; ix <= n; ix++) {
+
+				for (int iy = 1; iy <= n; iy++) {
+
+					double WidthX = unfcov->GetXaxis()->GetBinWidth(ix);
+					double WidthY = unfcov->GetYaxis()->GetBinWidth(iy);
+
+					double TwoDWidth = WidthX * WidthY;
+
+					double BinContent = unfcov->GetBinContent(ix,iy);	
+					double NewBinContent = BinContent/TwoDWidth;																	
+
+					// Only for the diagonal elements
+					// Add the unfolding uncertainty
+					// On top of everything else
+					// That is done both for the final xsec result and for the unfolded covariance
+					if (ix == iy) { 
+						// unfolded covariance matrix
+						double UnfUncBin = UnfUnc[WhichPlot]->GetBinContent(ix);
+//						double UnfUncBin = 0.;
+
+						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ;					 
+
+						// xsec uncertainty
+						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
+						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
+						PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+						
+					}
+
+					CovClone->SetBinContent(ix,iy,NewBinContent);										
+
+				}	
+
+			}		
+
+			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval);	
+			TString CVChi2NdofAlt = "(" + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +")";							
+			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval);	
+			TString FDChi2NdofAlt = "(" + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +")";			
+
+			//------------------------------//				
 
 			TString ReducedLabel = 	BeamOnSample;
 			TString PrintLabel = ReducedLabel.ReplaceAll("Overlay9","");	
 
 			legData->AddEntry(unf,"Unfolded " + PrintLabel,"ep");
 
-			//TLegendEntry* lMC = legData->AddEntry(TrueUnf,"True CV","l");
-			//lMC->SetTextColor(OverlayColor);
+			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"GENIE Tune "+ CVChi2NdofAlt,"l");
+			lMC->SetTextColor(OverlayColor);
 
-			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"True " + PrintLabel,"l");
+			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"True " + PrintLabel + " " + FDChi2NdofAlt,"l");
 			lAltMC->SetTextColor(kOrange+7);				
 
 			legData->Draw();
@@ -701,12 +777,13 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			
 			for(int i=1; i <= n; i++) {
 			
-			double s2s = 0;
-			double u = unf->GetBinContent(i);
-			double t = signal(i-1);
-			if (t != 0) { s2s = u/t - 1; }
-			else { s2s = 1.; } // attention to this t = 0
-			diff->SetBinContent(i, s2s); // in percentage 
+				double s2s = 0;
+				double u = unf->GetBinContent(i);
+				double t = signal(i-1);
+				if (t != 0) { s2s = u/t - 1; }
+				else { s2s = 1.; } // attention to this t = 0
+				diff->SetBinContent(i, s2s); // in percentage 
+
 			}	
 
 			// ---------------------------------------------------------------------------------------------------------------------------
@@ -759,7 +836,6 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			M2H(AddSmear, smear);
 			V2H(WF, wiener);
-			M2H(UnfoldCov, unfcov);
 
 			// ---------------------------------------------------------------------------------------------------------------------------
 

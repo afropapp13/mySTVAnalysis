@@ -268,7 +268,7 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
-					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
+					//PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 
 					delete PlotEffCanvas;
 									

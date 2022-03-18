@@ -20,7 +20,11 @@
 	//Just data vs Nominal MC
 	gROOT->ProcessLine("TwoDimWienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)");	
 	//All
-	//Just data vs Nominal MC
-	gROOT->ProcessLine("TwoDimWienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,true)");		
+	gROOT->ProcessLine("TwoDimWienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,true)");
+	// w/ & w/o FSI + same for GiBUU
+	gROOT->ProcessLine("TwoDimWienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,false,true)");	
+	// G21 FSI
+	gROOT->ProcessLine("TwoDimWienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,false,false,true)");	
+
 
 }

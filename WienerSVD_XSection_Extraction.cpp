@@ -80,7 +80,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();	
 	gStyle->SetOptStat(0);
-	gStyle->SetEndErrorSize(4);	
+	gStyle->SetEndErrorSize(6);	
 
 	TString Subtract = "";
 	int DecimalAccuracy = 2;
@@ -355,12 +355,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			LYCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("LYCovariance_"+PlotNames[WhichPlot]));
 			TPCCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TPCCovariance_"+PlotNames[WhichPlot]));
 			SCERecomb2CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SCERecomb2Covariance_"+PlotNames[WhichPlot]));
-			XSecCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
-			FluxCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
-			G4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
-			DirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
-			POTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
-			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));																		
+			XSecCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("XSecCovariance_"+PlotNames[WhichPlot]));
+			FluxCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("FluxCovariance_"+PlotNames[WhichPlot]));
+			G4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("G4Covariance_"+PlotNames[WhichPlot]));
+			DirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("DirtCovariance_"+PlotNames[WhichPlot]));
+			POTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("POTCovariance_"+PlotNames[WhichPlot]));
+			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NTargetCovariance_"+PlotNames[WhichPlot]));																		
 
 			// -----------------------------------------------------------------------------------------------------
 
@@ -391,7 +391,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			// Flux-averaged event rates 
 			// both for the reco and for the true level spectrum
-			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
+			DataPlot->Scale(Units/(IntegratedFlux*NTargets));		
 			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
 			QEPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
 			MECPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
@@ -466,6 +466,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
 			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Wiener Filter Vector",n,0,n);
 			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+			TH2D* normunfcov = new TH2D("normunfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Norm Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+			TH2D* shapeunfcov = new TH2D("shapeunfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Shape Unfolded spectrum covariance", n, Nuedges, n, Nuedges);						
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -491,7 +493,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD UnfNTargetCov = CovRotation*ntargetcovariance*CovRotation_T;			
 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
-			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,unfold,UnfSystCov);
+
+			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -573,6 +576,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				double Width = unf->GetBinWidth(i);
 				double HighEdge = LowEdge + Width;
 
+				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Width = 1.; }				
+
 				double StatError = TMath::Sqrt( UnfStatCov(i-1,i-1) ) / Width;
 				unfStat->SetBinError(i, StatError);
 
@@ -580,12 +585,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfMCStat->SetBinError(i, MCStatError);				
 
 				// Set unc = stat + shape syst
-				unf->SetBinError(i, TMath::Sqrt( NormShapeVector[1](i-1,i-1) + UnfStatCov(i-1,i-1) ) / Width );	
+				double ShapeStatUnc = NormShapeVector[1](i-1,i-1) + UnfStatCov(i-1,i-1);
+				unf->SetBinError(i, TMath::Sqrt( ShapeStatUnc ) / Width );	
 
 				// Keep track of the total unc as well
 				unfFullUnc->SetBinError(i, TMath::Sqrt(UnfoldCov(i-1,i-1)) / Width );				
 
-				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Width = 1.; }
 				unfShapeOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[1](i-1,i-1) ) ) / Width );	
 				unfNormOnly->SetBinContent(i,0.);	
 				unfNormOnly->SetBinError(i,TMath::Sqrt( TMath::Abs( NormShapeVector[0](i-1,i-1) ) ) / Width );
@@ -828,6 +833,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			M2H(AddSmear, smear);
 			V2H(WF, wiener);
 			M2H(UnfoldCov, unfcov);
+			M2H(NormShapeVector[0], normunfcov);
+			M2H( NormShapeVector[1] , shapeunfcov);						
 
 			// ---------------------------------------------------------------------------------------------------------------------------
     
@@ -863,8 +870,10 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				DISPlotsTrue[4][WhichPlot]->Write("DISNoSmearTrue"+PlotNames[WhichPlot]);
 				COHPlotsTrue[4][WhichPlot]->Write("COHNoSmearTrue"+PlotNames[WhichPlot]);																			
 				smear->Write("Ac"+PlotNames[WhichPlot]);
-				unfcov->Write("UnfCov"+PlotNames[WhichPlot]);	
-				CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]);					
+				unfcov->Write("UnfCov"+PlotNames[WhichPlot]);
+				shapeunfcov->Write("ShapeUnfCov"+PlotNames[WhichPlot]); // Shape systematic unc
+				normunfcov->Write("NormUnfCov"+PlotNames[WhichPlot]); // Norm systematic unc			
+				CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]); // covariance before unfolding			
 				//wiener->Write("Wiener"+PlotNames[WhichPlot]);
 				//diff->Write("Diff"+PlotNames[WhichPlot]);
 				//bias->Write("Bias"+PlotNames[WhichPlot]);

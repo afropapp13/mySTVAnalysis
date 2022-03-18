@@ -76,7 +76,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 								 		 bool PlotGENIEFSITweaks = false, bool PlotGENIEFlagTweaks = false, 
 								 		 bool PlotGENIECT = false, bool PlotNuclModels = false, 
 								 		 bool PlotNuWro = false, bool PlotNominal = false, 
-										 bool GiBUUComp = false, bool All = false
+										 bool GiBUUComp = false, bool All = false, bool NoFSIPlusGiBUU = false,
+										 bool G21FSI = false
 										) {
 
 	//----------------------------------------//
@@ -88,7 +89,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 	int DecimalAccuracy = 2;
 
 	TH1D::SetDefaultSumw2();
-	gStyle->SetEndErrorSize(4);		
+	gStyle->SetEndErrorSize(6);		
 
 	TString PathToFiles = "myXSec/";
 
@@ -102,7 +103,9 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 	if (!PlotGENIE && !PlotGen && PlotNuWro) { Extra = "NuWro"; }
 	if (!PlotGENIE && !PlotGen && PlotNominal) { Extra = "Nominal"; }
 	if (!PlotGENIE && !PlotGen && GiBUUComp) { Extra = "GiBUUComp"; }
-	if (!PlotGENIE && !PlotGen && All) { Extra = "AllGens"; }			
+	if (!PlotGENIE && !PlotGen && All) { Extra = "AllGens"; }	
+	if (!PlotGENIE && !PlotGen && NoFSIPlusGiBUU) { Extra = "NoFSIPlusGiBUU"; }
+	if (!PlotGENIE && !PlotGen && G21FSI) { Extra = "G21FSI"; }				
 
 	//----------------------------------------//	
 
@@ -138,6 +141,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
+		vector<vector<TH1D*> > PlotsFullUncReco; PlotsFullUncReco.clear();
 		vector<vector<TH1D*> > PlotsXSecReco; PlotsXSecReco.clear();
 		vector<vector<TH1D*> > PlotsTotalReco; PlotsTotalReco.clear();
 		vector<vector<TH1D*> > PlotsNormOnly; PlotsNormOnly.clear();		
@@ -158,15 +162,15 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		// CV
 
-		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("G18 Tune"); //Labels.push_back("MC uB Tune");                     
+		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("G18              "); //Labels.push_back("MC uB Tune");                     
 
-		//----------------------------------------//		
+		//----------------------------------------//	
 
 		if (PlotGENIE) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2       ");
 			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("G18 No Tune");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21");
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21hN      ");
 
 		}
 
@@ -174,9 +178,9 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		if (PlotGen) {
 
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro");			
-			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU");
-			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT");
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro           ");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiB              ");
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT            ");
 
 		}	
 
@@ -184,7 +188,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		if (PlotGENIECT) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18");
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18 Nom    ");
 
 		}
 
@@ -192,7 +196,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		if (PlotGENIEFSITweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI Tune");			
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI ");			
 			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("G18 hN Tune");
 
 		}
@@ -201,8 +205,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		if (PlotGENIEFlagTweaks) {
 
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("G18 No Coulomb Tune");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA");
+			NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("G18 No Coul");
 
 		}
 
@@ -210,39 +214,61 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		if (PlotNuclModels) {
 
-//			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG Tune");			
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2");
-			NameOfSamples.push_back("GENIEv2LFG"); Colors.push_back(GiBUUColor); Labels.push_back("Gv2 LFG");	
-			NameOfSamples.push_back("GENIEv2EffSF"); Colors.push_back(NEUTColor); Labels.push_back("Gv2 EffSF");
+//			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG Tune");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2        ");
+			NameOfSamples.push_back("GENIEv2LFG"); Colors.push_back(GiBUUColor); Labels.push_back("Gv2 LFG    ");	
+			NameOfSamples.push_back("GENIEv2EffSF"); Colors.push_back(NEUTColor); Labels.push_back("Gv2 EffSF  ");					
 
-		}    
+		}  
+
+		//----------------------------------------//
+
+		if (NoFSIPlusGiBUU) {
+
+			NameOfSamples.push_back("GiBUUNoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GiB No FSI ");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(NuWroColor); Labels.push_back("G18 No FSI ");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(NEUTColor); Labels.push_back("GiB              ");		
+
+		}
+
+		//----------------------------------------//
+
+		if (G21FSI) {
+
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(GiBUUColor); Labels.push_back("G21hN         ");
+			NameOfSamples.push_back("G21hA"); Colors.push_back(NuWroColor); Labels.push_back("G21hA         ");
+			NameOfSamples.push_back("G21G4"); Colors.push_back(NEUTColor); Labels.push_back("G21G4         ");
+			//NameOfSamples.push_back("G21NoFSI"); Colors.push_back(NEUTColor); Labels.push_back("G21 No FSI   ");
+
+		}		
 
 		//----------------------------------------//
 
 		if (All) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("v2");
-			NameOfSamples.push_back("GENIEv2LFG"); Colors.push_back(GiBUUColor); Labels.push_back("Gv2 LFG");	
-			NameOfSamples.push_back("GENIEv2EffSF"); Colors.push_back(NEUTColor); Labels.push_back("Gv2 EffSF");			
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2        ");
+			NameOfSamples.push_back("GENIEv2LFG"); Colors.push_back(GiBUUColor); Labels.push_back("Gv2 LFG    ");	
+			NameOfSamples.push_back("GENIEv2EffSF"); Colors.push_back(NEUTColor); Labels.push_back("Gv2 EffSF  ");			
 			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("G18 No Tune");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21");
-			NameOfSamples.push_back("G21hA"); Colors.push_back(SuSav2Color); Labels.push_back("G21hA");
-			NameOfSamples.push_back("G21G4"); Colors.push_back(SuSav2Color); Labels.push_back("G21G4");	
-			NameOfSamples.push_back("G21NoFSI"); Colors.push_back(SuSav2Color); Labels.push_back("G21NoFSI");						
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro");			
-			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUU");
-			NameOfSamples.push_back("GiBUUNoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUUNoFSI");	
-			NameOfSamples.push_back("GiBUUTscaling"); Colors.push_back(GiBUUColor); Labels.push_back("GiBUUTscaling");					
-			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT");
-			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18 Nom");
-			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("G18 hN Tune");
-			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA Tune");
-			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("G18 No Coulomb Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG Tune");			
-			NameOfSamples.push_back("Genie_v3_0_6_EffSF"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF Tune");
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21hN      ");
+			NameOfSamples.push_back("G21hA"); Colors.push_back(SuSav2Color); Labels.push_back("G21hA      ");
+			NameOfSamples.push_back("G21G4"); Colors.push_back(SuSav2Color); Labels.push_back("G21G4      ");
+			NameOfSamples.push_back("G21NoFSI"); Colors.push_back(SuSav2Color); Labels.push_back("G21 No FSI ");									
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro      ");			
+			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiB        ");
+			NameOfSamples.push_back("GiBUUNoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GiB No FSI ");
+			NameOfSamples.push_back("GiBUUTscaling"); Colors.push_back(GiBUUColor); Labels.push_back("GiB Tscal  ");						
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT       ");
+			NameOfSamples.push_back("NEUTv5401_RFG"); Colors.push_back(NEUTColor); Labels.push_back("NEUTv540RFG");			
+			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18 Nom    ");
+			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI ");			
+			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("G18 hN     ");
+			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA ");
+			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("G18 No Coul");			
+			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG    ");
+			NameOfSamples.push_back("Genie_v3_0_6_EffSF"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF  ");						
 
-		}		           
+		}	           
 
 		//----------------------------------------//
 
@@ -276,6 +302,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
+			vector<TH1D*> CurrentPlotsFullUncReco; CurrentPlotsFullUncReco.clear();
 			vector<TH1D*> CurrentPlotsXSecReco; CurrentPlotsXSecReco.clear();
 			vector<TH1D*> CurrentPlotsTotalReco; CurrentPlotsTotalReco.clear();
 			vector<TH1D*> CurrentPlotsNormOnly; CurrentPlotsNormOnly.clear();			
@@ -301,7 +328,10 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					CurrentPlotsTotalReco.push_back(histTotalReco);
 
 					TH1D* histXSecReco = (TH1D*)(FileSample[WhichSample]->Get("XSecReco"+PlotNames[WhichPlot]));
-					CurrentPlotsXSecReco.push_back(histXSecReco);					
+					CurrentPlotsXSecReco.push_back(histXSecReco);
+
+					TH1D* histFullUnco = (TH1D*)(FileSample[WhichSample]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
+					CurrentPlotsFullUncReco.push_back(histFullUncReco);										
 
 					TH1D* histNormOnly = (TH1D*)(FileSample[WhichSample]->Get("NormOnlyReco"+PlotNames[WhichPlot]));
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
@@ -336,7 +366,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					//TH1D* histTotalReco = (TH1D*)(FileSample[WhichSample]->Get("StatReco"+PlotNames[WhichPlot]));
 					CurrentPlotsTotalReco.push_back(nullptr);
 					CurrentPlotsNormOnly.push_back(nullptr);
-					CurrentPlotsXSecReco.push_back(nullptr);										
+					CurrentPlotsXSecReco.push_back(nullptr);
+					CurrentPlotsFullUncReco.push_back(nullptr);															
 
 					TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 					CurrentPlotsReco.push_back(histReco);
@@ -392,7 +423,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				if (NameOfSamples[WhichSample] == "GiBUUNoFSI" || NameOfSamples[WhichSample] == "GiBUUTscaling") 
 					{ FileSample.push_back(TFile::Open("../myROOTGiBUU/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
 
-				if (NameOfSamples[WhichSample] == "NEUT") 
+				if (NameOfSamples[WhichSample] == "NEUT"  || NameOfSamples[WhichSample] == "NEUTv5401_RFG") 
 					{ FileSample.push_back(TFile::Open("../myNEUTAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
@@ -401,7 +432,10 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					CurrentPlotsTotalReco.push_back(histTotalReco);
 
 					TH1D* histXSecReco = nullptr;
-					CurrentPlotsXSecReco.push_back(histXSecReco);					
+					CurrentPlotsXSecReco.push_back(histXSecReco);
+
+					TH1D* histFullUncReco = nullptr;
+					CurrentPlotsFullUncReco.push_back(histFullUncReco);										
 
 					TH1D* histNormOnly = nullptr;
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
@@ -430,6 +464,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 			}
 
+			PlotsFullUncReco.push_back(CurrentPlotsFullUncReco);
 			PlotsXSecReco.push_back(CurrentPlotsXSecReco);
 			PlotsTotalReco.push_back(CurrentPlotsTotalReco);
 			PlotsNormOnly.push_back(CurrentPlotsNormOnly);					
@@ -557,7 +592,15 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 			//----------------------------------------//
 
 			TH2D* Ac = (TH2D*)FileSample[0]->Get("Ac"+PlotNames[WhichPlot]);
+
 			TH2D* Cov = (TH2D*)FileSample[0]->Get("UnfCov"+PlotNames[WhichPlot]);	
+			Cov->Scale(1./TMath::Power(MultiDimScaleFactor[PlotNames[WhichPlot]],2.)); // includes scaling factor for multi dimensional analysis
+
+			TH2D* NormCov = (TH2D*)FileSample[0]->Get("NormUnfCov"+PlotNames[WhichPlot]);	
+			NormCov->Scale(1./TMath::Power(MultiDimScaleFactor[PlotNames[WhichPlot]],2.)); // includes scaling factor for multi dimensional analysis
+
+			TH2D* ShapeCov = (TH2D*)FileSample[0]->Get("ShapeUnfCov"+PlotNames[WhichPlot]);	
+			ShapeCov->Scale(1./TMath::Power(MultiDimScaleFactor[PlotNames[WhichPlot]],2.)); // includes scaling factor for multi dimensional analysis
 
 			//----------------------------------------//
 
@@ -568,6 +611,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 			// The covariance matrix needs to be scaled by the 2D bin width
 
 			TH2D* CovClone = (TH2D*)(Cov->Clone()); 
+			TH2D* NormCovClone = (TH2D*)(NormCov->Clone());	
+			TH2D* ShapeCovClone = (TH2D*)(ShapeCov->Clone());			
 
 			int n = Cov->GetXaxis()->GetNbins();
 
@@ -583,6 +628,12 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					double BinContent = Cov->GetBinContent(ix,iy);
 					double NewBinContent = BinContent/TwoDWidth;
 
+					double NormBinContent = NormCov->GetBinContent(ix,iy);
+					double NormNewBinContent = NormBinContent/TwoDWidth;
+
+					double ShapeBinContent = ShapeCov->GetBinContent(ix,iy);
+					double ShapeNewBinContent = ShapeBinContent/TwoDWidth;					
+
 					// Only for the diagonal elements
 					// Add the unfolding uncertainty
 					// On top of everything else
@@ -593,6 +644,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 						double UnfUncBin = UncHist->GetBinContent(ix);
 //						double UnfUncBin = 0.;
 						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.); 
+						ShapeNewBinContent = ShapeNewBinContent + TMath::Power(UnfUncBin,2.) ;						
 
 						// xsec uncertainty
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
@@ -602,6 +654,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					}
 
 					CovClone->SetBinContent(ix,iy,NewBinContent);
+					ShapeCovClone->SetBinContent(ix,iy,ShapeNewBinContent);
+					NormCovClone->SetBinContent(ix,iy,NormNewBinContent);					
 
 				}					
 
@@ -753,9 +807,10 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
 				PlotCanvas->SetLeftMargin(0.19);
+				PlotCanvas->SetRightMargin(0.02);				
 
-				TLegend* leg = new TLegend(0.6,0.58,0.7,0.85);
-				TLegend* legChi2 = new TLegend(0.78,0.72,0.88,0.85);			
+				TLegend* leg = new TLegend(0.62,0.52,0.72,0.85);
+				//TLegend* legChi2 = new TLegend(0.8,0.72,0.9,0.85);			
 				if (
 					PlotNames[WhichPlot] == "SerialDeltaPT_DeltaAlphaTPlot" ||
 					PlotNames[WhichPlot] == "SerialDeltaAlphaT_DeltaPTPlot" ||																				
@@ -769,8 +824,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					PlotNames[WhichPlot] == "SerialDeltaAlphaT_ProtonCosThetaPlot"
 					) { 
 						
-						leg = new TLegend(0.22,0.58,0.32,0.85); 
-						legChi2 = new TLegend(0.4,0.72,0.5,0.85);					
+						leg = new TLegend(0.22,0.52,0.32,0.85); 				
 						
 				}
 
@@ -778,16 +832,10 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				if (PlotNominal && PlotNames[WhichPlot] == "DeltaPtyPlot") { leg = new TLegend(0.2,0.58,0.5,0.85); }			
 
 				leg->SetBorderSize(0);
-				leg->SetTextSize(0.03);
+				leg->SetTextSize(0.05);
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(1);
 				leg->SetMargin(0.15);
-
-				legChi2->SetBorderSize(0);
-				legChi2->SetTextSize(0.03);
-				legChi2->SetTextFont(FontStyle);
-				legChi2->SetNColumns(1);
-				legChi2->SetMargin(0.15);
 
 				//------------------------------------//
 
@@ -839,11 +887,11 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					COHMC[WhichPlot][NDimSlice][WhichSample] = tools.GetHistoBins(COHPlotsTrue[WhichSample][WhichPlot],SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning, NameOfSamples[WhichSample]);					
 
 					CalcChiSquared(MC[WhichPlot][NDimSlice][WhichSample],BeamOnStatShape[WhichPlot][NDimSlice],SliceCovMatrix,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
-					TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],2) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
-					TLegendEntry* lGenie = leg->AddEntry(MC[WhichPlot][NDimSlice][WhichSample],Labels[WhichSample],"l");
+					TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],1) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
+					TLegendEntry* lGenie = leg->AddEntry(MC[WhichPlot][NDimSlice][WhichSample],Labels[WhichSample] + Chi2NdofAlt,"l");
 					lGenie->SetTextColor(Colors[WhichSample]); 										
-					TLegendEntry* lGenieChi2 = legChi2->AddEntry(MC[WhichPlot][NDimSlice][WhichSample],Chi2NdofAlt,"");
-					lGenieChi2->SetTextColor(Colors[WhichSample]);					
+					//TLegendEntry* lGenieChi2 = legChi2->AddEntry(MC[WhichPlot][NDimSlice][WhichSample],Chi2NdofAlt,"");
+					//lGenieChi2->SetTextColor(Colors[WhichSample]);					
 
 				}		
 
@@ -864,11 +912,11 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				COHMC[WhichPlot][NDimSlice][0] = tools.GetHistoBins(COHPlotsTrue[0][WhichPlot],SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning,"Overlay");				
 
 				CalcChiSquared(MC[WhichPlot][NDimSlice][0],BeamOnStatShape[WhichPlot][NDimSlice],SliceCovMatrix,Chi2[0],Ndof[0],pval[0]);
-				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[0],2) + "/" + TString(std::to_string(Ndof[0])) +")";
-				TLegendEntry* lGenie = leg->AddEntry(MC[WhichPlot][NDimSlice][0],Labels[0],"l");
+				TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[0],1) + "/" + TString(std::to_string(Ndof[0])) +")";
+				TLegendEntry* lGenie = leg->AddEntry(MC[WhichPlot][NDimSlice][0],Labels[0] + Chi2NdofAlt,"l");
 				lGenie->SetTextColor(Colors[0]); 										
-				TLegendEntry* lGenieChi2 = legChi2->AddEntry(MC[WhichPlot][NDimSlice][0],Chi2NdofAlt,"");
-				lGenieChi2->SetTextColor(Colors[0]);					
+				//TLegendEntry* lGenieChi2 = legChi2->AddEntry(MC[WhichPlot][NDimSlice][0],Chi2NdofAlt,"");
+				//lGenieChi2->SetTextColor(Colors[0]);					
 
 				//------------------------------//	
 
@@ -931,7 +979,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				leg->AddEntry(BeamOnStatShape[WhichPlot][NDimSlice],Label,"");
 				leg->AddEntry(BeamOnNormOnly[WhichPlot][NDimSlice],"Norm Unc","f");
 
-				legChi2->Draw();
+				//legChi2->Draw();
 				leg->Draw();			
 
 				TLatex *textSlice = new TLatex();

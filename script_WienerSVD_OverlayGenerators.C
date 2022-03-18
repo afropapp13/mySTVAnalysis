@@ -20,5 +20,10 @@
 	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,true)");	
 	//All
 	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,true)");
+	// w/ & w/o FSI + same for GiBUU
+	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,false,true)");
+	// G21 FSI
+	gROOT->ProcessLine("WienerSVD_OverlayGenerators(false,false,false,false,false,false,false,false,false,false,false,true)");	
+
 
 }

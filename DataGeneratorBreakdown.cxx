@@ -48,22 +48,23 @@ void DataGeneratorBreakdown() {
 
 	vector<TString> MCSampleBand; vector<TString> Label;
 
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18 Tune");
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18");
 	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU");
-	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiBUUNoFSI");	
+	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiBUU No FSI");	
 	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
 	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
+	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");	
 	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
 	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2");
 	MCSampleBand.push_back("GENIEv2LFG"); Label.push_back("Gv2 LFG");
 	MCSampleBand.push_back("GENIEv2EffSF"); Label.push_back("Gv2 EffSF");		
 	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("G18 No Tune");					
-	MCSampleBand.push_back("SuSav2"); Label.push_back("G21");
+	MCSampleBand.push_back("SuSav2"); Label.push_back("G21hN");
 	MCSampleBand.push_back("G21hA"); Label.push_back("G21hA");	
 	MCSampleBand.push_back("G21G4"); Label.push_back("G21G4");
 	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21NoFSI");		
 	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("G18 hN Tune");
-	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI Tune");
+	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI");
 	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA Tune");
 	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG Tune");
 	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF Tune");			
@@ -116,6 +117,7 @@ void DataGeneratorBreakdown() {
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
 				PlotCanvas->SetLeftMargin(0.19);
+				PlotCanvas->SetRightMargin(0.02);				
 				PlotCanvas->Draw();
 
 				TLegend* leg = new TLegend(0.6,0.6,0.7,0.85);

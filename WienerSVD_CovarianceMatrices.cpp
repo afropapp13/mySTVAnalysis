@@ -554,7 +554,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				EventRatePlotCanvas->SetBottomMargin(0.16);
 				EventRatePlotCanvas->SetLeftMargin(0.15);
 
-				TLegend* leg = new TLegend(0.15,0.91,0.9,0.99);
+				TLegend* leg = new TLegend(0.2,0.91,0.9,0.99);
 				leg->SetBorderSize(0);
 				leg->SetTextFont(FontStyle);
 				leg->SetTextSize(TextSize-0.02);

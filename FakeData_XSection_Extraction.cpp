@@ -395,7 +395,7 @@ void FakeData_XSection_Extraction(TString OverlaySample = "Overlay9",TString Fak
 			TString FullCanvasName = "/"+FakeDataSample+"FakeData_XSections_"+CanvasName+"_"+UBCodeVersion+".pdf";
 			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);
 
-				delete PlotCanvas;
+			delete PlotCanvas;
 			
 			// --------------------------------------------------------------------------------------------------------------------------------
 

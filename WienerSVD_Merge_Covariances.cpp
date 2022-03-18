@@ -107,7 +107,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	//if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) { return; }
 	//else {
 
-		std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed, kGray-1};
+		std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed, kGray,kMagenta-10};
 
 		int n = LocalCovMatrix->GetNbinsX();
 		TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
@@ -366,10 +366,12 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				}
 
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
+				TH2D* LocalCovMatrixClone = (TH2D*)(LocalCovMatrix->Clone() );
 				TH2D* LocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalFracCovMatrixName) );
 
 				LocalCovMatrix->SetDirectory(0);
 				LocalFracCovMatrix->SetDirectory(0);
+				LocalCovMatrixClone->SetDirectory(0);				
 				CovFiles[WhichSample]->Close();
 
 				// -------------------------------------------------------------------------------------------------
@@ -381,8 +383,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				
 				} else {
 
-					if (WhichSample == 1) { SystCovariances[WhichPlot] = LocalCovMatrix; FracSystCovariances[WhichPlot] = LocalFracCovMatrix; }
-					else { SystCovariances[WhichPlot]->Add(LocalCovMatrix); FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix); }
+					if (WhichSample == 1) { SystCovariances[WhichPlot] = LocalCovMatrixClone; FracSystCovariances[WhichPlot] = LocalFracCovMatrix; }
+					else { SystCovariances[WhichPlot]->Add(LocalCovMatrixClone); FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix); }					
 
 					if (UncSources[WhichSample] == "MC_Stat") { MCStatCovariances[WhichPlot] = LocalCovMatrix; }
 					if (UncSources[WhichSample] == "LY") { LYCovariances[WhichPlot] = LocalCovMatrix; }
@@ -393,8 +395,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					if (UncSources[WhichSample] == "Flux") { FluxCovariances[WhichPlot] = LocalCovMatrix; }
 					if (UncSources[WhichSample] == "Dirt") { DirtCovariances[WhichPlot] = LocalCovMatrix; }
 					if (UncSources[WhichSample] == "POT") { POTCovariances[WhichPlot] = LocalCovMatrix; }
-					if (UncSources[WhichSample] == "NTarget") { NTargetCovariances[WhichPlot] = LocalCovMatrix; }															
-					
+					if (UncSources[WhichSample] == "NTarget") { NTargetCovariances[WhichPlot] = LocalCovMatrix; }																				
 
 				}
 
@@ -406,10 +407,10 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 					MCERPlotCanvas->cd();  leg = legMC;
 
-					if ( !( string(UncSources[WhichSample]).find("POT") != std::string::npos || string(UncSources[WhichSample]).find("NTarget") != std::string::npos ) ) {
+/*					if ( !( string(UncSources[WhichSample]).find("POT") != std::string::npos || string(UncSources[WhichSample]).find("NTarget") != std::string::npos ) ) {*/
 
 						//----------------------------------------//
-
+/*
 						// Only for the single bin plot
 
 						if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
@@ -443,15 +444,15 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 
 						} else { // For all the other plots
-
+*/
 							ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],Counter,leg);
 							Counter++;
 
-						}
+						/*}*/
 
 						//----------------------------------------//
 
-					}				
+					/*}*/			
 
 				}
 

@@ -152,14 +152,13 @@ void GeneratorBand() {
 
 			//----------------------------------------//
 
-			// Get the data only with xsec uncertainties & plot
+			// Get the data only & plot
 
-			TH1D* BeamOnXSec = (TH1D*)( fXSec->Get("XSecOnly_" + PlotNames[iplot]) );
+//			TH1D* BeamOnXSec = (TH1D*)( fXSec->Get("XSecOnly_" + PlotNames[iplot]) ); // Only xsec uncertainties
+			TH1D* BeamOnXSec = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) ); // Only xsec uncertainties			
 
 			BeamOnXSec->GetXaxis()->CenterTitle();
-
 			BeamOnXSec->GetYaxis()->CenterTitle();
-
 			BeamOnXSec->Draw("e1x0 same");
 
 			//----------------------------------------//
