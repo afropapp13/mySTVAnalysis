@@ -107,7 +107,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	//if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) { return; }
 	//else {
 
-		std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed, kGray,kMagenta-10};
+		std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed-10, kGray,kMagenta-10};
 
 		int n = LocalCovMatrix->GetNbinsX();
 		TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
@@ -129,7 +129,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		unc->GetXaxis()->SetTitleSize(TextSize);
 		unc->GetXaxis()->SetLabelSize(TextSize);	
 		unc->GetXaxis()->CenterTitle();
-		unc->GetXaxis()->SetNdivisions(5);
+		unc->GetXaxis()->SetNdivisions(8);
 		
 		unc->GetYaxis()->SetLabelFont(FontStyle);
 		unc->GetYaxis()->SetTitleFont(FontStyle);
@@ -163,12 +163,19 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 			unc->GetYaxis()->SetRangeUser(0.,12.); 
 			
-		}								
+		}
+
+		if ( string(PlotName).find("Serial") != std::string::npos) {
+
+			unc->GetYaxis()->SetRangeUser(0.,119.);
+
+		}							
 					
 		unc->SetLineWidth(2);		
 		unc->SetLineColor(Colors[Color+1]);
 		unc->SetMarkerColor(Colors[Color+1]);			
 
+		gStyle->SetPaintTextFormat("4.1f");
 		unc->Draw("hist text0 same");
 
 		leg->AddEntry(unc,UncSources);

@@ -141,7 +141,7 @@ void WienerXSecUncertainty() {
 			TotalUnc->GetYaxis()->SetLabelFont(TextFont);			
 			TotalUnc->GetYaxis()->SetTitle("Uncertainty [%]");
 			TotalUnc->GetYaxis()->CenterTitle();			
-			TotalUnc->GetYaxis()->SetRangeUser(0.,12.);																		
+			TotalUnc->GetYaxis()->SetRangeUser(0.,14.9);																		
 
 			TotalUnc->Draw("hist");	
 

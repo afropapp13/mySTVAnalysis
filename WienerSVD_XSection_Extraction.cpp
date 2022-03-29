@@ -833,8 +833,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			M2H(AddSmear, smear);
 			V2H(WF, wiener);
 			M2H(UnfoldCov, unfcov);
-			M2H(NormShapeVector[0], normunfcov);
-			M2H( NormShapeVector[1] , shapeunfcov);						
+			M2H( NormShapeVector[0] , normunfcov);
+			M2H( (NormShapeVector[1] + UnfStatCov), shapeunfcov);						
 
 			// ---------------------------------------------------------------------------------------------------------------------------
     

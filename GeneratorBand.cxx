@@ -21,6 +21,28 @@ using namespace Constants;
 
 //----------------------------------------//
 
+void PrettyPlot(TH1D* h) {
+
+	h->GetXaxis()->SetLabelFont(FontStyle);
+	h->GetXaxis()->SetTitleFont(FontStyle);
+	h->GetXaxis()->SetTitleSize(0.06);
+	h->GetXaxis()->SetLabelSize(0.06);
+	h->GetXaxis()->SetTitleOffset(1.05);
+	h->GetXaxis()->SetNdivisions(8);
+	h->GetXaxis()->CenterTitle();
+
+	h->GetYaxis()->SetLabelFont(FontStyle);
+	h->GetYaxis()->SetTitleFont(FontStyle);
+	h->GetYaxis()->SetNdivisions(8);
+	h->GetYaxis()->SetTitleOffset(1.35);
+	h->GetYaxis()->SetTitleSize(0.06);
+	h->GetYaxis()->SetLabelSize(0.06);
+	h->GetYaxis()->CenterTitle();
+
+}
+
+//----------------------------------------//
+
 void GetMinAndSpread(TH1D* MinValuePlot, TH1D* SpreadPlot, std::vector< std::vector<double> > BinEntries){
 
 	int NBins = MinValuePlot->GetXaxis()->GetNbins();
@@ -119,6 +141,7 @@ void GeneratorBand() {
 			PlotCanvas->SetBottomMargin(0.14);
 			PlotCanvas->SetTopMargin(0.12);
 			PlotCanvas->SetLeftMargin(0.19);
+			PlotCanvas->SetRightMargin(0.03);			
 			PlotCanvas->Draw();
 
 			TLegend* leg = new TLegend(0.6,0.7,0.7,0.85);
@@ -156,9 +179,16 @@ void GeneratorBand() {
 
 //			TH1D* BeamOnXSec = (TH1D*)( fXSec->Get("XSecOnly_" + PlotNames[iplot]) ); // Only xsec uncertainties
 			TH1D* BeamOnXSec = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) ); // Only xsec uncertainties			
+	
+			PrettyPlot(BeamOnXSec);
+			BeamOnXSec->SetLineColor(BeamOnColor);
+			BeamOnXSec->SetMarkerColor(BeamOnColor);
+			BeamOnXSec->SetLineWidth(1);		
+			BeamOnXSec->SetMarkerSize(1.);
+			BeamOnXSec->SetMarkerStyle(20);	
+			BeamOnXSec->GetYaxis()->SetTitle(VarLabel[PlotNames[iplot]]);		
+			BeamOnXSec->GetYaxis()->SetRangeUser(XSecRange[ PlotNames[iplot] ].first,XSecRange[ PlotNames[iplot] ].second);																
 
-			BeamOnXSec->GetXaxis()->CenterTitle();
-			BeamOnXSec->GetYaxis()->CenterTitle();
 			BeamOnXSec->Draw("e1x0 same");
 
 			//----------------------------------------//
@@ -226,7 +256,7 @@ void GeneratorBand() {
 			//----------------------------------------//	
 
 			leg->AddEntry(BeamOnXSec,"MicroBooNE Data","ep");	
-			leg->AddEntry(BeamOnXSec,"(XSec Unc)","");
+			leg->AddEntry(BeamOnXSec,"(Total Unc)","");
 			leg->AddEntry(SpreadPlot,"Generator Spread","f");				
 
 			leg->Draw();

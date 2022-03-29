@@ -117,7 +117,7 @@ void DataGeneratorBreakdown() {
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
 				PlotCanvas->SetLeftMargin(0.19);
-				PlotCanvas->SetRightMargin(0.02);				
+				PlotCanvas->SetRightMargin(0.03);				
 				PlotCanvas->Draw();
 
 				TLegend* leg = new TLegend(0.6,0.6,0.7,0.85);
@@ -158,7 +158,7 @@ void DataGeneratorBreakdown() {
 			
 
 				leg->SetBorderSize(0);
-				leg->SetTextSize(0.03);
+				leg->SetTextSize(0.04);
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(1);
 				leg->SetMargin(0.15);			
@@ -207,7 +207,8 @@ void DataGeneratorBreakdown() {
 				BeamOnStatOnly->Draw("e1x0 same");
 
 				TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-				BeamOnNormOnly->SetFillColorAlpha(kMagenta-9, 0.45);	
+				BeamOnNormOnly->SetFillColorAlpha(kMagenta-9, 0.45);
+				BeamOnNormOnly->SetFillStyle(3008);					
 				BeamOnNormOnly->SetLineColor(kMagenta-9);
 				BeamOnNormOnly->SetMarkerColor(kMagenta-9);			
 				BeamOnNormOnly->Draw("e2 same");						

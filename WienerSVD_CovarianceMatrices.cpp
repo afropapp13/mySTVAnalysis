@@ -625,7 +625,10 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// GENIE CV multisim overlays
 
-			if (BaseMC == "Overlay9" && (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux" || Syst == "MC_Stat") ) {
+			if (
+				BaseMC == "Overlay9" && (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || 
+				Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux" || Syst == "MC_Stat"
+			) ) {
 
 				for (int unialt = 0; unialt < (int)(UniAltModels.size()); unialt++ ) {
 

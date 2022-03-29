@@ -162,15 +162,15 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		// CV
 
-		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("G18              "); //Labels.push_back("MC uB Tune");                     
+		NameOfSamples.push_back("Overlay9"); Colors.push_back(OverlayColor); Labels.push_back("G18              ");                     
 
 		//----------------------------------------//	
 
 		if (PlotGENIE) {
 
-			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2       ");
-			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("G18 No Tune");					
-			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21hN      ");
+			NameOfSamples.push_back("GENIEv2");	Colors.push_back(GENIEv2Color); Labels.push_back("Gv2              ");
+			NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");	Colors.push_back(Geniev3OutOfTheBoxColor); Labels.push_back("G18 NoTune");					
+			NameOfSamples.push_back("SuSav2"); Colors.push_back(SuSav2Color); Labels.push_back("G21hN         ");
 
 		}
 
@@ -178,9 +178,9 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		if (PlotGen) {
 
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro           ");			
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro         ");			
 			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiB              ");
-			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT            ");
+			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT          ");
 
 		}	
 
@@ -330,7 +330,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					TH1D* histXSecReco = (TH1D*)(FileSample[WhichSample]->Get("XSecReco"+PlotNames[WhichPlot]));
 					CurrentPlotsXSecReco.push_back(histXSecReco);
 
-					TH1D* histFullUnco = (TH1D*)(FileSample[WhichSample]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
+					TH1D* histFullUncReco = (TH1D*)(FileSample[WhichSample]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
 					CurrentPlotsFullUncReco.push_back(histFullUncReco);										
 
 					TH1D* histNormOnly = (TH1D*)(FileSample[WhichSample]->Get("NormOnlyReco"+PlotNames[WhichPlot]));
@@ -484,6 +484,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		// Loop over the plots
 
+		vector< vector<TH1D*> > BeamOnFullUnc;
 		vector< vector<TH1D*> > BeamOnXSec;
 		vector< vector<TH1D*> > BeamOnStatShape;
 		vector< vector<TH1D*> > BeamOnStatOnly;
@@ -578,6 +579,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 			//----------------------------------------//
 
+			BeamOnFullUnc.resize(N1DPlots);
 			BeamOnXSec.resize(N1DPlots);
 			BeamOnStatShape.resize(N1DPlots);
 			BeamOnStatOnly.resize(N1DPlots);
@@ -717,6 +719,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 			//------------------------------------//
 
+			BeamOnFullUnc[WhichPlot].resize(NSlices);
 			BeamOnXSec[WhichPlot].resize(NSlices);
 			BeamOnStatShape[WhichPlot].resize(NSlices);
 			BeamOnStatOnly[WhichPlot].resize(NSlices);
@@ -807,7 +810,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
 				PlotCanvas->SetLeftMargin(0.19);
-				PlotCanvas->SetRightMargin(0.02);				
+				PlotCanvas->SetRightMargin(0.03);				
 
 				TLegend* leg = new TLegend(0.62,0.52,0.72,0.85);
 				//TLegend* legChi2 = new TLegend(0.8,0.72,0.9,0.85);			
@@ -887,7 +890,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					COHMC[WhichPlot][NDimSlice][WhichSample] = tools.GetHistoBins(COHPlotsTrue[WhichSample][WhichPlot],SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning, NameOfSamples[WhichSample]);					
 
 					CalcChiSquared(MC[WhichPlot][NDimSlice][WhichSample],BeamOnStatShape[WhichPlot][NDimSlice],SliceCovMatrix,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
-					TString Chi2NdofAlt = " (" + to_string_with_precision(Chi2[WhichSample],1) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
+					TString Chi2NdofAlt = "(" + to_string_with_precision(Chi2[WhichSample],1) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
 					TLegendEntry* lGenie = leg->AddEntry(MC[WhichPlot][NDimSlice][WhichSample],Labels[WhichSample] + Chi2NdofAlt,"l");
 					lGenie->SetTextColor(Colors[WhichSample]); 										
 					//TLegendEntry* lGenieChi2 = legChi2->AddEntry(MC[WhichPlot][NDimSlice][WhichSample],Chi2NdofAlt,"");
@@ -957,6 +960,12 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 				BeamOnXSec[WhichPlot][NDimSlice]->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);	
 				BeamOnXSec[WhichPlot][NDimSlice]->GetYaxis()->SetRangeUser(XSecRange[ MapUncorCor[ NameCopy ] ].first,XSecRange[ MapUncorCor[ NameCopy ] ].second);																			
 
+				//------------------------------//
+
+				// Full Unc
+
+				BeamOnFullUnc[WhichPlot][NDimSlice] = tools.GetHistoBins(PlotsFullUncReco[0][WhichPlot],SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning,"FullUnc");
+
 				// -----------------------------------------------------------------------------------------------------------------			
 
 				// Legend & Run / POT
@@ -1004,7 +1013,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					BeamOnStatShape[WhichPlot][NDimSlice]->Write("StatShape_" + NameCopy);
 					BeamOnNormOnly[WhichPlot][NDimSlice]->Write("NormOnly_" + NameCopy);
 					BeamOnStatOnly[WhichPlot][NDimSlice]->Write("StatOnly_" + NameCopy);
-					BeamOnXSec[WhichPlot][NDimSlice]->Write("XSecOnly_" + NameCopy);					
+					BeamOnXSec[WhichPlot][NDimSlice]->Write("XSecOnly_" + NameCopy);
+					BeamOnFullUnc[WhichPlot][NDimSlice]->Write("FullUnc_" + NameCopy);										
 
 					// Overlay GENIE
 					MC[WhichPlot][NDimSlice][0]->Write("OverlayGENIE_" + NameCopy);
