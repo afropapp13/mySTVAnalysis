@@ -151,7 +151,7 @@ root -b DataGeneratorBreakdown.cxx
 
 ./myDownloadScripts/CopyBreakDown.sh
 
-root -l WienerXSecUncertainty.cxx
+root -b WienerXSecUncertainty.cxx
 
 #.x IntegratedXSecs.cpp
 

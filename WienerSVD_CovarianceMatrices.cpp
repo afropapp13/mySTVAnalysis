@@ -50,10 +50,17 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	h->GetYaxis()->SetNdivisions(5);
 	h->GetYaxis()->SetTitleOffset(1.);			
 
-	h->SetTitle(Runs + " " + Syst);	
+//	h->SetTitle(Runs + " " + Syst);	
 
 	double CovMax = TMath::Min(1.,1.05 * h->GetMaximum());
 	double CovMin = TMath::Min(0.,1.05 * h->GetMinimum());
+
+	TString Title = "Title";
+	if (Label == "") { Title = "Cov Matrix"; }
+	if (Label == "Frac") { Title = "Frac Cov Matrix"; }	
+	if (Label == "Corr") { Title = "Corr Matrix"; CovMax = 1.; CovMin = -1.; }	
+	h->SetTitle(Title + " " + Syst);
+
 	h->GetZaxis()->SetRangeUser(CovMin,CovMax);
 	h->GetZaxis()->CenterTitle();
 	h->GetZaxis()->SetTitleFont(FontStyle);
@@ -165,6 +172,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	vector <TH1D*> BeamOffPlots; BeamOffPlots.resize(N1DPlots);
 	vector <TH1D*> DirtPlots; DirtPlots.resize(N1DPlots);
 	vector<vector <TH2D*> > FracCovariances; FracCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));
+	vector<vector <TH2D*> > CorrMatrices; CorrMatrices.resize(NRuns,vector<TH2D*>(N1DPlots));	
 	vector<vector <TH2D*> > Covariances; Covariances.resize(NRuns,vector<TH2D*>(N1DPlots));
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -1005,6 +1013,29 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				// Store fractional covariance matrices
 
 				StoreCanvas(FracCovariances[WhichRun][WhichPlot], "Frac", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);
+
+				// -------------------------------------------------------------------------------------------	
+
+				// Store correlation matrices
+
+				CorrMatrices[WhichRun][WhichPlot] = (TH2D*)(Covariances[WhichRun][WhichPlot]->Clone());
+
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
+
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {	
+
+						double BinValue = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+						double XBinValue = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichXBin+1);
+						double YBinValue = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichYBin+1,WhichYBin+1);						
+						double CorrBinValue = BinValue / ( TMath::Sqrt(XBinValue) * TMath::Sqrt(YBinValue) ); 
+
+						CorrMatrices[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CorrBinValue);
+
+					}
+
+				}			
+
+				StoreCanvas(CorrMatrices[WhichRun][WhichPlot], "Corr", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);				
 
 				// -------------------------------------------------------------------------------------------
 

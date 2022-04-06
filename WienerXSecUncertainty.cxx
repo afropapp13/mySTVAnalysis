@@ -30,7 +30,9 @@ void WienerXSecUncertainty() {
 
 	TH1D::SetDefaultSumw2();	
 
-	TString PathToFiles = "myXSec/";	
+	TString PathToFiles = "myXSec/";
+
+	gStyle->SetPaintTextFormat("4.2f");		
 
 	//----------------------------------------//
 
@@ -57,7 +59,7 @@ void WienerXSecUncertainty() {
 		vector<TString> UncSource; UncSource.clear();
 		vector<int> Colors; Colors.clear();	
 
-		UncSource.push_back("Unf"); Colors.push_back(kMagenta-10);
+		UncSource.push_back("Model"); Colors.push_back(kCyan);
 		UncSource.push_back("Stat"); Colors.push_back(kRed+1);
 		UncSource.push_back("LY"); Colors.push_back(kGreen+2);
 		UncSource.push_back("TPC"); Colors.push_back(kOrange+1);
@@ -65,9 +67,9 @@ void WienerXSecUncertainty() {
 		UncSource.push_back("XSec"); Colors.push_back(kMagenta);
 		UncSource.push_back("G4"); Colors.push_back(kViolet+1);		
 		UncSource.push_back("Flux"); Colors.push_back(kYellow+2);
-		UncSource.push_back("Dirt"); Colors.push_back(kCyan+1);
+		UncSource.push_back("Dirt"); Colors.push_back(kCyan+2);
 		UncSource.push_back("POT"); Colors.push_back(kGreen);
-		UncSource.push_back("NTarget"); Colors.push_back(kRed);
+		UncSource.push_back("NTarget"); Colors.push_back(kMagenta-10);
 		UncSource.push_back("MCStat"); Colors.push_back(kGray);			
 
 		const int NSources = UncSource.size();																		

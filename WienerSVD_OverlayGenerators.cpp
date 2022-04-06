@@ -127,6 +127,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 //	PlotNames.push_back("DeltaPTPlot");
 //	PlotNames.push_back("DeltaAlphaTPlot");
 //	PlotNames.push_back("DeltaPhiTPlot");		 
+//	PlotNames.push_back("MuonCosThetaSingleBinPlot");
 
 	if (All) { PlotNames = OneDimXSec; }
 
@@ -527,6 +528,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 					double TwoDWidth = WidthX * WidthY;
 //					double TwoDWidth = 1.;
+					if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { TwoDWidth = 1.; }
 
 					double BinContent = Cov->GetBinContent(ix,iy);
 					double NewBinContent = BinContent/TwoDWidth;
@@ -803,7 +805,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],ShapeCovClone,ShapeChi2[0],Ndof[0],pval[0]);
 			TString ShapeChi2NdofNom = "(" + to_string_with_precision(ShapeChi2[0],1) + "/" + TString(std::to_string(Ndof[0])) +")";	
 
-cout << PlotNames[WhichPlot] << "  Total chi2 = " << Chi2[0] << ", Shape-Only Chi2 = " << ShapeChi2[0] << endl;
+//cout << PlotNames[WhichPlot] << "  Total chi2 = " << Chi2[0] << ", Shape-Only Chi2 = " << ShapeChi2[0] << endl;
 
 			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0]+Chi2NdofNom,"l");
 //			TLegendEntry* lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l");
