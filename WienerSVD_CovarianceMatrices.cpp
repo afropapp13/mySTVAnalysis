@@ -32,8 +32,8 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	PlotCanvas->SetLeftMargin(0.15);
 	PlotCanvas->SetRightMargin(0.25);			
 	
-	gStyle->SetMarkerSize(1.5);
-	gStyle->SetPaintTextFormat("4.3f");			
+	//gStyle->SetMarkerSize(1.5);
+	gStyle->SetPaintTextFormat("4.2f");			
 	
 	h->GetXaxis()->SetTitleFont(FontStyle);
 	h->GetXaxis()->SetLabelFont(FontStyle);
@@ -52,13 +52,16 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 
 //	h->SetTitle(Runs + " " + Syst);	
 
-	double CovMax = TMath::Min(1.,1.05 * h->GetMaximum());
-	double CovMin = TMath::Min(0.,1.05 * h->GetMinimum());
+//	double CovMax = TMath::Min(1.,1.05 * h->GetMaximum());
+//	double CovMin = TMath::Min(0.,1.05 * h->GetMinimum());
+
+	double CovMax = FindTwoDimHistoMaxValue(h);
+	double CovMin = FindTwoDimHistoMinValue(h);
 
 	TString Title = "Title";
 	if (Label == "") { Title = "Cov Matrix"; }
 	if (Label == "Frac") { Title = "Frac Cov Matrix"; }	
-	if (Label == "Corr") { Title = "Corr Matrix"; CovMax = 1.; CovMin = -1.; }	
+	if (Label == "Corr") { Title = "Corr Matrix"; }	
 	h->SetTitle(Title + " " + Syst);
 
 	h->GetZaxis()->SetRangeUser(CovMin,CovMax);
@@ -70,9 +73,10 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	h->GetZaxis()->SetNdivisions(5);
 
 	h->SetMarkerColor(kWhite);			
-	h->SetMarkerSize(1.5);
+	h->SetMarkerSize(1.);
 	//h->Draw("text colz e"); 
-	h->Draw("colz");
+	if (Label == "Corr") { h->Draw("colz text"); }
+	else { h->Draw("colz"); }
 	
 	PlotCanvas->SaveAs(PlotPath+BaseMC+"/"+Tune+"WienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+"_"+UBCodeVersion+".pdf");
 	
@@ -993,7 +997,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 			} // end of the loop over bin X
 			
 			FileCovarianceMatrices->cd();
-			FracCovariances[WhichRun][WhichPlot]->Write();
+			FracCovariances[WhichRun][WhichPlot]->Write();			
 			Covariances[WhichRun][WhichPlot]->Write();
 			
 			// ---------------------------------------------------------------------------------------	
@@ -1029,13 +1033,23 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						double YBinValue = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichYBin+1,WhichYBin+1);						
 						double CorrBinValue = BinValue / ( TMath::Sqrt(XBinValue) * TMath::Sqrt(YBinValue) ); 
 
-						CorrMatrices[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CorrBinValue);
+						if (WhichXBin != WhichYBin && (Syst == "Stat") ) {
+
+							CorrMatrices[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,1E-8);
+
+						} else {
+
+							CorrMatrices[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CorrBinValue);
+
+						}
 
 					}
 
 				}			
 
 				StoreCanvas(CorrMatrices[WhichRun][WhichPlot], "Corr", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);				
+
+				CorrMatrices[WhichRun][WhichPlot]->Write(Syst+"_CorrCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]);
 
 				// -------------------------------------------------------------------------------------------
 

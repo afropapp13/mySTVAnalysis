@@ -113,7 +113,7 @@ void MigrationMatrices(TString OverlaySample) {
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
 			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+CutExtension+".root");
+							  Runs[WhichRun]+CutExtension+".root");
 
 		}
 
@@ -174,7 +174,7 @@ void MigrationMatrices(TString OverlaySample) {
 				
 				// ---------------------------------------------------------------------------------------				
 	
-				if (OverlaySample == "") {
+				if (OverlaySample == "Overlay9") {
 		
 					TString PlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+NameOfSamples[WhichSample];
 					TCanvas* PlotCanvas = new TCanvas(PlotCanvasName,PlotCanvasName,205,34,1024,768);

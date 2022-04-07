@@ -27,6 +27,7 @@ using namespace std;
 using namespace Constants;
 
 #include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
+#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
 
 // -----------------------------------------------------------------------------------------------
 
@@ -40,7 +41,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	PlotCanvas->SetRightMargin(0.25);			
 	
 	gStyle->SetMarkerSize(1.5);
-	gStyle->SetPaintTextFormat("4.3f");			
+	gStyle->SetPaintTextFormat("4.2f");			
 	
 	h->GetXaxis()->SetTitleFont(FontStyle);
 	h->GetXaxis()->SetLabelFont(FontStyle);
@@ -57,13 +58,16 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	h->GetYaxis()->SetNdivisions(5);
 	h->GetYaxis()->SetTitleOffset(1.);		
 
-	double FracCovMax = TMath::Min(1.,1.05 * h->GetMaximum());
-	double FracCovMin = TMath::Min(0.,1.05 * h->GetMinimum());	
+	double FracCovMax = FindTwoDimHistoMaxValue(h);
+	double FracCovMin = FindTwoDimHistoMinValue(h);
+
+//	double FracCovMax = TMath::Min(1.,1.05 * h->GetMaximum());
+//	double FracCovMin = TMath::Min(0.,1.05 * h->GetMinimum());	
 
 	TString Title = "Title";
 	if (Label == "") { Title = "Cov Matrix"; }
-	if (Label == "Frac") { Title = "Frac Cov Matrix"; }	
-	if (Label == "Corr") { Title = "Corr Matrix"; CovMax = 1.; CovMin = -1.; }			
+	if (Label == "Frac") { Title = "Frac Cov Matrix"; }
+	if (Label == "Corr") { Title = "Corr Matrix"; }		
 
 	h->SetTitle("Total " + Title);	
 
@@ -76,7 +80,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	h->GetZaxis()->SetNdivisions(5);
 
 	h->SetMarkerColor(kWhite);			
-	h->SetMarkerSize(1.5);
+	h->SetMarkerSize(1.);
 	//h->Draw("text colz e"); 
 
 	if (string(PlotNames).find("Serial") != std::string::npos) {	
@@ -95,7 +99,8 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 
 	}
 
-	h->Draw("colz");
+	if (Label == "Corr") { h->Draw("colz text"); }
+	else { h->Draw("colz"); }
 	
 	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
 	
@@ -273,10 +278,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	vector<TH2D*> FracStatCovariances; FracStatCovariances.resize(NPlots);
 	vector<TH2D*> FracSystCovariances; FracSystCovariances.resize(NPlots);
 
-	vector<TH2D*> CorrCovariances; CorrCovariances.resize(NPlots);
-	vector<TH2D*> CorrStatCovariances; CorrStatCovariances.resize(NPlots);
-	vector<TH2D*> CorrSystCovariances; CorrSystCovariances.resize(NPlots);	
-
 	vector<TH2D*> Covariances; Covariances.resize(NPlots);
 	vector<TH2D*> StatCovariances; StatCovariances.resize(NPlots);
 	vector<TH2D*> MCStatCovariances; MCStatCovariances.resize(NPlots);	
@@ -368,8 +369,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				// -----------------------------------------------------------------------------------------------------------------------------------------
 
 				TString LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-				TString LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-				TString LocalCorrCovMatrixName = UncSources[WhichSample]+"_CorrCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];				
+				TString LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];			
 
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs
@@ -379,19 +379,16 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
 
 					LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_Run3";
-					LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_Run3";
-					LocalCorrCovMatrixName = UncSources[WhichSample]+"_CorrCovariance_"+PlotNames[WhichPlot]+"_Run3";					
+					LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_Run3";					
 
 				}
 
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
 				TH2D* LocalCovMatrixClone = (TH2D*)(LocalCovMatrix->Clone() );
-				TH2D* LocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalFracCovMatrixName) );
-				TH2D* LocalCorrCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCorrCovMatrixName) );				
+				TH2D* LocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalFracCovMatrixName) );			
 
 				LocalCovMatrix->SetDirectory(0);
-				LocalFracCovMatrix->SetDirectory(0);
-				LocalCorrCovMatrix->SetDirectory(0);				
+				LocalFracCovMatrix->SetDirectory(0);				
 				LocalCovMatrixClone->SetDirectory(0);				
 				CovFiles[WhichSample]->Close();
 
@@ -400,22 +397,21 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				// Stat
 				if (WhichSample == 0) { 
 
-					StatCovariances[WhichPlot] = LocalCovMatrix; FracStatCovariances[WhichPlot] = LocalFracCovMatrix;
+					StatCovariances[WhichPlot] = LocalCovMatrix; 
+					FracStatCovariances[WhichPlot] = LocalFracCovMatrix;					
 				
 				} else {
 
 					if (WhichSample == 1) { 
 						
 						SystCovariances[WhichPlot] = LocalCovMatrixClone; 
-						FracSystCovariances[WhichPlot] = LocalFracCovMatrix;						
-						CorrSystCovariances[WhichPlot] = LocalCorrCovMatrix;
+						FracSystCovariances[WhichPlot] = LocalFracCovMatrix;
 
 						
 					} else { 
 						
 						SystCovariances[WhichPlot]->Add(LocalCovMatrixClone); 
-						FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix);
-						CorrSystCovariances[WhichPlot]->Add(LocalCorrCovMatrix);						 
+						FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix);						 
 						
 					}					
 
@@ -514,12 +510,10 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 			}			
 
 			StatCovariances[WhichPlot]->Write("StatCovariance_"+PlotNames[WhichPlot]);
-			FracStatCovariances[WhichPlot]->Write("FracStatCovariance_"+PlotNames[WhichPlot]);
-			CorrStatCovariances[WhichPlot]->Write("CorrStatCovariance_"+PlotNames[WhichPlot]);			
+			FracStatCovariances[WhichPlot]->Write("FracStatCovariance_"+PlotNames[WhichPlot]);		
 
 			SystCovariances[WhichPlot]->Write("SystCovariance_"+PlotNames[WhichPlot]);
-			FracSystCovariances[WhichPlot]->Write("FracSystCovariance_"+PlotNames[WhichPlot]);
-			CorrSystCovariances[WhichPlot]->Write("CorrSystCovariance_"+PlotNames[WhichPlot]);			
+			FracSystCovariances[WhichPlot]->Write("FracSystCovariance_"+PlotNames[WhichPlot]);		
 
 			TH2D* CloneCovariances = (TH2D*)(StatCovariances[WhichPlot]->Clone());
 			CloneCovariances->Add(SystCovariances[WhichPlot]);
@@ -527,11 +521,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 			TH2D* CloneFracCovariances = (TH2D*)(FracStatCovariances[WhichPlot]->Clone());
 			CloneFracCovariances->Add(FracSystCovariances[WhichPlot]);
-			CloneFracCovariances->Write("FracTotalCovariance_"+PlotNames[WhichPlot]);
-
-			TH2D* CloneCorrCovariances = (TH2D*)(CorrStatCovariances[WhichPlot]->Clone());
-			CloneCorrCovariances->Add(CorrtCovariances[WhichPlot]);
-			CloneCorrCovariances->Write("CorrTotalCovariance_"+PlotNames[WhichPlot]);			
+			CloneFracCovariances->Write("FracTotalCovariance_"+PlotNames[WhichPlot]);		
 
 			// ------------------------------------------------------------------
 
@@ -565,11 +555,28 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 				PlotCov(CloneFracCovariances,"Frac",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun],Tune);
 
-				// ---------------------------------------------------------------------------------------------
+				// -------------------------------------------------------------------------------------------	
 
-				// Plot the 2D total correlation matrices
+				// Store correlation matrices
 
-				PlotCov(CloneCorrCovariances,"Corr",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun],Tune);				
+				TH2D* CorrMatrix = (TH2D*)(CloneCovariances->Clone());
+
+				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
+
+					for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {	
+
+						double BinValue = CloneCovariances->GetBinContent(WhichXBin+1,WhichYBin+1);
+						double XBinValue = CloneCovariances->GetBinContent(WhichXBin+1,WhichXBin+1);
+						double YBinValue = CloneCovariances->GetBinContent(WhichYBin+1,WhichYBin+1);						
+						double CorrBinValue = BinValue / ( TMath::Sqrt(XBinValue) * TMath::Sqrt(YBinValue) ); 
+
+						CorrMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,CorrBinValue);
+
+					}
+
+				}			
+
+				PlotCov(CorrMatrix, "Corr", PlotNames[WhichPlot], OverlaySample, Runs[WhichRun],Tune);											
 
 				// ---------------------------------------------------------------------------------------------
 

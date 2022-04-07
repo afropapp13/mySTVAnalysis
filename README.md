@@ -121,7 +121,7 @@ cd ../..
 # Fake data studies
 root -b script_FakeData.C
 
-# Fake data with unfolding efficiences
+# Fake data with effective efficiences
 root -b FakeData_XSection_Extraction.cpp
 
 # (locally)

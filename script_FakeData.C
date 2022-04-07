@@ -10,7 +10,7 @@ void script_FakeData() {
 	gROOT->ProcessLine("FakeData_WienerSVD_XSection_Extraction(\"Overlay9\",\"NoTuneOverlay9\")");
 	gROOT->ProcessLine("FakeData_WienerSVD_XSection_Extraction(\"Overlay9\",\"TwiceMECOverlay9\")");
 
-	// mixed study: alternative MC & fake data (NuWro)
+	// mixed study: alternative MC (NoTuneOverlay9,TwiceMECOverlay9) & fake data (NuWro)
 
 	gROOT->ProcessLine("FakeData_WienerSVD_XSection_Extraction(\"NoTuneOverlay9\",\"Overlay9NuWro\")");
 	gROOT->ProcessLine("FakeData_WienerSVD_XSection_Extraction(\"TwiceMECOverlay9\",\"Overlay9NuWro\")");

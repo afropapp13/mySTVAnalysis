@@ -902,13 +902,17 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				smear->GetXaxis()->SetLabelSize(TextSize);
 				smear->GetXaxis()->SetTitleSize(TextSize);
 				smear->GetXaxis()->SetNdivisions(6);
+				TString Xtitle = smear->GetXaxis()->GetTitle();
+				smear->GetXaxis()->SetTitle("i bin " + Xtitle);
 
 				smear->GetYaxis()->CenterTitle();
 				smear->GetYaxis()->SetLabelFont(FontStyle);
 				smear->GetYaxis()->SetTitleFont(FontStyle);
 				smear->GetYaxis()->SetLabelSize(TextSize);
 				smear->GetYaxis()->SetTitleSize(TextSize);
-				smear->GetYaxis()->SetNdivisions(6);	
+				smear->GetYaxis()->SetNdivisions(6);
+				TString Ytitle = smear->GetYaxis()->GetTitle();
+				smear->GetYaxis()->SetTitle("j bin " + Ytitle);					
 
 				smear->GetZaxis()->SetLabelFont(FontStyle);
 				smear->GetZaxis()->SetTitleFont(FontStyle);
