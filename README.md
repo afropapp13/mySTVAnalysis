@@ -64,6 +64,7 @@ root -b Flux_Systematics.cpp
 
 root -b Systematics.cpp
 
+# Detector variation breakdown
 root -b
 .L ../../myClasses/Util.C
 .x WienerSVD_DetectorVars.cpp
@@ -103,7 +104,7 @@ root -b
 .L WienerSVD_Merge_Covariances.cpp++
 WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro","Overlay9NuWro")
 WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","NoTuneOverlay9")
-WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","TwiceMECOverlay9") 
+WienerSVD_Merge_Covariances("Overlay9","TwiceMECOverlay9","TwiceMECOverlay9") 
 
 #################################################################################################################################
 

@@ -188,23 +188,52 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
 		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();		
 
-		// -----------------------------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 
 		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (OverlaySample == "NoTuneOverlay9") { FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
-		if (OverlaySample == "TwiceMECOverlay9") { FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
+
+		if (OverlaySample == "NoTuneOverlay9") { 
+			FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		}
+
+		if (OverlaySample == "TwiceMECOverlay9") { 
+			FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		}
+
 		cout << "File Responses = " << FileResponseName << endl;
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
+		//----------------------------------------//		
+
 		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (OverlaySample == "NoTuneOverlay9") 
-			{ FileCovarianceName = MigrationMatrixPath+"NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
-		if (OverlaySample == "TwiceMECOverlay9") 
-			{ FileCovarianceName = MigrationMatrixPath+"TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }				
+
+		if (OverlaySample == "NoTuneOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}
+
+		if (OverlaySample == "TwiceMECOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}
+
+		// For the fake data studies with the default overlay MC and alternative fake data
+		// we need only the stat, mc stat, xsec and unfolding uncertainties
+
+		if (OverlaySample == "Overlay9" && BeamOnSample == "Overlay9NuWro") { 
+			FileCovarianceName = MigrationMatrixPath+"Overlay9NuWroWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}		
+
+		if (OverlaySample == "Overlay9" && BeamOnSample == "NoTuneOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}
+
+		if (OverlaySample == "Overlay9" && BeamOnSample == "TwiceMECOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}		
+
 		cout << "File Covariances = " << FileCovarianceName << endl;			
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
 
-		// -----------------------------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------//
 
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
