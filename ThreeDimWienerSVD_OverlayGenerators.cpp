@@ -652,6 +652,10 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
 						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
 						PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+
+						double CurrentFullUnc = PlotsFullUncReco[0][WhichPlot]->GetBinError(ix);
+						double NewFullError = TMath::Sqrt( TMath::Power(CurrentFullUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
+						PlotsFullUncReco[0][WhichPlot]->SetBinError(ix,NewFullError);						
 						
 					}
 
@@ -844,7 +848,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 				// Corresponding covariance matrix
 
-				TH2D* SliceCovMatrix = tools.Get2DHistoBins(CovClone,SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning);				
+				TH2D* SliceCovMatrix = tools.Get2DHistoBins(CovClone,SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning);
+				TH2D* SliceAc = tools.Get2DHistoBins(Ac,SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), 1., SerialSliceBinning, false);								
 
 				//------------------------------------//
 
@@ -1007,7 +1012,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					fGenXSec->cd();
 
 					// Unfolded covariance matrix
-					SliceCovMatrix->Write("UnfCov_" + NameCopy);					
+					SliceCovMatrix->Write("UnfCov_" + NameCopy);
+					SliceAc->Write("Ac_" + NameCopy);										
 
 					// Data
 					BeamOnStatShape[WhichPlot][NDimSlice]->Write("StatShape_" + NameCopy);

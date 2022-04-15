@@ -440,7 +440,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					CurrentPlotsXSecReco.push_back(histXSecReco);
 
 					TH1D* histFullUncReco = nullptr;
-					CurrentPlotsFullUncReco.push_back(histXSecReco);										
+					CurrentPlotsFullUncReco.push_back(histFullUncReco);										
 
 					TH1D* histNormOnly = nullptr;
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
@@ -556,6 +556,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
 						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
 						PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+
+						double CurrentFullUnc = PlotsFullUncReco[0][WhichPlot]->GetBinError(ix);
+						double NewFullError = TMath::Sqrt( TMath::Power(CurrentFullUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
+						PlotsFullUncReco[0][WhichPlot]->SetBinError(ix,NewFullError);						
 						
 					}
 
@@ -858,6 +862,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 				// Unfolded covariance matrix
 				CovClone->Write("UnfCov_" + PlotNames[WhichPlot]);
+				Ac->Write("Ac_" + PlotNames[WhichPlot]);				
 
 				// Data
 				PlotsReco[0][WhichPlot]->Write("StatShape_" + PlotNames[WhichPlot]); // Stat + Shape
@@ -896,7 +901,6 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			// Saving the canvas with the data (total uncertainties) vs overlay & generator predictions
 
 			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/"+Extra+"WienerSVD_Generator_TotalUnc_Data_XSections_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
-
 			delete PlotCanvas;
 
 			//----------------------------------------//

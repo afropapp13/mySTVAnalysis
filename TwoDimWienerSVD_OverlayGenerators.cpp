@@ -348,7 +348,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					CurrentPlotsXSecReco.push_back(histTotalReco);
 
 					TH1D* histFullUncReco = (TH1D*)(FileSample[WhichSample]->Get("RecoFullUnc"+PlotNames[WhichPlot]));
-					CurrentPlotsFullUncReco.push_back(histTotalReco);										
+					CurrentPlotsFullUncReco.push_back(histFullUncReco);										
 
 					TH1D* histNormOnly = (TH1D*)(FileSample[WhichSample]->Get("NormOnlyReco"+PlotNames[WhichPlot]));
 					CurrentPlotsNormOnly.push_back(histNormOnly);					
@@ -720,6 +720,10 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
 						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
 						PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+
+						double CurrentFullUnc = PlotsFullUncReco[0][WhichPlot]->GetBinError(ix);
+						double NewFullError = TMath::Sqrt( TMath::Power(CurrentFullUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
+						PlotsFullUncReco[0][WhichPlot]->SetBinError(ix,NewFullError);						
 						
 					}
 
@@ -911,7 +915,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 				// Corresponding covariance matrix
 
-				TH2D* SliceCovMatrix = tools.Get2DHistoBins(CovClone,SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning);				
+				TH2D* SliceCovMatrix = tools.Get2DHistoBins(CovClone,SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), MultiDimScaleFactor[ MapUncorCor[ NameCopy ] ], SerialSliceBinning);
+				TH2D* SliceAc = tools.Get2DHistoBins(Ac,SerialVectorLowBin.at(NDimSlice),SerialVectorHighBin.at(NDimSlice), 1., SerialSliceBinning, false);								
 
 				//------------------------------------//
 
@@ -1081,7 +1086,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					fGenXSec->cd();
 
 					// Unfolded covariance matrix
-					SliceCovMatrix->Write("UnfCov_" + NameCopy);					
+					SliceCovMatrix->Write("UnfCov_" + NameCopy);
+					SliceAc->Write("Ac_" + NameCopy);										
 
 					// Data
 					BeamOnStatShape[WhichPlot][NDimSlice]->Write("StatShape_" + NameCopy);

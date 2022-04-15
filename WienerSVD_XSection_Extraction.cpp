@@ -919,7 +919,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				smear->GetZaxis()->SetLabelSize(TextSize);
 				smear->GetZaxis()->SetTitleSize(TextSize);
 
-				smear->Draw("coltz");
+				gStyle->SetPaintTextFormat("4.2f");
+				smear->SetMarkerColor(kWhite);
+				smear->Draw("coltz text");
 
 				TLatex *text = new TLatex();
 				text->SetTextFont(FontStyle);

@@ -157,7 +157,7 @@ void WienerXSecUncertainty() {
 
 			for (int isource = 0; isource < NSources; isource++) {
 
-				if (UncSource[isource] != "Unf") { UncPlot[isource] = (TH1D*)(fXSec->Get(UncSource[isource] + "Reco" + PlotNames[WhichPlot])); } 
+				if (UncSource[isource] != "Model") { UncPlot[isource] = (TH1D*)(fXSec->Get(UncSource[isource] + "Reco" + PlotNames[WhichPlot])); } 
 				else { UncPlot[isource] = (TH1D*)(fUnc->Get("UnfUnc_" + PlotNames[WhichPlot])); UncPlot[isource]->IsTransparent(); } 
 
 				for (int ibin = 1; ibin <= NBins; ibin++) {
@@ -166,7 +166,7 @@ void WienerXSecUncertainty() {
 					double CVEntry = CV->GetBinContent(ibin);
 					// Uncertainty in a given bin
 					double UncError = UncPlot[isource]->GetBinError(ibin);	
-					if (UncSource[isource] == "Unf") { UncError = UncPlot[isource]->GetBinContent(ibin); } 
+					if (UncSource[isource] == "Model") { UncError = UncPlot[isource]->GetBinContent(ibin); } 
 					double FracUnc = 100. * UncError / CVEntry;	
 					UncPlot[isource]->SetBinContent(ibin,FracUnc);
 

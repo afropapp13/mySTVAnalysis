@@ -24,8 +24,10 @@ void MigrationMatrices(TString OverlaySample) {
 	TH2D::SetDefaultSumw2();
 	
 	double TextSize = 0.07;
-	
-	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t"); 
+	const Int_t NCont = 999;	
+	gStyle->SetPalette(55); 
+	gStyle->SetNumberContours(NCont); 
+	gStyle->SetTitleSize(TextSize,"t"); 
 	gStyle->SetTitleFont(FontStyle,"t");
 	gStyle->SetOptStat(0);
 

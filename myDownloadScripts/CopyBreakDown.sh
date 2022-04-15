@@ -3,6 +3,7 @@
 export InPutDir=/home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/mySTVAnalysis/myPlots/pdf/${UBCode}/BeamOn9/InteractionBreakdown
 #export OutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/XSec_Playground/Figures
 export OutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures
+export ThesisOutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures
 
 declare -a arrPlots=(
 "InteractionBreakDown_OverlayGENIE_DeltaPTPlot_Combined_"${UBCode}".pdf"
@@ -60,6 +61,7 @@ do
 	##############################################################################
 
 	cp ${InPutDir}/${plot}	${OutPutDir}
+	cp ${InPutDir}/${plot}	${ThesisOutPutDir}	
 	
 	##############################################################################
 
@@ -211,6 +213,7 @@ do
 	##############################################################################
 
 	cp ${InPutDir}/../${plot}	${OutPutDir}
+	cp ${InPutDir}/../${plot}	${ThesisOutPutDir}	
 	
 	##############################################################################
 
