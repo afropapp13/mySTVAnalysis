@@ -122,7 +122,7 @@ void PRL_Supp_XSec_DeltaAlphaTInDeltaPT_IntBreakdown() {
 				PlotCanvas->SetRightMargin(0.03);				
 				PlotCanvas->Draw();
 
-				TLegend* leg = new TLegend(0.25,0.75,0.55,0.85);
+				TLegend* leg = new TLegend(0.25,0.75,0.55,0.87);
 				leg->SetBorderSize(0);
 				leg->SetTextSize(TextSize);
 				leg->SetTextFont(FontStyle);
@@ -193,7 +193,7 @@ void PRL_Supp_XSec_DeltaAlphaTInDeltaPT_IntBreakdown() {
 				legData->AddEntry(BeamOnShapeStat,"(Stat #oplus Shape Unc)","");
 				legData->AddEntry(BeamOnNormOnly,"Norm Unc","f");				
 
-				if (iplot == 0 && igen == 0) { 
+				if (igen == 0) { 
 
 					leg->Draw();
 					legData->Draw();					 
@@ -203,7 +203,8 @@ void PRL_Supp_XSec_DeltaAlphaTInDeltaPT_IntBreakdown() {
 				TLatex *textSlice = new TLatex();
 				textSlice->SetTextFont(FontStyle);
 				textSlice->SetTextSize(TextSize);
-				textSlice->DrawLatexNDC(0.2, 0.92, Label[igen] + "    " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
+				if (iplot != 0) { textSlice->DrawLatexNDC(0.2, 0.92, Label[igen] + "    " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]); }	
+				else { textSlice->DrawLatexNDC(0.2, 0.92, Label[igen] + "    " +LatexLabel[ PlotNames[iplot] ]); }		
 
 				//----------------------------------------//
 
