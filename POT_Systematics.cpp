@@ -230,7 +230,7 @@ void POT_Systematics() {
 				TString CovTitleAndLabels = TString(PlotsReco[WhichSample][WhichPlot]->GetXaxis()->GetTitle())+" "+Runs[WhichRun]+";Bin # ;Bin #";
 
 				TH2D* LocalMatrix = nullptr;
-				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot" || NBins == 1) { LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,1,0.5,1,1,0.5,1); }
+				if (NBins == 1) { LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,1,0.5,1,1,0.5,1); }
 				else { LocalMatrix = new TH2D("Local"+TMatrixName,CovTitleAndLabels,NBins,0.5,NBins-0.5,NBins,0.5,NBins-0.5); }
 
 				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) {

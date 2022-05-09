@@ -732,10 +732,10 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			// Declare the matrix & initialize the entries to 0
 
-			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot" || NBins == 1) {
+			if (NBins == 1) {
 
-				FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,-1.,1.,1,-1.,1.);
-				Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,-1.,1.,1,-1.,1.);
+				FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,0.,1.,1,0.,1.);
+				Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,1,0.,1.,1,0.,1.);
 
 			} else {
 

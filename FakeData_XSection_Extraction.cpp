@@ -234,9 +234,6 @@ void FakeData_XSection_Extraction(TString OverlaySample = "Overlay9",TString Fak
 
 				double BinWidth = PlotsCC1pReco[0][WhichPlot]->GetBinWidth(WhichXBin+1);
 
-				// We want the number of events, as if the bin width is 1
-				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { BinWidth = 1.; }
-
 				//----------------------------------------//
 
 				double ScalingFactor = Units / (IntegratedFlux * NTargets * BinWidth);

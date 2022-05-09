@@ -205,13 +205,12 @@ void MigrationMatrices(TString OverlaySample) {
 									
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
-					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(5);				
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(8);				
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(-0.1,1.);
 
-					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);	
-
-					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.);
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
+					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);					
 					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
 					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]

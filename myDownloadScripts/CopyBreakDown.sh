@@ -92,6 +92,8 @@ declare -a arrGenPlots=(
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
 "WienerSVD_Generator_TotalUnc_Data_XSections_ECalPlot_Combined_"${UBCode}".pdf"
 
+"NominalWienerSVD_Generator_TotalUnc_Data_XSections_VertexZPlot_Combined_"${UBCode}".pdf"
+
 #2D
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_MuonCosThetaPlot_Slice_0_Combined_"${UBCode}".pdf"
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_MuonCosThetaPlot_Slice_1_Combined_"${UBCode}".pdf"

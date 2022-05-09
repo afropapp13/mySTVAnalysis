@@ -46,10 +46,10 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames;
-	PlotNames.push_back("DeltaPtxPlot");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");	
+	vector<TString> PlotNames;  vector<TString> PanelLabels;
+	PlotNames.push_back("DeltaPtxPlot");  PanelLabels.push_back("(a)");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1"); PanelLabels.push_back("(c)");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -135,14 +135,14 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			PlotCanvas->SetRightMargin(0.01);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.23,0.78,0.8,0.88);
+			TLegend* leg = new TLegend(0.23,0.78,0.82,0.88);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 			leg->SetMargin(0.13);
 
-			TLegend* legData = new TLegend(0.22,0.68,0.75,0.78);
+			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.04);
 			legData->SetTextFont(FontStyle);
@@ -285,7 +285,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
 			text->SetTextSize(0.06);
-			text->DrawLatexNDC(0.2, 0.94, LatexLabel[ Mapping[PlotNames[iplot]] ]);		
+			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ] + ", Preliminary");		
 
 			//----------------------------------------//
 
@@ -304,6 +304,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			//----------------------------------------//
 
 			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRL_Fig3_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_Neutrino2022_PublicNote/Figures/PRL_Fig3_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");			
 			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures/PRL_Fig3_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");	
 			delete PlotCanvas;															
 

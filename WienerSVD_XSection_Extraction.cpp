@@ -576,8 +576,6 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				double Width = unf->GetBinWidth(i);
 				double HighEdge = LowEdge + Width;
 
-				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Width = 1.; }				
-
 				double StatError = TMath::Sqrt( UnfStatCov(i-1,i-1) ) / Width;
 				unfStat->SetBinError(i, StatError);
 
@@ -903,7 +901,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				smear->GetXaxis()->SetTitleSize(TextSize);
 				smear->GetXaxis()->SetNdivisions(6);
 				TString Xtitle = smear->GetXaxis()->GetTitle();
-				smear->GetXaxis()->SetTitle("i bin " + Xtitle);
+				smear->GetXaxis()->SetTitle("True " + Xtitle);
 
 				smear->GetYaxis()->CenterTitle();
 				smear->GetYaxis()->SetLabelFont(FontStyle);
@@ -912,12 +910,13 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				smear->GetYaxis()->SetTitleSize(TextSize);
 				smear->GetYaxis()->SetNdivisions(6);
 				TString Ytitle = smear->GetYaxis()->GetTitle();
-				smear->GetYaxis()->SetTitle("j bin " + Ytitle);					
+				smear->GetYaxis()->SetTitle("Reco " + Ytitle);					
 
 				smear->GetZaxis()->SetLabelFont(FontStyle);
 				smear->GetZaxis()->SetTitleFont(FontStyle);
 				smear->GetZaxis()->SetLabelSize(TextSize);
 				smear->GetZaxis()->SetTitleSize(TextSize);
+				smear->GetZaxis()->SetRangeUser(-0.1,1.);				
 
 				gStyle->SetPaintTextFormat("4.2f");
 				smear->SetMarkerColor(kWhite);

@@ -558,16 +558,21 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 				if ( BeamOnSample == "Overlay9NuWro") {
 
 					//// Unfolding + Regular fake data uncertainty for NuWro
-					double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
-					double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
-					double JointUnc = TMath::Sqrt( TMath::Power(BinUnfUnc,2.) + TMath::Power(MCStatCovUnc,2.) );
+//					double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
+					double BinUnfUnc = 0.;
+					
+					double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
+					double JointUnc = TMath::Sqrt( TMath::Power(BinUnfUnc,2.) + TMath::Power(CovUnc,2.) );
 					unfMCStat->SetBinError(i, JointUnc );	
 
 				} else {
 
 					// Unfolding uncertainty only
-					double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
-					unfMCStat->SetBinError(i, BinUnfUnc );	
+					//double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
+
+					// Stat, MC Stat, XSec uncertainties
+					double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;					
+					unfMCStat->SetBinError(i, CovUnc );	
 
 				}												
 
