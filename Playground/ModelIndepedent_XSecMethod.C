@@ -163,7 +163,7 @@ void ModelIndepedent_XSecMethod() {
 
 	// File to store the unfolding uncertainties
 
-	TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","recreate");
+	//TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","recreate");
 
 	//----------------------------------------//	
 
@@ -194,7 +194,7 @@ void ModelIndepedent_XSecMethod() {
 		//----------------------------------------//
 
 		int n = -1.; // will be the number of bins for a given plot
-		TH1D* Uncertainty;		
+		//TH1D* Uncertainty;		
 
 		//----------------------------------------//
 
@@ -224,11 +224,11 @@ void ModelIndepedent_XSecMethod() {
 			TString Xtitle = Plots[WhichPlot][WhichFile]->GetXaxis()->GetTitle();
 			TString Ytitle = Plots[WhichPlot][WhichFile]->GetYaxis()->GetTitle();		
 			TH1D* Offset = new TH1D("Offset_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges);
-			if (WhichFile == 0) { 
+			//if (WhichFile == 0) { 
 				
-				Uncertainty = new TH1D("Uncertainty_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges); 
+			//	Uncertainty = new TH1D("Uncertainty_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,n,Nuedges); 
 				
-			}		
+			//}		
 
 			for (int WhichBin = 1; WhichBin <= n; WhichBin++ ) {
 
@@ -293,23 +293,23 @@ void ModelIndepedent_XSecMethod() {
 
 		//------------------------------------//	
 
-		// Assigning the uncertainty as the spread / sqrt(12)
+		//// Assigning the uncertainty as the spread / sqrt(12)
 
-		for (int WhichBin = 0; WhichBin < n; WhichBin++) {
+		//for (int WhichBin = 0; WhichBin < n; WhichBin++) {
 
-			double spread = GetSpread(BinEntries[WhichPlot][WhichBin]);
-			Uncertainty->SetBinContent(WhichBin+1,spread);
+		//	double spread = GetSpread(BinEntries[WhichPlot][WhichBin]);
+		//	Uncertainty->SetBinContent(WhichBin+1,spread);
 
-		}
+		//}
 
-		Uncertainty->SetFillColorAlpha(kRed+1,1.);	
-		Uncertainty->SetLineColor(kRed+1);
-		Uncertainty->SetMarkerColor(kRed+1);
-		can->cd();		
-		Uncertainty->Draw("e2 hist same");	
+		//Uncertainty->SetFillColorAlpha(kRed+1,1.);	
+		//Uncertainty->SetLineColor(kRed+1);
+		//Uncertainty->SetMarkerColor(kRed+1);
+		//can->cd();		
+		//Uncertainty->Draw("e2 hist same");	
 
-		fUnc->cd();		
-		Uncertainty->Write("UnfUnc_"+PlotNames[WhichPlot]);
+		//fUnc->cd();		
+		//Uncertainty->Write("UnfUnc_"+PlotNames[WhichPlot]);
 
 		//------------------------------------//				
 

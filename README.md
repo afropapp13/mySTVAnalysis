@@ -113,9 +113,10 @@ WienerSVD_Merge_Covariances("Overlay9","TwiceMECOverlay9","TwiceMECOverlay9")
 # Unfolding Uncertainty 
 cd Playground
 root -b ModelIndepedent_XSecMethod.C
-cd ../myXSec/v08_00_00_52/
-scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
-cd ../..
+#cd ../myXSec/v08_00_00_52/
+#scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
+#cd ../..
+cd ..
 
 #################################################################################################################################
 

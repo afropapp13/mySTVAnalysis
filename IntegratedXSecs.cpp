@@ -28,19 +28,33 @@ void IntegratedXSecs() {
 
 	vector<TString> PlotNames;
 
-	PlotNames.push_back("DeltaPTPlot"); 
+	PlotNames.push_back("DeltaPtxPlot"); 
+//	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 //	PlotNames.push_back("DeltaPhiTPlot");
 //	PlotNames.push_back("MuonMomentumPlot"); 
-	PlotNames.push_back("MuonCosThetaPlot");
+//	PlotNames.push_back("MuonCosThetaPlot");
 //	PlotNames.push_back("MuonCosThetaSingleBinPlot");	 
 //	PlotNames.push_back("MuonPhiPlot");
 //	PlotNames.push_back("ProtonMomentumPlot"); 
 //	PlotNames.push_back("ProtonCosThetaPlot");
 //	PlotNames.push_back("ProtonPhiPlot");
-	PlotNames.push_back("VertexXPlot");
-	PlotNames.push_back("VertexYPlot");	
-	PlotNames.push_back("VertexZPlot");
+//	PlotNames.push_back("VertexXPlot");
+//	PlotNames.push_back("VertexYPlot");	
+//	PlotNames.push_back("VertexZPlot");
+
+//	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_0");
+//	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_1");
+//	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_2");
+//	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_3");			
+
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0");
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");	
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2");
+
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2");		
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -64,7 +78,7 @@ void IntegratedXSecs() {
 		vector<TString> NameOfSamples; NameOfSamples.clear();
 	
 		NameOfSamples.push_back("Data");
-		NameOfSamples.push_back("OverlayGENIE");
+		//NameOfSamples.push_back("OverlayGENIE");
 
 		//NameOfSamples.push_back("Genie_v3_0_6_Out_Of_The_Box");
 		//NameOfSamples.push_back("Genie_v3_0_6_uB_Tune_1");

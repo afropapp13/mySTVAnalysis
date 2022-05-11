@@ -9,6 +9,7 @@
 #include <TLegendEntry.h>
 #include <TMath.h>
 #include <TLatex.h>
+#include <TF1.h>
 
 #include <iostream>
 #include <vector>
@@ -147,7 +148,14 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			legData->SetTextSize(0.04);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);						
+			legData->SetMargin(0.08);
+
+			TLegend* legSigma = new TLegend(0.26,0.53,0.35,0.65);
+			legSigma->SetBorderSize(0);
+			legSigma->SetTextSize(0.04);
+			legSigma->SetTextFont(FontStyle);
+			legSigma->SetNColumns(1);
+			legSigma->SetMargin(0.08);									
 
 			//----------------------------------------//
 
@@ -240,6 +248,14 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			int Ndof[NMC];
 			double pval[NMC];
 
+			// + 1 for data
+			TF1* Function = new TF1("f","gaus",-0.5,0.5);
+			// Dummy parameters
+			Function->SetParameter(0,30);
+			Function->SetParameter(1,0.);
+			Function->SetParameter(2,0.2);			
+			double sigma[NMC+1];						
+
 			// Loop over the MC predictions
 
 			for (int igen = 0; igen < NMC; igen++) {			
@@ -255,6 +271,13 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 				TLegendEntry* lGenie = leg->AddEntry(MCPlot[igen],Label[igen] + Chi2NdofAlt,"l");
 				lGenie->SetTextColor(MCColors[igen]);
+
+				//MCPlot[igen]->Fit(Function,"QR0");
+				//sigma[igen] = Function->GetParameter(2); // gaussian sigma
+
+				//TString SigmaTString = "#sigma = " + to_string_with_precision(sigma[igen],2); 
+				//TLegendEntry* lSigma = legSigma->AddEntry(MCPlot[igen], SigmaTString,"");
+				//lSigma->SetTextColor(MCColors[igen]);				
 
 			} // End of the loop over the generators
 
@@ -272,20 +295,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			BeamOnShapeStat->Draw("e1x0 same");
 
 			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
-			BeamOnStatOnly->Draw("e1x0 same");								
-
-			//----------------------------------------//	
-
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");	
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
-
-			leg->Draw();
-			if (iplot == 0) { legData->Draw(); }			
-
-			TLatex *text = new TLatex();
-			text->SetTextFont(FontStyle);
-			text->SetTextSize(0.06);
-			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ] + ", Preliminary");		
+			BeamOnStatOnly->Draw("e1x0 same");
 
 			//----------------------------------------//
 
@@ -297,9 +307,35 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
 			textPOT->SetTextSize(0.06);
-			if (iplot == 0) { textPOT->DrawLatexNDC(0.7, 0.94,Label);	}		
+			//if (iplot == 0) { textPOT->DrawLatexNDC(0.7, 0.94,Label);	}		
 
-			gPad->RedrawAxis();						
+			gPad->RedrawAxis();												
+
+			//----------------------------------------//	
+
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
+			legData->AddEntry(BeamOnShapeStat,Label,"");				
+			legData->AddEntry(BeamOnNormOnly,"Norm","f");
+			
+			BeamOnStatOnly->Fit(Function,"QR0");
+			sigma[NMC] = Function->GetParameter(2); // sigma
+
+			TLegendEntry* lSigma = legSigma->AddEntry(BeamOnStatOnly,"#sigma_{Data} = " + to_string_with_precision(sigma[NMC],2),"");
+			lSigma->SetTextColor(kBlack);							
+
+			leg->Draw();
+			if (iplot == 0) { legData->Draw(); }
+			legSigma->Draw();			
+
+			TLatex *text = new TLatex();
+			text->SetTextFont(FontStyle);
+			text->SetTextSize(0.06);
+			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);
+
+			TLatex *textPrel = new TLatex();
+			textPrel->SetTextFont(FontStyle);
+			textPrel->SetTextSize(0.04);
+			textPrel->DrawLatexNDC(0.65, 0.68,"MicroBooNE Preliminary");										
 
 			//----------------------------------------//
 

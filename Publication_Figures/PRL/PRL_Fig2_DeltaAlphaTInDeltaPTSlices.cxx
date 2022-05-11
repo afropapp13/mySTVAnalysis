@@ -274,20 +274,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			BeamOnShapeStat->Draw("e1x0 same");
 
 			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
-			BeamOnStatOnly->Draw("e1x0 same");								
-
-			//----------------------------------------//	
-
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");	
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
-
-			leg->Draw();
-			if (iplot == 0) { legData->Draw(); }			
-
-			TLatex *text = new TLatex();
-			text->SetTextFont(FontStyle);
-			text->SetTextSize(0.06);
-			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ] + ", Preliminary");	
+			BeamOnStatOnly->Draw("e1x0 same");
 
 			//----------------------------------------//
 
@@ -299,7 +286,21 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
 			textPOT->SetTextSize(0.06);
-			if (iplot == 0) { textPOT->DrawLatexNDC(0.7, 0.94,Label);	}	
+			//if (iplot == 0) { textPOT->DrawLatexNDC(0.7, 0.94,Label);	}												
+
+			//----------------------------------------//	
+
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
+			legData->AddEntry(BeamOnShapeStat,Label,"");				
+			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
+
+			leg->Draw();
+			if (iplot == 0) { legData->Draw(); }			
+
+			TLatex *text = new TLatex();
+			text->SetTextFont(FontStyle);
+			text->SetTextSize(0.06);
+			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ] + ", MicroBooNE Preliminary");	
 
 			//----------------------------------------//
 

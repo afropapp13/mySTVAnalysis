@@ -51,17 +51,13 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 
 	int NBins = h->GetXaxis()->GetNbins();
 
-	// We want the number of events, as if the bin width is 1
-	double ExtraFactor = 1.;
-	if (NBins == 1) { ExtraFactor = 2.; }
-
 	for (int i = 0; i < NBins; i++) {
 
 		double CurrentEntry = h->GetBinContent(i+1);
-		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1) * ExtraFactor;
+		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1);
 
 		double CurrentError = h->GetBinError(i+1);
-		double NewError = CurrentError * SF / h->GetBinWidth(i+1) * ExtraFactor;
+		double NewError = CurrentError * SF / h->GetBinWidth(i+1);
 
 		h->SetBinContent(i+1,NewEntry); 
 		h->SetBinError(i+1,NewError); 

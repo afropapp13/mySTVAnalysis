@@ -44,17 +44,13 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 
 	int NBins = h->GetXaxis()->GetNbins();
 
-	// We want the number of events, as if the bin width is 1
-	double ExtraFactor = 1.;
-	if (NBins == 1) { ExtraFactor = 2.; }
-
 	for (int i = 0; i < NBins; i++) {
 
 		double CurrentEntry = h->GetBinContent(i+1);
-		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1) * ExtraFactor;
+		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1);
 
 		double CurrentError = h->GetBinError(i+1);
-		double NewError = CurrentError * SF / h->GetBinWidth(i+1) * ExtraFactor;
+		double NewError = CurrentError * SF / h->GetBinWidth(i+1);
 
 		h->SetBinContent(i+1,NewEntry); 
 		h->SetBinError(i+1,NewError); 
@@ -157,8 +153,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 	// open the file that contains the unfolding uncertainty
 
-	TString NameUnfUnc = PathToExtractedXSec+"WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+Subtract+".root";
-	TFile* FileUnfUnc = TFile::Open(NameUnfUnc,"readonly");			
+	//TString NameUnfUnc = PathToExtractedXSec+"WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+Subtract+".root";
+	//TFile* FileUnfUnc = TFile::Open(NameUnfUnc,"readonly");			
 
 	//----------------------------------------//
 
@@ -183,7 +179,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 
-		vector<TH1D*> UnfUnc; UnfUnc.clear();
+		//vector<TH1D*> UnfUnc; UnfUnc.clear();
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
 		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();		
@@ -359,6 +355,14 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		} // End of the loop over the samples
 
+		//----------------------------------------//
+
+		// File to store the unfolding model uncertainties
+
+		TFile* fUnc = nullptr;	
+		if (BeamOnSample == "Overlay9NuWro") 
+			{ fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","recreate"); }	
+
 		// ----------------------------------------------------------------------------------------------------------------------------------
 
 		// Loop over the event rate plots
@@ -367,7 +371,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			//----------------------------------------//			
 
-			UnfUnc.push_back((TH1D*)FileUnfUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));			
+			//UnfUnc.push_back((TH1D*)FileUnfUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));			
 
 			//----------------------------------------//
 
@@ -711,7 +715,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			// Draw the data points first to get the beautiful canvas 
 			PlotCanvas->cd();
 			//unf->Draw("e1x0"); // Full unc : XSec + Stat + MC Stat
-			unfMCStat->Draw("e1x0"); // Only MC Stat
+			unfMCStat->Draw("e1x0");
 			TrueUnf->Draw("hist same");
 			AltTrueUnf->Draw("hist same");
 
@@ -719,6 +723,39 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			PlotCanvas->cd();
 			//unf->Draw("e1x0 same"); // Full unc : XSec + Stat + MC Stat
 			unfMCStat->Draw("e1x0 same"); // Only MC Stat
+
+			//------------------------------//
+
+			// Only for the NuWro fake data study
+			// use any residual (GENIE - NuWro)/ sqrt(12) diffs
+			// as an unfolding model uncertainty
+
+			TH1D* UnfUnc = (TH1D*)(TrueUnf->Clone());
+
+			for (int ibin = 1; ibin <= (int)(TrueUnf->GetXaxis()->GetNbins()); ibin++) {
+
+				double UnfPoint = unfMCStat-> GetBinContent(ibin);
+				double UnfError = unfMCStat-> GetBinError(ibin);
+				double TruePoint = TrueUnf-> GetBinContent(ibin);								
+
+				if ( TMath::Abs(UnfPoint - TruePoint) <  UnfError) {
+
+					UnfUnc->SetBinContent(ibin,0.);
+
+				} else {
+
+					double Uncertainty = TMath::Abs( TMath::Abs(UnfPoint - TruePoint) - UnfError ) / TMath::Abs(12);
+					UnfUnc->SetBinContent(ibin,Uncertainty);
+
+				}
+
+			}
+
+			UnfUnc->SetLineColor(kRed+1);
+			UnfUnc->SetFillColor(kRed+1);			
+			UnfUnc->Draw("e2 same");
+			fUnc->cd();
+			UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
 
 			//------------------------------//
 
@@ -805,7 +842,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);	
 			delete PlotCanvas;			
 
-			// ----------------------------------------------------------------------------------------------------------------		
+			//------------------------------//
 
 			TH1D* diff = new TH1D("diff_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Fractional difference of unf and signal model",n, Nuedges);
 			
@@ -820,8 +857,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			}	
 
-			// ---------------------------------------------------------------------------------------------------------------------------
-
+			//------------------------------//
+/*
 			// intrinsic bias (Ac-I) * s_bar formula
 
 			TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
@@ -842,7 +879,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			V2H(intrinsicbias, bias);
 			V2H(intrinsicbias2, bias2);				
 
-			// ---------------------------------------------------------------------------------------------------------------------------
+			//------------------------------//
 
 			// Diagonal Uncertainty
 
@@ -870,8 +907,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			M2H(AddSmear, smear);
 			V2H(WF, wiener);
-
-			// ---------------------------------------------------------------------------------------------------------------------------
+*/
+			//------------------------------//
 
 			ExtractedXSec->cd();
 
