@@ -110,17 +110,18 @@ WienerSVD_Merge_Covariances("Overlay9","TwiceMECOverlay9","TwiceMECOverlay9")
 
 # (locally)
 ./myDownloadScripts/DownloadXSec.sh
+scp apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52/WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root ../myXSec/v08_00_00_52/
 # Unfolding Uncertainty 
 cd Playground
 root -b ModelIndepedent_XSecMethod.C
-#cd ../myXSec/v08_00_00_52/
+#cd myXSec/v08_00_00_52/
 #scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
 #cd ../..
 cd ..
 
 #################################################################################################################################
 
-# Fake data studies
+# Fake data studies with Wiener SVD
 root -b script_FakeData.C
 
 # Fake data with effective efficiences

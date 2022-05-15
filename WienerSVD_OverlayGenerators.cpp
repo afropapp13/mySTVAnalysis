@@ -545,8 +545,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					if (ix == iy) { 
 
 						// unfolded covariance matrix
-//						double UnfUncBin = UncHist->GetBinContent(ix);
-						double UnfUncBin = 0.;
+						double UnfUncBin = UncHist->GetBinContent(ix);
+//						double UnfUncBin = 0.;
 
 						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ;
 						ShapeNewBinContent = ShapeNewBinContent + TMath::Power(UnfUncBin,2.) ;						 

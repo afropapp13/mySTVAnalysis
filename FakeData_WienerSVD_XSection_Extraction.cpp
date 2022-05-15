@@ -360,8 +360,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 		// File to store the unfolding model uncertainties
 
 		TFile* fUnc = nullptr;	
-		if (BeamOnSample == "Overlay9NuWro") 
-			{ fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","recreate"); }	
+		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") 
+			{ fUnc = new TFile(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","recreate"); }	
 
 		// ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -726,36 +726,41 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			//------------------------------//
 
-			// Only for the NuWro fake data study
-			// use any residual (GENIE - NuWro)/ sqrt(12) diffs
-			// as an unfolding model uncertainty
+			if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {			
 
-			TH1D* UnfUnc = (TH1D*)(TrueUnf->Clone());
+				// Only for the NuWro fake data study
+				// use any residual (GENIE - NuWro)/ sqrt(12) diffs
+				// as an unfolding model uncertainty
 
-			for (int ibin = 1; ibin <= (int)(TrueUnf->GetXaxis()->GetNbins()); ibin++) {
+				TH1D* UnfUnc = (TH1D*)(TrueUnf->Clone());
 
-				double UnfPoint = unfMCStat-> GetBinContent(ibin);
-				double UnfError = unfMCStat-> GetBinError(ibin);
-				double TruePoint = TrueUnf-> GetBinContent(ibin);								
+				for (int ibin = 1; ibin <= (int)(TrueUnf->GetXaxis()->GetNbins()); ibin++) {
 
-				if ( TMath::Abs(UnfPoint - TruePoint) <  UnfError) {
+					double UnfPoint = unfMCStat-> GetBinContent(ibin);
+					double UnfError = unfMCStat-> GetBinError(ibin);
+					double TruePoint = AltTrueUnf-> GetBinContent(ibin);								
 
-					UnfUnc->SetBinContent(ibin,0.);
+					if ( TMath::Abs(UnfPoint - TruePoint) <  UnfError) {
 
-				} else {
+						UnfUnc->SetBinContent(ibin,0.);
 
-					double Uncertainty = TMath::Abs( TMath::Abs(UnfPoint - TruePoint) - UnfError ) / TMath::Abs(12);
-					UnfUnc->SetBinContent(ibin,Uncertainty);
+					} else {
+
+						double Uncertainty = TMath::Abs( TMath::Abs(UnfPoint - TruePoint) - UnfError ) / TMath::Sqrt(12);
+						UnfUnc->SetBinContent(ibin,Uncertainty);
+
+					}
 
 				}
 
-			}
+				UnfUnc->SetLineColor(kRed+1);
+				UnfUnc->SetFillColor(kRed+1);			
+				UnfUnc->Draw("e2 same");
 
-			UnfUnc->SetLineColor(kRed+1);
-			UnfUnc->SetFillColor(kRed+1);			
-			UnfUnc->Draw("e2 same");
-			fUnc->cd();
-			UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
+				fUnc->cd();
+				UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
+
+			}
 
 			//------------------------------//
 
@@ -798,8 +803,8 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 					// That is done both for the final xsec result and for the unfolded covariance
 					if (ix == iy) { 
 						// unfolded covariance matrix
-						double UnfUncBin = UnfUnc[WhichPlot]->GetBinContent(ix);
-//						double UnfUncBin = 0.;
+//						double UnfUncBin = UnfUnc[WhichPlot]->GetBinContent(ix);
+						double UnfUncBin = 0.;
 
 						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ;					 
 
@@ -991,6 +996,12 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			// ---------------------------------------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots
+
+		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
+
+			fUnc->Close();
+
+		}
 
 		ExtractedXSec->Close();
 		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
