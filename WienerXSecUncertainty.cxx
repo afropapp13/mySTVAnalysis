@@ -173,7 +173,8 @@ void WienerXSecUncertainty() {
 				}
 
 				UncPlot[isource]->SetLineColor(Colors[isource]);
-				UncPlot[isource]->SetMarkerColor(Colors[isource]);				
+				UncPlot[isource]->SetMarkerColor(Colors[isource]);
+				UncPlot[isource]->SetFillStyle(0);								
 				UncPlot[isource]->SetLineWidth(2);
 
 				UncPlot[isource]->Draw("hist text0 same");

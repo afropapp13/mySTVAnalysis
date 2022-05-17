@@ -319,7 +319,7 @@ void ModelIndepedent_XSecMethod() {
 
 	} // End of the loop over the plots
 
-	fUnc->Close();
+	//fUnc->Close();
 
 	// -----------------------------------------------------------------------------------------------------------------------------
 

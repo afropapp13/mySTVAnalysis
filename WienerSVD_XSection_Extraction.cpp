@@ -34,7 +34,7 @@ using namespace Constants;
 // Don't forget to divide by the slice range
 // That is NOT done in this module !!!
 
-// -------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------//
 
 TString ToStringPOT(double num) {
 

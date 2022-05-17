@@ -108,16 +108,16 @@ WienerSVD_Merge_Covariances("Overlay9","TwiceMECOverlay9","TwiceMECOverlay9")
 
 #################################################################################################################################
 
-# (locally)
-./myDownloadScripts/DownloadXSec.sh
-scp apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52/WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root ../myXSec/v08_00_00_52/
+## (locally)
+#./myDownloadScripts/DownloadXSec.sh
+#scp apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52/WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root ../myXSec/v08_00_00_52/
 # Unfolding Uncertainty 
-cd Playground
-root -b ModelIndepedent_XSecMethod.C
-#cd myXSec/v08_00_00_52/
-#scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
-#cd ../..
-cd ..
+#cd Playground
+#root -b ModelIndepedent_XSecMethod.C
+##cd myXSec/v08_00_00_52/
+##scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
+##cd ../..
+#cd ..
 
 #################################################################################################################################
 
@@ -128,11 +128,12 @@ root -b script_FakeData.C
 root -b FakeData_XSection_Extraction.cpp
 
 # (locally)
+scp apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52/WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root myXSec/v08_00_00_52/
 ./myDownloadScripts/DownloadXSec.sh
-cd Playground
-root -b NuWro_ModelIndepedent_XSecMethod.C
-root -b CompareUnc.C
-cd ..
+#cd Playground
+#root -b NuWro_ModelIndepedent_XSecMethod.C
+#root -b CompareUnc.C
+#cd ..
 
 #locally
 # run ALL the event generators !!!!!!!!!!!!!!!
@@ -149,7 +150,7 @@ root -b script_ThreeDimWienerSVD_OverlayGenerators.C
 
 hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/v08_00_00_52/GenXSec/All_XSecs_*_Combined_v08_00_00_52.root
 
-root -b GeneratorBand.cxx
+#root -b GeneratorBand.cxx
 root -b DataGeneratorBreakdown.cxx
 
 ./myDownloadScripts/CopyBreakDown.sh

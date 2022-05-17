@@ -631,7 +631,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_0_00To0_50Plot" ||
 				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_0_50To0_75Plot" ||
 				PlotNames[WhichPlot] == "ProtonCosTheta_MuonCosTheta_0_75To1_00Plot" ||	
-				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_40To1_00Plot" ||																																															
+				PlotNames[WhichPlot] == "DeltaPn_DeltaPT_0_40To1_00Plot" ||
+				PlotNames[WhichPlot] == "SerialProtonMomentum_DeltaAlphaTPlot" ||																																																			
 				PlotNames[WhichPlot] == "SerialDeltaPT_ProtonCosThetaPlot"	
 				) { 
 					
@@ -786,7 +787,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 //				CalcChiSquared(PlotsTrue[WhichSample][WhichPlot],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
 				CalcChiSquared(Clone[WhichSample-1],PlotsReco[0][WhichPlot],CovClone,Chi2[WhichSample],Ndof[WhichSample],pval[WhichSample]);
 				TString Chi2NdofAlt = "(" + to_string_with_precision(Chi2[WhichSample],1) + "/" + TString(std::to_string(Ndof[WhichSample])) +")";
-//				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofAlt = ""; } 
+				if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { Chi2NdofAlt = ""; } 
 
 				TLegendEntry* lGenie;
 				if (PlotNominal) { lGenie = leg->AddEntry(Clone[WhichSample-1],Labels[WhichSample],"l"); }
@@ -821,6 +822,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			CalcChiSquared(PlotsTrue[0][WhichPlot],PlotsReco[0][WhichPlot],ShapeCovClone,ShapeChi2[0],Ndof[0],pval[0]);
 			TString ShapeChi2NdofNom = "(" + to_string_with_precision(ShapeChi2[0],1) + "/" + TString(std::to_string(Ndof[0])) +")";	
 			//cout << PlotNames[WhichPlot] << "  Total chi2 = " << Chi2[0] << ", Shape-Only Chi2 = " << ShapeChi2[0] << endl;
+			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") { ShapeChi2NdofNom = ""; }			
 
 			TLegendEntry* lGenie_GenieOverlay;
 			if (PlotNominal) { lGenie_GenieOverlay = leg->AddEntry(PlotsTrue[0][WhichPlot],Labels[0],"l"); }

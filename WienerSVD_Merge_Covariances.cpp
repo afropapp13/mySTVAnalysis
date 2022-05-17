@@ -403,12 +403,17 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				} else {
 
 					if (WhichSample == 1) { 
+
+						if ( StatCovariances[WhichPlot]->GetNbinsX() != LocalCovMatrixClone->GetNbinsX() )
+							{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }
 						
 						SystCovariances[WhichPlot] = LocalCovMatrixClone; 
 						FracSystCovariances[WhichPlot] = LocalFracCovMatrix;
 
-						
 					} else { 
+
+						if ( StatCovariances[WhichPlot]->GetNbinsX() != LocalCovMatrixClone->GetNbinsX() )
+							{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }						
 						
 						SystCovariances[WhichPlot]->Add(LocalCovMatrixClone); 
 						FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix);						 
@@ -516,10 +521,14 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 			FracSystCovariances[WhichPlot]->Write("FracSystCovariance_"+PlotNames[WhichPlot]);		
 
 			TH2D* CloneCovariances = (TH2D*)(StatCovariances[WhichPlot]->Clone());
+			if ( SystCovariances[WhichPlot]->GetNbinsX() != CloneCovariances->GetNbinsX() )
+				{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }			
 			CloneCovariances->Add(SystCovariances[WhichPlot]);
 			CloneCovariances->Write("TotalCovariance_"+PlotNames[WhichPlot]);
 
 			TH2D* CloneFracCovariances = (TH2D*)(FracStatCovariances[WhichPlot]->Clone());
+			if ( FracSystCovariances[WhichPlot]->GetNbinsX() != CloneFracCovariances->GetNbinsX() )
+				{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }			
 			CloneFracCovariances->Add(FracSystCovariances[WhichPlot]);
 			CloneFracCovariances->Write("FracTotalCovariance_"+PlotNames[WhichPlot]);		
 
@@ -560,6 +569,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				// Store correlation matrices
 
 				TH2D* CorrMatrix = (TH2D*)(CloneCovariances->Clone());
+				int NBins = CorrMatrix->GetNbinsX();				
 
 				for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 

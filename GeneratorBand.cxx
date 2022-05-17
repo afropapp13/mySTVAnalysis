@@ -84,7 +84,6 @@ void GeneratorBand() {
 
 //	PlotNames.push_back("DeltaPTPlot"); 
 
-
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
 
@@ -95,9 +94,9 @@ void GeneratorBand() {
 	vector<TString> MCSampleBand;
 
 	MCSampleBand.push_back("OverlayGENIE");
-	MCSampleBand.push_back("GiBUU");
-	MCSampleBand.push_back("NEUT");
-	MCSampleBand.push_back("Overlay9NuWro");	
+	//MCSampleBand.push_back("GiBUU");
+	//MCSampleBand.push_back("NEUT");
+	//MCSampleBand.push_back("Overlay9NuWro");	
 
 	int NMC = MCSampleBand.size();
 

@@ -360,8 +360,13 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 		// File to store the unfolding model uncertainties
 
 		TFile* fUnc = nullptr;	
-		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") 
-			{ fUnc = new TFile(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","recreate"); }	
+		TString fUncName = "";
+		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") { 
+			
+			fUncName = PathToExtractedXSec+"WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root";
+			fUnc = new TFile(fUncName,"recreate"); 
+			
+		}	
 
 		// ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -555,30 +560,9 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 				double BinWidth = unf->GetBinWidth(i);			
 
-				//// Only unfolded MC Stat unc
-				//double MCStatCovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
-				//unfMCStat->SetBinError(i, MCStatCovUnc );		
-
-				if ( BeamOnSample == "Overlay9NuWro") {
-
-					//// Unfolding + Regular fake data uncertainty for NuWro
-//					double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
-					double BinUnfUnc = 0.;
-					
-					double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;
-					double JointUnc = TMath::Sqrt( TMath::Power(BinUnfUnc,2.) + TMath::Power(CovUnc,2.) );
-					unfMCStat->SetBinError(i, JointUnc );	
-
-				} else {
-
-					// Unfolding uncertainty only
-					//double BinUnfUnc = UnfUnc[WhichPlot]->GetBinContent(i);	
-
-					// Stat, MC Stat, XSec uncertainties
-					double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;					
-					unfMCStat->SetBinError(i, CovUnc );	
-
-				}												
+				// Stat, MC Stat, XSec uncertainties
+				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;					
+				unfMCStat->SetBinError(i, CovUnc );												
 
 			}						
 
@@ -757,8 +741,12 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 				UnfUnc->SetFillColor(kRed+1);			
 				UnfUnc->Draw("e2 same");
 
-				fUnc->cd();
-				UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
+				if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
+
+					fUnc->cd();
+					UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
+
+				}
 
 			}
 
@@ -999,6 +987,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
 
+			cout << endl << "File " << fUncName << " created" << endl;
 			fUnc->Close();
 
 		}
