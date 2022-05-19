@@ -285,7 +285,7 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 		// Unfolding uncertainty
 
-		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
+//		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
 
 		//----------------------------------------//
 
@@ -507,8 +507,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 
 			//----------------------------------------//
 
-			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));
-			UncHist->Scale(1./MultiDimScaleFactor[PlotNames[WhichPlot]]); // includes scaling factor for multi dimensional analysis
+//			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));
+//			UncHist->Scale(1./MultiDimScaleFactor[PlotNames[WhichPlot]]); // includes scaling factor for multi dimensional analysis
 
 			//----------------------------------------//
 
@@ -545,8 +545,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					if (ix == iy) { 
 
 						// unfolded covariance matrix
-						double UnfUncBin = UncHist->GetBinContent(ix);
-//						double UnfUncBin = 0.;
+//						double UnfUncBin = UncHist->GetBinContent(ix);
+						double UnfUncBin = 0.;
 
 						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ;
 						ShapeNewBinContent = ShapeNewBinContent + TMath::Power(UnfUncBin,2.) ;						 

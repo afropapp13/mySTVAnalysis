@@ -279,7 +279,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 		// Unfolding uncertainty
 
-		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
+//		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
 
 		//----------------------------------------//
 
@@ -606,7 +606,7 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 
 			//----------------------------------------//
 
-			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));
+//			TH1D* UncHist = (TH1D*)(fUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));
 
 			//----------------------------------------//
 
@@ -643,8 +643,8 @@ void ThreeDimWienerSVD_OverlayGenerators(TString PlotName = "", int FirstDiscrIn
 					if (ix == iy) { 
 						
 						// unfolded covariance matrix
-						double UnfUncBin = UncHist->GetBinContent(ix);
-//						double UnfUncBin = 0.;
+//						double UnfUncBin = UncHist->GetBinContent(ix);
+						double UnfUncBin = 0.;
 
 						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.); 
 						ShapeNewBinContent = ShapeNewBinContent + TMath::Power(UnfUncBin,2.) ;						

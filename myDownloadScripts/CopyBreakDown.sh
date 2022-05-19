@@ -1,9 +1,12 @@
 . ../myClasses/Constants.sh
 
+export InPutDirMC=/home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/mySTVAnalysis/myPlots/pdf/${UBCode}/Overlay9
 export InPutDir=/home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/mySTVAnalysis/myPlots/pdf/${UBCode}/BeamOn9/InteractionBreakdown
 #export OutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/XSec_Playground/Figures
 export OutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures
-export ThesisOutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures
+#export ThesisOutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures
+
+cp ${InPutDirMC}/StandardEffVertexZPlot_Combined_v08_00_00_52.pdf ${OutPutDir}
 
 declare -a arrPlots=(
 "InteractionBreakDown_OverlayGENIE_DeltaPTPlot_Combined_"${UBCode}".pdf"
@@ -61,7 +64,7 @@ do
 	##############################################################################
 
 	cp ${InPutDir}/${plot}	${OutPutDir}
-	cp ${InPutDir}/${plot}	${ThesisOutPutDir}	
+	#cp ${InPutDir}/${plot}	${ThesisOutPutDir}	
 	
 	##############################################################################
 
@@ -91,8 +94,6 @@ declare -a arrGenPlots=(
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtxPlot_Combined_"${UBCode}".pdf"
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
 "WienerSVD_Generator_TotalUnc_Data_XSections_ECalPlot_Combined_"${UBCode}".pdf"
-
-"NominalWienerSVD_Generator_TotalUnc_Data_XSections_VertexZPlot_Combined_"${UBCode}".pdf"
 
 #2D
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_MuonCosThetaPlot_Slice_0_Combined_"${UBCode}".pdf"
@@ -215,7 +216,42 @@ do
 	##############################################################################
 
 	cp ${InPutDir}/../${plot}	${OutPutDir}
-	cp ${InPutDir}/../${plot}	${ThesisOutPutDir}	
+	#cp ${InPutDir}/../${plot}	${ThesisOutPutDir}	
+	
+	##############################################################################
+
+done
+
+###############################################################
+
+#Fake Data Study
+
+declare -a arrFakeDataPlots=(
+
+"Overlay9NuWroWienerSVD_XSections_DeltaPTPlot_Combined_"${UBCode}".pdf"
+"NoTuneOverlay9WienerSVD_XSections_DeltaPTPlot_Combined_"${UBCode}".pdf"
+"TwiceMECOverlay9WienerSVD_XSections_DeltaPTPlot_Combined_"${UBCode}".pdf"
+
+"Overlay9NuWroWienerSVD_XSections_DeltaAlphaTPlot_Combined_"${UBCode}".pdf"
+"NoTuneOverlay9WienerSVD_XSections_DeltaAlphaTPlot_Combined_"${UBCode}".pdf"
+"TwiceMECOverlay9WienerSVD_XSections_DeltaAlphaTPlot_Combined_"${UBCode}".pdf"
+
+"Overlay9NuWroWienerSVD_XSections_DeltaPtxPlot_Combined_"${UBCode}".pdf"
+"NoTuneOverlay9WienerSVD_XSections_DeltaPtxPlot_Combined_"${UBCode}".pdf"
+"TwiceMECOverlay9WienerSVD_XSections_DeltaPtxPlot_Combined_"${UBCode}".pdf"
+
+"Overlay9NuWroWienerSVD_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
+"NoTuneOverlay9WienerSVD_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
+"TwiceMECOverlay9WienerSVD_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
+
+)
+
+for plot in "${arrFakeDataPlots[@]}"
+do
+
+	##############################################################################
+
+	cp ${InPutDirMC}/${plot}	${OutPutDir}
 	
 	##############################################################################
 

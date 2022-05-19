@@ -199,7 +199,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		vector<TH2D*> G4CovarianceMatrices; G4CovarianceMatrices.clear();
 		vector<TH2D*> DirtCovarianceMatrices; DirtCovarianceMatrices.clear();
 		vector<TH2D*> POTCovarianceMatrices; POTCovarianceMatrices.clear();
-		vector<TH2D*> NTargetCovarianceMatrices; NTargetCovarianceMatrices.clear();				
+		vector<TH2D*> NTargetCovarianceMatrices; NTargetCovarianceMatrices.clear();	
+		vector<TH2D*> NuWroCovarianceMatrices; NuWroCovarianceMatrices.clear();					
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -356,6 +357,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			G4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("G4Covariance_"+PlotNames[WhichPlot]));
 			DirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("DirtCovariance_"+PlotNames[WhichPlot]));
 			POTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("POTCovariance_"+PlotNames[WhichPlot]));
+			NuWroCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NuWroCovariance_"+PlotNames[WhichPlot]));			
 			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NTargetCovariance_"+PlotNames[WhichPlot]));																		
 
 			// -----------------------------------------------------------------------------------------------------
@@ -419,6 +421,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD g4covariance(m, m);
 			TMatrixD dirtcovariance(m, m);	
 			TMatrixD potcovariance(m, m);
+			TMatrixD nuwrocovariance(m, m);			
 			TMatrixD ntargetcovariance(m, m);									
 
 			// Convert input into mathematical formats, easy and clean to be processed. 
@@ -446,6 +449,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			H2M(G4CovarianceMatrices[WhichPlot], g4covariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(DirtCovarianceMatrices[WhichPlot], dirtcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(POTCovarianceMatrices[WhichPlot], potcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(NuWroCovarianceMatrices[WhichPlot], nuwrocovariance, kTRUE); // X axis: True, Y axis: Reco			
 			H2M(NTargetCovarianceMatrices[WhichPlot], ntargetcovariance, kTRUE); // X axis: True, Y axis: Reco																		
 
 			// ------------------------------------------------------------------------------------------
@@ -486,6 +490,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD UnfG4Cov = CovRotation*g4covariance*CovRotation_T;
 			TMatrixD UnfDirtCov = CovRotation*dirtcovariance*CovRotation_T;
 			TMatrixD UnfPOTCov = CovRotation*potcovariance*CovRotation_T;
+			TMatrixD UnfNuWroCov = CovRotation*nuwrocovariance*CovRotation_T;			
 			TMatrixD UnfNTargetCov = CovRotation*ntargetcovariance*CovRotation_T;			
 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
@@ -517,6 +522,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TH1D* unfG4 = new TH1D("unfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfDirt = new TH1D("unfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfPOT = new TH1D("unfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfNuWro = new TH1D("unfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
 			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);												
 
 			// --------------------------------------------------------------------------------------------------
@@ -560,6 +566,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			unfG4 = (TH1D*)(unf->Clone());
 			unfDirt = (TH1D*)(unf->Clone());
 			unfPOT = (TH1D*)(unf->Clone());
+			unfNuWro = (TH1D*)(unf->Clone());			
 			unfNTarget = (TH1D*)(unf->Clone());												
 
 			myXSecTxtFile << PlotNames[WhichPlot] << endl << endl;			
@@ -616,6 +623,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 				double POTError = TMath::Sqrt( UnfPOTCov(i-1,i-1) ) / Width;
 				unfPOT->SetBinError(i, POTError);
+
+				double NuWroError = TMath::Sqrt( UnfNuWroCov(i-1,i-1) ) / Width;
+				unfNuWro->SetBinError(i, NuWroError);				
 
 				double NTargetError = TMath::Sqrt( UnfNTargetCov(i-1,i-1) ) / Width;
 				unfNTarget->SetBinError(i, NTargetError);																				
@@ -849,6 +859,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfG4->Write("G4Reco"+PlotNames[WhichPlot]);
 				unfDirt->Write("DirtReco"+PlotNames[WhichPlot]);
 				unfPOT->Write("POTReco"+PlotNames[WhichPlot]);
+				unfNuWro->Write("NuWroReco"+PlotNames[WhichPlot]);				
 				unfNTarget->Write("NTargetReco"+PlotNames[WhichPlot]);								
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
 				TrueUnf->Write("True"+PlotNames[WhichPlot]);

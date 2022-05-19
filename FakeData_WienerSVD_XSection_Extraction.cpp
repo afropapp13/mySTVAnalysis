@@ -359,14 +359,14 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		// File to store the unfolding model uncertainties
 
-		TFile* fUnc = nullptr;	
-		TString fUncName = "";
-		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") { 
+//		TFile* fUnc = nullptr;	
+//		TString fUncName = "";
+//		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") { 
 			
-			fUncName = PathToExtractedXSec+"WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root";
-			fUnc = new TFile(fUncName,"recreate"); 
+//			fUncName = PathToExtractedXSec+"WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root";
+//			fUnc = new TFile(fUncName,"recreate"); 
 			
-		}	
+//		}	
 
 		// ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -668,7 +668,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			// ----------------------------------------//	
 
-			double max = 1.2 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
+			double max = 1.3 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
 //			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);
 			unfMCStat->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);	
 
@@ -709,7 +709,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			unfMCStat->Draw("e1x0 same"); // Only MC Stat
 
 			//------------------------------//
-
+			/*
 			if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {			
 
 				// Only for the NuWro fake data study
@@ -741,14 +741,11 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 				UnfUnc->SetFillColor(kRed+1);			
 				UnfUnc->Draw("e2 same");
 
-				if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
-
-					fUnc->cd();
-					UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
-
-				}
+				fUnc->cd();
+				UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
 
 			}
+			*/
 
 			//------------------------------//
 

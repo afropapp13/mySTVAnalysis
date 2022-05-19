@@ -110,7 +110,7 @@ TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 // ------------------------------------------------------------------------------------------------------------------------------
 
-// TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "G4" "Flux" "Dirt" "MC_Stat"
+// TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "G4" "Flux" "Dirt" "MC_Stat" "NuWro"
 
 void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
 
@@ -318,6 +318,25 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 	}	
 
+	//----------------------------------------//	
+
+	if (Syst == "NuWro") {
+
+		UniAltModels.push_back("_NuWro"); Universes.push_back(1);
+
+		for (int UniAlt = 0; UniAlt < (int)(UniAltModels.size()); UniAlt++ ) {
+
+			for (int Uni = 0; Uni < Universes[UniAlt]; Uni++ ) {
+
+				AltModels.push_back(UniAltModels[UniAlt]+"_"+TString(std::to_string(Uni))); Colors.push_back(kGreen+2);
+				AltUniverses.push_back(Universes[UniAlt]);
+			
+			}
+
+		}
+
+	}	
+
 	//----------------------------------------//
 
 	int NAltModels = AltModels.size();
@@ -325,7 +344,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 	vector< vector<TFile*> > AltMCFileSample; AltMCFileSample.resize(NRuns,vector<TFile*>(NAltModels));
 	vector< vector<TFile*> > AltMCFileSampleResponseMatrix; AltMCFileSampleResponseMatrix.resize(NRuns,vector<TFile*>(NAltModels));
 
-	// ---------------------------------------------------------------------------------------------------------------------------------------------
+	//----------------------------------------//
 
 	// Alternative Plots
 
@@ -429,12 +448,14 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 				// Open Alternative MC files & ReAlternative Response Matrices
 
 				TString TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+AltModels[alt]+CutExtension+".root";
+				if (Syst == "NuWro") { TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_Overlay9NuWro_"+Runs[WhichRun]+CutExtension+".root"; }
 				AltMCFileSample[WhichRun][alt] = TFile::Open(TStringAltBaseMC,"readonly");
 
 				AltCC1pPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("CC1pReco"+PlotNames[WhichPlot]));
 				AltNonCC1pPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
 
 				TString TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+AltModels[alt]+"_"+UBCodeVersion+".root";
+				if (Syst == "NuWro") { TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_Overlay9NuWro_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";}
 				AltMCFileSampleResponseMatrix[WhichRun][alt] = TFile::Open(TStringAltBaseMCResponseMatrix,"readonly");
 
 				TH2D* AltResponseMatrix = (TH2D*)(AltMCFileSampleResponseMatrix[WhichRun][alt]->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
@@ -553,7 +574,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 			double BeamOnMax = 1.25*DataPlot->GetMaximum();
 
-			// GENIE CV LY / TPC / SCERecomb2 overlays
+			// GENIE CV LY / TPC / SCERecomb2 overlays (detector variations)
 
 			if (	BaseMC == "Overlay9" 
 				&& (Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" 
@@ -638,8 +659,8 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 			// GENIE CV multisim overlays
 
 			if (
-				BaseMC == "Overlay9" && (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || 
-				Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux" || Syst == "MC_Stat"
+				BaseMC == "Overlay9" && (Syst == "XSec" || Syst == "G4" || Syst == "Flux" || Syst == "NuWro" || 
+				Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux" || Syst == "MC_Stat" || Syst == "NuWro"
 			) ) {
 
 				for (int unialt = 0; unialt < (int)(UniAltModels.size()); unialt++ ) {
@@ -883,7 +904,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 						Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" || Syst == "XSec" || Syst == "G4" || Syst == "Flux" ||
 						Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2" || Syst == "MC_XSec" || Syst == "MC_G4" || Syst == "MC_Flux" ||
 						Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_SCERecomb2" || Syst == "SmEff_XSec" || Syst == "SmEff_G4" || Syst == "SmEff_Flux" ||
-						Syst == "MC_Stat"
+						Syst == "MC_Stat" || Syst == "NuWro" 
 					) {						
 
 						for (int alt = 0; alt < NAltModels; alt++ ) {

@@ -264,7 +264,7 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 					TLatex *textEff = new TLatex();
 					textEff->SetTextFont(FontStyle);
 					textEff->SetTextSize(TextSize);
-					textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]);
+					if (Runs[WhichRun] != "Combined") { textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]); }
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";

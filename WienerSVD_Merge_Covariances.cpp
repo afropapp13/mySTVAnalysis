@@ -249,7 +249,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 		UncSources.push_back("Stat");
 		UncSources.push_back("XSec");
-		UncSources.push_back("MC_Stat");	
+		UncSources.push_back("MC_Stat");
+		UncSources.push_back("NuWro");			
 
 	} else {
 
@@ -264,6 +265,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 		UncSources.push_back("POT"); 
 		UncSources.push_back("NTarget");
 		UncSources.push_back("MC_Stat");
+		UncSources.push_back("NuWro");		
 
 	}
 
@@ -290,6 +292,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	vector<TH2D*> FluxCovariances; FluxCovariances.resize(NPlots);
 	vector<TH2D*> DirtCovariances; DirtCovariances.resize(NPlots);	
 	vector<TH2D*> POTCovariances; POTCovariances.resize(NPlots);
+	vector<TH2D*> NuWroCovariances; NuWroCovariances.resize(NPlots);
 	vector<TH2D*> NTargetCovariances; NTargetCovariances.resize(NPlots);							
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -429,6 +432,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					if (UncSources[WhichSample] == "Flux") { FluxCovariances[WhichPlot] = LocalCovMatrix; }
 					if (UncSources[WhichSample] == "Dirt") { DirtCovariances[WhichPlot] = LocalCovMatrix; }
 					if (UncSources[WhichSample] == "POT") { POTCovariances[WhichPlot] = LocalCovMatrix; }
+					if (UncSources[WhichSample] == "NuWro") { NuWroCovariances[WhichPlot] = LocalCovMatrix; }					
 					if (UncSources[WhichSample] == "NTarget") { NTargetCovariances[WhichPlot] = LocalCovMatrix; }																				
 
 				}
@@ -509,7 +513,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				G4Covariances[WhichPlot]->Write("G4Covariance_"+PlotNames[WhichPlot]);			
 				FluxCovariances[WhichPlot]->Write("FluxCovariance_"+PlotNames[WhichPlot]);
 				DirtCovariances[WhichPlot]->Write("DirtCovariance_"+PlotNames[WhichPlot]);
-				POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);			
+				POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);
+				NuWroCovariances[WhichPlot]->Write("NuWroCovariance_"+PlotNames[WhichPlot]);							
 				NTargetCovariances[WhichPlot]->Write("NTargetCovariance_"+PlotNames[WhichPlot]);
 
 			}			

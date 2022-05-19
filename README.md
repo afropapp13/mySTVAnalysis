@@ -4,6 +4,7 @@ root -b script_G4_Systematics.C
 root -b script_Genie_Systematics.C
 root -b script_Flux_Systematics.C
 root -b script_MC_Stat_Systematics.C
+root -b script_NuWro.C
 
 #################################################################################################################################
 
