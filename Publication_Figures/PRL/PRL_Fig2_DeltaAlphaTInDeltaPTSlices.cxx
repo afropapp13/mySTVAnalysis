@@ -300,7 +300,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
 			text->SetTextSize(0.06);
-			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ] + ", MicroBooNE Preliminary");	
+			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);	
 
 			//----------------------------------------//
 
@@ -333,7 +333,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			hA->GetYaxis()->SetLabelFont(FontStyle);	
 			hA->GetYaxis()->SetRangeUser(0.51,1.39);
 			if (iplot == 1) { hA->GetYaxis()->SetRangeUser(0.41,0.99); }
-			if (iplot == 2) { hA->GetYaxis()->SetRangeUser(0.61,2.29); }																		
+			if (iplot == 2) { hA->GetYaxis()->SetRangeUser(0.61,2.79); }																		
 
 			hA->Draw("hist same");
 
@@ -359,8 +359,8 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			gPad->RedrawAxis();			
 
 			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRL_Fig2_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_Neutrino2022_PublicNote/Figures/PRL_Fig2_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");			
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures/PRL_Fig2_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");	
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_Neutrino2022_PublicNote/Figures/PRL_Fig2_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");			
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures/PRL_Fig2_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");	
 			delete PlotCanvas;															
 
 		} // End of the loop over the plots

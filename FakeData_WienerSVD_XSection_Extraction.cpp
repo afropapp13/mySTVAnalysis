@@ -982,12 +982,12 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 		} // End of the loop over the plots
 
-		if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
+		//if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
 
-			cout << endl << "File " << fUncName << " created" << endl;
-			fUnc->Close();
+		//	cout << endl << "File " << fUncName << " created" << endl;
+		//	fUnc->Close();
 
-		}
+		//}
 
 		ExtractedXSec->Close();
 		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;

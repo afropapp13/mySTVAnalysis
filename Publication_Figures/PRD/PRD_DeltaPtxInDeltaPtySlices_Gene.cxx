@@ -9,7 +9,9 @@
 #include <TLegendEntry.h>
 #include <TMath.h>
 #include <TLatex.h>
-#include <TF1.h>
+#include <TGaxis.h>
+#include <TVectorD.h>
+#include <TMatrixD.h>
 
 #include <iostream>
 #include <vector>
@@ -17,6 +19,7 @@
 #include <string>
 
 #include "../../../myClasses/Constants.h"
+#include "../../../myClasses/Util.h"
 
 using namespace std;
 using namespace Constants;
@@ -28,13 +31,13 @@ static std::map<TString,TString> Mapping = {
 		{ "DeltaPtxPlot", "DeltaPtxPlot" },
 		{ "SerialDeltaPtx_DeltaPtyPlot_0", "DeltaPtx_DeltaPty_Minus0_75ToMinus0_15Plot" },
 		{ "SerialDeltaPtx_DeltaPtyPlot_1", "DeltaPtx_DeltaPty_Minus0_15To0_15Plot" },
-		{ "SerialDeltaPtx_DeltaPtyPlot_2", "DeltaPtx_DeltaPty_0_15To0_45Plot" },
+		{ "SerialDeltaPtx_DeltaPtyPlot_2", "DeltaPtx_DeltaPty_0_15To0_45Plot" }
 
 };
 
 //----------------------------------------//
 
-void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
+void PRD_DeltaPtxInDeltaPtySlices_Gene() {
 
 	//----------------------------------------//
 
@@ -43,14 +46,23 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 	double TextSize = 0.06;	
 
 	TH1D::SetDefaultSumw2();
-	gStyle->SetEndErrorSize(4);			
+	gStyle->SetEndErrorSize(4);		
+
+	gStyle->SetPalette(55); 
+	const Int_t NCont = 999; 
+	gStyle->SetNumberContours(NCont); 
+	gStyle->SetTitleSize(TextSize,"t"); 
+	gStyle->SetTitleFont(FontStyle,"t");
+	gStyle->SetOptStat(0);	
+	gStyle->SetPaintTextFormat("4.2f");		
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames;  vector<TString> PanelLabels;
-	PlotNames.push_back("DeltaPtxPlot");  PanelLabels.push_back("(a)");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1"); PanelLabels.push_back("(c)");
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
+	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9);
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(15.49);
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(94.);	
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(13.);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -61,27 +73,27 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 	vector<TString> MCSampleBand; vector<TString> Label; vector<int> MCColors;  vector<int> LineStyle;
 
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18 LFG"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);	
-//	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);
-	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA");  MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG");  MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
-
-//	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
-//	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA");  MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
-//	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN");	 MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
-//	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4");  MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
-//	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
+//	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18    "); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB     "); MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
-//	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
+	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("Overlay9NuWro");  Label.push_back("NuWro"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");	
 //	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
 //	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2");
 //	MCSampleBand.push_back("GENIEv2LFG"); Label.push_back("Gv2 LFG");
 //	MCSampleBand.push_back("GENIEv2EffSF"); Label.push_back("Gv2 EffSF");		
-//	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("G18 No Tune");							
-//	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("G18 hN Tune");			
+//	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("G18 No Tune");					
+//	MCSampleBand.push_back("SuSav2"); Label.push_back("G21hN");
+//	MCSampleBand.push_back("G21hA"); Label.push_back("G21hA");	
+//	MCSampleBand.push_back("G21G4"); Label.push_back("G21G4");
+//	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21NoFSI");		
+//	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("G18 hN Tune");
+//	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA Tune");
+//	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG Tune");
+//	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF Tune");			
 
 	int NMC = MCSampleBand.size();
 
@@ -113,7 +125,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 		// Data release
 
-		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/XSec_DeltaPtxInDeltaPty.txt";
+		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/PRD_XSec_DeltaPtxInDeltaPty.txt";
 		ofstream myTxtFile;
 		myTxtFile.open(TxtName);		
 
@@ -127,7 +139,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 			// Canvas & legend
 
-			TString CanvasName = "Fig3_" + PlotNames[iplot]+"_"+Runs[irun];
+			TString CanvasName = "PRD_" + PlotNames[iplot]+"_"+Runs[irun];
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.14);
@@ -136,26 +148,19 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			PlotCanvas->SetRightMargin(0.01);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.23,0.78,0.82,0.88);
+			TLegend* leg = new TLegend(0.24,0.79,0.68,0.88);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 			leg->SetMargin(0.13);
 
-			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
+			TLegend* legData = new TLegend(0.23,0.67,0.67,0.78);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.04);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);
-
-			TLegend* legSigma = new TLegend(0.26,0.53,0.35,0.65);
-			legSigma->SetBorderSize(0);
-			legSigma->SetTextSize(0.04);
-			legSigma->SetTextFont(FontStyle);
-			legSigma->SetNColumns(1);
-			legSigma->SetMargin(0.08);									
+			legData->SetMargin(0.08);					
 
 			//----------------------------------------//
 
@@ -165,9 +170,10 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			BeamOnShapeStat->GetYaxis()->SetRangeUser(XSecRange[ Mapping[PlotNames[iplot]] ].first, XSecRange[ Mapping[PlotNames[iplot]] ].second);			
 			BeamOnShapeStat->Draw("e1x0 same");	
 
-			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);		
+			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);				
 
 			//----------------------------------------//
+			//----------------------------------------//			
 
 			// Data release
 
@@ -240,21 +246,13 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 			myTxtFile << endl << endl;			
 
-			//----------------------------------------//				
+			//----------------------------------------//
 			//----------------------------------------//						
 
 			TH1D* MCPlot[NMC];
 			double Chi2[NMC];
 			int Ndof[NMC];
 			double pval[NMC];
-
-			// + 1 for data
-			TF1* Function = new TF1("f","gaus",-0.5,0.5);
-			// Dummy parameters
-			Function->SetParameter(0,30);
-			Function->SetParameter(1,0.);
-			Function->SetParameter(2,0.2);			
-			double sigma[NMC+1];						
 
 			// Loop over the MC predictions
 
@@ -272,30 +270,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 				TLegendEntry* lGenie = leg->AddEntry(MCPlot[igen],Label[igen] + Chi2NdofAlt,"l");
 				lGenie->SetTextColor(MCColors[igen]);
 
-				//MCPlot[igen]->Fit(Function,"QR0");
-				//sigma[igen] = Function->GetParameter(2); // gaussian sigma
-
-				//TString SigmaTString = "#sigma = " + to_string_with_precision(sigma[igen],2); 
-				//TLegendEntry* lSigma = legSigma->AddEntry(MCPlot[igen], SigmaTString,"");
-				//lSigma->SetTextColor(MCColors[igen]);				
-
 			} // End of the loop over the generators
-
-			//----------------------------------------//	
-
-			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-			BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);
-			BeamOnNormOnly->SetLineColor(kGray+1);
-			BeamOnNormOnly->SetMarkerColor(kGray+1);			
-			BeamOnNormOnly->Draw("e2 same");	
-
-			// Plot the stat+shape again 
-			// And then the stat only & norm only on top of that
-
-			BeamOnShapeStat->Draw("e1x0 same");
-
-			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
-			BeamOnStatOnly->Draw("e1x0 same");
 
 			//----------------------------------------//
 
@@ -307,42 +282,53 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
 			textPOT->SetTextSize(0.06);
-			//if (iplot == 0) { textPOT->DrawLatexNDC(0.7, 0.94,Label);	}		
-
-			gPad->RedrawAxis();												
+			//if (iplot == 0) { textPOT->DrawLatexNDC(0.7, 0.94,Label);	}																
 
 			//----------------------------------------//	
 
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
-			legData->AddEntry(BeamOnShapeStat,Label,"");				
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");
-			
-			BeamOnStatOnly->Fit(Function,"QR0");
-			sigma[NMC] = Function->GetParameter(2); // sigma
+			// Norm only
 
-			TLegendEntry* lSigma = legSigma->AddEntry(BeamOnStatOnly,"#sigma_{Data} = " + to_string_with_precision(sigma[NMC],2),"");
-			lSigma->SetTextColor(kBlack);							
+			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
+			BeamOnNormOnly->SetFillColor(kGray+1);
+			BeamOnNormOnly->SetLineColor(kGray+1);
+			BeamOnNormOnly->SetMarkerColor(kGray+1);			
+
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
+			legData->AddEntry(BeamOnShapeStat,Label,"");		
+			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
 
 			leg->Draw();
-			if (iplot == 0) { legData->Draw(); }
-			legSigma->Draw();			
+			legData->Draw();			
 
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
 			text->SetTextSize(0.06);
-			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);
+			text->DrawLatexNDC(0.2, 0.94, PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);	
 
-			TLatex *textPrel = new TLatex();
-			textPrel->SetTextFont(FontStyle);
-			textPrel->SetTextSize(0.04);
-			//textPrel->DrawLatexNDC(0.65, 0.68,"MicroBooNE Preliminary");										
+			//----------------------------------------//	
+
+			// Norm only
+
+			BeamOnNormOnly->Draw("e2 same");			
+
+			// Plot the stat+shape again 
+			// And then the stat only on top of that
+
+			if (PlotNames[iplot] == "DeltaPTPlot") { BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.1); }
+			BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
+			BeamOnShapeStat->Draw("e1x0 same");
+
+			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
+			BeamOnStatOnly->Draw("e1x0 same");			
+
+			gPad->RedrawAxis();
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRL_Fig3_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
-			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_Neutrino2022_PublicNote/Figures/PRL_Fig3_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");			
-			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures/PRL_Fig3_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");	
-			delete PlotCanvas;															
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Generators_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			//delete PlotCanvas;	
+
+			//----------------------------------------//
 
 		} // End of the loop over the plots
 

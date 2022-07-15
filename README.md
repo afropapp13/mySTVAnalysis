@@ -129,7 +129,7 @@ root -b script_FakeData.C
 root -b FakeData_XSection_Extraction.cpp
 
 # (locally)
-scp apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52/WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root myXSec/v08_00_00_52/
+#scp apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52/WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root myXSec/v08_00_00_52/
 ./myDownloadScripts/DownloadXSec.sh
 #cd Playground
 #root -b NuWro_ModelIndepedent_XSecMethod.C

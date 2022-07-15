@@ -59,7 +59,7 @@ void WienerXSecUncertainty() {
 		vector<TString> UncSource; UncSource.clear();
 		vector<int> Colors; Colors.clear();	
 
-		UncSource.push_back("Model"); Colors.push_back(kCyan);
+		UncSource.push_back("NuWro"); Colors.push_back(kCyan);
 		UncSource.push_back("Stat"); Colors.push_back(kRed+1);
 		UncSource.push_back("LY"); Colors.push_back(kGreen+2);
 		UncSource.push_back("TPC"); Colors.push_back(kOrange+1);
@@ -80,7 +80,7 @@ void WienerXSecUncertainty() {
 		TFile* fXSec = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
 
 		// Unfolding uncertainty file
-		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
+//		TFile* fUnc = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_UnfoldingUnc_Combined_"+UBCodeVersion+".root","readonly");
 
 		//----------------------------------------//
 
@@ -157,8 +157,7 @@ void WienerXSecUncertainty() {
 
 			for (int isource = 0; isource < NSources; isource++) {
 
-				if (UncSource[isource] != "Model") { UncPlot[isource] = (TH1D*)(fXSec->Get(UncSource[isource] + "Reco" + PlotNames[WhichPlot])); } 
-				else { UncPlot[isource] = (TH1D*)(fUnc->Get("UnfUnc_" + PlotNames[WhichPlot])); UncPlot[isource]->IsTransparent(); } 
+				UncPlot[isource] = (TH1D*)(fXSec->Get(UncSource[isource] + "Reco" + PlotNames[WhichPlot]));
 
 				for (int ibin = 1; ibin <= NBins; ibin++) {
 
@@ -166,7 +165,6 @@ void WienerXSecUncertainty() {
 					double CVEntry = CV->GetBinContent(ibin);
 					// Uncertainty in a given bin
 					double UncError = UncPlot[isource]->GetBinError(ibin);	
-					if (UncSource[isource] == "Model") { UncError = UncPlot[isource]->GetBinContent(ibin); } 
 					double FracUnc = 100. * UncError / CVEntry;	
 					UncPlot[isource]->SetBinContent(ibin,FracUnc);
 
@@ -197,12 +195,12 @@ void WienerXSecUncertainty() {
 				double DirtUnc = UncPlot[8]->GetBinContent(1);
 				double POTUnc = UncPlot[9]->GetBinContent(1);
 				double NTargetUnc = UncPlot[10]->GetBinContent(1);
-				double UnfUnc = UncPlot[0]->GetBinContent(1);
+				double NuWroUnc = UncPlot[0]->GetBinContent(1);
 
 				cout << " Flux = " <<  FluxUnc << " %" << endl;
 				cout << " XSec = " <<  XSecUnc << " %" << endl;
 				cout << " Det = " <<  DetUnc << " %" << endl;
-				cout << " Unf = " <<  UnfUnc << " %" << endl;
+				cout << " NuWro = " <<  NuWroUnc << " %" << endl;
 				cout << " POT = " <<  POTUnc << " %" << endl;				
 				cout << " Stat = " <<  StatUnc << " %" << endl;	
 				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						

@@ -35,8 +35,6 @@ void script_WienerSVD_Systematics_TwiceMEC() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\",\"Overlay9\",\"BeamOn9\",\"ExtBNB9\",\"OverlayDirt9\",\"TwiceMEC\")");
 
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"NuWro\",\"Overlay9\",\"BeamOn9\",\"ExtBNB9\",\"OverlayDirt9\",\"TwiceMEC\")");		
-
 	// -----------------------------------------------------------------------------------------
 
 	//gROOT->ProcessLine(".q");

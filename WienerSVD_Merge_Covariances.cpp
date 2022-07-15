@@ -303,6 +303,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		if (BeamOn9 != "") { TotalFileCovarianceSpecName = Tune + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+
 		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
 		TFile* TotalFileCovarianceMatrices = new TFile(TotalFileCovarianceName,"recreate");
 
@@ -353,6 +354,9 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 //				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 				if (BeamOn9 != "" && UncSources[WhichSample] == "Stat") { FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOn9 != "" && UncSources[WhichSample] == "NuWro" && ( Tune == "NoTune" || Tune == "TwiceMEC" ) ) 
+					{ FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+
 
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs

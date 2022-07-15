@@ -86,6 +86,7 @@ declare -a arrGenPlots=(
 "OtherGenWienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtxPlot_Combined_"${UBCode}".pdf"
 "OtherGenWienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
 "OtherGenWienerSVD_Generator_TotalUnc_Data_XSections_ECalPlot_Combined_"${UBCode}".pdf"
+"OtherGenWienerSVD_Generator_TotalUnc_Data_XSections_ProtonMomentumPlot_Combined_"${UBCode}".pdf"
 
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPTPlot_Combined_"${UBCode}".pdf"
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPnPlot_Combined_"${UBCode}".pdf"
@@ -94,6 +95,7 @@ declare -a arrGenPlots=(
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtxPlot_Combined_"${UBCode}".pdf"
 "WienerSVD_Generator_TotalUnc_Data_XSections_DeltaPtyPlot_Combined_"${UBCode}".pdf"
 "WienerSVD_Generator_TotalUnc_Data_XSections_ECalPlot_Combined_"${UBCode}".pdf"
+"WienerSVD_Generator_TotalUnc_Data_XSections_ProtonMomentumPlot_Combined_"${UBCode}".pdf"
 
 #2D
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_MuonCosThetaPlot_Slice_0_Combined_"${UBCode}".pdf"
@@ -108,6 +110,10 @@ declare -a arrGenPlots=(
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_DeltaAlphaTPlot_Slice_1_Combined_"${UBCode}".pdf"
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_DeltaAlphaTPlot_Slice_2_Combined_"${UBCode}".pdf"
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_DeltaAlphaTPlot_Slice_3_Combined_"${UBCode}".pdf"
+"OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_0_Combined_"${UBCode}".pdf"
+"OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_1_Combined_"${UBCode}".pdf"
+"OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_2_Combined_"${UBCode}".pdf"
+"OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_3_Combined_"${UBCode}".pdf"
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPn_DeltaAlphaTPlot_Slice_0_Combined_"${UBCode}".pdf"
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPn_DeltaAlphaTPlot_Slice_1_Combined_"${UBCode}".pdf"
 "OtherGenMultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPn_DeltaAlphaTPlot_Slice_2_Combined_"${UBCode}".pdf"
@@ -158,6 +164,10 @@ declare -a arrGenPlots=(
 "MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_DeltaAlphaTPlot_Slice_1_Combined_"${UBCode}".pdf"
 "MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_DeltaAlphaTPlot_Slice_2_Combined_"${UBCode}".pdf"
 "MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPT_DeltaAlphaTPlot_Slice_3_Combined_"${UBCode}".pdf"
+"MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_0_Combined_"${UBCode}".pdf"
+"MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_1_Combined_"${UBCode}".pdf"
+"MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_2_Combined_"${UBCode}".pdf"
+"MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialProtonMomentum_DeltaAlphaTPlot_Slice_3_Combined_"${UBCode}".pdf"
 "MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPn_DeltaAlphaTPlot_Slice_0_Combined_"${UBCode}".pdf"
 "MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPn_DeltaAlphaTPlot_Slice_1_Combined_"${UBCode}".pdf"
 "MultiDimWienerSVD_Generator_TotalUnc_Data_2DXSections_SerialDeltaPn_DeltaAlphaTPlot_Slice_2_Combined_"${UBCode}".pdf"

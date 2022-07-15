@@ -10,6 +10,7 @@
 #include <TMath.h>
 #include <TLatex.h>
 #include <TGaxis.h>
+#include <TVectorD.h>
 #include <TMatrixD.h>
 
 #include <iostream>
@@ -18,6 +19,7 @@
 #include <string>
 
 #include "../../../myClasses/Constants.h"
+#include "../../../myClasses/Util.h"
 
 using namespace std;
 using namespace Constants;
@@ -36,7 +38,7 @@ static std::map<TString,TString> Mapping = {
 
 //----------------------------------------//
 
-void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
+void PRD_DeltaPTInDeltaAlphaTSlices_Genie() {
 
 	//----------------------------------------//
 
@@ -57,12 +59,12 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels;
-	PlotNames.push_back("DeltaPTPlot"); PanelLabels.push_back("(a)");
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_0"); PanelLabels.push_back("(b)");
-	//PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_1");PanelLabels.push_back("(c)");	
-	//PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_2"); PanelLabels.push_back("(c)");
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_3");	PanelLabels.push_back("(c)");
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
+	PlotNames.push_back("DeltaPTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(44.);
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.22);
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.26);	
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.26);
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_3");	PanelLabels.push_back("(e)"); Min.push_back(0.); Max.push_back(0.27);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -73,19 +75,20 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 
 	vector<TString> MCSampleBand; vector<TString> Label; vector<int> MCColors;  vector<int> LineStyle;
 
-	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
-	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18 FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
+//	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
+//	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
+//	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB     "); MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
-//	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
+//	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
+//	MCSampleBand.push_back("Overlay9NuWro");  Label.push_back("NuWro"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");	
 //	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
-//	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2");
 //	MCSampleBand.push_back("GENIEv2LFG"); Label.push_back("Gv2 LFG");
 //	MCSampleBand.push_back("GENIEv2EffSF"); Label.push_back("Gv2 EffSF");		
-//	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("G18 No Tune");					
-//	MCSampleBand.push_back("SuSav2"); Label.push_back("G21hN");
+	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("Untuned"); MCColors.push_back(kMagenta); LineStyle.push_back(kSolid);		
+	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2"); MCColors.push_back(kBlue); LineStyle.push_back(kSolid);				
+	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN "); MCColors.push_back(kOrange+6); LineStyle.push_back(kSolid);
 //	MCSampleBand.push_back("G21hA"); Label.push_back("G21hA");	
 //	MCSampleBand.push_back("G21G4"); Label.push_back("G21G4");
 //	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21NoFSI");		
@@ -118,15 +121,7 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 		// Open the file that contains all the xsecs
 
 		TString XSecFileName = "../../myXSec/" + UBCodeVersion + "/GenXSec/All_XSecs_Combined_" + UBCodeVersion + ".root";
-		TFile* fXSec = new TFile(XSecFileName,"readonly");
-
-		//----------------------------------------//
-
-		// Data release
-
-		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/XSec_DeltaPTInDeltaAlphaT.txt";
-		ofstream myTxtFile;
-		myTxtFile.open(TxtName);		
+		TFile* fXSec = new TFile(XSecFileName,"readonly");	
 
 		//----------------------------------------//		
 
@@ -138,23 +133,23 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 
 			// Canvas & legend
 
-			TString CanvasName = "Fig1_" + PlotNames[iplot]+"_"+Runs[irun];
+			TString CanvasName = "PRD_" + PlotNames[iplot]+"_"+Runs[irun];
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.14);
-			PlotCanvas->SetTopMargin(0.09);
+			PlotCanvas->SetTopMargin(0.08);
 			PlotCanvas->SetLeftMargin(0.19);
 			PlotCanvas->SetRightMargin(0.01);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.44,0.8,0.96,0.9);
+			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 			leg->SetMargin(0.13);
 
-			TLegend* legData = new TLegend(0.43,0.7,0.95,0.8);
+			TLegend* legData = new TLegend(0.51,0.69,0.97,0.8);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.04);
 			legData->SetTextFont(FontStyle);
@@ -169,83 +164,8 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 			BeamOnShapeStat->GetYaxis()->SetRangeUser(XSecRange[ Mapping[PlotNames[iplot]] ].first, XSecRange[ Mapping[PlotNames[iplot]] ].second);			
 			BeamOnShapeStat->Draw("e1x0 same");	
 
-			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);				
+			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);					
 
-			//----------------------------------------//
-			//----------------------------------------//			
-
-			// Data release
-
-			TH1D* BeamOnFullUnc = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) );	
-			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
-
-			myTxtFile << "Cross Section \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "Bin # & Low bin edge & High bin edge & Cross Section [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}] & Uncertainty [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}]" << endl << endl;			
-
-			for (int ibin = 1; ibin <= NBins; ibin++) {
-
-				double BinLow = BeamOnFullUnc->GetBinLowEdge(ibin);
-				double BinWidth = BeamOnFullUnc->GetBinWidth(ibin);		
-				double BinHigh = BinLow + BinWidth;	
-				double BinValue = BeamOnFullUnc->GetBinContent(ibin);
-				double BinError = BeamOnFullUnc->GetBinError(ibin);				
-
-				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << endl;
-
-			}
-			
-			myTxtFile << endl << endl;
-
-			//----------------------------------------//			
-
-			myTxtFile << "Unfolded Covariance Matrix \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
-
-			for (int xbin = 1; xbin <= NBins; xbin++) {
-
-				myTxtFile << "Bin " << xbin << "  ";
-
-				for (int ybin = 1; ybin <= NBins; ybin++) {	
-
-					double CovBinValue = Cov->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << CovBinValue << "   ";
-
-				}	
-				
-				myTxtFile << endl;
-
-			}	
-
-			myTxtFile << endl << endl;	
-
-			//----------------------------------------//
-
-			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);
-			myTxtFile << "Additional Smearing Matrix \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
-
-			for (int xbin = 1; xbin <= NBins; xbin++) {
-
-				myTxtFile << "Bin " << xbin << "  ";				
-
-				for (int ybin = 1; ybin <= NBins; ybin++) {	
-
-					double AcBinValue = Ac->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << AcBinValue << "   ";
-
-				}	
-				
-				myTxtFile << endl;
-
-			}	
-
-			myTxtFile << endl << endl;			
-
-			//----------------------------------------//
 			//----------------------------------------//						
 
 			TH1D* MCPlot[NMC];
@@ -276,13 +196,16 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 			// Plot the stat+shape again 
 			// And then the stat only & norm only on top of that
 
+			if (PlotNames[iplot] == "DeltaPTPlot") { BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.1); }
+			BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
 			BeamOnShapeStat->Draw("e1x0 same");
 
 			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
 			BeamOnStatOnly->Draw("e1x0 same");
 
 			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-			BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);
+			//BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);
+			BeamOnNormOnly->SetFillColor(kGray+1);
 			BeamOnNormOnly->SetLineColor(kGray+1);
 			BeamOnNormOnly->SetMarkerColor(kGray+1);			
 			BeamOnNormOnly->Draw("e2 same");
@@ -308,7 +231,7 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
 
 			leg->Draw();
-			legData->Draw();
+			legData->Draw();			
 
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
@@ -317,56 +240,8 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 
 			//----------------------------------------//
 
-			// Transparency pad
-
-			TPad* pad = new TPad("pad","pad",0.5,0.45,0.95,0.65, 21);
-
-			pad->SetFillColor(kWhite); 
-			PlotCanvas->cd();
-			pad->Draw();
-			pad->cd();
-			pad->SetBottomMargin(0.17);
-			pad->SetTopMargin(0.0);
-			pad->SetRightMargin(0.05);
-			pad->SetLeftMargin(0.1);		
-
-			TH1D* GiBUUFSI = (TH1D*)(MCPlot[1]->Clone());
-			GiBUUFSI->Divide(MCPlot[0]);
-			GiBUUFSI->SetLineStyle(kSolid);
-			GiBUUFSI->GetXaxis()->SetRangeUser(0.,0.7);			
-
-			GiBUUFSI->GetXaxis()->SetNdivisions(6);
-			GiBUUFSI->GetXaxis()->SetTitle("");
-			GiBUUFSI->GetXaxis()->SetLabelSize(0.2);
-			GiBUUFSI->GetXaxis()->SetLabelFont(FontStyle);
-
-			GiBUUFSI->GetYaxis()->SetNdivisions(5);		
-			GiBUUFSI->GetYaxis()->SetLabelSize(0.2);
-			GiBUUFSI->GetYaxis()->SetLabelFont(FontStyle);	
-			GiBUUFSI->GetYaxis()->SetRangeUser(0.01,8.89);	
-			if (iplot == 1) { GiBUUFSI->GetYaxis()->SetRangeUser(0.01,1.99); }																	
-
-			GiBUUFSI->Draw("hist same");
-
-			TH1D* GENIEFSI = (TH1D*)(MCPlot[3]->Clone());
-			GENIEFSI->Divide(MCPlot[2]);
-			GENIEFSI->SetLineStyle(kSolid);	
-
-			GENIEFSI->Draw("hist same");
-
-			TLatex *textFSI = new TLatex();
-			textFSI->SetTextFont(FontStyle);
-			textFSI->SetTextSize(0.2);							
-			textFSI->DrawLatexNDC(0.15, 0.84, "FSI/No FSI");			
-
-			gPad->RedrawAxis();			
-
-			//----------------------------------------//
-
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRL_Fig1_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
-			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_Neutrino2022_PublicNote/Figures/PRL_Fig1_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");			
-			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/Papadopoulou_MITThesis/templates/Figures/PRL_Fig1_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");	
-			delete PlotCanvas;	
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			//delete PlotCanvas;	
 
 			//----------------------------------------//
 

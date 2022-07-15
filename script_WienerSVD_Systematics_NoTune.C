@@ -35,8 +35,6 @@ void script_WienerSVD_Systematics_NoTune() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\",\"Overlay9\",\"BeamOn9\",\"ExtBNB9\",\"OverlayDirt9\",\"NoTune\")");
 
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"NuWro\",\"Overlay9\",\"BeamOn9\",\"ExtBNB9\",\"OverlayDirt9\",\"NoTune\")");		
-
 	// -----------------------------------------------------------------------------------------
 
 	//gROOT->ProcessLine(".q");
