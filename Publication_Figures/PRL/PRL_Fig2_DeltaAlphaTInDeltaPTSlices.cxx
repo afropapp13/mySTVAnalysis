@@ -141,13 +141,15 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 			leg->SetMargin(0.13);
+			leg->SetFillStyle(0);			
 
 			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.04);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);						
+			legData->SetMargin(0.08);
+			legData->SetFillStyle(0);									
 
 			//----------------------------------------//
 
@@ -295,7 +297,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
 
 			leg->Draw();
-			if (iplot == 0) { legData->Draw(); }			
+			legData->Draw();			
 
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
@@ -307,9 +309,10 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			// Transparency pad
 
 			TPad* pad = new TPad("pad","pad",0.3,0.2,0.85,0.38, 21);
-			if (iplot == 2) { pad = new TPad("pad","pad",0.2,0.52,0.75,0.7, 21); }
+			if (iplot == 2) { pad = new TPad("pad","pad",0.2,0.47,0.75,0.65, 21); }
 
-			pad->SetFillColor(kWhite); 
+			pad->SetFillColor(kWhite);
+			pad->SetFillStyle(0);			 
 			PlotCanvas->cd();
 			pad->Draw();
 			pad->cd();

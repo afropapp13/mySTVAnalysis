@@ -187,20 +187,20 @@ void WienerXSecUncertainty() {
 
 			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
 
+				double NuWroUnc = UncPlot[0]->GetBinContent(1);
 				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[11]->GetBinContent(1),2.) );		
 				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) + TMath::Power(UncPlot[4]->GetBinContent(1),2.) );				
-				double XSecUnc = UncPlot[5]->GetBinContent(1);
+				double XSecUnc = TMath::Sqrt( TMath::Power(UncPlot[5]->GetBinContent(1),2.) + TMath::Power(NuWroUnc,2.) );
 				double FluxUnc = UncPlot[7]->GetBinContent(1);
 				double G4Unc = UncPlot[6]->GetBinContent(1);
 				double DirtUnc = UncPlot[8]->GetBinContent(1);
 				double POTUnc = UncPlot[9]->GetBinContent(1);
 				double NTargetUnc = UncPlot[10]->GetBinContent(1);
-				double NuWroUnc = UncPlot[0]->GetBinContent(1);
 
 				cout << " Flux = " <<  FluxUnc << " %" << endl;
 				cout << " XSec = " <<  XSecUnc << " %" << endl;
 				cout << " Det = " <<  DetUnc << " %" << endl;
-				cout << " NuWro = " <<  NuWroUnc << " %" << endl;
+				//cout << " NuWro = " <<  NuWroUnc << " %" << endl;
 				cout << " POT = " <<  POTUnc << " %" << endl;				
 				cout << " Stat = " <<  StatUnc << " %" << endl;	
 				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						

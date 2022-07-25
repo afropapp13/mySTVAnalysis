@@ -142,6 +142,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 			leg->SetMargin(0.13);
+			leg->SetFillStyle(0);			
 
 			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
 			legData->SetBorderSize(0);
@@ -149,6 +150,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
 			legData->SetMargin(0.08);
+			legData->SetFillStyle(0);			
 
 			TLegend* legSigma = new TLegend(0.26,0.53,0.35,0.65);
 			legSigma->SetBorderSize(0);
@@ -324,7 +326,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			lSigma->SetTextColor(kBlack);							
 
 			leg->Draw();
-			if (iplot == 0) { legData->Draw(); }
+			legData->Draw();
 			legSigma->Draw();			
 
 			TLatex *text = new TLatex();

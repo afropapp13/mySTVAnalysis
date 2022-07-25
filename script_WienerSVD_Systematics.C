@@ -33,7 +33,9 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"SCERecomb2\")");
 
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\")");	
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"NuWro\")");		
 
 	// -----------------------------------------------------------------------------------------
 
