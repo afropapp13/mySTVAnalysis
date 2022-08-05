@@ -46,10 +46,10 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames;  vector<TString> PanelLabels;
-	PlotNames.push_back("DeltaAlphaTPlot");  PanelLabels.push_back("(a)");
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)");
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2");		PanelLabels.push_back("(c)");
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
+	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.12);
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.37);
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2");	PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.059);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -156,7 +156,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			// Get the shape + stat data plot & plot it
 
 			TH1D* BeamOnShapeStat = (TH1D*)( fXSec->Get("StatShape_" + PlotNames[iplot]) );
-			BeamOnShapeStat->GetYaxis()->SetRangeUser(XSecRange[ Mapping[PlotNames[iplot]] ].first, XSecRange[ Mapping[PlotNames[iplot]] ].second);
+			BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
 
 			BeamOnShapeStat->Draw("e1x0 same");	
 

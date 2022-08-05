@@ -149,7 +149,7 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 				// Number of event distributions for True CC1p and Reco CC1p
 
-/*				if (WhichSample == 0 && OverlaySample == "") {
+				if (WhichSample == 0 && OverlaySample == "" && DetVar == false) {
 
 					PlotsTrue[WhichSample][WhichPlot]->SetLineColor(kRed);
 					PlotsTrue[WhichSample][WhichPlot]->SetLineWidth(3);
@@ -209,7 +209,6 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 					delete PlotCanvas;
 					
 				}
-*/
 
 				// ---------------------------------------------------------------------------------------------------------------------------	
 

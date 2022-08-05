@@ -64,7 +64,7 @@ void PRD_ECalInDeltaAlphaTSlices_Genie() {
 	PlotNames.push_back("SerialECal_DeltaAlphaTPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.099);
 	PlotNames.push_back("SerialECal_DeltaAlphaTPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.11);	
 	PlotNames.push_back("SerialECal_DeltaAlphaTPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.149);
-	PlotNames.push_back("SerialECal_DeltaAlphaTPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.22);
+	PlotNames.push_back("SerialECal_DeltaAlphaTPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.18);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -166,6 +166,7 @@ void PRD_ECalInDeltaAlphaTSlices_Genie() {
 			BeamOnShapeStat->GetYaxis()->SetRangeUser(XSecRange[ Mapping[PlotNames[iplot]] ].first, XSecRange[ Mapping[PlotNames[iplot]] ].second);			
 			BeamOnShapeStat->GetYaxis()->SetLabelOffset(0.006);
 			BeamOnShapeStat->GetXaxis()->SetLabelOffset(0.015);	
+			BeamOnShapeStat->GetYaxis()->SetNdivisions(6);			
 			BeamOnShapeStat->Draw("e1x0 same");	
 
 			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);				

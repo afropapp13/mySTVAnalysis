@@ -412,7 +412,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					if (WhichSample == 1) { 
 
 						if ( StatCovariances[WhichPlot]->GetNbinsX() != LocalCovMatrixClone->GetNbinsX() )
-							{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }
+							{ cout << UncSources[WhichSample] << " " << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }
 						
 						SystCovariances[WhichPlot] = LocalCovMatrixClone; 
 						FracSystCovariances[WhichPlot] = LocalFracCovMatrix;
@@ -420,7 +420,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					} else { 
 
 						if ( StatCovariances[WhichPlot]->GetNbinsX() != LocalCovMatrixClone->GetNbinsX() )
-							{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }						
+							{ cout << UncSources[WhichSample] << " " << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }						
 						
 						SystCovariances[WhichPlot]->Add(LocalCovMatrixClone); 
 						FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix);						 

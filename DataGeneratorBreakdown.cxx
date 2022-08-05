@@ -49,8 +49,8 @@ void DataGeneratorBreakdown() {
 	vector<TString> MCSampleBand; vector<TString> Label;
 
 	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18");
-	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU");
-	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiBUU No FSI");	
+	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB");
+	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI");	
 	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
 	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
 	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");	
@@ -180,9 +180,10 @@ void DataGeneratorBreakdown() {
 				THStack* thstack = new THStack(THStackName,"");				
 
 				// Starting from 1, 0 corresponds to all the events 
-				// 1 = QE, 2 = MEC, 3 = RES, 4 = DIS, 5 = COH 
+				// 1 = QE, 2 = MEC, 3 = RES, 4 = DIS
+				// 5 = COH, not used 
 
-				for (int imc = 1; imc < NInte; imc++) {	
+				for (int imc = 1; imc < NInte-1; imc++) {	
 
 					TString InteName = InteractionLabels[imc] + MCSampleBand[igen] + "_" + PlotNames[iplot];
 					MCPlot[imc] = (TH1D*)( fXSec->Get(InteName) );

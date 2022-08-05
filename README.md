@@ -154,8 +154,6 @@ hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/
 #root -b GeneratorBand.cxx
 root -b DataGeneratorBreakdown.cxx
 
-./myDownloadScripts/CopyBreakDown.sh
-
 root -b WienerXSecUncertainty.cxx
 
 #.x IntegratedXSecs.cpp
@@ -189,6 +187,8 @@ root -b WienerXSecUncertainty.cxx
 
 # Download the plots
 ./myDownloadScripts/DownloadPlots.sh
+
+./myDownloadScripts/CopyBreakDown.sh
 
 #################################################################################################################################
 

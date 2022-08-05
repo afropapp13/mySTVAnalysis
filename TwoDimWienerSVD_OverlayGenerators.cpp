@@ -126,7 +126,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot");
 	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot");		
 	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot");
-	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");
+//	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");
 	PlotNames.push_back("SerialDeltaPn_DeltaAlphaTPlot");		
 	PlotNames.push_back("SerialProtonCosTheta_MuonCosThetaPlot");
 	PlotNames.push_back("SerialDeltaPty_DeltaPtxPlot");	

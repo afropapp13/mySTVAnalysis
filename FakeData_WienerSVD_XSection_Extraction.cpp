@@ -818,7 +818,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 
 			legData->AddEntry(unf,"Unfolded " + PrintLabel,"ep");
 
-			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"GENIE Tune "+ CVChi2NdofAlt,"l");
+			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"G18 "+ CVChi2NdofAlt,"l");
 			lMC->SetTextColor(OverlayColor);
 
 			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"True " + PrintLabel + " " + FDChi2NdofAlt,"l");

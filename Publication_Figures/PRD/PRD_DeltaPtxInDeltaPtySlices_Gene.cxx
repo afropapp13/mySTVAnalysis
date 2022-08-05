@@ -154,13 +154,15 @@ void PRD_DeltaPtxInDeltaPtySlices_Gene() {
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(2);
 			leg->SetMargin(0.13);
+			leg->SetFillStyle(0);			
 
 			TLegend* legData = new TLegend(0.23,0.67,0.67,0.78);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.04);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);					
+			legData->SetMargin(0.08);	
+			legData->SetFillStyle(0);						
 
 			//----------------------------------------//
 
