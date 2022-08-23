@@ -53,8 +53,10 @@ void DataGeneratorBreakdown() {
 	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI");	
 	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
 	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
-	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");	
+	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");
+	MCSampleBand.push_back("NEUTv5401_LFG_NoFSI");  Label.push_back("NEUT_NoFSI");		
 	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
+	MCSampleBand.push_back("NuWrov190201_LFG_NoFSI"); Label.push_back("NuWro_NoFSI");	
 	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2");
 	MCSampleBand.push_back("GENIEv2LFG"); Label.push_back("Gv2 LFG");
 	MCSampleBand.push_back("GENIEv2EffSF"); Label.push_back("Gv2 EffSF");		
@@ -67,7 +69,9 @@ void DataGeneratorBreakdown() {
 	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI");
 	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA Tune");
 	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG Tune");
-	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF Tune");			
+	MCSampleBand.push_back("Genie_v3_0_6_RFG_NoRPA"); Label.push_back("G18 RFG Tune No RPA");	
+	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF Tune");
+	MCSampleBand.push_back("Genie_v3_0_6_EffSF_NoRPA"); Label.push_back("G18 EffSF Tune No RPA");				
 
 	int NMC = MCSampleBand.size();
 

@@ -260,19 +260,23 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 			NameOfSamples.push_back("G21hA"); Colors.push_back(SuSav2Color); Labels.push_back("G21hA      ");
 			NameOfSamples.push_back("G21G4"); Colors.push_back(SuSav2Color); Labels.push_back("G21G4      ");
 			NameOfSamples.push_back("G21NoFSI"); Colors.push_back(SuSav2Color); Labels.push_back("G21 No FSI ");									
-			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro      ");			
+			NameOfSamples.push_back("Overlay9NuWro"); Colors.push_back(NuWroColor); Labels.push_back("NuWro      ");
+			NameOfSamples.push_back("NuWrov190201_LFG_NoFSI"); Colors.push_back(NuWroColor); Labels.push_back("NuWro No FSI ");						
 			NameOfSamples.push_back("GiBUU"); Colors.push_back(GiBUUColor); Labels.push_back("GiB        ");
 			NameOfSamples.push_back("GiBUUNoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("GiB No FSI ");
 			NameOfSamples.push_back("GiBUUTscaling"); Colors.push_back(GiBUUColor); Labels.push_back("GiB Tscal  ");						
 			NameOfSamples.push_back("NEUT"); Colors.push_back(NEUTColor); Labels.push_back("NEUT       ");
-			NameOfSamples.push_back("NEUTv5401_RFG"); Colors.push_back(NEUTColor); Labels.push_back("NEUTv540RFG");			
+			NameOfSamples.push_back("NEUTv5401_RFG"); Colors.push_back(NEUTColor); Labels.push_back("NEUTv540RFG");
+			NameOfSamples.push_back("NEUTv5401_LFG_NoFSI"); Colors.push_back(NEUTColor); Labels.push_back("NEUTv5401NoFSI");						
 			NameOfSamples.push_back("Genie_v3_0_6_Nominal"); Colors.push_back(NEUTColor); Labels.push_back("G18 Nom    ");
 			NameOfSamples.push_back("Genie_v3_0_6_NoFSI"); Colors.push_back(GiBUUColor); Labels.push_back("G18 No FSI ");			
 			NameOfSamples.push_back("Genie_v3_0_6_hN2018"); Colors.push_back(GENIEv2Color); Labels.push_back("G18 hN     ");
 			NameOfSamples.push_back("Genie_v3_0_6_NoRPA"); Colors.push_back(NuWroColor); Labels.push_back("G18 No RPA ");
 			//NameOfSamples.push_back("Genie_v3_0_6_NoCoulomb"); Colors.push_back(GENIEv3_0_4_Color); Labels.push_back("G18 No Coul");			
 			NameOfSamples.push_back("Genie_v3_0_6_RFG"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG    ");
-			NameOfSamples.push_back("Genie_v3_0_6_EffSF"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF  ");						
+			NameOfSamples.push_back("Genie_v3_0_6_RFG_NoRPA"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG NoRPA ");			
+			NameOfSamples.push_back("Genie_v3_0_6_EffSF"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF  ");
+			NameOfSamples.push_back("Genie_v3_0_6_EffSF_NoRPA"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF NoRPA ");									
 
 		}		             
 
@@ -406,8 +410,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_NoRPA" || 
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_NoCoulomb" || 
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_hN2018" ||
-					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG" ||  
-					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF" ||  
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG" ||
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG_NoRPA" ||					  
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF" ||
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF_NoRPA" ||					  
 					NameOfSamples[WhichSample] == "SuSav2" ||
 					NameOfSamples[WhichSample] == "G21hA" ||
 					NameOfSamples[WhichSample] == "G21G4" ||
@@ -429,7 +435,10 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				if (NameOfSamples[WhichSample] == "GiBUUNoFSI" || NameOfSamples[WhichSample] == "GiBUUTscaling") 
 					{ FileSample.push_back(TFile::Open("../myROOTGiBUU/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }					
 
-				if (NameOfSamples[WhichSample] == "NEUT" || NameOfSamples[WhichSample] == "NEUTv5401_RFG") 
+				if (
+					NameOfSamples[WhichSample] == "NEUT" || NameOfSamples[WhichSample] == "NEUTv5401_RFG"  || 
+					NameOfSamples[WhichSample] == "NEUTv5401_LFG_NoFSI" || NameOfSamples[WhichSample] == "NuWrov190201_LFG_NoFSI"
+				) 
 					{ FileSample.push_back(TFile::Open("../myNEUTAnalysis/OutputFiles/STVAnalysis_"+NameOfSamples[WhichSample]+".root")); }
 
 				for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
@@ -615,7 +624,8 @@ void WienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = false,
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_Minus0_15To0_15Plot" ||		
 				PlotNames[WhichPlot] == "DeltaPtx_DeltaPty_0_15To0_45Plot" ||	
 				PlotNames[WhichPlot] == "SerialECal_MuonCosThetaMuonMomentumPlot" ||
-				PlotNames[WhichPlot] == "SerialECal_ProtonCosThetaProtonMomentumPlot" ||																	
+				PlotNames[WhichPlot] == "SerialECal_ProtonCosThetaProtonMomentumPlot" ||
+				PlotNames[WhichPlot] == "SerialECal_DeltaPtxDeltaPtyPlot" ||																					
 				PlotNames[WhichPlot] == "SerialDeltaPT_MuonCosThetaPlot" ||	
 				PlotNames[WhichPlot] == "SerialMuonMomentum_MuonCosThetaPlot" ||
 				PlotNames[WhichPlot] == "SerialProtonMomentum_ProtonCosThetaPlot" ||

@@ -73,9 +73,9 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 
 	vector<TString> MCSampleBand; vector<TString> Label; vector<int> MCColors;  vector<int> LineStyle;
 
-	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
-	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
+	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiBUU No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
+	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);
+	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);		
 	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18 FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
 //	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT");
@@ -147,19 +147,19 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 			PlotCanvas->SetRightMargin(0.01);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.44,0.8,0.96,0.9);
+			TLegend* leg = new TLegend(0.39,0.8,0.98,0.89);
 			leg->SetBorderSize(0);
 			leg->SetTextSize(0.04);
-			leg->SetTextFont(FontStyle);
+			leg->SetTextFont(FontStyle-0.02);
 			leg->SetNColumns(2);
-			leg->SetMargin(0.13);
+			leg->SetMargin(0.08);
 
-			TLegend* legData = new TLegend(0.43,0.7,0.95,0.8);
+			TLegend* legData = new TLegend(0.38,0.7,0.97,0.8);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.04);
-			legData->SetTextFont(FontStyle);
+			legData->SetTextFont(FontStyle-0.02);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);						
+			legData->SetMargin(0.06);						
 
 			//----------------------------------------//
 
@@ -330,7 +330,7 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 			pad->SetRightMargin(0.05);
 			pad->SetLeftMargin(0.1);		
 
-			TH1D* GiBUUFSI = (TH1D*)(MCPlot[1]->Clone());
+			TH1D* GiBUUFSI = (TH1D*)(MCPlot[2]->Clone());
 			GiBUUFSI->Divide(MCPlot[0]);
 			GiBUUFSI->SetLineStyle(kSolid);
 			GiBUUFSI->GetXaxis()->SetRangeUser(0.,0.7);			
@@ -343,13 +343,14 @@ void PRL_Fig1_DeltaPTInDeltaAlphaTSlices() {
 			GiBUUFSI->GetYaxis()->SetNdivisions(5);		
 			GiBUUFSI->GetYaxis()->SetLabelSize(0.2);
 			GiBUUFSI->GetYaxis()->SetLabelFont(FontStyle);	
-			GiBUUFSI->GetYaxis()->SetRangeUser(0.01,8.89);	
-			if (iplot == 1) { GiBUUFSI->GetYaxis()->SetRangeUser(0.01,1.99); }																	
+			GiBUUFSI->GetYaxis()->SetRangeUser(0.4,14.99);	
+			//if (iplot == 1) { GiBUUFSI->GetYaxis()->SetRangeUser(0.01,1.99); }	
+			pad->SetLogy();																			
 
 			GiBUUFSI->Draw("hist same");
 
 			TH1D* GENIEFSI = (TH1D*)(MCPlot[3]->Clone());
-			GENIEFSI->Divide(MCPlot[2]);
+			GENIEFSI->Divide(MCPlot[1]);
 			GENIEFSI->SetLineStyle(kSolid);	
 
 			GENIEFSI->Draw("hist same");
