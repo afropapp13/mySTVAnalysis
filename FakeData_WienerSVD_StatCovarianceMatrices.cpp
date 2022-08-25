@@ -116,6 +116,8 @@ void FakeData_WienerSVD_StatCovarianceMatrices(TString Syst = "None",TString Bas
 
 		if (BeamOnSample == "NoTuneOverlay9") 
 			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/NoTuneSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root","readonly"); }
+		if (BeamOnSample == "GENIEv2Overlay9") 
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/GENIEv2STVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root","readonly"); }			
 		else if (BeamOnSample == "TwiceMECOverlay9") 
 			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/TwiceMECSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root","readonly"); }			
 		else { BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly"); }

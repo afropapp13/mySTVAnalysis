@@ -5,4 +5,5 @@ export OutPutDir=/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbala
 
 cp ${InPutDir}/Overlay9NuWro*_XSections_{DeltaPT,DeltaAlphaT,DeltaPtx,DeltaPty}*.pdf	${OutPutDir}
 cp ${InPutDir}/NoTuneOverlay9*_XSections_{DeltaPT,DeltaAlphaT,DeltaPtx,DeltaPty}*.pdf	${OutPutDir}
+cp ${InPutDir}/GENIEv2Overlay9*_XSections_{DeltaPT,DeltaAlphaT,DeltaPtx,DeltaPty}*.pdf	${OutPutDir}
 cp ${InPutDir}/TwiceMECOverlay9*_XSections_{DeltaPT,DeltaAlphaT,DeltaPtx,DeltaPty}*.pdf	${OutPutDir}
