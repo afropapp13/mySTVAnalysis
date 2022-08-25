@@ -176,7 +176,7 @@ void MigrationMatrices(TString OverlaySample) {
 				
 				// ---------------------------------------------------------------------------------------				
 	
-				if (OverlaySample == "Overlay9") {
+				if (OverlaySample == "") {
 		
 					TString PlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+NameOfSamples[WhichSample];
 					TCanvas* PlotCanvas = new TCanvas(PlotCanvasName,PlotCanvasName,205,34,1024,768);
