@@ -99,6 +99,7 @@ root -b
 FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","Overlay9NuWro","ExtBNB9","OverlayDirt9")
 FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","NoTuneOverlay9","ExtBNB9","OverlayDirt9")
 FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","TwiceMECOverlay9","ExtBNB9","OverlayDirt9")
+FakeData_WienerSVD_StatCovarianceMatrices("Stat","Overlay9","GENIEv2Overlay9","ExtBNB9","OverlayDirt9")
 
 # Merge the alternative MC covariances
 root -b
