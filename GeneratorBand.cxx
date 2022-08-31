@@ -66,7 +66,7 @@ void GetMinAndSpread(TH1D* MinValuePlot, TH1D* SpreadPlot, std::vector< std::vec
 
 //----------------------------------------//
 
-void GeneratorBand() {
+void GeneratorBand(TString Band = "") {
 
 	//----------------------------------------//
 
@@ -93,10 +93,23 @@ void GeneratorBand() {
 
 	vector<TString> MCSampleBand;
 
-	MCSampleBand.push_back("OverlayGENIE");
-	//MCSampleBand.push_back("GiBUU");
-	//MCSampleBand.push_back("NEUT");
-	//MCSampleBand.push_back("Overlay9NuWro");	
+	if (Band == "") {
+
+		MCSampleBand.push_back("OverlayGENIE");
+		MCSampleBand.push_back("GiBUU");
+		MCSampleBand.push_back("NEUT");
+		MCSampleBand.push_back("Overlay9NuWro");	
+
+	}
+
+	if (Band == "NoFSI") {
+
+		MCSampleBand.push_back("Genie_v3_0_6_NoFSI");
+		MCSampleBand.push_back("GiBUUNoFSI");
+		MCSampleBand.push_back("NEUTv5401_LFG_NoFSI");
+		MCSampleBand.push_back("NuWrov190201_LFG_NoFSI");	
+
+	}	
 
 	int NMC = MCSampleBand.size();
 
@@ -186,7 +199,7 @@ void GeneratorBand() {
 			BeamOnXSec->SetMarkerSize(1.);
 			BeamOnXSec->SetMarkerStyle(20);	
 			BeamOnXSec->GetYaxis()->SetTitle(VarLabel[PlotNames[iplot]]);		
-			BeamOnXSec->GetYaxis()->SetRangeUser(XSecRange[ PlotNames[iplot] ].first,XSecRange[ PlotNames[iplot] ].second);																
+			BeamOnXSec->GetYaxis()->SetRangeUser(XSecRange[ MapUncorCor[PlotNames[iplot] ] ].first,1.4*XSecRange[ MapUncorCor[ PlotNames[iplot] ] ].second);																
 
 			BeamOnXSec->Draw("e1x0 same");
 
@@ -269,7 +282,7 @@ void GeneratorBand() {
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/GeneratorBand_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/"+Band+"GeneratorBand_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			delete PlotCanvas;						
 
 			//----------------------------------------//												

@@ -264,7 +264,8 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 					textEff->SetTextFont(FontStyle);
 					textEff->SetTextSize(TextSize);
 					if (Runs[WhichRun] != "Combined") { textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]); }
-					if (string(PlotNamesClone[WhichPlot]).find("Serial") != std::string::npos) { textEff->DrawLatexNDC(0.22, 0.93, LatexLabel[PlotNamesClone[WhichPlot]]); }					
+					if ( !(string(PlotNamesClone[WhichPlot]).find("VertexZ") != std::string::npos) ) 
+						{ textEff->DrawLatexNDC(0.22, 0.93, LatexLabel[PlotNamesClone[WhichPlot]]); }					
 				
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";

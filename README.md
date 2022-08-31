@@ -107,6 +107,7 @@ root -b
 WienerSVD_Merge_Covariances("Overlay9","Overlay9NuWro","Overlay9NuWro")
 WienerSVD_Merge_Covariances("Overlay9","NoTuneOverlay9","NoTuneOverlay9")
 WienerSVD_Merge_Covariances("Overlay9","TwiceMECOverlay9","TwiceMECOverlay9") 
+WienerSVD_Merge_Covariances("Overlay9","GENIEv2Overlay9","GENIEv2Overlay9") 
 
 #################################################################################################################################
 
@@ -153,6 +154,9 @@ root -b script_ThreeDimWienerSVD_OverlayGenerators.C
 hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/v08_00_00_52/GenXSec/All_XSecs_*_Combined_v08_00_00_52.root
 
 #root -b GeneratorBand.cxx
+#root -b
+#.L GeneratorBand.cxx
+# GeneratorBand("NoFSI")
 root -b DataGeneratorBreakdown.cxx
 
 root -b WienerXSecUncertainty.cxx
