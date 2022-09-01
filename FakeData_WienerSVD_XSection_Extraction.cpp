@@ -829,9 +829,9 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			}		
 
 			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval);	
-			TString CVChi2NdofAlt = "(" + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +")";							
+			TString CVChi2NdofAlt = "(" + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +"), p-value = " + to_string_with_precision(CVpval,2);						
 			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval);	
-			TString FDChi2NdofAlt = "(" + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +")";			
+			TString FDChi2NdofAlt = "(" + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +"), p-value = " + to_string_with_precision(FDpval,2);			
 
 			//------------------------------//				
 

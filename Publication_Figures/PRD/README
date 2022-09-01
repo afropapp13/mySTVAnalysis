@@ -1,4 +1,4 @@
-script_PRD.C
+PRD_CopyBreakDown.sh
 
 script_PRD_DeltaAlphaT_InCosThetaMu_Gene.C
 script_PRD_DeltaAlphaT_InCosThetaMu_Genie.C
