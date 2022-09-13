@@ -237,7 +237,7 @@ void PRD_3D_Gene() {
 				leg->SetFillStyle(0);
 				leg->SetNColumns(2);
 				leg->SetTextFont(FontStyle);
-				leg->SetTextSize(TextSize);													
+				leg->SetTextSize(0.06);													
 
 				double Chi2[NMC];				
 				int Ndof[NMC];
@@ -321,6 +321,12 @@ void PRD_3D_Gene() {
 				// Legend
 
 				leg->Draw();
+
+
+				TLatex SliceLabel;
+				SliceLabel.SetTextFont(FontStyle);
+				SliceLabel.SetTextSize(0.06);
+				SliceLabel.DrawLatexNDC(0.06,0.9,LatexLabel[ MapUncorCor[ ThreeDimCanvases[icanvas][ipad][iplot] ] ]);
 
 				//--------------------------------------------//								
 

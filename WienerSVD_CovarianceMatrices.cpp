@@ -62,7 +62,8 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	if (Label == "") { Title = "Cov Matrix"; }
 	if (Label == "Frac") { Title = "Frac Cov Matrix"; }	
 	if (Label == "Corr") { Title = "Corr Matrix"; }	
-	h->SetTitle(Title + " " + Syst);
+
+	h->SetTitle(Syst + " " + Title + ", " + LatexLabel[ MapUncorCor[PlotNames] ] );
 
 	h->GetZaxis()->SetRangeUser(CovMin,CovMax);
 	h->GetZaxis()->CenterTitle();
@@ -75,7 +76,7 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	h->SetMarkerColor(kWhite);			
 	h->SetMarkerSize(1.);
 	//h->Draw("text colz e"); 
-	if (Label == "Corr") { h->Draw("colz text"); }
+	if (Label == "Corr" && !(string(PlotNames).find("Serial") != std::string::npos) ) { h->Draw("colz text"); }
 	else { h->Draw("colz"); }
 	
 	PlotCanvas->SaveAs(PlotPath+BaseMC+"/"+Tune+"WienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+"_"+UBCodeVersion+".pdf");

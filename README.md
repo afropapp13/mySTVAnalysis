@@ -193,7 +193,5 @@ root -b WienerXSecUncertainty.cxx
 # Download the plots
 ./myDownloadScripts/DownloadPlots.sh
 
-./myDownloadScripts/CopyBreakDown.sh
-
 #################################################################################################################################
 

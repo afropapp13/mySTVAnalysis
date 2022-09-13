@@ -69,7 +69,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	if (Label == "Frac") { Title = "Frac Cov Matrix"; }
 	if (Label == "Corr") { Title = "Corr Matrix"; }		
 
-	h->SetTitle("Total " + Title);	
+	h->SetTitle("Total " + Title + ", " + LatexLabel[ MapUncorCor[PlotNames] ] );	
 
 	h->GetZaxis()->SetRangeUser(FracCovMin,FracCovMax);
 	h->GetZaxis()->CenterTitle();
@@ -99,7 +99,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 
 	}
 
-	if (Label == "Corr") { h->Draw("colz text"); }
+	if (Label == "Corr" && !(string(PlotNames).find("Serial") != std::string::npos) ) { h->Draw("colz text"); }
 	else { h->Draw("colz"); }
 	
 	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");

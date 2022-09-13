@@ -776,7 +776,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
-			TLegend* legData = new TLegend(0.23,0.89,0.95,0.98);
+			TLegend* legData = new TLegend(0.23,0.89,0.9,0.98);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.05);
 			legData->SetTextFont(FontStyle);
@@ -829,9 +829,9 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			}		
 
 			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval);	
-			TString CVChi2NdofAlt = "(" + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +"), p-value = " + to_string_with_precision(CVpval,2);						
+			TString CVChi2NdofAlt = "(" + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +"), p = " + to_string_with_precision(CVpval,2);						
 			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval);	
-			TString FDChi2NdofAlt = "(" + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +"), p-value = " + to_string_with_precision(FDpval,2);			
+			TString FDChi2NdofAlt = "(" + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +"), p = " + to_string_with_precision(FDpval,2);			
 
 			//------------------------------//				
 
