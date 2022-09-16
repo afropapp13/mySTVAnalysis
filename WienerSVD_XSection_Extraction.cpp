@@ -847,7 +847,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				ExtractedXSec->cd();
 
 				unf->Write("Reco"+PlotNames[WhichPlot]);
-				unfShapeOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
+				unfShapeOnly->Write("ShapeOnlyReco"+PlotNames[WhichPlot]);
 				unfNormOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
 				unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]);
 				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
