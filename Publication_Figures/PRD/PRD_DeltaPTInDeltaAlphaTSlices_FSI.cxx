@@ -37,7 +37,7 @@ static std::map<TString,TString> Mapping = {
 
 //----------------------------------------//
 
-void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
+void PRD_DeltaPTInDeltaAlphaTSlices_FSI() {
 
 	//----------------------------------------//
 
@@ -60,9 +60,9 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
 	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.12);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.44);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.18);	
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.055);
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.44);
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.18);	
+//	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.055);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -74,8 +74,8 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 	vector<TString> MCSampleBand; vector<TString> Label; vector<int> MCColors;  vector<int> LineStyle;
 
 //	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
-//	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
-//	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
 //	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB     "); MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
@@ -86,10 +86,10 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 //	MCSampleBand.push_back("GENIEv2EffSF"); Label.push_back("Gv2 EffSF");		
 //	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("Untuned"); MCColors.push_back(kMagenta); LineStyle.push_back(kSolid);		
 //	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2"); MCColors.push_back(kBlue); LineStyle.push_back(kSolid);		
-	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA"); MCColors.push_back(kMagenta-6); LineStyle.push_back(kSolid);		
-	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN"); MCColors.push_back(kOrange+6); LineStyle.push_back(kSolid);	
-	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4"); MCColors.push_back(kRed-4); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 No FSI"); MCColors.push_back(kBlue); LineStyle.push_back(kSolid);
+//	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA"); MCColors.push_back(kMagenta-6); LineStyle.push_back(kSolid);		
+//	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN"); MCColors.push_back(kOrange+6); LineStyle.push_back(kSolid);	
+//	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4"); MCColors.push_back(kRed-4); LineStyle.push_back(kSolid);
+//	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 No FSI"); MCColors.push_back(kBlue); LineStyle.push_back(kSolid);
 //	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("G18 hN Tune");
 //	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA Tune");
 //	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG Tune");

@@ -40,17 +40,18 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 	int DecimalAccuracy = 2;
 	int FontStyle = 132;
-	double TextSize = 0.06;	
+	double TextSize = 0.05;
+	double LegendTextSize = 0.07;		
 
 	TH1D::SetDefaultSumw2();
 	gStyle->SetEndErrorSize(4);			
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
-	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.);
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(13.);
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(99.);
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
+	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(42.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(14.9); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^2\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(109.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^2\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -61,11 +62,11 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 	vector<TString> MCSampleBand; vector<TString> Label; vector<int> MCColors;  vector<int> LineStyle;
 
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18 LFG"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);	
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("LFG"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);
-	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA");  MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG");  MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("no-RPA");  MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("RFG");  MCColors.push_back(kMagenta-9); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("EffSF"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
 
 //	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
 //	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA");  MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
@@ -113,7 +114,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 		// Data release
 
-		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/XSec_DeltaPtxInDeltaPty.txt";
+		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/XSec_DeltaPtxInDeltaPty.tex";
 		ofstream myTxtFile;
 		myTxtFile.open(TxtName);		
 
@@ -132,32 +133,34 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.14);
 			PlotCanvas->SetTopMargin(0.1);
-			PlotCanvas->SetLeftMargin(0.19);
-			PlotCanvas->SetRightMargin(0.01);				
-			PlotCanvas->Draw();
+			PlotCanvas->SetLeftMargin(0.185);
+			PlotCanvas->SetRightMargin(0.005);				
+			PlotCanvas->Draw();			
 
-			TLegend* leg = new TLegend(0.23,0.78,0.82,0.88);
-			leg->SetBorderSize(0);
-			leg->SetTextSize(0.04);
-			leg->SetTextFont(FontStyle);
-			leg->SetNColumns(2);
-			leg->SetMargin(0.13);
-			leg->SetFillStyle(0);			
-
-			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
+			TLegend* legData = new TLegend(0.22,0.64,0.77,0.88);
 			legData->SetBorderSize(0);
-			legData->SetTextSize(0.04);
+			legData->SetTextSize(LegendTextSize);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);
-			legData->SetFillStyle(0);			
+			legData->SetMargin(0.05);
+			legData->SetFillStyle(0);				
 
-			TLegend* legSigma = new TLegend(0.26,0.53,0.35,0.65);
+			TLegend* leg = new TLegend(0.615,0.64,0.915,0.88);
+			leg->SetBorderSize(0);
+			leg->SetTextSize(LegendTextSize);
+			leg->SetTextFont(FontStyle);
+			leg->SetNColumns(1);
+			leg->SetMargin(0.12);
+			leg->SetFillStyle(0);		
+
+			TLegend* legSigma = new TLegend(0.45,0.185,0.61,0.285);
+			if (iplot == 2) { legSigma = new TLegend(0.45,0.17,0.61,0.27); }
 			legSigma->SetBorderSize(0);
-			legSigma->SetTextSize(0.04);
+			legSigma->SetTextSize(TextSize);
 			legSigma->SetTextFont(FontStyle);
 			legSigma->SetNColumns(1);
-			legSigma->SetMargin(0.08);									
+			legSigma->SetMargin(0.08);
+			legSigma->SetFillStyle(0);															
 
 			//----------------------------------------//
 
@@ -176,8 +179,20 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			TH1D* BeamOnFullUnc = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) );	
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
-			myTxtFile << "Cross Section \\delta p_{T,x} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "Bin # & Low bin edge & High bin edge & Cross Section [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}] & Uncertainty [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}]" << endl << endl;			
+			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\raggedright" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						
+			myTxtFile << "\\small" << endl;
+			myTxtFile << "\\begin{tabular}{ |c|c|c|c|c| }" << endl;	
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\delta p_{T,x}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "Bin \\# & Low edge [GeV/c] & High edge [GeV/c] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;	
 
 			for (int ibin = 1; ibin <= NBins; ibin++) {
 
@@ -187,18 +202,31 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 				double BinValue = BeamOnFullUnc->GetBinContent(ibin);
 				double BinError = BeamOnFullUnc->GetBinError(ibin);				
 
-				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << endl;
+				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << "\\\\" << endl;
 
 			}
 			
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;
 
 			//----------------------------------------//			
 
-			myTxtFile << "Unfolded Covariance Matrix \\delta p_{T,x} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\centering" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			myTxtFile << "\\small" << endl;						
+			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Unfolded Covariance Matrix $\\delta p_{T,x}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "Units in " << Units[iplot] << "$^{2}$" << endl;			
+			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			myTxtFile << "\\\\"<< endl;
+			myTxtFile << "\\hline"<< endl;
 
 			for (int xbin = 1; xbin <= NBins; xbin++) {
 
@@ -207,23 +235,36 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 				for (int ybin = 1; ybin <= NBins; ybin++) {	
 
 					double CovBinValue = Cov->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << CovBinValue << "   ";
+					myTxtFile << std::setprecision(6) << " & " << CovBinValue;
 
 				}	
 				
-				myTxtFile << endl;
+				myTxtFile << "\\\\" << endl;
 
 			}	
 
-			myTxtFile << endl << endl;	
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
+			myTxtFile << endl << endl;		
 
 			//----------------------------------------//
 
-			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);
-			myTxtFile << "Additional Smearing Matrix \\delta p_{T,x} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);			
+
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\centering" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			myTxtFile << "\\small" << endl;						
+			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $\\delta p_{T,x}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;
+			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			myTxtFile << "\\\\"<< endl;
+			myTxtFile << "\\hline"<< endl;
 
 			for (int xbin = 1; xbin <= NBins; xbin++) {
 
@@ -232,14 +273,18 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 				for (int ybin = 1; ybin <= NBins; ybin++) {	
 
 					double AcBinValue = Ac->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << AcBinValue << "   ";
+					myTxtFile << std::setprecision(6) << " & " << AcBinValue;
 
 				}	
 				
-				myTxtFile << endl;
+				myTxtFile << "\\\\" << endl;
 
 			}	
 
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;			
 
 			//----------------------------------------//				
@@ -265,7 +310,8 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 				TString InteName = MCSampleBand[igen] + "_" + PlotNames[iplot];
 				MCPlot[igen] = (TH1D*)( fXSec->Get(InteName) );
 				MCPlot[igen]->SetLineColor(MCColors[igen]);		
-				MCPlot[igen]->SetLineStyle(LineStyle[igen]);	
+				MCPlot[igen]->SetLineStyle(LineStyle[igen]);
+				MCPlot[igen]->SetLineWidth(3);					
 				MCPlot[igen]->Draw("same hist");	
 
 				CalcChiSquared(MCPlot[igen],BeamOnShapeStat,Cov,Chi2[igen],Ndof[igen],pval[igen]);
@@ -286,9 +332,9 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			//----------------------------------------//	
 
 			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-			BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);
-			BeamOnNormOnly->SetLineColor(kGray+1);
-			BeamOnNormOnly->SetMarkerColor(kGray+1);			
+			BeamOnNormOnly->SetFillColorAlpha(NormUncBandColor, 0.45);
+			BeamOnNormOnly->SetLineColor(kWhite);
+			BeamOnNormOnly->SetMarkerColor(NormUncBandColor);			
 			BeamOnNormOnly->Draw("e2 same");	
 
 			// Plot the stat+shape again 
@@ -304,7 +350,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			// Legend & Run / POT
 
 			double tor860_wcut = Fulltor860_wcut_Combined;
-			TString Label = ToString(tor860_wcut)+" POT";	
+			TString Label = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";
 
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
@@ -315,14 +361,17 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 
 			//----------------------------------------//	
 
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
-			legData->AddEntry(BeamOnShapeStat,Label,"");				
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");
-			
 			BeamOnStatOnly->Fit(Function,"QR0");
 			sigma[NMC] = Function->GetParameter(2); // sigma
 
-			TLegendEntry* lSigma = legSigma->AddEntry(BeamOnStatOnly,"#sigma_{Data} = " + to_string_with_precision(sigma[NMC],2),"");
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
+			legData->AddEntry(BeamOnShapeStat,Label,"");				
+			legData->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
+			legData->AddEntry(BeamOnNormOnly,"Norm","f");
+			//legData->AddEntry(BeamOnShapeStat,"","");			
+			//legData->AddEntry(BeamOnStatOnly,"#sigma_{Data} = " + to_string_with_precision(sigma[NMC],2),"");						
+
+			TLegendEntry* lSigma = legSigma->AddEntry(BeamOnStatOnly,"#sigma_{Data} = " + to_string_with_precision(sigma[NMC],2) + " GeV/c","");
 			lSigma->SetTextColor(kBlack);							
 
 			leg->Draw();

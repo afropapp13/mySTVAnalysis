@@ -28,16 +28,17 @@ using namespace Constants;
 
 static std::map<TString,TString> Mapping = {
 
-		{ "DeltaAlphaTPlot", "DeltaAlphaTPlot" },
-		{ "SerialDeltaAlphaT_DeltaPTPlot_0", "DeltaAlphaT_DeltaPT_0_00To0_20Plot" },
-		{ "SerialDeltaAlphaT_DeltaPTPlot_1", "DeltaAlphaT_DeltaPT_0_20To0_40Plot" },
-		{ "SerialDeltaAlphaT_DeltaPTPlot_2", "DeltaAlphaT_DeltaPT_0_40To1_00Plot" }
+		{ "MuonCosThetaPlot", "MuonCosThetaPlot" }
+		//{ "SerialDeltaPT_DeltaAlphaTPlot_0", "DeltaPT_DeltaAlphaT_0_00To45_00Plot" },
+		//{ "SerialDeltaPT_DeltaAlphaTPlot_1", "DeltaPT_DeltaAlphaT_45_00To90_00Plot" },
+		//{ "SerialDeltaPT_DeltaAlphaTPlot_2", "DeltaPT_DeltaAlphaT_90_00To135_00Plot" },
+		//{ "SerialDeltaPT_DeltaAlphaTPlot_3", "DeltaPT_DeltaAlphaT_135_00To180_00Plot" }
 
 };
 
 //----------------------------------------//
 
-void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
+void PRD_CosThetaMu_Genie() {
 
 	//----------------------------------------//
 
@@ -58,11 +59,12 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
-	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.12);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.44);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.18);	
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.055);
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
+	PlotNames.push_back("MuonCosThetaPlot"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(22.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)\\,^{40}Ar}$]");
+	//PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.22); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	//PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.26); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	//PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.26); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	//PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_3");	PanelLabels.push_back("(e)"); Min.push_back(0.); Max.push_back(0.27); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -75,7 +77,7 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 
 //	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
 //	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
-//	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18"); MCColors.push_back(OverlayColor); LineStyle.push_back(G18LineStyle);
 //	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB     "); MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
 //	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
@@ -84,16 +86,16 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 //	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
 //	MCSampleBand.push_back("GENIEv2LFG"); Label.push_back("Gv2 LFG");
 //	MCSampleBand.push_back("GENIEv2EffSF"); Label.push_back("Gv2 EffSF");		
-//	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("Untuned"); MCColors.push_back(kMagenta); LineStyle.push_back(kSolid);		
-//	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2"); MCColors.push_back(kBlue); LineStyle.push_back(kSolid);		
-	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA"); MCColors.push_back(kMagenta-6); LineStyle.push_back(kSolid);		
-	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN"); MCColors.push_back(kOrange+6); LineStyle.push_back(kSolid);	
-	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4"); MCColors.push_back(kRed-4); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 No FSI"); MCColors.push_back(kBlue); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box"); Label.push_back("Untuned"); MCColors.push_back(kMagenta); LineStyle.push_back(UntunedLineStyle);	
+	MCSampleBand.push_back("SuSav2"); Label.push_back("G21"); MCColors.push_back(kOrange+6); LineStyle.push_back(G21LineStyle);		
+	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2"); MCColors.push_back(kBlue); LineStyle.push_back(Gv2LineStyle);				
+//	MCSampleBand.push_back("G21hA"); Label.push_back("G21hA");	
+//	MCSampleBand.push_back("G21G4"); Label.push_back("G21G4");
+//	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21NoFSI");		
 //	MCSampleBand.push_back("Genie_v3_0_6_hN2018"); Label.push_back("G18 hN Tune");
 //	MCSampleBand.push_back("Genie_v3_0_6_NoRPA"); Label.push_back("G18 No RPA Tune");
 //	MCSampleBand.push_back("Genie_v3_0_6_RFG"); Label.push_back("G18 RFG Tune");
-//	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF Tune");		
+//	MCSampleBand.push_back("Genie_v3_0_6_EffSF"); Label.push_back("G18 EffSF Tune");			
 
 	int NMC = MCSampleBand.size();
 
@@ -119,7 +121,7 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 		// Open the file that contains all the xsecs
 
 		TString XSecFileName = "../../myXSec/" + UBCodeVersion + "/GenXSec/All_XSecs_Combined_" + UBCodeVersion + ".root";
-		TFile* fXSec = new TFile(XSecFileName,"readonly");	
+		TFile* fXSec = new TFile(XSecFileName,"readonly");
 
 		//----------------------------------------//		
 
@@ -135,33 +137,44 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.14);
-			PlotCanvas->SetTopMargin(0.1);
-			PlotCanvas->SetLeftMargin(0.19);
+			PlotCanvas->SetTopMargin(0.09);
+			PlotCanvas->SetLeftMargin(0.15);
 			PlotCanvas->SetRightMargin(0.01);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.24,0.79,0.76,0.88);
-			leg->SetBorderSize(0);
-			leg->SetTextSize(0.04);
-			leg->SetTextFont(FontStyle);
-			leg->SetNColumns(2);
-			leg->SetMargin(0.13);
-			leg->SetFillStyle(0);			
-
-			TLegend* legData = new TLegend(0.23,0.67,0.67,0.78);
+			TLegend* legData = new TLegend(0.24,0.77,0.66,0.89);			
 			legData->SetBorderSize(0);
-			legData->SetTextSize(0.04);
+			legData->SetTextSize(TextSize);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);	
-			legData->SetFillStyle(0);								
+			legData->SetMargin(0.08);
+			legData->SetFillColor(0);		
+
+			TLegend* legUnc = new TLegend(0.232,0.71,0.642,0.77);			
+			legUnc->SetBorderSize(0);
+			legUnc->SetTextSize(TextSize);
+			legUnc->SetTextFont(FontStyle);
+			legUnc->SetNColumns(2);
+			legUnc->SetMargin(0.2);
+			legUnc->SetFillColor(0);							
+
+//			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
+			TLegend* leg = new TLegend(0.24,0.51,0.68,0.71);			
+			leg->SetBorderSize(0);
+			leg->SetTextSize(TextSize);
+			leg->SetTextFont(FontStyle);
+			leg->SetNColumns(1);
+			leg->SetMargin(0.08);	
+			leg->SetFillColor(0);									
 
 			//----------------------------------------//
 
 			// Get the shape + stat data plot & plot it
 
 			TH1D* BeamOnShapeStat = (TH1D*)( fXSec->Get("StatShape_" + PlotNames[iplot]) );
-			BeamOnShapeStat->GetYaxis()->SetRangeUser(XSecRange[ Mapping[PlotNames[iplot]] ].first, XSecRange[ Mapping[PlotNames[iplot]] ].second);			
+			BeamOnShapeStat->GetYaxis()->SetRangeUser(XSecRange[ Mapping[PlotNames[iplot]] ].first, XSecRange[ Mapping[PlotNames[iplot]] ].second);	
+			BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.);					
+			BeamOnShapeStat->SetLineWidth(2);
 			BeamOnShapeStat->Draw("e1x0 same");	
 
 			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);				
@@ -180,7 +193,8 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 				TString InteName = MCSampleBand[igen] + "_" + PlotNames[iplot];
 				MCPlot[igen] = (TH1D*)( fXSec->Get(InteName) );
 				MCPlot[igen]->SetLineColor(MCColors[igen]);		
-				MCPlot[igen]->SetLineStyle(LineStyle[igen]);	
+				MCPlot[igen]->SetLineStyle(LineStyle[igen]);
+				MCPlot[igen]->SetLineWidth(3);					
 				MCPlot[igen]->Draw("same hist");	
 
 				CalcChiSquared(MCPlot[igen],BeamOnShapeStat,Cov,Chi2[igen],Ndof[igen],pval[igen]);
@@ -193,30 +207,29 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 
 			//----------------------------------------//	
 
-			// Plot the norm only
-
-			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-			//BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);
-			BeamOnNormOnly->SetFillColor(kGray+1);
-			BeamOnNormOnly->SetLineColor(kGray+1);
-			BeamOnNormOnly->SetMarkerColor(kGray+1);			
-			BeamOnNormOnly->Draw("e2 same");			
-
 			// Plot the stat+shape again 
 			// And then the stat only & norm only on top of that
 
+			if (PlotNames[iplot] == "DeltaPTPlot") { BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.1); }
 			BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
 			BeamOnShapeStat->Draw("e1x0 same");
 
 			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
+			BeamOnStatOnly->SetLineWidth(2);			
 			BeamOnStatOnly->Draw("e1x0 same");
+
+			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
+			BeamOnNormOnly->SetFillColor(kGray+1);
+			BeamOnNormOnly->SetLineColor(kGray+1);
+			BeamOnNormOnly->SetMarkerColor(kGray+1);			
+			BeamOnNormOnly->Draw("e2 same");
 
 			//----------------------------------------//
 
 			// Legend & Run / POT
 
 			double tor860_wcut = Fulltor860_wcut_Combined;
-			TString Label = ToString(tor860_wcut)+" POT";	
+			TString Label = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";
 
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
@@ -227,21 +240,25 @@ void PRD_DeltaAlphaTInDeltaPTSlices_FSI() {
 
 			//----------------------------------------//	
 
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
-			legData->AddEntry(BeamOnShapeStat,Label,"");		
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
+			legData->AddEntry(BeamOnShapeStat,Label,"");			
 
-			leg->Draw();
-			legData->Draw();			
+			legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
+			legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
+
+			legData->Draw();
+			legUnc->Draw();	
+			leg->Draw();								
 
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
 			text->SetTextSize(0.06);
-			text->DrawLatexNDC(0.2, 0.94, PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);	
+			//text->DrawLatexNDC(0.2, 0.94, PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);	
+			text->DrawLatexNDC(0.93, 0.86, PanelLabels[iplot]);
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_FSI_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			//delete PlotCanvas;	
 
 			//----------------------------------------//

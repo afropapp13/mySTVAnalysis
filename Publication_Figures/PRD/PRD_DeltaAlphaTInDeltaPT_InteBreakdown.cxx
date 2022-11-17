@@ -24,7 +24,7 @@ using namespace Constants;
 
 //----------------------------------------//
 
-void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
+void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 
 	//----------------------------------------//
 
@@ -37,11 +37,12 @@ void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label;
-	PlotNames.push_back("DeltaPtxPlot"); Label.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9);
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); Label.push_back("(b)"); Min.push_back(0.); Max.push_back(15.49);
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");Label.push_back("(c)"); Min.push_back(0.); Max.push_back(104.);	
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2"); Label.push_back("(d)"); Min.push_back(0.); Max.push_back(13.);
+	vector<TString> PlotNames; vector<double> Min; vector<double> Max;
+	//PlotNames.push_back("DeltaAlphaTPlot");
+	//PlotNames.push_back("DeltaAlphaTPlot"); Min.push_back(0.); Max.push_back(0.12);
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); Min.push_back(0.); Max.push_back(0.34);
+	//PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1"); Min.push_back(0.); Max.push_back(0.18);	
+	//PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); Min.push_back(0.); Max.push_back(0.055);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -51,15 +52,16 @@ void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
 	// MC Samples to compare
 
 	vector<TString> MCSampleBand;
+	 vector<TString> Label;
 
-	MCSampleBand.push_back("OverlayGENIE");
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("(a) G18");
 //	MCSampleBand.push_back("GiBUU");
 //	MCSampleBand.push_back("GiBUUNoFSI");	
 //	MCSampleBand.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");
 //	MCSampleBand.push_back("NEUTv5401_RFG");	
 //	MCSampleBand.push_back("Overlay9NuWro");
-//	MCSampleBand.push_back("GENIEv2");
+	MCSampleBand.push_back("GENIEv2"); Label.push_back("(b) Gv2");
 	// MCSampleBand.push_back("GENIEv2LFG");
 	// MCSampleBand.push_back("GENIEv2EffSF");		
 	// MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box");					
@@ -124,31 +126,32 @@ void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
 				PlotCanvas->SetRightMargin(0.03);				
 				PlotCanvas->Draw();
 
-	//			TLegend* legData = new TLegend(0.51,0.68,0.97,0.8);
-				TLegend* legData = new TLegend(0.23,0.75,0.65,0.87);		
+	//			TLegend* legData = new TLegend(0.23,0.67,0.67,0.78);
+				TLegend* legData = new TLegend(0.23,0.74,0.67,0.86);			
 				legData->SetBorderSize(0);
 				legData->SetTextSize(TextSize);
 				legData->SetTextFont(FontStyle);
 				legData->SetNColumns(1);
-				legData->SetMargin(0.08);
-				legData->SetFillStyle(0);		
+				legData->SetMargin(0.08);	
+				legData->SetFillStyle(0);	
 
-				TLegend* legUnc = new TLegend(0.222,0.69,0.622,0.75);
+	//			TLegend* legUnc = new TLegend(0.23,0.67,0.67,0.78);
+				TLegend* legUnc = new TLegend(0.235,0.68,0.6,0.74);			
 				legUnc->SetBorderSize(0);
 				legUnc->SetTextSize(TextSize);
 				legUnc->SetTextFont(FontStyle);
 				legUnc->SetNColumns(2);
-				legUnc->SetMargin(0.2);
-				legUnc->SetFillStyle(0);							
+				legUnc->SetMargin(0.15);	
+				legUnc->SetFillStyle(0);					
 
-	//			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
-				TLegend* leg = new TLegend(0.65,0.75,0.91,0.86);					
+	//			TLegend* leg = new TLegend(0.24,0.79,0.68,0.88);
+				TLegend* leg = new TLegend(0.64,0.74,0.88,0.86);
 				leg->SetBorderSize(0);
 				leg->SetTextSize(TextSize);
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(2);
-				leg->SetMargin(0.13);	
-				leg->SetFillStyle(0);
+				leg->SetMargin(0.18);
+				leg->SetFillStyle(0);	
 
 				//----------------------------------------//
 
@@ -156,6 +159,7 @@ void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
 
 				TH1D* BeamOnShapeStat = (TH1D*)( fXSec->Get("StatShape_" + PlotNames[iplot]) );
 				BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
+				BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.45);				
 				BeamOnShapeStat->Draw("e1x0 same");
 
 				//----------------------------------------//
@@ -187,7 +191,13 @@ void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
 
 				//----------------------------------------//	
 
-				// Norm only
+				// Plot the stat+shape again 
+				// And then the stat only & norm only on top of that
+
+				BeamOnShapeStat->Draw("e1x0 same");
+
+				TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
+				BeamOnStatOnly->Draw("e1x0 same");
 
 				TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
 				BeamOnNormOnly->SetFillColor(kGray+1);
@@ -196,32 +206,26 @@ void PRD_DeltaPtxInDeltaPty_InteBreakdown() {
 				BeamOnNormOnly->Draw("e2 same");						
 
 				//----------------------------------------//	
-				
+
 				double tor860_wcut = Fulltor860_wcut_Combined;
-				TString LabelPOT = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";				
+				TString LabelPOT = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";
 
 				legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
-				legData->AddEntry(BeamOnShapeStat,LabelPOT,"");			
+				legData->AddEntry(BeamOnShapeStat,LabelPOT,"");	
 
 				legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
 				legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
 
-				legData->Draw();
-				legUnc->Draw();	
+				legData->Draw();	
+				legUnc->Draw();
 				leg->Draw();
 
 				TLatex *textSlice = new TLatex();
 				textSlice->SetTextFont(FontStyle);
 				textSlice->SetTextSize(TextSize);
-				textSlice->DrawLatexNDC(0.2, 0.92, Label[iplot] + " " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);	
+				textSlice->DrawLatexNDC(0.2, 0.92, Label[igen] + ", " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
 
-				// Plot the stat+shape again 
-				// And then the stat only & norm only on top of that
-
-				BeamOnShapeStat->Draw("e1x0 same");
-
-				TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
-				BeamOnStatOnly->Draw("e1x0 same");						
+				gPad->RedrawAxis();
 
 				//----------------------------------------//
 

@@ -52,9 +52,10 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 	// MC Samples to compare
 
 	vector<TString> MCSampleBand;
+	vector<TString> MCSampleLatex;	
 
-	MCSampleBand.push_back("OverlayGENIE");
-//	MCSampleBand.push_back("GiBUU");
+	MCSampleBand.push_back("OverlayGENIE"); MCSampleLatex.push_back("G18");
+	MCSampleBand.push_back("GiBUU"); MCSampleLatex.push_back("GiBUU");
 //	MCSampleBand.push_back("GiBUUNoFSI");	
 //	MCSampleBand.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");
@@ -121,23 +122,35 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 				PlotCanvas->cd();
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
-				PlotCanvas->SetLeftMargin(0.19);
+				PlotCanvas->SetLeftMargin(0.15);
 				PlotCanvas->SetRightMargin(0.03);				
 				PlotCanvas->Draw();
 
-				TLegend* leg = new TLegend(0.62,0.76,0.85,0.85);
-				leg->SetBorderSize(0);
-				leg->SetTextSize(0.05);
-				leg->SetTextFont(FontStyle);
-				leg->SetNColumns(2);
-				leg->SetMargin(0.13);
-
-				TLegend* legData = new TLegend(0.61,0.59,0.94,0.76);
+	//			TLegend* legData = new TLegend(0.51,0.68,0.97,0.8);
+				TLegend* legData = new TLegend(0.54,0.75,0.96,0.87);			
 				legData->SetBorderSize(0);
-				legData->SetTextSize(0.05);
+				legData->SetTextSize(TextSize);
 				legData->SetTextFont(FontStyle);
 				legData->SetNColumns(1);
-				legData->SetMargin(0.08);		
+				legData->SetMargin(0.08);
+				legData->SetFillColor(0);		
+
+				TLegend* legUnc = new TLegend(0.532,0.69,0.942,0.75);			
+				legUnc->SetBorderSize(0);
+				legUnc->SetTextSize(TextSize);
+				legUnc->SetTextFont(FontStyle);
+				legUnc->SetNColumns(2);
+				legUnc->SetMargin(0.2);
+				legUnc->SetFillColor(0);							
+
+	//			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
+				TLegend* leg = new TLegend(0.535,0.59,0.8,0.69);			
+				leg->SetBorderSize(0);
+				leg->SetTextSize(TextSize);
+				leg->SetTextFont(FontStyle);
+				leg->SetNColumns(2);
+				leg->SetMargin(0.29);	
+				leg->SetFillColor(0);		
 
 				//----------------------------------------//
 
@@ -145,6 +158,8 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 
 				TH1D* BeamOnShapeStat = (TH1D*)( fXSec->Get("StatShape_" + PlotNames[iplot]) );
 				BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
+				BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.05);				
+				BeamOnShapeStat->SetLineWidth(2);				
 				BeamOnShapeStat->Draw("e1x0 same");
 
 				//----------------------------------------//
@@ -182,6 +197,7 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 				BeamOnShapeStat->Draw("e1x0 same");
 
 				TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
+				BeamOnStatOnly->SetLineWidth(2);				
 				BeamOnStatOnly->Draw("e1x0 same");
 
 				TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
@@ -192,18 +208,23 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 
 				//----------------------------------------//	
 
-				legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","ep");
-				legData->AddEntry(BeamOnShapeStat,"(Stat #oplus Shape)","");					
-				legData->AddEntry(BeamOnShapeStat,ToString(Fulltor860_wcut_Combined)+" POT","");
-				legData->AddEntry(BeamOnNormOnly,"Norm","f");				
+				double tor860_wcut = Fulltor860_wcut_Combined;
+				TString LabelPOT = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";	
 
-				leg->Draw();
+				legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
+				legData->AddEntry(BeamOnShapeStat,LabelPOT,"");			
+
+				legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
+				legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
+
 				legData->Draw();
+				legUnc->Draw();	
+				leg->Draw();	
 
 				TLatex *textSlice = new TLatex();
 				textSlice->SetTextFont(FontStyle);
 				textSlice->SetTextSize(TextSize);
-				textSlice->DrawLatexNDC(0.2, 0.92, Label[iplot] + " " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
+				textSlice->DrawLatexNDC(0.17, 0.92, Label[iplot] + " " + MCSampleLatex[igen] + ", " + LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
 
 				gPad->RedrawAxis();
 

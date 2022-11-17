@@ -129,7 +129,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot");
 	PlotNames.push_back("SerialDeltaAlphaT_ProtonMomentumPlot");	
 	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot");
-	PlotNames.push_back("SerialDeltaAlpha3D_DeltaPnPlot");			
+	PlotNames.push_back("SerialDeltaAlpha3Dq_DeltaPnPlot");
+	PlotNames.push_back("SerialDeltaAlpha3DMu_DeltaPnPlot");				
 	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot");
 //	PlotNames.push_back("SerialDeltaPn_DeltaPTPlot");
 	//PlotNames.push_back("SerialDeltaPn_DeltaAlphaTPlot");			
@@ -622,12 +623,19 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 
 			}	
 
-			if (PlotNames[WhichPlot] == "SerialDeltaAlpha3D_DeltaPnPlot") {
+			if (PlotNames[WhichPlot] == "SerialDeltaAlpha3Dq_DeltaPnPlot") {
 
 				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaPn); 
-				SliceBinning.push_back(TwoDArrayNBinsDeltaAlpha3DInDeltaPnSlices);
+				SliceBinning.push_back(TwoDArrayNBinsDeltaAlpha3DqInDeltaPnSlices);
 
-			}			
+			}
+
+			if (PlotNames[WhichPlot] == "SerialDeltaAlpha3DMu_DeltaPnPlot") {
+
+				SliceDiscriminators.push_back(TwoDArrayNBinsDeltaPn); 
+				SliceBinning.push_back(TwoDArrayNBinsDeltaAlpha3DMuInDeltaPnSlices);
+
+			}						
 
 			if (PlotNames[WhichPlot] == "SerialDeltaPhiT_DeltaPTPlot") {
 

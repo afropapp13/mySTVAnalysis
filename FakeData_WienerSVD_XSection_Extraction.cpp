@@ -776,7 +776,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
-			TLegend* legData = new TLegend(0.23,0.89,0.85,0.98);
+			TLegend* legData = new TLegend(0.22,0.89,0.79,0.98);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.05);
 			legData->SetTextFont(FontStyle);

@@ -38,10 +38,10 @@ void PRD_DeltaPhiTInDeltaPT_InteBreakdown() {
 	//----------------------------------------//
 
 	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label;
-	PlotNames.push_back("DeltaPhiTPlot"); Label.push_back("(a)"); Min.push_back(0.); Max.push_back(0.36);
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_0"); Label.push_back("(b)"); Min.push_back(0.); Max.push_back(1.6);
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_1");Label.push_back("(c)"); Min.push_back(0.); Max.push_back(0.34);	
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_2"); Label.push_back("(d)"); Min.push_back(0.); Max.push_back(0.044);
+	PlotNames.push_back("DeltaPhiTPlot"); Label.push_back("(a) G18,"); Min.push_back(0.); Max.push_back(0.36);
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_0"); Label.push_back("(b) G18,"); Min.push_back(0.); Max.push_back(1.6);
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_1");Label.push_back("(c) G18,"); Min.push_back(0.); Max.push_back(0.34);	
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_2"); Label.push_back("(d) G18,"); Min.push_back(0.); Max.push_back(0.044);
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -124,23 +124,34 @@ void PRD_DeltaPhiTInDeltaPT_InteBreakdown() {
 				PlotCanvas->SetRightMargin(0.03);				
 				PlotCanvas->Draw();
 
-				TLegend* leg = new TLegend(0.62,0.76,0.85,0.85);
-				if (PlotNames[iplot] == "SerialDeltaPhiT_DeltaPTPlot_2") { leg = new TLegend(0.66,0.76,0.89,0.85); }				
-				leg->SetBorderSize(0);
-				leg->SetTextSize(0.05);
-				leg->SetTextFont(FontStyle);
-				leg->SetNColumns(2);
-				leg->SetMargin(0.13);
-				leg->SetFillStyle(0);				
-
-				TLegend* legData = new TLegend(0.61,0.59,0.94,0.76);
-				if (PlotNames[iplot] == "SerialDeltaPhiT_DeltaPTPlot_2") { legData = new TLegend(0.66,0.59,0.99,0.76); }				
+	//			TLegend* legData = new TLegend(0.51,0.68,0.97,0.8);
+				TLegend* legData = new TLegend(0.5,0.75,0.92,0.87);
+				if (iplot == 3) { legData = new TLegend(0.24,0.74,0.66,0.86); }			
 				legData->SetBorderSize(0);
-				legData->SetTextSize(0.05);
+				legData->SetTextSize(TextSize);
 				legData->SetTextFont(FontStyle);
 				legData->SetNColumns(1);
-				legData->SetMargin(0.08);	
-				legData->SetFillStyle(0);					
+				legData->SetMargin(0.08);
+				legData->SetFillColor(0);		
+
+				TLegend* legUnc = new TLegend(0.492,0.69,0.892,0.75);
+				if (iplot == 3) { legUnc = new TLegend(0.232,0.68,0.622,0.74); }						
+				legUnc->SetBorderSize(0);
+				legUnc->SetTextSize(TextSize);
+				legUnc->SetTextFont(FontStyle);
+				legUnc->SetNColumns(2);
+				legUnc->SetMargin(0.2);
+				legUnc->SetFillColor(0);							
+
+	//			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
+				TLegend* leg = new TLegend(0.5,0.59,0.74,0.69);	
+				if (iplot == 3) { leg = new TLegend(0.64,0.74,0.9,0.86); }					
+				leg->SetBorderSize(0);
+				leg->SetTextSize(TextSize);
+				leg->SetTextFont(FontStyle);
+				leg->SetNColumns(2);
+				leg->SetMargin(0.25);	
+				leg->SetFillColor(0);					
 
 				//----------------------------------------//
 
@@ -193,15 +204,20 @@ void PRD_DeltaPhiTInDeltaPT_InteBreakdown() {
 				BeamOnNormOnly->SetMarkerColor(kGray+1);		
 				BeamOnNormOnly->Draw("e2 same");						
 
-				//----------------------------------------//	
+				//----------------------------------------//
+				
+				double tor860_wcut = Fulltor860_wcut_Combined;
+				TString LabelPOT = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";					
 
-				legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","ep");
-				legData->AddEntry(BeamOnShapeStat,"(Stat #oplus Shape)","");					
-				legData->AddEntry(BeamOnShapeStat,ToString(Fulltor860_wcut_Combined)+" POT","");
-				legData->AddEntry(BeamOnNormOnly,"Norm","f");				
+				legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
+				legData->AddEntry(BeamOnShapeStat,LabelPOT,"");			
 
-				leg->Draw();
+				legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
+				legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
+
 				legData->Draw();
+				legUnc->Draw();	
+				leg->Draw();
 
 				TLatex *textSlice = new TLatex();
 				textSlice->SetTextFont(FontStyle);

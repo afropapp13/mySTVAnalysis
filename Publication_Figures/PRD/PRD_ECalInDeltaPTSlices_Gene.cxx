@@ -58,11 +58,11 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
-	PlotNames.push_back("ECalPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(24.);
-	PlotNames.push_back("SerialECal_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(64.);
-	PlotNames.push_back("SerialECal_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(37.);	
-	PlotNames.push_back("SerialECal_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(8.5);
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
+	PlotNames.push_back("ECalPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(24.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{GeV\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialECal_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(64.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialECal_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(37.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/c)\\,^{40}Ar}$]"); 	
+	PlotNames.push_back("SerialECal_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(8.5); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/c)\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -75,11 +75,11 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 //	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
 //	MCSampleBand.push_back("Genie_v3_0_6_NoFSI"); Label.push_back("G18 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kDashed);	
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18    "); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU"); MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("G18    "); MCColors.push_back(OverlayColor); LineStyle.push_back(G18LineStyle);
+	MCSampleBand.push_back("GiBUU"); Label.push_back("GiBUU"); MCColors.push_back(GiBUUColor); LineStyle.push_back(GiBUULineStyle);	
 //	MCSampleBand.push_back("GiBUUTscaling"); Label.push_back("GiBUUTscaling");	
-	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT"); MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("Overlay9NuWro");  Label.push_back("NuWro"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
+	MCSampleBand.push_back("NEUT");  Label.push_back("NEUT"); MCColors.push_back(kMagenta-9); LineStyle.push_back(NEUTLineStyle);
+	MCSampleBand.push_back("Overlay9NuWro");  Label.push_back("NuWro"); MCColors.push_back(NEUTColor); LineStyle.push_back(NuWroLineStyle);	
 //	MCSampleBand.push_back("NEUTv5401_RFG");  Label.push_back("NEUTv5401_RFG");	
 //	MCSampleBand.push_back("Overlay9NuWro"); Label.push_back("NuWro");
 //	MCSampleBand.push_back("GENIEv2"); Label.push_back("Gv2");
@@ -125,7 +125,7 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 		// Data release
 
-		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/PRD_XSec_ECalInDeltaPT.txt";
+		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/PRD_XSec_ECalInDeltaPT.tex";
 		ofstream myTxtFile;
 		myTxtFile.open(TxtName);		
 
@@ -148,21 +148,31 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 			PlotCanvas->SetRightMargin(0.05);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.24,0.79,0.68,0.88);
-			leg->SetBorderSize(0);
-			leg->SetTextSize(0.04);
-			leg->SetTextFont(FontStyle);
-			leg->SetNColumns(2);
-			leg->SetMargin(0.13);
-			leg->SetFillStyle(0);			
-
-			TLegend* legData = new TLegend(0.23,0.67,0.67,0.78);
+//			TLegend* legData = new TLegend(0.51,0.68,0.97,0.8);
+			TLegend* legData = new TLegend(0.24,0.76,0.66,0.88);			
 			legData->SetBorderSize(0);
-			legData->SetTextSize(0.04);
+			legData->SetTextSize(TextSize);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);	
-			legData->SetFillStyle(0);								
+			legData->SetMargin(0.08);
+			legData->SetFillStyle(0);
+
+			TLegend* legUnc = new TLegend(0.232,0.7,0.642,0.76);			
+			legUnc->SetBorderSize(0);
+			legUnc->SetTextSize(TextSize);
+			legUnc->SetTextFont(FontStyle);
+			legUnc->SetNColumns(2);
+			legUnc->SetMargin(0.2);
+			legUnc->SetFillColor(0);							
+
+//			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
+			TLegend* leg = new TLegend(0.64,0.7,0.9,0.88);			
+			leg->SetBorderSize(0);
+			leg->SetTextSize(TextSize);
+			leg->SetTextFont(FontStyle);
+			leg->SetNColumns(1);
+			leg->SetMargin(0.08);	
+			leg->SetFillColor(0);								
 
 			//----------------------------------------//
 
@@ -173,6 +183,7 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 			BeamOnShapeStat->GetYaxis()->SetNdivisions(6);
 			BeamOnShapeStat->GetYaxis()->SetLabelOffset(0.006);
 			BeamOnShapeStat->GetXaxis()->SetLabelOffset(0.015);									
+			BeamOnShapeStat->SetLineWidth(2);
 			BeamOnShapeStat->Draw("e1x0 same");	
 
 			TH2D* Cov = (TH2D*)fXSec->Get("UnfCov_"+PlotNames[iplot]);				
@@ -185,8 +196,20 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 			TH1D* BeamOnFullUnc = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) );	
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
-			myTxtFile << "Cross Section \\ECal " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "Bin # & Low bin edge & High bin edge & Cross Section [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}] & Uncertainty [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}]" << endl << endl;			
+			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\raggedright" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						
+			myTxtFile << "\\small" << endl;
+			myTxtFile << "\\begin{tabular}{ |c|c|c|c|c| }" << endl;	
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "Bin \\# & Low edge [GeV] & High edge [GeV] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;	
 
 			for (int ibin = 1; ibin <= NBins; ibin++) {
 
@@ -196,18 +219,31 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 				double BinValue = BeamOnFullUnc->GetBinContent(ibin);
 				double BinError = BeamOnFullUnc->GetBinError(ibin);				
 
-				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << endl;
+				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << "\\\\" << endl;
 
 			}
 			
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;
 
 			//----------------------------------------//			
 
-			myTxtFile << "Unfolded Covariance Matrix \\ECal " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\centering" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			myTxtFile << "\\small" << endl;						
+			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Unfolded Covariance Matrix $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "Units in " << Units[iplot] << "$^{2}$" << endl;			
+			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			myTxtFile << "\\\\"<< endl;
+			myTxtFile << "\\hline"<< endl;
 
 			for (int xbin = 1; xbin <= NBins; xbin++) {
 
@@ -216,23 +252,36 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 				for (int ybin = 1; ybin <= NBins; ybin++) {	
 
 					double CovBinValue = Cov->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << CovBinValue << "   ";
+					myTxtFile << std::setprecision(6) << " & " << CovBinValue;
 
 				}	
 				
-				myTxtFile << endl;
+				myTxtFile << "\\\\" << endl;
 
 			}	
 
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;	
 
 			//----------------------------------------//
 
-			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);
-			myTxtFile << "Additional Smearing Matrix \\ECal " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);			
+
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\centering" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			myTxtFile << "\\small" << endl;						
+			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;
+			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			myTxtFile << "\\\\"<< endl;
+			myTxtFile << "\\hline"<< endl;
 
 			for (int xbin = 1; xbin <= NBins; xbin++) {
 
@@ -241,14 +290,18 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 				for (int ybin = 1; ybin <= NBins; ybin++) {	
 
 					double AcBinValue = Ac->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << AcBinValue << "   ";
+					myTxtFile << std::setprecision(6) << " & " << AcBinValue;
 
 				}	
 				
-				myTxtFile << endl;
+				myTxtFile << "\\\\" << endl;
 
 			}	
 
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;			
 
 			//----------------------------------------//
@@ -266,7 +319,8 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 				TString InteName = MCSampleBand[igen] + "_" + PlotNames[iplot];
 				MCPlot[igen] = (TH1D*)( fXSec->Get(InteName) );
 				MCPlot[igen]->SetLineColor(MCColors[igen]);		
-				MCPlot[igen]->SetLineStyle(LineStyle[igen]);	
+				MCPlot[igen]->SetLineStyle(LineStyle[igen]);
+				MCPlot[igen]->SetLineWidth(3);					
 				MCPlot[igen]->Draw("same hist");	
 
 				CalcChiSquared(MCPlot[igen],BeamOnShapeStat,Cov,Chi2[igen],Ndof[igen],pval[igen]);
@@ -295,6 +349,7 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 			BeamOnShapeStat->Draw("e1x0 same");
 
 			TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
+			BeamOnStatOnly->SetLineWidth(2);
 			BeamOnStatOnly->Draw("e1x0 same");
 
 			//----------------------------------------//
@@ -302,7 +357,7 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 			// Legend & Run / POT
 
 			double tor860_wcut = Fulltor860_wcut_Combined;
-			TString Label = ToString(tor860_wcut)+" POT";	
+			TString Label = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";	
 
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
@@ -313,12 +368,15 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 			//----------------------------------------//	
 
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
-			legData->AddEntry(BeamOnShapeStat,Label,"");		
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
+			legData->AddEntry(BeamOnShapeStat,Label,"");			
 
-			leg->Draw();
-			legData->Draw();			
+			legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
+			legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
+
+			legData->Draw();
+			legUnc->Draw();	
+			leg->Draw();			
 
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);

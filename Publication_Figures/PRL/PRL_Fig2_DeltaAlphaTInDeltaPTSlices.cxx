@@ -39,17 +39,18 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 
 	int DecimalAccuracy = 2;
 	int FontStyle = 132;
-	double TextSize = 0.06;	
+	double TextSize = 0.05;	
+	double LegendTextSize = 0.07;		
 
 	TH1D::SetDefaultSumw2();
 	gStyle->SetEndErrorSize(4);			
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
-	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.12);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.37);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2");	PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.059);
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
+	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.104); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.32); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2");	PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.054); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -60,10 +61,15 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 
 	vector<TString> MCSampleBand; vector<TString> Label; vector<int> MCColors;  vector<int> LineStyle;
 
-	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 No FSI"); MCColors.push_back(OverlayColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA");  MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);	
-	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN");	 MCColors.push_back(NEUTColor); LineStyle.push_back(kSolid);
-	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4");  MCColors.push_back(GiBUUColor); LineStyle.push_back(kSolid);	
+//	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 no-FSI"); MCColors.push_back(kBlue+1); LineStyle.push_back(kDashed);
+//	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA");  MCColors.push_back(kAzure+9); LineStyle.push_back(kSolid);	
+//	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN"); MCColors.push_back(kBlue-8); LineStyle.push_back(kSolid);
+//	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4");  MCColors.push_back(kAzure+3); LineStyle.push_back(kSolid);	
+
+	MCSampleBand.push_back("G21NoFSI"); Label.push_back("G21 no-FSI"); MCColors.push_back(kBlue+1); LineStyle.push_back(kDashed);
+	MCSampleBand.push_back("G21hA"); Label.push_back("G21 hA");  MCColors.push_back(kViolet-4); LineStyle.push_back(kSolid);	
+	MCSampleBand.push_back("SuSav2"); Label.push_back("G21 hN"); MCColors.push_back(kGreen-2); LineStyle.push_back(kSolid);
+	MCSampleBand.push_back("G21G4"); Label.push_back("G21 G4");  MCColors.push_back(kOrange+6); LineStyle.push_back(kSolid);		
 
 //	MCSampleBand.push_back("GiBUUNoFSI"); Label.push_back("GiB No FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kDashed);
 //	MCSampleBand.push_back("GiBUU"); Label.push_back("GiB FSI"); MCColors.push_back(NuWroColor); LineStyle.push_back(kSolid);
@@ -112,7 +118,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 
 		// Data release
 
-		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/XSec_DeltaAlphaTInDeltaPT.txt";
+		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/XSec_DeltaAlphaTInDeltaPT.tex";
 		ofstream myTxtFile;
 		myTxtFile.open(TxtName);		
 
@@ -131,25 +137,46 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.14);
 			PlotCanvas->SetTopMargin(0.1);
-			PlotCanvas->SetLeftMargin(0.19);
-			PlotCanvas->SetRightMargin(0.04);				
+			PlotCanvas->SetLeftMargin(0.18);
+			PlotCanvas->SetRightMargin(0.03);				
 			PlotCanvas->Draw();
 
-			TLegend* leg = new TLegend(0.23,0.78,0.72,0.88);
-			leg->SetBorderSize(0);
-			leg->SetTextSize(0.04);
-			leg->SetTextFont(FontStyle);
-			leg->SetNColumns(2);
-			leg->SetMargin(0.13);
-			leg->SetFillStyle(0);			
-
-			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
+//			TLegend* legData = new TLegend(0.22,0.68,0.77,0.78);
+			TLegend* legData = new TLegend(0.28,0.3,0.82,0.42);	
+			if (iplot == 2) { legData = new TLegend(0.22,0.76,0.77,0.88); }		
 			legData->SetBorderSize(0);
-			legData->SetTextSize(0.04);
+			legData->SetTextSize(LegendTextSize);
 			legData->SetTextFont(FontStyle);
 			legData->SetNColumns(1);
-			legData->SetMargin(0.08);
-			legData->SetFillStyle(0);									
+			legData->SetMargin(0.07);
+			legData->SetFillStyle(0);
+
+			TLegend* legUnc = new TLegend(0.28,0.24,0.68,0.3);	
+			if (iplot == 2) { legUnc = new TLegend(0.22,0.7,0.63,0.76); }						
+			legUnc->SetBorderSize(0);
+			legUnc->SetTextSize(LegendTextSize);
+			legUnc->SetTextFont(FontStyle);
+			legUnc->SetNColumns(2);
+			legUnc->SetMargin(0.18);
+			legUnc->SetFillStyle(0);						
+
+//			TLegend* leg = new TLegend(0.23,0.78,0.72,0.88);
+			TLegend* leg = new TLegend(0.21,0.22,0.96,0.34);
+			if (iplot == 2) { leg = new TLegend(0.225,0.46,0.8,0.7); }			
+			leg->SetBorderSize(0);
+			leg->SetTextSize(LegendTextSize);
+			leg->SetTextFont(FontStyle);			
+			leg->SetNColumns(2);			
+			leg->SetMargin(0.13);
+			if (iplot != 2) { leg->SetMargin(0.07); }
+			leg->SetFillStyle(0);	
+
+			if (iplot == 2) { 
+				
+				leg->SetNColumns(1); 
+				leg->SetMargin(0.06);
+
+			}
 
 			//----------------------------------------//
 
@@ -170,8 +197,20 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			TH1D* BeamOnFullUnc = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) );	
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
-			myTxtFile << "Cross Section \\delta alpha_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "Bin # & Low bin edge & High bin edge & Cross Section [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}] & Uncertainty [10^{-38} \\frac{cm^{2}}{GeV/c ^{40}Ar}]" << endl << endl;			
+			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\raggedright" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						
+			myTxtFile << "\\small" << endl;
+			myTxtFile << "\\begin{tabular}{ |c|c|c|c|c| }" << endl;	
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\delta\\alpha_{T}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "Bin \\# & Low edge [deg] & High edge [deg] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;	
 
 			for (int ibin = 1; ibin <= NBins; ibin++) {
 
@@ -181,18 +220,31 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 				double BinValue = BeamOnFullUnc->GetBinContent(ibin);
 				double BinError = BeamOnFullUnc->GetBinError(ibin);				
 
-				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << endl;
+				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(5) << " & " << BinValue << " & " <<  BinError << "\\\\" << endl;
 
 			}
 			
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;
 
 			//----------------------------------------//			
 
-			myTxtFile << "Unfolded Covariance Matrix \\delta\\alpha_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\centering" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			myTxtFile << "\\small" << endl;						
+			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Unfolded Covariance Matrix $\\delta\\alpha_{T}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "Units in " << Units[iplot] << "$^{2}$" << endl;			
+			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			myTxtFile << "\\\\"<< endl;
+			myTxtFile << "\\hline"<< endl;
 
 			for (int xbin = 1; xbin <= NBins; xbin++) {
 
@@ -201,23 +253,36 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 				for (int ybin = 1; ybin <= NBins; ybin++) {	
 
 					double CovBinValue = Cov->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << CovBinValue << "   ";
+					myTxtFile << std::setprecision(6) << " & " << CovBinValue;
 
 				}	
 				
-				myTxtFile << endl;
+				myTxtFile << "\\\\" << endl;
 
 			}	
 
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;	
 
 			//----------------------------------------//
 
 			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);
-			myTxtFile << "Additional Smearing Matrix \\delta\\alpha_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+
+			myTxtFile << "\\begin{table}[H]" << endl;
+			myTxtFile << "\\centering" << endl;	
+			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			myTxtFile << "\\small" << endl;						
+			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			myTxtFile << "\\hline" << endl;						
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $\\delta\\alpha_{T}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\hline" << endl;
+			myTxtFile << "\\hline" << endl;
+			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			myTxtFile << "\\\\"<< endl;
+			myTxtFile << "\\hline"<< endl;
 
 			for (int xbin = 1; xbin <= NBins; xbin++) {
 
@@ -226,14 +291,18 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 				for (int ybin = 1; ybin <= NBins; ybin++) {	
 
 					double AcBinValue = Ac->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << AcBinValue << "   ";
+					myTxtFile << std::setprecision(6) << " & " << AcBinValue;
 
 				}	
 				
-				myTxtFile << endl;
+				myTxtFile << "\\\\" << endl;
 
 			}	
 
+			myTxtFile << "\\hline" << endl;			
+			myTxtFile << "\\end{tabular}" << endl;
+			myTxtFile << "\\end{adjustbox}" << endl;		
+			myTxtFile << "\\end{table}" << endl;				
 			myTxtFile << endl << endl;			
 
 			//----------------------------------------//					
@@ -251,7 +320,8 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 				TString InteName = MCSampleBand[igen] + "_" + PlotNames[iplot];
 				MCPlot[igen] = (TH1D*)( fXSec->Get(InteName) );
 				MCPlot[igen]->SetLineColor(MCColors[igen]);		
-				MCPlot[igen]->SetLineStyle(LineStyle[igen]);	
+				MCPlot[igen]->SetLineStyle(LineStyle[igen]);
+				MCPlot[igen]->SetLineWidth(3);					
 				MCPlot[igen]->Draw("same hist");	
 
 				CalcChiSquared(MCPlot[igen],BeamOnShapeStat,Cov,Chi2[igen],Ndof[igen],pval[igen]);
@@ -265,9 +335,9 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			//----------------------------------------//	
 
 			TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
-			BeamOnNormOnly->SetFillColorAlpha(kGray+1, 0.45);
-			BeamOnNormOnly->SetLineColor(kGray+1);
-			BeamOnNormOnly->SetMarkerColor(kGray+1);			
+			BeamOnNormOnly->SetFillColorAlpha(NormUncBandColor, 0.45);
+			BeamOnNormOnly->SetLineColor(kWhite);
+			BeamOnNormOnly->SetMarkerColor(NormUncBandColor);
 			BeamOnNormOnly->Draw("e2 same");	
 
 			// Plot the stat+shape again 
@@ -283,7 +353,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			// Legend & Run / POT
 
 			double tor860_wcut = Fulltor860_wcut_Combined;
-			TString Label = ToString(tor860_wcut)+" POT";	
+			TString Label = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";	
 
 			TLatex *textPOT = new TLatex();
 			textPOT->SetTextFont(FontStyle);
@@ -292,12 +362,16 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 
 			//----------------------------------------//	
 
-			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data (Stat #oplus Shape)","ep");
-			legData->AddEntry(BeamOnShapeStat,Label,"");				
-			legData->AddEntry(BeamOnNormOnly,"Norm","f");				
+			legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
+			legData->AddEntry(BeamOnShapeStat,Label,"");			
+//			legData->AddEntry(BeamOnShapeStat,Label,"");
 
+			legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
+			legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
+
+			if (iplot == 2) { legData->Draw(); }
+			if (iplot == 2) { legUnc->Draw();}					
 			leg->Draw();
-			legData->Draw();			
 
 			TLatex *text = new TLatex();
 			text->SetTextFont(FontStyle);
@@ -305,7 +379,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			text->DrawLatexNDC(0.2, 0.94,  PanelLabels[iplot] + " " + LatexLabel[ Mapping[PlotNames[iplot]] ]);	
 
 			//----------------------------------------//
-
+/*
 			// Transparency pad
 
 			TPad* pad = new TPad("pad","pad",0.3,0.2,0.85,0.38, 21);
@@ -356,7 +430,7 @@ void PRL_Fig2_DeltaAlphaTInDeltaPTSlices() {
 			textFSI->DrawLatexNDC(0.2, 0.84, "FSI/No FSI");			
 
 			gPad->RedrawAxis();										
-
+*/
 			//----------------------------------------//
 
 			gPad->RedrawAxis();			
