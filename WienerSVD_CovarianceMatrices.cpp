@@ -28,7 +28,7 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	TString CanvasName = Syst+"_"+PlotNames+BaseMC+"_"+Runs;
 	TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 	PlotCanvas->cd();
-	PlotCanvas->SetBottomMargin(0.16);
+	PlotCanvas->SetBottomMargin(0.17);
 	PlotCanvas->SetLeftMargin(0.15);
 	PlotCanvas->SetRightMargin(0.25);			
 	
@@ -585,7 +585,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 				TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 				TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
-				EventRatePlotCanvas->SetBottomMargin(0.16);
+				EventRatePlotCanvas->SetBottomMargin(0.17);
 				EventRatePlotCanvas->SetLeftMargin(0.15);
 
 				TLegend* leg = new TLegend(0.2,0.91,0.9,0.99);
@@ -668,7 +668,7 @@ void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overla
 
 					TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 					TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
-					EventRatePlotCanvas->SetBottomMargin(0.16);
+					EventRatePlotCanvas->SetBottomMargin(0.17);
 					EventRatePlotCanvas->SetLeftMargin(0.15);
 
 					TLegend* leg = new TLegend(0.32,0.91,0.9,0.99);

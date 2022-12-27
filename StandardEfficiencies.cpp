@@ -176,7 +176,7 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 					TString CanvasName = NameOfSamples[WhichSample]+"_"+PlotNamesClone[WhichPlot];
 					TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 					PlotCanvas->cd();
-					PlotCanvas->SetBottomMargin(0.16);
+					PlotCanvas->SetBottomMargin(0.17);
 					PlotCanvas->SetLeftMargin(0.15);								
 
 					TLegend* leg = new TLegend(0.25,0.92,0.9,1.);

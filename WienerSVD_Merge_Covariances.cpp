@@ -126,7 +126,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 				    
 		for (int i = 0; i < n+1; i++) { Nuedges[i] = LocalCovMatrix->GetXaxis()->GetBinLowEdge(i+1); }
 
-		TH1D* unc = new TH1D("unc_"+PlotName+"_"+Run+"_"+UncSources,";"+TitleX+";Uncertainty [%]",n,Nuedges);	
+		TH1D* unc = new TH1D("unc_"+PlotName+"_"+Run+"_"+UncSources,";"+TitleX+";Uncertainty [%], " + LatexLabel[ PlotName ],n,Nuedges);	
 
         for (int i = 1; i <= n; i++) {
 
@@ -149,7 +149,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		unc->GetYaxis()->CenterTitle();
 		unc->GetYaxis()->SetNdivisions(5);
 		unc->GetYaxis()->SetTitleOffset(0.7);				
-		unc->GetYaxis()->SetRangeUser(0.,34.);
+		unc->GetYaxis()->SetRangeUser(0.,49.);
 
 		if (PlotName == "DeltaPTPlot") { unc->GetYaxis()->SetRangeUser(0.,46.); }
 		if (PlotName == "DeltaAlphaTPlot") { unc->GetYaxis()->SetRangeUser(0.,18.); }

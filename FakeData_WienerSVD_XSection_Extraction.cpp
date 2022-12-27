@@ -520,7 +520,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 			TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
-			PlotCanvas->SetBottomMargin(0.16);
+			PlotCanvas->SetBottomMargin(0.17);
 			PlotCanvas->SetTopMargin(0.13);			
 			PlotCanvas->SetLeftMargin(0.21);			
 		

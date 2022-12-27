@@ -176,7 +176,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false, TString Tune =
 					TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+NameOfSamples[WhichSample],
 							    PlotNames[WhichPlot]+NameOfSamples[WhichSample],205,34,1024,768);
 					PlotCanvas->cd();
-					PlotCanvas->SetBottomMargin(0.16);
+					PlotCanvas->SetBottomMargin(0.17);
 					PlotCanvas->SetLeftMargin(0.15);
 					PlotCanvas->SetRightMargin(0.15);				
 					
