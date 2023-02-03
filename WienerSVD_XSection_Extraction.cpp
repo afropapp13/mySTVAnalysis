@@ -896,7 +896,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 				TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
 				SmearPlotCanvas->cd();
-				SmearPlotCanvas->SetBottomMargin(0.16);
+				SmearPlotCanvas->SetBottomMargin(0.17);
 				SmearPlotCanvas->SetTopMargin(0.13);			
 				SmearPlotCanvas->SetLeftMargin(0.2);
 				SmearPlotCanvas->SetRightMargin(0.2);
@@ -932,7 +932,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				TLatex *text = new TLatex();
 				text->SetTextFont(FontStyle);
 				text->SetTextSize(0.06);
-				text->DrawTextNDC(0.47, 0.92, Runs[WhichRun]);
+				text->DrawTextNDC(0.3, 0.92, Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
 				TString SmearCanvas = "/Smear_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);

@@ -60,9 +60,9 @@ void PRD_ECalInDeltaPtySlices_Gene() {
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
 //	PlotNames.push_back("ECalPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9);
-	PlotNames.push_back("SerialECal_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(13.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialECal_DeltaPtyPlot_1");PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(49.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/c)\\,^{40}Ar}$]");	
-	PlotNames.push_back("SerialECal_DeltaPtyPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(9.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialECal_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(13.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialECal_DeltaPtyPlot_1");PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(49.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]");	
+	PlotNames.push_back("SerialECal_DeltaPtyPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(9.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -196,7 +196,7 @@ void PRD_ECalInDeltaPtySlices_Gene() {
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
 			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
-			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p").ReplaceAll("/c","/\\textit{c}");
 			myTxtFile << "\\begin{table}[H]" << endl;
 			myTxtFile << "\\raggedright" << endl;	
 			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						

@@ -69,6 +69,8 @@ do
 		
 		cp ${OverlayXSec}/ResponseMatrices_${plot}Overlay9_Combined_v08_00_00_52.pdf	"${OutPutDir}"
 		
+		cp ${OverlayXSec}/Smear_WienerSVD_XSections_${plot}_Combined_v08_00_00_52.pdf	"${OutPutDir}"			
+		
 		cp ${OverlayXSec}/ClosureTest_WienerSVD_XSections_${plot}_Combined_v08_00_00_52.pdf	"${OutPutDir}"	
 		
 		cp ${OverlayXSec}/MCERSyst_${plot}Overlay9_Combined.pdf	"${OutPutDir}"	

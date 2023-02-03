@@ -49,9 +49,9 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 	//----------------------------------------//
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
-	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(42.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(14.9); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^2\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(109.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^2\\,^{40}Ar}$]");
+	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(42.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(14.9); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})^2\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(109.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})^2\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -180,7 +180,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
 			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
-			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p").ReplaceAll("/c","/\\textit{c}");
 			myTxtFile << "\\begin{table}[H]" << endl;
 			myTxtFile << "\\raggedright" << endl;	
 			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						
@@ -190,7 +190,7 @@ void PRL_Fig3_DeltaPtxInDeltaPtySlices() {
 			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\delta p_{T,x}$, " << LatexLabelString << "} \\\\" << endl;
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "Bin \\# & Low edge [GeV/c] & High edge [GeV/c] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "Bin \\# & Low edge [GeV/$\\textit{c}$] & High edge [GeV/$\\textit{c}$] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;	
 

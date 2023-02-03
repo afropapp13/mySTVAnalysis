@@ -60,11 +60,11 @@ void PRD_DeltaPTInDeltaAlphaTSlices_Gene() {
 	//----------------------------------------//
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
-	PlotNames.push_back("DeltaPTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(44.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.22); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.26); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.26); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_3");	PanelLabels.push_back("(e)"); Min.push_back(0.); Max.push_back(0.27); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("DeltaPTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(44.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.22); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.26); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.26); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot_3");	PanelLabels.push_back("(e)"); Min.push_back(0.); Max.push_back(0.27); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -209,7 +209,7 @@ void PRD_DeltaPTInDeltaAlphaTSlices_Gene() {
 			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\delta p_{T}$, " << LatexLabelString << "} \\\\" << endl;
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "Bin \\# & Low edge [GeV/c] & High edge [GeV/c] & Cross Section " << Units[iplot] <<" & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "Bin \\# & Low edge [GeV/$\\textit{c}$] & High edge [GeV/$\\textit{c}$] & Cross Section " << Units[iplot] <<" & Uncertainty " << Units[iplot] << " \\\\" << endl;			
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;	
 

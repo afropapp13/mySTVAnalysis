@@ -59,10 +59,10 @@ void PRD_DeltaPtxInDeltaPtySlices_Gene() {
 	//----------------------------------------//
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
-	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(15.49); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^{2}\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(104.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^{2}\\,^{40}Ar}$]");	
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(13.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/c)^{2}\\,^{40}Ar}$]");
+	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(15.49); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})^{2}\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(104.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})^{2}\\,^{40}Ar}$]");	
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(13.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV/\\textit{c})^{2}\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -194,7 +194,7 @@ void PRD_DeltaPtxInDeltaPtySlices_Gene() {
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
 			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
-			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p").ReplaceAll("/c","/\\textit{c}");
 			myTxtFile << "\\begin{table}[H]" << endl;
 			myTxtFile << "\\raggedright" << endl;	
 			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						
@@ -204,7 +204,7 @@ void PRD_DeltaPtxInDeltaPtySlices_Gene() {
 			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\delta p_{T,x}$, " << LatexLabelString << "} \\\\" << endl;
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "Bin \\# & Low edge [GeV/c] & High edge [GeV/c] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "Bin \\# & Low edge [GeV/$\\textit{c}$] & High edge [GeV/$\\textit{c}$] & Cross Section " << Units[iplot] << " & Uncertainty " << Units[iplot] << " \\\\" << endl;			
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;				
 

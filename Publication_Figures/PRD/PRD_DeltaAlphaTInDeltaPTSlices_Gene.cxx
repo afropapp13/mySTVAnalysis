@@ -60,9 +60,9 @@ void PRD_DeltaAlphaTInDeltaPTSlices_Gene() {
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
 	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.12); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.31); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.21);  Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");	
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.055);  Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.31); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.21);  Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");	
+	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.055);  Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -198,7 +198,7 @@ void PRD_DeltaAlphaTInDeltaPTSlices_Gene() {
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
 			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
-			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p").ReplaceAll("/c","/\\textit{c}");
 			myTxtFile << "\\begin{table}[H]" << endl;
 			myTxtFile << "\\raggedright" << endl;	
 			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						

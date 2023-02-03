@@ -60,9 +60,9 @@ void PRD_DeltaPhiTInDeltaPTSlices_Gene() {
 
 	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
 	PlotNames.push_back("DeltaPhiTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.36); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(1.6); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.34); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");	
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.044); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/c)\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(1.6); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.34); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");	
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.044); Units.push_back("[$10^{-38}\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,^{40}Ar}$]");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -198,7 +198,7 @@ void PRD_DeltaPhiTInDeltaPTSlices_Gene() {
 			int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 
 			TString LatexLabelString = "$"+LatexLabel[ Mapping[ PlotNames[iplot] ] ]+"$";
-			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p");
+			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,").ReplaceAll("\\deltap","\\delta p").ReplaceAll("/c","/\\textit{c}");
 			myTxtFile << "\\begin{table}[H]" << endl;
 			myTxtFile << "\\raggedright" << endl;	
 			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;						
@@ -277,7 +277,7 @@ void PRD_DeltaPhiTInDeltaPTSlices_Gene() {
 			myTxtFile << "\\small" << endl;						
 			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
 			myTxtFile << "\\hline" << endl;						
-			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $\\delta p_{T}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $\\delta\\phi_{T}$, " << LatexLabelString << "} \\\\" << endl;
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;
 			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
