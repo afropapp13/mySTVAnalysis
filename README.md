@@ -6,6 +6,7 @@ root -b script_G4_Systematics.C
 root -b script_Genie_Systematics.C
 root -b script_Flux_Systematics.C
 root -b script_MC_Stat_Systematics.C
+root -b script_NuWro.C
 
 #################################################################################################################################
 
@@ -13,7 +14,6 @@ root -b script_MC_Stat_Systematics.C
 
 root -b script_WienerSVD_Systematics.C
 root -b WienerSVD_Merge_Covariances.cpp
-#root -b WienerSVD_QuantifyUnc.cpp # most likely to be removed 
 root -b script_WienerSVD_XSec.C
 
 #################################################################################################################################

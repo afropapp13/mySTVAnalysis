@@ -124,7 +124,7 @@ void Detector_Systematics_LY() {
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 
-		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"CCQEWienerSTV_ExtractedXSec_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root");
+		TFile* NominalFile = TFile::Open(PathToExtractedXSec+"CCQEExtractedXSec_Overlay9_"+Runs[WhichRun]+"_CV_"+UBCodeVersion+".root");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 

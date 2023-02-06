@@ -225,7 +225,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 		UncSources.push_back("Stat");
 		UncSources.push_back("XSec");
-		UncSources.push_back("MC_Stat");	
+		UncSources.push_back("MC_Stat");
+		UncSources.push_back("NuWro");			
 
 	} else {
 
@@ -240,6 +241,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 		UncSources.push_back("POT"); 
 		UncSources.push_back("NTarget");
 		UncSources.push_back("MC_Stat");
+		UncSources.push_back("NuWro");		
 
 	}
 
