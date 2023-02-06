@@ -11,7 +11,7 @@
 using namespace std;
 using namespace Constants;
 
-void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
+void ResponseMatrices(TString OverlaySample, bool DetVar = false, bool NuWro = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -73,6 +73,7 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false) {
 	
 	vector<TString> NameOfSamples;
 	NameOfSamples.push_back("Overlay9");
+	if (NuWro) { NameOfSamples[0] = "Overlay9NuWro"; }	
 	const int NSamples = NameOfSamples.size();
 		
 	// -------------------------------------------------------------------------------------------------------------------------------------
