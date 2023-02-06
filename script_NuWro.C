@@ -17,7 +17,7 @@ void script_NuWro() {
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,\"\",true)");
+		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,true)");
 
 	}
 
