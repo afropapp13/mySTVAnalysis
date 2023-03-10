@@ -2,6 +2,7 @@ root -b script_CV.C
 root -b script_Detector_Systematics.C
 root -b script_G4_Systematics.C
 root -b script_Genie_Systematics.C
+root -b script_DetailedGenie_Systematics.C
 root -b script_Flux_Systematics.C
 root -b script_MC_Stat_Systematics.C
 root -b script_NuWro.C
@@ -69,6 +70,7 @@ root -b Systematics.cpp
 root -b
 .L ../../myClasses/Util.C
 .x WienerSVD_DetectorVars.cpp
+.x WienerSVD_XSecVars.cpp
 
 #################################################################################################################################
 

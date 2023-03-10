@@ -465,9 +465,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
 			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Wiener Filter Vector",n,0,n);
-			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);			
 			TH2D* normunfcov = new TH2D("normunfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Norm Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
 			TH2D* shapeunfcov = new TH2D("shapeunfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Shape Unfolded spectrum covariance", n, Nuedges, n, Nuedges);						
+			TH2D* covrot = new TH2D("covrot_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Covariance rotation matrix", n, Nuedges, n, Nuedges);
+			TH2D* transpcovrot = new TH2D("transpcovrot_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Transpose covariance rotation matrix", n, Nuedges, n, Nuedges);			
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -838,7 +840,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			V2H(WF, wiener);
 			M2H(UnfoldCov, unfcov);
 			M2H( NormShapeVector[0] , normunfcov);
-			M2H( (NormShapeVector[1] + UnfStatCov), shapeunfcov);						
+			M2H( (NormShapeVector[1] + UnfStatCov), shapeunfcov);	
+			M2H(CovRotation, covrot);
+			M2H(CovRotation_T, transpcovrot);											
 
 			// ---------------------------------------------------------------------------------------------------------------------------
     
@@ -888,6 +892,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				//MSE->Write("MSE"+PlotNames[WhichPlot]);
 				//MSE2->Write("MSE2"+PlotNames[WhichPlot]);
 				ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]);
+				covrot->Write("CovRot"+PlotNames[WhichPlot]);
+				transcovrot->Write("TransCovRot"+PlotNames[WhichPlot]);								
 
 				// ---------------------------------------------------------------------------------------------------------------------------
 

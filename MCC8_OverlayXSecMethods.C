@@ -25,23 +25,6 @@ using namespace std;
 
 // ---------------------------------------- //
 
-int LocateBinWithValue(TH1D* h, double Value) {
-
-	int NBins = h->GetXaxis()->GetNbins();
-
-	for (int i = 1; i <= NBins; i++) {
-
-		double CurrentEntry = h->GetBinContent(i);
-		if (CurrentEntry == Value) { return i; } 
-
-	}
-
-	return -99;
-
-}
-
-// ---------------------------------------- //
-
 void PrettyPlot(TH1D* h,int LineWidth = 2, int FontStyle = 132, int Ndivisions = 6, double TextSize = 0.06) {
 
 	// ---------------------------------------- //
@@ -72,7 +55,9 @@ void PrettyPlot(TH1D* h,int LineWidth = 2, int FontStyle = 132, int Ndivisions =
 	h->GetYaxis()->SetLabelFont(FontStyle);
 	h->GetYaxis()->SetTitleOffset(1.05);
 	h->GetYaxis()->SetNdivisions(Ndivisions);
-	//h->GetYaxis()->SetTitle("POT Normalized Events");
+	h->GetYaxis()->SetTitle("#frac{d#sigma}{cos#theta_{#mu}} [10^{-38} #frac{cm^{2}}{Ar}]");
+	h->GetYaxis()->SetRangeUser(-0.5,21.);
+	h->GetYaxis()->SetTitleOffset(1.2);	
 
 	return;	
 
@@ -111,11 +96,6 @@ void MCC8_OverlayXSecMethods() {
 
 	// ---------------------------------------- //
 
-//	FileNames.push_back("Overlay9_Run1"); Label.push_back("Run1"); 
-	//FileNames.push_back("Overlay9_Run1_CV"); Label.push_back("Overlay9 Run1 CV");
-//	FileNames.push_back("Overlay9_Run3"); Label.push_back("Run3"); 
-	//FileNames.push_back("Overlay9_Run3_CV"); Label.push_back("Overlay9 Run3 CV");
-
 	FileNames.push_back("Overlay9_Combined"); Label.push_back("Combined"); 
 
 	const int NFiles = FileNames.size();
@@ -135,15 +115,20 @@ void MCC8_OverlayXSecMethods() {
 
 			// ---------------------------------------- //
 
-			TLegend* leg = new TLegend(0.05,0.92,0.95,0.98);
-			leg->SetNColumns(3);		
+			TLegend* leg = new TLegend(0.15,0.9,0.95,0.98);
+			leg->SetNColumns(2);		
 
 			// ---------------------------------------- //
 
-			// CCQE Wiener SVD
+			// CCQE (MCC9 with MCC8 signal def)
 
-			TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/CCQEWienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
-			TH1D* Plots = (TH1D*)(f->Get("RecoFullUnc"+PlotNames[WhichPlot])); // Total total unc
+			// Wiener SVD
+			//TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/CCQEWienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
+			//TH1D* Plots = (TH1D*)(f->Get("RecoFullUnc"+PlotNames[WhichPlot])); // Total total unc
+
+			// Effective efficiency
+			TFile* f = TFile::Open(PathToFiles+UBCodeVersion+"/CCQEExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");			
+			TH1D* Plots = (TH1D*)(f->Get("TotalReco"+PlotNames[WhichPlot])); // Total total unc
 			
 			Plots->SetLineColor(kBlue+2);
 			Plots->SetLineStyle(kSolid);			
@@ -153,11 +138,18 @@ void MCC8_OverlayXSecMethods() {
 			Plots->SetMarkerSize(2.);			
 			Plots->SetTitle("");			
 			Plots->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
-			Plots->GetXaxis()->SetNdivisions(8);			
+			Plots->GetXaxis()->SetNdivisions(8);	
+
+			
+			Plots->Draw("e1 same");		
+			leg->AddEntry(Plots,"\"PRL\" MCC9","p");	
+
+			TH2D* Cov = (TH2D*)f->Get("UnfCovCCQEMuonCosThetaPlot");								
+			
 
 			// ---------------------------------------- //
 
-			// STLV Wiener SVD
+			// STLV Wiener SVD (MCC9 with CCQE signal defintion)
 
 			TFile* Wf = TFile::Open(PathToFiles+UBCodeVersion+"/WienerSVD_ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
 			TH1D* Wh = (TH1D*)(Wf->Get("RecoFullUnc"+PlotNames[WhichPlot])); // Plots total unc
@@ -182,11 +174,73 @@ void MCC8_OverlayXSecMethods() {
 			Offset->SetMarkerColor(kOrange+7);
 			Offset->SetMarkerStyle(22);
 			Offset->SetMarkerSize(2.);				
-			PrettyPlot(Offset);			
+			PrettyPlot(Offset);	
+
+			
+			Offset->Draw("e1 same");
+			leg->AddEntry(Offset,"Arxiv \"MCC8\"","p");								
+			
 
 			// ---------------------------------------- //
 
-			// MCC8 data points
+			// STLV Wiener SVD (MCC9 w/o CCQE signal defintion)
+
+			TH1D* WhNoCCQE = (TH1D*)(Wf->Get("RecoFullUncMuonCosThetaPlot")); // Plots total unc
+
+			int nNoCCQE = WhNoCCQE->GetXaxis()->GetNbins();
+			double NuedgesNoCCQE[nNoCCQE+1];   
+			for (int i = 0; i < nNoCCQE+1; i++) { NuedgesNoCCQE[i] = WhNoCCQE->GetBinLowEdge(i+1) + 0.2 * WhNoCCQE->GetBinWidth(i+1); }
+		
+			TH1D* OffsetNoCCQE = new TH1D("OffsetNoCCQE_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,nNoCCQE,NuedgesNoCCQE);
+
+			for (int WhichBin = 1; WhichBin <= nNoCCQE; WhichBin++ ) {
+
+				OffsetNoCCQE->SetBinContent(WhichBin, WhNoCCQE->GetBinContent(WhichBin));
+				OffsetNoCCQE->SetBinError(WhichBin, WhNoCCQE->GetBinError(WhichBin));
+
+			}
+
+			OffsetNoCCQE->SetLineColor(kMagenta-2);
+			OffsetNoCCQE->SetLineStyle(kSolid);			
+			OffsetNoCCQE->SetMarkerColor(kMagenta-2);
+			OffsetNoCCQE->SetMarkerStyle(23);
+			OffsetNoCCQE->SetMarkerSize(2.);				
+			PrettyPlot(OffsetNoCCQE);
+
+
+			OffsetNoCCQE->Draw("e1 same");	
+			leg->AddEntry(OffsetNoCCQE,"Arxiv MCC9","p");		
+
+			// ---------------------------------------- //
+
+			// Effective efficiency MCC9
+
+			TFile* WfEE = TFile::Open(PathToFiles+UBCodeVersion+"/ExtractedXSec_"+FileNames[WhichFile]+"_"+UBCodeVersion+".root","readonly");
+			TH1D* WhEE = (TH1D*)(WfEE->Get("TotalRecoMuonCosThetaPlot")); // Plots total unc
+		
+			TH1D* OffsetEE = new TH1D("OffsetEE_"+PlotNames[WhichPlot],";"+Xtitle+";"+Ytitle,nNoCCQE,NuedgesNoCCQE);
+
+			for (int WhichBin = 1; WhichBin <= nNoCCQE; WhichBin++ ) {
+
+				OffsetEE->SetBinContent(WhichBin, WhEE->GetBinContent(WhichBin));
+				OffsetEE->SetBinError(WhichBin, WhEE->GetBinError(WhichBin));
+
+			}
+
+			OffsetEE->SetLineColor(kRed+1);
+			OffsetEE->SetLineStyle(kSolid);			
+			OffsetEE->SetMarkerColor(kRed+1);
+			OffsetEE->SetMarkerStyle(24);
+			OffsetEE->SetMarkerSize(2.);				
+			PrettyPlot(OffsetEE);
+
+
+			OffsetEE->Draw("e1 same");	
+			leg->AddEntry(OffsetEE,"Arxiv MCC9 EE","p");											
+
+			// ---------------------------------------- //
+
+			// MCC8 published data points (PRL 2020)
 
 			TFile* MCC8f = TFile::Open(PathToFiles+UBCodeVersion+"/CCQE_MCC8Data_All.root","readonly");
 			TH1D* MCC8h = (TH1D*)(MCC8f->Get("TrueMuonCosThetaPlot")); // Plots total unc	
@@ -211,24 +265,11 @@ void MCC8_OverlayXSecMethods() {
 			MCC8Offset->SetMarkerColor(kGreen-3);
 			MCC8Offset->SetMarkerStyle(21);
 			MCC8Offset->SetMarkerSize(2.);				
-			PrettyPlot(MCC8Offset);									
+			PrettyPlot(MCC8Offset);		
 
-			// ---------------------------------------- //				
 
-			double min = 2. * MCC8Offset->GetMinimum();
-			double max = 1.2 * Plots->GetMaximum();
-//			double max = 1.2 * Offset->GetMaximum();				
-
-			Plots->GetYaxis()->SetRangeUser(min,max);
-			Plots->GetYaxis()->SetTitleOffset(1.2);
-
-			Plots->Draw("e1 same");
-			Offset->Draw("e1 same");
-			MCC8Offset->Draw("e1 same");			
-
-			leg->AddEntry(MCC8Offset,"CCQE MCC8","p");
-			leg->AddEntry(Plots,"CCQE MCC9","p");
-			leg->AddEntry(Offset,"STLV MCC9","p");
+			MCC8Offset->Draw("e1 same");	
+			leg->AddEntry(MCC8Offset,"PRL MCC8","p");															
 
 			// ---------------------------------------- //
 

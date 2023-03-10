@@ -7,7 +7,6 @@ void script_WienerSVD_Systematics() {
 	// -----------------------------------------------------------------------------------------
 
 	gROOT->ProcessLine(".L ../../myClasses/Util.C++");
-//	gROOT->ProcessLine(".L ../../myClasses/WienerSVD.C++");
 
 	gROOT->ProcessLine(".L WienerSVD_CovarianceMatrices.cpp++");
 
@@ -20,6 +19,8 @@ void script_WienerSVD_Systematics() {
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"NTarget\")");
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"XSec\")");
+
+	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"DetailedXSec\")");	
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"G4\")");
 
@@ -37,29 +38,6 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"NuWro\")");		
 
-	// -----------------------------------------------------------------------------------------
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Stat\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_POT\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_NTarget\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_LY\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_TPC\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_XSec\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_G4\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Flux\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"MC_Dirt\",\"Overlay9\",\"Overlay9\",\"ExtBNB9\",\"OverlayDirt9\")");
-
-	// -----------------------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------------------
 
 	//gROOT->ProcessLine(".q");

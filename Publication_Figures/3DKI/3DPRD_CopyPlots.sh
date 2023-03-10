@@ -10,6 +10,8 @@ declare -a arrPlots=(
 "DeltaPhi3DPlot"
 "DeltaPnPlot"
 "DeltaPnPerpPlot"
+"DeltaPnPerpxPlot"
+"DeltaPnPerpyPlot"
 "DeltaPnParPlot"
 "DeltaAlpha3DqPlot"
 "DeltaAlpha3DMuPlot"
