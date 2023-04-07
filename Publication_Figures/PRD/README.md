@@ -11,6 +11,7 @@ root -b script_PRD_DeltaPT_InCosThetaMu_Genie.C
 root -b script_PRD_DeltaPT_InCosThetaP_Gene.C
 root -b script_PRD_DeltaPT_InCosThetaP_Genie.C
 root -b script_PRD_DeltaPT_InCosThetaP_Inte.C
+root -b script_PRD_DeltaPT_FSI_NoFSI.C
 
 root -b script_PRD_DeltaAlphaT_InDeltaPT_Gene.C
 root -b script_PRD_DeltaAlphaT_InDeltaPT_Genie.C
@@ -20,6 +21,7 @@ root -b script_PRD_DeltaAlphaT_InCosThetaMu_Genie.C
 root -b script_PRD_DeltaAlphaT_InCosThetaP_Gene.C
 root -b script_PRD_DeltaAlphaT_InCosThetaP_Genie.C
 root -b script_PRD_DeltaAlphaT_InCosThetaP_Inte.C
+root -b script_PRD_DeltaAlphaT_FSI_NoFSI.C
 
 root -b script_PRD_DeltaPhiT_InDeltaPT_Gene.C
 root -b script_PRD_DeltaPhiT_InDeltaPT_Genie.C

@@ -113,7 +113,7 @@ TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 // TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "DetailedXSec" "G4" "Flux" "Dirt" "MC_Stat" "NuWro"
 
-void WienerSVD_CovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
+void WienerSVD_EventRateCovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 

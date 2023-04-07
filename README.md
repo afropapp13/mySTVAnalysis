@@ -2,7 +2,7 @@ root -b script_CV.C
 root -b script_Detector_Systematics.C
 root -b script_G4_Systematics.C
 root -b script_Genie_Systematics.C
-root -b script_DetailedGenie_Systematics.C
+#root -b script_DetailedGenie_Systematics.C
 root -b script_Flux_Systematics.C
 root -b script_MC_Stat_Systematics.C
 root -b script_NuWro.C
@@ -123,6 +123,16 @@ WienerSVD_Merge_Covariances("Overlay9","GENIEv2Overlay9","GENIEv2Overlay9")
 ##scp WienerSVD_UnfoldingUnc_Combined_v08_00_00_52.root apapadop@uboonegpvm05.fnal.gov:/uboone/data/users/apapadop/mySTVAnalysis/myXSec/v08_00_00_52
 ##cd ../..
 #cd ..
+
+#################################################################################################################################
+
+# Individual uncertainty contributions
+
+# root -b script_WienerSVD_Individual_Systematics.C
+# root -b
+# .L ../../myClasses/Util.C++
+# .L WienerSVD_XSecVars.cpp++
+# WienerSVD_XSecVars()
 
 #################################################################################################################################
 

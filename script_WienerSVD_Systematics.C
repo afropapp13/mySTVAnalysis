@@ -20,7 +20,7 @@ void script_WienerSVD_Systematics() {
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"XSec\")");
 
-	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"DetailedXSec\")");	
+//	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"DetailedXSec\")");	
 
 	gROOT->ProcessLine("WienerSVD_CovarianceMatrices(\"G4\")");
 
