@@ -58,11 +58,11 @@ void PRD_ECalInDeltaPtySlices_Genie() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;vector<TString> SaveFig;
 //	PlotNames.push_back("ECalPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9);
-	PlotNames.push_back("SerialECal_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(13.);
-	PlotNames.push_back("SerialECal_DeltaPtyPlot_1");PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(49.);	
-	PlotNames.push_back("SerialECal_DeltaPtyPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(9.);
+	PlotNames.push_back("SerialECal_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(13.); SaveFig.push_back("Fig119");
+	PlotNames.push_back("SerialECal_DeltaPtyPlot_1");PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(49.); SaveFig.push_back("Fig120");	
+	PlotNames.push_back("SerialECal_DeltaPtyPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(9.); SaveFig.push_back("Fig121");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -260,7 +260,8 @@ void PRD_ECalInDeltaPtySlices_Genie() {
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			//delete PlotCanvas;	
 
 			//----------------------------------------//

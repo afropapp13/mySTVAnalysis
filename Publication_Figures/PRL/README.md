@@ -10,3 +10,6 @@ root -b script_PRL_Supp_VertexZ.C
 ./PRL_Copy_PreSelection_Plots.sh
 ./PRL_Copy_FakeDataStudies.sh
 ./PRL_InteractionBreakDown.sh
+
+root -b DataRelease.cxx
+root -b BinScheme.cxx

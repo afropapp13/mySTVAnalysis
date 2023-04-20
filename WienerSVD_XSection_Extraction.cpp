@@ -187,6 +187,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
 
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
+
 		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
 		vector<TH2D*> StatCovarianceMatrices; StatCovarianceMatrices.clear();
 		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();			
@@ -200,7 +201,37 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		vector<TH2D*> DirtCovarianceMatrices; DirtCovarianceMatrices.clear();
 		vector<TH2D*> POTCovarianceMatrices; POTCovarianceMatrices.clear();
 		vector<TH2D*> NTargetCovarianceMatrices; NTargetCovarianceMatrices.clear();	
-		vector<TH2D*> NuWroCovarianceMatrices; NuWroCovarianceMatrices.clear();					
+		vector<TH2D*> NuWroCovarianceMatrices; NuWroCovarianceMatrices.clear();
+
+		vector<TH2D*> SignalCovarianceMatrices; SignalCovarianceMatrices.clear();
+		vector<TH2D*> SignalStatCovarianceMatrices; SignalStatCovarianceMatrices.clear();
+		vector<TH2D*> SignalMCStatCovarianceMatrices; SignalMCStatCovarianceMatrices.clear();			
+		vector<TH2D*> SignalSystCovarianceMatrices; SignalSystCovarianceMatrices.clear();	
+		vector<TH2D*> SignalLYCovarianceMatrices; SignalLYCovarianceMatrices.clear();
+		vector<TH2D*> SignalTPCCovarianceMatrices; SignalTPCCovarianceMatrices.clear();
+		vector<TH2D*> SignalSCERecomb2CovarianceMatrices; SignalSCERecomb2CovarianceMatrices.clear();
+		vector<TH2D*> SignalXSecCovarianceMatrices; SignalXSecCovarianceMatrices.clear();
+		vector<TH2D*> SignalFluxCovarianceMatrices; SignalFluxCovarianceMatrices.clear();
+		vector<TH2D*> SignalG4CovarianceMatrices; SignalG4CovarianceMatrices.clear();
+		vector<TH2D*> SignalDirtCovarianceMatrices; SignalDirtCovarianceMatrices.clear();
+		vector<TH2D*> SignalPOTCovarianceMatrices; SignalPOTCovarianceMatrices.clear();
+		vector<TH2D*> SignalNTargetCovarianceMatrices; SignalNTargetCovarianceMatrices.clear();	
+		vector<TH2D*> SignalNuWroCovarianceMatrices; SignalNuWroCovarianceMatrices.clear();
+
+		vector<TH2D*> BkgCovarianceMatrices; BkgCovarianceMatrices.clear();
+		vector<TH2D*> BkgStatCovarianceMatrices; BkgStatCovarianceMatrices.clear();
+		vector<TH2D*> BkgMCStatCovarianceMatrices; BkgMCStatCovarianceMatrices.clear();			
+		vector<TH2D*> BkgSystCovarianceMatrices; BkgSystCovarianceMatrices.clear();	
+		vector<TH2D*> BkgLYCovarianceMatrices; BkgLYCovarianceMatrices.clear();
+		vector<TH2D*> BkgTPCCovarianceMatrices; BkgTPCCovarianceMatrices.clear();
+		vector<TH2D*> BkgSCERecomb2CovarianceMatrices; BkgSCERecomb2CovarianceMatrices.clear();
+		vector<TH2D*> BkgXSecCovarianceMatrices; BkgXSecCovarianceMatrices.clear();
+		vector<TH2D*> BkgFluxCovarianceMatrices; BkgFluxCovarianceMatrices.clear();
+		vector<TH2D*> BkgG4CovarianceMatrices; BkgG4CovarianceMatrices.clear();
+		vector<TH2D*> BkgDirtCovarianceMatrices; BkgDirtCovarianceMatrices.clear();
+		vector<TH2D*> BkgPOTCovarianceMatrices; BkgPOTCovarianceMatrices.clear();
+		vector<TH2D*> BkgNTargetCovarianceMatrices; BkgNTargetCovarianceMatrices.clear();	
+		vector<TH2D*> BkgNuWroCovarianceMatrices; BkgNuWroCovarianceMatrices.clear();									
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -349,6 +380,16 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			StatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("StatCovariance_"+PlotNames[WhichPlot]));
 			MCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));
 
+			SignalCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalTotalCovariance_"+PlotNames[WhichPlot]));
+			SignalSystCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalSystCovariance_"+PlotNames[WhichPlot]));
+			SignalStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalStatCovariance_"+PlotNames[WhichPlot]));
+			SignalMCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalMCStatCovariance_"+PlotNames[WhichPlot]));
+
+			BkgCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgTotalCovariance_"+PlotNames[WhichPlot]));
+			BkgSystCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgSystCovariance_"+PlotNames[WhichPlot]));
+			BkgStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgStatCovariance_"+PlotNames[WhichPlot]));
+			BkgMCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgMCStatCovariance_"+PlotNames[WhichPlot]));						
+
 			LYCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("LYCovariance_"+PlotNames[WhichPlot]));
 			TPCCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TPCCovariance_"+PlotNames[WhichPlot]));
 			SCERecomb2CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SCERecomb2Covariance_"+PlotNames[WhichPlot]));
@@ -358,7 +399,29 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			DirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("DirtCovariance_"+PlotNames[WhichPlot]));
 			POTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("POTCovariance_"+PlotNames[WhichPlot]));
 			NuWroCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NuWroCovariance_"+PlotNames[WhichPlot]));			
-			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NTargetCovariance_"+PlotNames[WhichPlot]));																		
+			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NTargetCovariance_"+PlotNames[WhichPlot]));
+
+			SignalLYCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalLYCovariance_"+PlotNames[WhichPlot]));
+			SignalTPCCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalTPCCovariance_"+PlotNames[WhichPlot]));
+			SignalSCERecomb2CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalSCERecomb2Covariance_"+PlotNames[WhichPlot]));
+			SignalXSecCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalXSecCovariance_"+PlotNames[WhichPlot]));
+			SignalFluxCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalFluxCovariance_"+PlotNames[WhichPlot]));
+			SignalG4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalG4Covariance_"+PlotNames[WhichPlot]));
+			SignalDirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalDirtCovariance_"+PlotNames[WhichPlot]));
+			SignalPOTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalPOTCovariance_"+PlotNames[WhichPlot]));
+			SignalNuWroCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalNuWroCovariance_"+PlotNames[WhichPlot]));			
+			SignalNTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("SignalNTargetCovariance_"+PlotNames[WhichPlot]));
+
+			BkgLYCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgLYCovariance_"+PlotNames[WhichPlot]));
+			BkgTPCCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgTPCCovariance_"+PlotNames[WhichPlot]));
+			BkgSCERecomb2CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgSCERecomb2Covariance_"+PlotNames[WhichPlot]));
+			BkgXSecCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgXSecCovariance_"+PlotNames[WhichPlot]));
+			BkgFluxCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgFluxCovariance_"+PlotNames[WhichPlot]));
+			BkgG4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgG4Covariance_"+PlotNames[WhichPlot]));
+			BkgDirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgDirtCovariance_"+PlotNames[WhichPlot]));
+			BkgPOTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgPOTCovariance_"+PlotNames[WhichPlot]));
+			BkgNuWroCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgNuWroCovariance_"+PlotNames[WhichPlot]));			
+			BkgNTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("BkgNTargetCovariance_"+PlotNames[WhichPlot]));																								
 
 			// -----------------------------------------------------------------------------------------------------
 
@@ -408,7 +471,8 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TVectorD DISsignal(n);
 			TVectorD COHsignal(n);															
 			TVectorD measure(m);
-			TMatrixD response(m, n);		
+			TMatrixD response(m, n);
+
 			TMatrixD covariance(m, m);
 			TMatrixD mcstatcovariance(m, m);
 			TMatrixD statcovariance(m, m);
@@ -422,7 +486,37 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD dirtcovariance(m, m);	
 			TMatrixD potcovariance(m, m);
 			TMatrixD nuwrocovariance(m, m);			
-			TMatrixD ntargetcovariance(m, m);									
+			TMatrixD ntargetcovariance(m, m);
+
+			TMatrixD signalcovariance(m, m);
+			TMatrixD signalmcstatcovariance(m, m);
+			TMatrixD signalstatcovariance(m, m);
+			TMatrixD signalsystcovariance(m, m);
+			TMatrixD signallycovariance(m, m);	
+			TMatrixD signaltpccovariance(m, m);
+			TMatrixD signalscerecomb2covariance(m, m);
+			TMatrixD signalfluxcovariance(m, m);	
+			TMatrixD signalxseccovariance(m, m);
+			TMatrixD signalg4covariance(m, m);
+			TMatrixD signaldirtcovariance(m, m);	
+			TMatrixD signalpotcovariance(m, m);
+			TMatrixD signalnuwrocovariance(m, m);			
+			TMatrixD signalntargetcovariance(m, m);
+
+			TMatrixD bkgcovariance(m, m);
+			TMatrixD bkgmcstatcovariance(m, m);
+			TMatrixD bkgstatcovariance(m, m);
+			TMatrixD bkgsystcovariance(m, m);
+			TMatrixD bkglycovariance(m, m);	
+			TMatrixD bkgtpccovariance(m, m);
+			TMatrixD bkgscerecomb2covariance(m, m);
+			TMatrixD bkgfluxcovariance(m, m);	
+			TMatrixD bkgxseccovariance(m, m);
+			TMatrixD bkgg4covariance(m, m);
+			TMatrixD bkgdirtcovariance(m, m);	
+			TMatrixD bkgpotcovariance(m, m);
+			TMatrixD bkgnuwrocovariance(m, m);			
+			TMatrixD bkgntargetcovariance(m, m);															
 
 			// Convert input into mathematical formats, easy and clean to be processed. 
 			// Converted defined/implemented in source files, see include/Util.h
@@ -436,10 +530,21 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 			H2V(DataPlot, measure);
 			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
+
 			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(MCStatCovarianceMatrices[WhichPlot], mcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(StatCovarianceMatrices[WhichPlot], statcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(SystCovarianceMatrices[WhichPlot], systcovariance, kTRUE); // X axis: True, Y axis: Reco
+
+			H2M(SignalCovarianceMatrices[WhichPlot], signalcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalMCStatCovarianceMatrices[WhichPlot], signalmcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalStatCovarianceMatrices[WhichPlot], signalstatcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalSystCovarianceMatrices[WhichPlot], signalsystcovariance, kTRUE); // X axis: True, Y axis: Reco
+
+			H2M(BkgCovarianceMatrices[WhichPlot], bkgcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgMCStatCovarianceMatrices[WhichPlot], bkgmcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgStatCovarianceMatrices[WhichPlot], bkgstatcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgSystCovarianceMatrices[WhichPlot], bkgsystcovariance, kTRUE); // X axis: True, Y axis: Reco						
 
 			H2M(LYCovarianceMatrices[WhichPlot], lycovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(TPCCovarianceMatrices[WhichPlot], tpccovariance, kTRUE); // X axis: True, Y axis: Reco
@@ -450,7 +555,29 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			H2M(DirtCovarianceMatrices[WhichPlot], dirtcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(POTCovarianceMatrices[WhichPlot], potcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(NuWroCovarianceMatrices[WhichPlot], nuwrocovariance, kTRUE); // X axis: True, Y axis: Reco			
-			H2M(NTargetCovarianceMatrices[WhichPlot], ntargetcovariance, kTRUE); // X axis: True, Y axis: Reco																		
+			H2M(NTargetCovarianceMatrices[WhichPlot], ntargetcovariance, kTRUE); // X axis: True, Y axis: Reco
+
+			H2M(SignalLYCovarianceMatrices[WhichPlot], signallycovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalTPCCovarianceMatrices[WhichPlot], signaltpccovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalSCERecomb2CovarianceMatrices[WhichPlot], signalscerecomb2covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalFluxCovarianceMatrices[WhichPlot], signalfluxcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalXSecCovarianceMatrices[WhichPlot], signalxseccovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalG4CovarianceMatrices[WhichPlot], signalg4covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalDirtCovarianceMatrices[WhichPlot], signaldirtcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalPOTCovarianceMatrices[WhichPlot], signalpotcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(SignalNuWroCovarianceMatrices[WhichPlot], signalnuwrocovariance, kTRUE); // X axis: True, Y axis: Reco			
+			H2M(SignalNTargetCovarianceMatrices[WhichPlot], signalntargetcovariance, kTRUE); // X axis: True, Y axis: Reco
+
+			H2M(BkgLYCovarianceMatrices[WhichPlot], bkglycovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgTPCCovarianceMatrices[WhichPlot], bkgtpccovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgSCERecomb2CovarianceMatrices[WhichPlot], bkgscerecomb2covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgFluxCovarianceMatrices[WhichPlot], bkgfluxcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgXSecCovarianceMatrices[WhichPlot], bkgxseccovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgG4CovarianceMatrices[WhichPlot], bkgg4covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgDirtCovarianceMatrices[WhichPlot], bkgdirtcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgPOTCovarianceMatrices[WhichPlot], bkgpotcovariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(BkgNuWroCovarianceMatrices[WhichPlot], bkgnuwrocovariance, kTRUE); // X axis: True, Y axis: Reco			
+			H2M(BkgNTargetCovarianceMatrices[WhichPlot], bkgntargetcovariance, kTRUE); // X axis: True, Y axis: Reco																								
 
 			// ------------------------------------------------------------------------------------------
 
@@ -481,6 +608,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			// --------------------------------------------------------------------------------------------------
 
 			TMatrixD CovRotation_T (TMatrixD::kTransposed, CovRotation); 
+
 			TMatrixD UnfMCStatCov = CovRotation*mcstatcovariance*CovRotation_T;
 			TMatrixD UnfStatCov = CovRotation*statcovariance*CovRotation_T; 
 			TMatrixD UnfSystCov = CovRotation*systcovariance*CovRotation_T; 
@@ -493,7 +621,35 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TMatrixD UnfDirtCov = CovRotation*dirtcovariance*CovRotation_T;
 			TMatrixD UnfPOTCov = CovRotation*potcovariance*CovRotation_T;
 			TMatrixD UnfNuWroCov = CovRotation*nuwrocovariance*CovRotation_T;			
-			TMatrixD UnfNTargetCov = CovRotation*ntargetcovariance*CovRotation_T;			
+			TMatrixD UnfNTargetCov = CovRotation*ntargetcovariance*CovRotation_T;	
+
+			TMatrixD SignalUnfMCStatCov = CovRotation*signalmcstatcovariance*CovRotation_T;
+			TMatrixD SignalUnfStatCov = CovRotation*signalstatcovariance*CovRotation_T; 
+			TMatrixD SignalUnfSystCov = CovRotation*signalsystcovariance*CovRotation_T; 
+			TMatrixD SignalUnfLYCov = CovRotation*signallycovariance*CovRotation_T;
+			TMatrixD SignalUnfTPCCov = CovRotation*signaltpccovariance*CovRotation_T;
+			TMatrixD SignalUnfSCERecomb2Cov = CovRotation*signalscerecomb2covariance*CovRotation_T;
+			TMatrixD SignalUnfFluxCov = CovRotation*signalfluxcovariance*CovRotation_T;
+			TMatrixD SignalUnfXSecCov = CovRotation*signalxseccovariance*CovRotation_T;
+			TMatrixD SignalUnfG4Cov = CovRotation*signalg4covariance*CovRotation_T;
+			TMatrixD SignalUnfDirtCov = CovRotation*signaldirtcovariance*CovRotation_T;
+			TMatrixD SignalUnfPOTCov = CovRotation*signalpotcovariance*CovRotation_T;
+			TMatrixD SignalUnfNuWroCov = CovRotation*signalnuwrocovariance*CovRotation_T;			
+			TMatrixD SignalUnfNTargetCov = CovRotation*signalntargetcovariance*CovRotation_T;
+
+			TMatrixD BkgUnfMCStatCov = CovRotation*bkgmcstatcovariance*CovRotation_T;
+			TMatrixD BkgUnfStatCov = CovRotation*bkgstatcovariance*CovRotation_T; 
+			TMatrixD BkgUnfSystCov = CovRotation*bkgsystcovariance*CovRotation_T; 
+			TMatrixD BkgUnfLYCov = CovRotation*bkglycovariance*CovRotation_T;
+			TMatrixD BkgUnfTPCCov = CovRotation*bkgtpccovariance*CovRotation_T;
+			TMatrixD BkgUnfSCERecomb2Cov = CovRotation*bkgscerecomb2covariance*CovRotation_T;
+			TMatrixD BkgUnfFluxCov = CovRotation*bkgfluxcovariance*CovRotation_T;
+			TMatrixD BkgUnfXSecCov = CovRotation*bkgxseccovariance*CovRotation_T;
+			TMatrixD BkgUnfG4Cov = CovRotation*bkgg4covariance*CovRotation_T;
+			TMatrixD BkgUnfDirtCov = CovRotation*bkgdirtcovariance*CovRotation_T;
+			TMatrixD BkgUnfPOTCov = CovRotation*bkgpotcovariance*CovRotation_T;
+			TMatrixD BkgUnfNuWroCov = CovRotation*bkgnuwrocovariance*CovRotation_T;			
+			TMatrixD BkgUnfNTargetCov = CovRotation*bkgntargetcovariance*CovRotation_T;								
 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
 
@@ -512,10 +668,11 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 		
 			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfFullUnc = new TH1D("unfFullUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+
 			TH1D* unfMCStat = new TH1D("unfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfLY = new TH1D("unfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfTPC = new TH1D("unfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfSCERecomb2 = new TH1D("unfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
@@ -525,7 +682,33 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			TH1D* unfDirt = new TH1D("unfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfPOT = new TH1D("unfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfNuWro = new TH1D("unfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
-			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);												
+			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);	
+
+			TH1D* signalunfMCStat = new TH1D("signalunfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfStat = new TH1D("signalunfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfLY = new TH1D("signalunfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfTPC = new TH1D("signalunfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfSCERecomb2 = new TH1D("signalunfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfFlux = new TH1D("signalunfFlux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfXSec = new TH1D("signalunfXSec_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfG4 = new TH1D("signalunfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfDirt = new TH1D("signalunfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfPOT = new TH1D("signalunfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfNuWro = new TH1D("signalunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+			TH1D* signalunfNTarget = new TH1D("signalunfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+
+			TH1D* bkgunfMCStat = new TH1D("bkgunfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfStat = new TH1D("bkgunfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfLY = new TH1D("bkgunfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfTPC = new TH1D("bkgunfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfSCERecomb2 = new TH1D("bkgunfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfFlux = new TH1D("bkgunfFlux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfXSec = new TH1D("bkgunfXSec_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfG4 = new TH1D("bkgunfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfDirt = new TH1D("bkgunfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfPOT = new TH1D("bkgunfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfNuWro = new TH1D("bkgunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+			TH1D* bkgunfNTarget = new TH1D("bkgunfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);																	
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -554,12 +737,12 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			ReweightXSec(DISPlotsTrue[4][WhichPlot]);
 			ReweightXSec(COHPlotsTrue[4][WhichPlot]);																		
 
-			unfFullUnc = (TH1D*)(unf->Clone());
-			unfStat = (TH1D*)(unf->Clone());
-			unfMCStat = (TH1D*)(unf->Clone());			
+			unfFullUnc = (TH1D*)(unf->Clone());			
 			unfShapeOnly = (TH1D*)(unf->Clone());
 			unfNormOnly = (TH1D*)(unf->Clone());
 
+			unfStat = (TH1D*)(unf->Clone());
+			unfMCStat = (TH1D*)(unf->Clone());
 			unfLY = (TH1D*)(unf->Clone());
 			unfTPC = (TH1D*)(unf->Clone());
 			unfSCERecomb2 = (TH1D*)(unf->Clone());
@@ -569,7 +752,33 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 			unfDirt = (TH1D*)(unf->Clone());
 			unfPOT = (TH1D*)(unf->Clone());
 			unfNuWro = (TH1D*)(unf->Clone());			
-			unfNTarget = (TH1D*)(unf->Clone());												
+			unfNTarget = (TH1D*)(unf->Clone());
+
+			signalunfStat = (TH1D*)(unf->Clone());
+			signalunfMCStat = (TH1D*)(unf->Clone());
+			signalunfLY = (TH1D*)(unf->Clone());
+			signalunfTPC = (TH1D*)(unf->Clone());
+			signalunfSCERecomb2 = (TH1D*)(unf->Clone());
+			signalunfFlux = (TH1D*)(unf->Clone());
+			signalunfXSec = (TH1D*)(unf->Clone());
+			signalunfG4 = (TH1D*)(unf->Clone());
+			signalunfDirt = (TH1D*)(unf->Clone());
+			signalunfPOT = (TH1D*)(unf->Clone());
+			signalunfNuWro = (TH1D*)(unf->Clone());			
+			signalunfNTarget = (TH1D*)(unf->Clone());
+
+			bkgunfStat = (TH1D*)(unf->Clone());
+			bkgunfMCStat = (TH1D*)(unf->Clone());
+			bkgunfLY = (TH1D*)(unf->Clone());
+			bkgunfTPC = (TH1D*)(unf->Clone());
+			bkgunfSCERecomb2 = (TH1D*)(unf->Clone());
+			bkgunfFlux = (TH1D*)(unf->Clone());
+			bkgunfXSec = (TH1D*)(unf->Clone());
+			bkgunfG4 = (TH1D*)(unf->Clone());
+			bkgunfDirt = (TH1D*)(unf->Clone());
+			bkgunfPOT = (TH1D*)(unf->Clone());
+			bkgunfNuWro = (TH1D*)(unf->Clone());			
+			bkgunfNTarget = (TH1D*)(unf->Clone());																		
 
 			myXSecTxtFile << PlotNames[WhichPlot] << endl << endl;			
 
@@ -631,6 +840,70 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 
 				double NTargetError = TMath::Sqrt( UnfNTargetCov(i-1,i-1) ) / Width;
 				unfNTarget->SetBinError(i, NTargetError);																				
+
+				//----------------------------------------//
+
+				double SignalLYError = TMath::Sqrt( SignalUnfLYCov(i-1,i-1) ) / Width;
+				signalunfLY->SetBinError(i, SignalLYError);
+
+				double SignalTPCError = TMath::Sqrt( SignalUnfTPCCov(i-1,i-1) ) / Width;
+				signalunfTPC->SetBinError(i, SignalTPCError);
+
+				double SignalSCERecomb2Error = TMath::Sqrt( SignalUnfSCERecomb2Cov(i-1,i-1) ) / Width;
+				signalunfSCERecomb2->SetBinError(i, SignalSCERecomb2Error);
+
+				double SignalFluxError = TMath::Sqrt( SignalUnfFluxCov(i-1,i-1) ) / Width;
+				signalunfFlux->SetBinError(i, SignalFluxError);
+
+				double SignalXSecError = TMath::Sqrt( SignalUnfXSecCov(i-1,i-1) ) / Width;
+				signalunfXSec->SetBinError(i, SignalXSecError);
+
+				double SignalG4Error = TMath::Sqrt( SignalUnfG4Cov(i-1,i-1) ) / Width;
+				signalunfG4->SetBinError(i, SignalG4Error);
+
+				double SignalDirtError = TMath::Sqrt( SignalUnfDirtCov(i-1,i-1) ) / Width;
+				signalunfDirt->SetBinError(i, SignalDirtError);
+
+				double SignalPOTError = TMath::Sqrt( SignalUnfPOTCov(i-1,i-1) ) / Width;
+				signalunfPOT->SetBinError(i, SignalPOTError);
+
+				double SignalNuWroError = TMath::Sqrt( SignalUnfNuWroCov(i-1,i-1) ) / Width;
+				signalunfNuWro->SetBinError(i, SignalNuWroError);				
+
+				double SignalNTargetError = TMath::Sqrt( SignalUnfNTargetCov(i-1,i-1) ) / Width;
+				signalunfNTarget->SetBinError(i, SignalNTargetError);				
+
+				//----------------------------------------//	
+
+				double BkgLYError = TMath::Sqrt( BkgUnfLYCov(i-1,i-1) ) / Width;
+				bkgunfLY->SetBinError(i, BkgLYError);
+
+				double BkgTPCError = TMath::Sqrt( BkgUnfTPCCov(i-1,i-1) ) / Width;
+				bkgunfTPC->SetBinError(i, BkgTPCError);
+
+				double BkgSCERecomb2Error = TMath::Sqrt( BkgUnfSCERecomb2Cov(i-1,i-1) ) / Width;
+				bkgunfSCERecomb2->SetBinError(i, BkgSCERecomb2Error);
+
+				double BkgFluxError = TMath::Sqrt( BkgUnfFluxCov(i-1,i-1) ) / Width;
+				bkgunfFlux->SetBinError(i, BkgFluxError);
+
+				double BkgXSecError = TMath::Sqrt( BkgUnfXSecCov(i-1,i-1) ) / Width;
+				bkgunfXSec->SetBinError(i, BkgXSecError);
+
+				double BkgG4Error = TMath::Sqrt( BkgUnfG4Cov(i-1,i-1) ) / Width;
+				bkgunfG4->SetBinError(i, BkgG4Error);
+
+				double BkgDirtError = TMath::Sqrt( BkgUnfDirtCov(i-1,i-1) ) / Width;
+				bkgunfDirt->SetBinError(i, BkgDirtError);
+
+				double BkgPOTError = TMath::Sqrt( BkgUnfPOTCov(i-1,i-1) ) / Width;
+				bkgunfPOT->SetBinError(i, BkgPOTError);
+
+				double BkgNuWroError = TMath::Sqrt( BkgUnfNuWroCov(i-1,i-1) ) / Width;
+				bkgunfNuWro->SetBinError(i, BkgNuWroError);				
+
+				double BkgNTargetError = TMath::Sqrt( BkgUnfNTargetCov(i-1,i-1) ) / Width;
+				bkgunfNTarget->SetBinError(i, BkgNTargetError);							
 
 				//----------------------------------------//				
 
@@ -853,6 +1126,7 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unf->Write("Reco"+PlotNames[WhichPlot]);
 				unfShapeOnly->Write("ShapeOnlyReco"+PlotNames[WhichPlot]);
 				unfNormOnly->Write("NormOnlyReco"+PlotNames[WhichPlot]);
+
 				unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]);
 				unfStat->Write("StatReco"+PlotNames[WhichPlot]);
 				unfLY->Write("LYReco"+PlotNames[WhichPlot]);
@@ -864,7 +1138,34 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				unfDirt->Write("DirtReco"+PlotNames[WhichPlot]);
 				unfPOT->Write("POTReco"+PlotNames[WhichPlot]);
 				unfNuWro->Write("NuWroReco"+PlotNames[WhichPlot]);				
-				unfNTarget->Write("NTargetReco"+PlotNames[WhichPlot]);								
+				unfNTarget->Write("NTargetReco"+PlotNames[WhichPlot]);
+
+				signalunfMCStat->Write("SignalMCStatReco"+PlotNames[WhichPlot]);
+				signalunfStat->Write("SignalStatReco"+PlotNames[WhichPlot]);
+				signalunfLY->Write("SignalLYReco"+PlotNames[WhichPlot]);
+				signalunfTPC->Write("SignalTPCReco"+PlotNames[WhichPlot]);
+				signalunfSCERecomb2->Write("SignalSCERecomb2Reco"+PlotNames[WhichPlot]);
+				signalunfFlux->Write("SignalFluxReco"+PlotNames[WhichPlot]);
+				signalunfXSec->Write("SignalXSecReco"+PlotNames[WhichPlot]);
+				signalunfG4->Write("SignalG4Reco"+PlotNames[WhichPlot]);
+				signalunfDirt->Write("SignalDirtReco"+PlotNames[WhichPlot]);
+				signalunfPOT->Write("SignalPOTReco"+PlotNames[WhichPlot]);
+				signalunfNuWro->Write("SignalNuWroReco"+PlotNames[WhichPlot]);				
+				signalunfNTarget->Write("SignalNTargetReco"+PlotNames[WhichPlot]);
+
+				bkgunfMCStat->Write("BkgMCStatReco"+PlotNames[WhichPlot]);
+				bkgunfStat->Write("BkgStatReco"+PlotNames[WhichPlot]);
+				bkgunfLY->Write("BkgLYReco"+PlotNames[WhichPlot]);
+				bkgunfTPC->Write("BkgTPCReco"+PlotNames[WhichPlot]);
+				bkgunfSCERecomb2->Write("BkgSCERecomb2Reco"+PlotNames[WhichPlot]);
+				bkgunfFlux->Write("BkgFluxReco"+PlotNames[WhichPlot]);
+				bkgunfXSec->Write("BkgXSecReco"+PlotNames[WhichPlot]);
+				bkgunfG4->Write("BkgG4Reco"+PlotNames[WhichPlot]);
+				bkgunfDirt->Write("BkgDirtReco"+PlotNames[WhichPlot]);
+				bkgunfPOT->Write("BkgPOTReco"+PlotNames[WhichPlot]);
+				bkgunfNuWro->Write("BkgNuWroReco"+PlotNames[WhichPlot]);				
+				bkgunfNTarget->Write("BkgNTargetReco"+PlotNames[WhichPlot]);									
+
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
 				TrueUnf->Write("True"+PlotNames[WhichPlot]);
 				QETrueUnf->Write("QETrue"+PlotNames[WhichPlot]);

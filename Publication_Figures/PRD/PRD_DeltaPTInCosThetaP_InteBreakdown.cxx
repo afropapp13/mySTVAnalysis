@@ -37,12 +37,12 @@ void PRD_DeltaPTInCosThetaP_InteBreakdown() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> PanelLabels;
+	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> PanelLabels;  vector<TString> SaveFig;
 	//PlotNames.push_back("DeltaAlphaTPlot");
-	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(3.49);
-	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(19.);	
-	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(64.);
-	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(73.);
+	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(3.49); SaveFig.push_back("Fig44");
+	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(19.); SaveFig.push_back("Fig45");	
+	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(64.); SaveFig.push_back("Fig46");
+	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(73.); SaveFig.push_back("Fig47");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -231,7 +231,8 @@ void PRD_DeltaPTInCosThetaP_InteBreakdown() {
 
 				//----------------------------------------//
 
-				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+				//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCanvas;						
 
 			} // End of the loop over the generators

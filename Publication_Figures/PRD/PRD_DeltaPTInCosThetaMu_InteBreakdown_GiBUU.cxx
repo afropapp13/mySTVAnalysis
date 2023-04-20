@@ -24,7 +24,7 @@ using namespace Constants;
 
 //----------------------------------------//
 
-void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
+void PRD_DeltaPTInCosThetaMu_InteBreakdown_GiBUU() {
 
 	//----------------------------------------//
 
@@ -37,12 +37,12 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label;
+	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label; vector<TString> SaveFig;
 	//PlotNames.push_back("DeltaPTPlot");
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_0"); Min.push_back(0.); Max.push_back(7.99); Label.push_back("(a)");
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_1"); Min.push_back(0.); Max.push_back(22.); Label.push_back("(b)");
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_2"); Min.push_back(0.); Max.push_back(44.); Label.push_back("(c)");
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_3"); Min.push_back(0.); Max.push_back(63.);	Label.push_back("(d)");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_0"); Min.push_back(0.); Max.push_back(7.99); Label.push_back("(a)"); SaveFig.push_back("Fig28");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_1"); Min.push_back(0.); Max.push_back(22.); Label.push_back("(b)"); SaveFig.push_back("Fig29");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_2"); Min.push_back(0.); Max.push_back(44.); Label.push_back("(c)"); SaveFig.push_back("Fig30");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_3"); Min.push_back(0.); Max.push_back(63.);	Label.push_back("(d)"); SaveFig.push_back("Fig31");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -54,7 +54,7 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 	vector<TString> MCSampleBand;
 	vector<TString> MCSampleLatex;	
 
-	MCSampleBand.push_back("OverlayGENIE"); MCSampleLatex.push_back("G18");
+	//MCSampleBand.push_back("OverlayGENIE"); MCSampleLatex.push_back("G18");
 	MCSampleBand.push_back("GiBUU"); MCSampleLatex.push_back("GiBUU");
 //	MCSampleBand.push_back("GiBUUNoFSI");	
 //	MCSampleBand.push_back("GiBUUTscaling");	
@@ -230,7 +230,8 @@ void PRD_DeltaPTInCosThetaMu_InteBreakdown() {
 
 				//----------------------------------------//
 
-				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+				//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCanvas;						
 
 			} // End of the loop over the generators

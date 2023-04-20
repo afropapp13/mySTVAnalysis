@@ -668,7 +668,67 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 
 		UniAltModels.push_back("_RDecBR1gamma_UBGenie"); Universes.push_back(2);
 
-	}												
+	}
+
+	//----------------------------------------//
+
+	// Overlay9_Run1_DecompXSecUnc
+
+	if (Syst == "UnShortAxFFCCQEshape_UBGenie") {
+
+		UniAltModels.push_back("_UnShortAxFFCCQEshape_UBGenie"); Universes.push_back(2);
+
+	}
+
+	//----------------------------------------//
+
+	// Overlay9_Run1_DecompXSecUnc
+
+	if (Syst == "UnShortDecayAngMEC_UBGenie") {
+
+		UniAltModels.push_back("_UnShortDecayAngMEC_UBGenie"); Universes.push_back(2);
+
+	}
+
+	//----------------------------------------//
+
+	// Overlay9_Run1_DecompXSecUnc
+
+	if (Syst == "UnShortRPA_CCQE_UBGenie") {
+
+		UniAltModels.push_back("_UnShortRPA_CCQE_UBGenie"); Universes.push_back(2);
+
+	}	
+
+	//----------------------------------------//
+
+	// Overlay9_Run1_DecompXSecUnc
+
+	if (Syst == "UnShortTheta_Delta2Npi_UBGenie") {
+
+		UniAltModels.push_back("_UnShortTheta_Delta2Npi_UBGenie"); Universes.push_back(2);
+
+	}
+
+	//----------------------------------------//
+
+	// Overlay9_Run1_DecompXSecUnc
+
+	if (Syst == "UnShortVecFFCCQEshape_UBGenie") {
+
+		UniAltModels.push_back("_UnShortVecFFCCQEshape_UBGenie"); Universes.push_back(2);
+
+	}
+
+	//----------------------------------------//
+
+	// Overlay9_Run1_DecompXSecUnc
+
+	if (Syst == "UnShortXSecShape_CCMEC_UBGenie") {
+
+		UniAltModels.push_back("_UnShortXSecShape_CCMEC_UBGenie"); Universes.push_back(2);
+
+	}
 
 	//----------------------------------------//
 
@@ -999,11 +1059,15 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 						double LocalFracCovError = 1E-8;
 						double LocalCovError = 1E-8;
 
-						LocalFracCovEntry = LocalFracCovEntry * 1. / AltUniverses[alt];
-						LocalFracCovError = LocalFracCovError * 1. / AltUniverses[alt];
+						if (AltUniverses[alt] > 2 || Run == "Run1_DecompXSecUnc") {						
 
-						LocalCovEntry = LocalCovEntry * 1. / AltUniverses[alt];
-						LocalCovError = LocalCovError * 1. / AltUniverses[alt];
+							LocalFracCovEntry = LocalFracCovEntry * 1. / AltUniverses[alt];
+							LocalFracCovError = LocalFracCovError * 1. / AltUniverses[alt];
+
+							LocalCovEntry = LocalCovEntry * 1. / AltUniverses[alt];
+							LocalCovError = LocalCovError * 1. / AltUniverses[alt];
+
+						}
 
 						CovFracEntry = CurrentFracCovEntry + LocalFracCovEntry;
 						CovEntry = CurrentCovEntry + LocalCovEntry;

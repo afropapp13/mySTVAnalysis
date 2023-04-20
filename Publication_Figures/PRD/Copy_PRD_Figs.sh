@@ -21,4 +21,10 @@ cp /home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRoot
 
 cp /home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/myPreSelection/myPlots/v08_00_00_52/MuonMomentum2DRangeCanvasNoQC_Combined.pdf ${OutPutDir}/Fig124.pdf
 
+cp /home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/myEvents/myPlots/pdf/1D/v08_00_00_52/_NoCuts/Fig131.pdf	${OutPutDir}/Fig131.pdf
+
 cp /home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/myEvents/myPlots/pdf/1D/v08_00_00_52/_NoCuts/PRD_PID_RecoMuonLLRPIDPlot_Combined_v08_00_00_52_NoCuts.pdf	${OutPutDir}/Fig132.pdf
+
+cp /home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/myEvents/myPlots/pdf/1D/v08_00_00_52/_NoCuts/Fig139.pdf	${OutPutDir}/Fig139.pdf
+
+cp /home/afroditi/Dropbox/PhD/myCode/21th_assignment_CalibratedProducts/CodeRootFiles/uboonecode_v08/myEvents/myPlots/pdf/1D/v08_00_00_52/_NoCuts/Fig140.pdf	${OutPutDir}/Fig140.pdf

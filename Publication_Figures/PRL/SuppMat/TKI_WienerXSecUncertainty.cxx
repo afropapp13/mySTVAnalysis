@@ -13,16 +13,14 @@
 #include <sstream>
 #include <string>
 
-#include "../myClasses/Constants.h"
+#include "../../../../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
 //----------------------------------------//
 
-// Label = "" / "Signal" / "Bkg"
-
-void WienerXSecUncertainty(TString Label = "") {
+void TKI_WienerXSecUncertainty() {
 
 	//----------------------------------------//
 
@@ -32,14 +30,16 @@ void WienerXSecUncertainty(TString Label = "") {
 
 	TH1D::SetDefaultSumw2();	
 
-	TString PathToFiles = "myXSec/";
+	TString PathToFiles = "../../../myXSec/";
 
 	gStyle->SetPaintTextFormat("4.2f");		
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames;
-	PlotNames.push_back("MuonCosThetaSingleBinPlot");
+	vector<TString> PlotNames;  vector<TString> SaveFig; vector<double> MaxValue;
+	PlotNames.push_back("DeltaPTPlot");  SaveFig.push_back("Fig133"); MaxValue.push_back(48.);
+	PlotNames.push_back("DeltaAlphaTPlot");  SaveFig.push_back("Fig134"); MaxValue.push_back(17.);
+	PlotNames.push_back("DeltaPtxPlot");  SaveFig.push_back("Fig135"); MaxValue.push_back(39.9);		
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -88,27 +88,27 @@ void WienerXSecUncertainty(TString Label = "") {
 
 		// Loop over the plots
 
-		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {		
+		for (int iplot = 0; iplot < N1DPlots; iplot ++) {		
 
 			//----------------------------------------//
 
 			// CV XSec plot
-			TH1D* CV = (TH1D*)(fXSec->Get("RecoFullUnc"+PlotNames[WhichPlot]));	
+			TH1D* CV = (TH1D*)(fXSec->Get("RecoFullUnc"+PlotNames[iplot]));	
 			int NBins = CV->GetXaxis()->GetNbins();				
 
 			//----------------------------------------//		
 
 			// Canvas & legend declaration
 
-			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
+			TCanvas* PlotCanvas = new TCanvas(PlotNames[iplot]+"_"+Runs[WhichRun],PlotNames[iplot]+"_"+Runs[WhichRun],205,34,1024,768);
 			PlotCanvas->cd();
-			//PlotCanvas->SetBottomMargin(0.14);
+			PlotCanvas->SetBottomMargin(0.14);
 			//PlotCanvas->SetTopMargin(0.12);
 			//PlotCanvas->SetLeftMargin(0.19);			
 
-			TLegend* leg = new TLegend(0.15,0.91,0.85,0.99);
+			TLegend* leg = new TLegend(0.1,0.9,0.9,0.99);
 			leg->SetBorderSize(0);
-			leg->SetTextSize(0.03);
+			leg->SetTextSize(TextSize-0.01);
 			leg->SetTextFont(FontStyle);
 			leg->SetNColumns(7);
 			leg->SetMargin(0.15);	
@@ -130,12 +130,16 @@ void WienerXSecUncertainty(TString Label = "") {
 
 			}
 
-			TotalUnc->SetLineColor(kWhite);
+			TotalUnc->SetLineColor(kBlack);
 			TotalUnc->SetLineWidth(2);
 
-			TotalUnc->GetXaxis()->SetNdivisions(0);
-			TotalUnc->GetXaxis()->SetTitleSize(0);
-			TotalUnc->GetXaxis()->SetLabelSize(0);
+			TotalUnc->GetXaxis()->SetNdivisions(8);
+			TotalUnc->GetXaxis()->SetTitleOffset(1.);
+			TotalUnc->GetXaxis()->SetTitleSize(TextSize);
+			TotalUnc->GetXaxis()->SetLabelSize(TextSize);
+			TotalUnc->GetXaxis()->SetTitleFont(TextFont);
+			TotalUnc->GetXaxis()->SetLabelFont(TextFont);
+			TotalUnc->GetXaxis()->CenterTitle();
 
 			TotalUnc->GetYaxis()->SetNdivisions(8);
 			TotalUnc->GetYaxis()->SetTitleOffset(0.8);
@@ -145,11 +149,11 @@ void WienerXSecUncertainty(TString Label = "") {
 			TotalUnc->GetYaxis()->SetLabelFont(TextFont);			
 			TotalUnc->GetYaxis()->SetTitle("Uncertainty [%]");
 			TotalUnc->GetYaxis()->CenterTitle();			
-			TotalUnc->GetYaxis()->SetRangeUser(0.,14.9);																		
+			TotalUnc->GetYaxis()->SetRangeUser(0.,MaxValue[iplot]);																		
 
-			TotalUnc->Draw("hist");	
+			TotalUnc->Draw("hist text0 same");	
 
-//			leg->AddEntry(TotalUnc,"Total","l");
+			leg->AddEntry(TotalUnc,"Total","l");
 
 			//----------------------------------------//
 
@@ -159,7 +163,7 @@ void WienerXSecUncertainty(TString Label = "") {
 
 			for (int isource = 0; isource < NSources; isource++) {
 
-				UncPlot[isource] = (TH1D*)(fXSec->Get(Label + UncSource[isource] + "Reco" + PlotNames[WhichPlot]));
+				UncPlot[isource] = (TH1D*)(fXSec->Get(UncSource[isource] + "Reco" + PlotNames[iplot]));
 
 				for (int ibin = 1; ibin <= NBins; ibin++) {
 
@@ -183,61 +187,13 @@ void WienerXSecUncertainty(TString Label = "") {
 				
 			}												
 
-			//----------------------------------------//
-
-			// For the single bin study, print out the corresponding uncertainties
-
-			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
-
-				double NuWroUnc = UncPlot[0]->GetBinContent(1);
-				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[11]->GetBinContent(1),2.) );		
-				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) + TMath::Power(UncPlot[4]->GetBinContent(1),2.) );				
-				double XSecUnc = TMath::Sqrt( TMath::Power(UncPlot[5]->GetBinContent(1),2.) + TMath::Power(NuWroUnc,2.) );
-				double FluxUnc = UncPlot[7]->GetBinContent(1);
-				double G4Unc = UncPlot[6]->GetBinContent(1);
-				double DirtUnc = UncPlot[8]->GetBinContent(1);
-				double POTUnc = UncPlot[9]->GetBinContent(1);
-				double NTargetUnc = UncPlot[10]->GetBinContent(1);
-
-				cout << " Flux = " <<  FluxUnc << " %" << endl;
-				cout << " XSec = " <<  XSecUnc << " %" << endl;
-				cout << " Det = " <<  DetUnc << " %" << endl;
-				//cout << " NuWro = " <<  NuWroUnc << " %" << endl;
-				cout << " POT = " <<  POTUnc << " %" << endl;				
-				cout << " Stat = " <<  StatUnc << " %" << endl;	
-				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						
-				cout << " G4 = " <<  G4Unc << " %" << endl;		
-				cout << " Dirt = " <<  DirtUnc << " %" << endl;			
-	
-
-				double ManualTotalUnc = 0;
-
-				for (int isource = 0; isource < NSources; isource++){
-
-					ManualTotalUnc += TMath::Power(UncPlot[isource]->GetBinContent(1),2.);
-
-				}		
-
-				ManualTotalUnc = TMath::Sqrt(ManualTotalUnc);
-
-				cout << endl << " Manual Total = " << ManualTotalUnc << " %" << endl;	
-
-				TH1D* TotalClone = (TH1D*)(TotalUnc->Clone());	
-				TotalClone->SetLineColor(kBlack);
-				TotalClone->SetLineWidth(2);
-				TotalClone->SetBinContent(1,ManualTotalUnc);				
-				TotalClone->Draw("text0 same hist");
-				leg->AddEntry(TotalClone,"Total","l");																		
-
-			}
-
 			gPad->RedrawAxis();
 			leg->Draw();	
 
 			//----------------------------------------//
 
 			// Saving the canvas with the uncertainties on the final xsec
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/" + Label + "XSecUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
 //			delete PlotCanvas;					
 
 			//----------------------------------------//

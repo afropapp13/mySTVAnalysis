@@ -52,16 +52,17 @@ void PRD_DeltaAlphaTInCosThetaP_InteBreakdown() {
 	// MC Samples to compare
 
 	vector<TString> MCSampleBand;
-	 vector<TString> Label;
+	vector<TString> Label;
+	vector<TString> SaveFig; 
 
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("(a) G18,");
+	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("(a) G18,"); SaveFig.push_back("Fig74");
 //	MCSampleBand.push_back("GiBUU");
 //	MCSampleBand.push_back("GiBUUNoFSI");	
 //	MCSampleBand.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");
 //	MCSampleBand.push_back("NEUTv5401_RFG");	
 //	MCSampleBand.push_back("Overlay9NuWro");
-	MCSampleBand.push_back("GENIEv2"); Label.push_back("(b) Gv2,");
+	MCSampleBand.push_back("GENIEv2"); Label.push_back("(b) Gv2,"); SaveFig.push_back("Fig75");
 	// MCSampleBand.push_back("GENIEv2LFG");
 	// MCSampleBand.push_back("GENIEv2EffSF");		
 	// MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box");					
@@ -229,7 +230,8 @@ void PRD_DeltaAlphaTInCosThetaP_InteBreakdown() {
 
 				//----------------------------------------//
 
-				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+				//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCanvas;						
 
 			} // End of the loop over the generators

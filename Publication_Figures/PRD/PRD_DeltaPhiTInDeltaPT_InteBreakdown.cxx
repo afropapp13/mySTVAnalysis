@@ -37,11 +37,11 @@ void PRD_DeltaPhiTInDeltaPT_InteBreakdown() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label;
-	PlotNames.push_back("DeltaPhiTPlot"); Label.push_back("(a) G18,"); Min.push_back(0.); Max.push_back(0.36);
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_0"); Label.push_back("(b) G18,"); Min.push_back(0.); Max.push_back(1.6);
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_1");Label.push_back("(c) G18,"); Min.push_back(0.); Max.push_back(0.34);	
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_2"); Label.push_back("(d) G18,"); Min.push_back(0.); Max.push_back(0.044);
+	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label; vector<TString> SaveFig;
+	PlotNames.push_back("DeltaPhiTPlot"); Label.push_back("(a) G18,"); Min.push_back(0.); Max.push_back(0.36); SaveFig.push_back("Fig84");
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_0"); Label.push_back("(b) G18,"); Min.push_back(0.); Max.push_back(1.6); SaveFig.push_back("Fig85");
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_1");Label.push_back("(c) G18,"); Min.push_back(0.); Max.push_back(0.34); SaveFig.push_back("Fig86");	
+	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot_2"); Label.push_back("(d) G18,"); Min.push_back(0.); Max.push_back(0.044); SaveFig.push_back("Fig87");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -228,7 +228,8 @@ void PRD_DeltaPhiTInDeltaPT_InteBreakdown() {
 
 				//----------------------------------------//
 
-				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+				//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCanvas;						
 
 			} // End of the loop over the generators

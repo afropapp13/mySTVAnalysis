@@ -25,6 +25,9 @@ WienerSVD_Merge_Covariances("Overlay9", "","TwiceMEC")
 
 root -b script_WienerSVD_XSec.C
 
+## Event rate covariances
+#root -b script_WienerSVD_Systematics.C
+
 #################################################################################################################################
 
 # Plotting the detector variation xsecs and storing the relevant systematics with respect to the corresponding CV sample
@@ -172,6 +175,10 @@ hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/
 root -b DataGeneratorBreakdown.cxx
 
 root -b WienerXSecUncertainty.cxx
+root -b
+.L WienerXSecUncertainty.cxx++
+WienerXSecUncertainty("Signal")
+WienerXSecUncertainty("Bkg")
 
 #.x IntegratedXSecs.cpp
 

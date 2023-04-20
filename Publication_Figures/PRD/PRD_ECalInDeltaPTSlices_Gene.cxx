@@ -58,11 +58,11 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;
-	PlotNames.push_back("ECalPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(24.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{GeV\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialECal_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(64.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]");
-	PlotNames.push_back("SerialECal_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(37.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]"); 	
-	PlotNames.push_back("SerialECal_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(8.5); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]");
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> Units;  vector<TString> SaveFig;
+	PlotNames.push_back("ECalPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(24.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{GeV\\,^{40}Ar}$]"); SaveFig.push_back("Fig100");
+	PlotNames.push_back("SerialECal_DeltaPTPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(64.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]"); SaveFig.push_back("Fig101");
+	PlotNames.push_back("SerialECal_DeltaPTPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(37.); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]"); SaveFig.push_back("Fig102"); 	
+	PlotNames.push_back("SerialECal_DeltaPTPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(8.5); Units.push_back("[$10^{-38}\\frac{cm^{2}}{(GeV^{2}/\\textit{c})\\,^{40}Ar}$]"); SaveFig.push_back("Fig103");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -125,7 +125,7 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 		// Data release
 
-		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/XSec/PRD_XSec_ECalInDeltaPT.tex";
+		TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/PRD_XSec_ECalInDeltaPT.tex";
 		ofstream myTxtFile;
 		myTxtFile.open(TxtName);		
 
@@ -231,78 +231,78 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 			//----------------------------------------//			
 
-			myTxtFile << "\\begin{table}[H]" << endl;
-			myTxtFile << "\\centering" << endl;	
-			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
-			myTxtFile << "\\small" << endl;						
-			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
-			myTxtFile << "\\hline" << endl;						
-			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Unfolded Covariance Matrix $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
-			myTxtFile << "\\hline" << endl;
-			myTxtFile << "\\hline" << endl;
-			myTxtFile << "Units in " << Units[iplot] << "$^{2}$" << endl;			
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
-			myTxtFile << "\\\\"<< endl;
-			myTxtFile << "\\hline"<< endl;
+			// myTxtFile << "\\begin{table}[H]" << endl;
+			// myTxtFile << "\\centering" << endl;	
+			// myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			// myTxtFile << "\\small" << endl;						
+			// myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			// myTxtFile << "\\hline" << endl;						
+			// myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Unfolded Covariance Matrix $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
+			// myTxtFile << "\\hline" << endl;
+			// myTxtFile << "\\hline" << endl;
+			// myTxtFile << "Units in " << Units[iplot] << "$^{2}$" << endl;			
+			// for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			// myTxtFile << "\\\\"<< endl;
+			// myTxtFile << "\\hline"<< endl;
 
-			for (int xbin = 1; xbin <= NBins; xbin++) {
+			// for (int xbin = 1; xbin <= NBins; xbin++) {
 
-				myTxtFile << "Bin " << xbin << "  ";
+			// 	myTxtFile << "Bin " << xbin << "  ";
 
-				for (int ybin = 1; ybin <= NBins; ybin++) {	
+			// 	for (int ybin = 1; ybin <= NBins; ybin++) {	
 
-					double CovBinValue = Cov->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(6) << " & " << CovBinValue;
+			// 		double CovBinValue = Cov->GetBinContent(xbin,ybin);
+			// 		myTxtFile << std::setprecision(6) << " & " << CovBinValue;
 
-				}	
+			// 	}	
 				
-				myTxtFile << "\\\\" << endl;
+			// 	myTxtFile << "\\\\" << endl;
 
-			}	
+			// }	
 
-			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "\\end{tabular}" << endl;
-			myTxtFile << "\\end{adjustbox}" << endl;		
-			myTxtFile << "\\end{table}" << endl;				
-			myTxtFile << endl << endl;	
+			// myTxtFile << "\\hline" << endl;			
+			// myTxtFile << "\\end{tabular}" << endl;
+			// myTxtFile << "\\end{adjustbox}" << endl;		
+			// myTxtFile << "\\end{table}" << endl;				
+			// myTxtFile << endl << endl;	
 
 			//----------------------------------------//
 
 			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);			
 
-			myTxtFile << "\\begin{table}[H]" << endl;
-			myTxtFile << "\\centering" << endl;	
-			myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
-			myTxtFile << "\\small" << endl;						
-			myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
-			myTxtFile << "\\hline" << endl;						
-			myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
-			myTxtFile << "\\hline" << endl;
-			myTxtFile << "\\hline" << endl;
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
-			myTxtFile << "\\\\"<< endl;
-			myTxtFile << "\\hline"<< endl;
+			// myTxtFile << "\\begin{table}[H]" << endl;
+			// myTxtFile << "\\centering" << endl;	
+			// myTxtFile << "\\begin{adjustbox}{width=\\textwidth}" << endl;		
+			// myTxtFile << "\\small" << endl;						
+			// myTxtFile << "\\begin{tabular}{ " << PrintMultipleTimes(NBins+1,"|c") << "| }" << endl;
+			// myTxtFile << "\\hline" << endl;						
+			// myTxtFile << "\\multicolumn{" << NBins+1 << "}{|c|}{Additional Smearing Matrix ($A_{C}$) $E^{Cal}$, " << LatexLabelString << "} \\\\" << endl;
+			// myTxtFile << "\\hline" << endl;
+			// myTxtFile << "\\hline" << endl;
+			// for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << " & Bin " << ybin; }
+			// myTxtFile << "\\\\"<< endl;
+			// myTxtFile << "\\hline"<< endl;
 
-			for (int xbin = 1; xbin <= NBins; xbin++) {
+			// for (int xbin = 1; xbin <= NBins; xbin++) {
 
-				myTxtFile << "Bin " << xbin << "  ";				
+			// 	myTxtFile << "Bin " << xbin << "  ";				
 
-				for (int ybin = 1; ybin <= NBins; ybin++) {	
+			// 	for (int ybin = 1; ybin <= NBins; ybin++) {	
 
-					double AcBinValue = Ac->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(6) << " & " << AcBinValue;
+			// 		double AcBinValue = Ac->GetBinContent(xbin,ybin);
+			// 		myTxtFile << std::setprecision(6) << " & " << AcBinValue;
 
-				}	
+			// 	}	
 				
-				myTxtFile << "\\\\" << endl;
+			// 	myTxtFile << "\\\\" << endl;
 
-			}	
+			// }	
 
-			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "\\end{tabular}" << endl;
-			myTxtFile << "\\end{adjustbox}" << endl;		
-			myTxtFile << "\\end{table}" << endl;				
-			myTxtFile << endl << endl;			
+			// myTxtFile << "\\hline" << endl;			
+			// myTxtFile << "\\end{tabular}" << endl;
+			// myTxtFile << "\\end{adjustbox}" << endl;		
+			// myTxtFile << "\\end{table}" << endl;				
+			// myTxtFile << endl << endl;			
 
 			//----------------------------------------//
 			//----------------------------------------//						
@@ -385,7 +385,8 @@ void PRD_ECalInDeltaPTSlices_Gene() {
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Generators_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Generators_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			//delete PlotCanvas;	
 
 			//----------------------------------------//

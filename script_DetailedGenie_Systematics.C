@@ -52,6 +52,15 @@
 	WhichSampleArray.push_back("_RDecBR1eta_UBGenie"); Universes.push_back(2);				
 	WhichSampleArray.push_back("_RDecBR1gamma_UBGenie"); Universes.push_back(2);
 
+	// Unisims
+
+	WhichSampleArray.push_back("_UnShortAxFFCCQEshape_UBGenie"); Universes.push_back(2);
+	WhichSampleArray.push_back("_UnShortDecayAngMEC_UBGenie"); Universes.push_back(2);
+	WhichSampleArray.push_back("_UnShortRPA_CCQE_UBGenie"); Universes.push_back(2);
+	WhichSampleArray.push_back("_UnShortTheta_Delta2Npi_UBGenie"); Universes.push_back(2);
+	WhichSampleArray.push_back("_UnShortVecFFCCQEshape_UBGenie"); Universes.push_back(2);
+	WhichSampleArray.push_back("_UnShortXSecShape_CCMEC_UBGenie"); Universes.push_back(2);	
+
 	// -----------------------------------------------------------------------------------------
 
 //	gROOT->ProcessLine(".L StandardEfficiencies.cpp++");

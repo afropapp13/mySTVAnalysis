@@ -20,8 +20,6 @@ void script_WienerSVD_EventRateSystematics() {
 
 	gROOT->ProcessLine("WienerSVD_EventRateCovarianceMatrices(\"XSec\")");
 
-//	gROOT->ProcessLine("WienerSVD_EventRateCovarianceMatrices(\"DetailedXSec\")");	
-
 	gROOT->ProcessLine("WienerSVD_EventRateCovarianceMatrices(\"G4\")");
 
 	gROOT->ProcessLine("WienerSVD_EventRateCovarianceMatrices(\"Flux\")");

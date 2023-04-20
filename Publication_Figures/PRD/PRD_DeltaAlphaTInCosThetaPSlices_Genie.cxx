@@ -59,12 +59,12 @@ void PRD_DeltaAlphaTInCosThetaPSlices_Genie() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> SaveFig;
 //	PlotNames.push_back("DeltaAlphaTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(44.);
-	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.013);
-	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.059);	
-	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.13);
-	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.21);
+	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(0.013); SaveFig.push_back("Fig70");
+	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(0.059); SaveFig.push_back("Fig71");	
+	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(0.13); SaveFig.push_back("Fig72");
+	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(0.21); SaveFig.push_back("Fig73");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -263,7 +263,8 @@ void PRD_DeltaAlphaTInCosThetaPSlices_Genie() {
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			//delete PlotCanvas;	
 
 			//----------------------------------------//

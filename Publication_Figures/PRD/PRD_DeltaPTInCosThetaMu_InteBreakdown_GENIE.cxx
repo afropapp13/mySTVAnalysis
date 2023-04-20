@@ -24,7 +24,7 @@ using namespace Constants;
 
 //----------------------------------------//
 
-void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
+void PRD_DeltaPTInCosThetaMu_InteBreakdown_GENIE() {
 
 	//----------------------------------------//
 
@@ -37,12 +37,12 @@ void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<double> Min; vector<double> Max;
-	//PlotNames.push_back("DeltaAlphaTPlot");
-	//PlotNames.push_back("DeltaAlphaTPlot"); Min.push_back(0.); Max.push_back(0.12);
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_0"); Min.push_back(0.); Max.push_back(0.34);
-	//PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1"); Min.push_back(0.); Max.push_back(0.18);	
-	//PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2"); Min.push_back(0.); Max.push_back(0.055);
+	vector<TString> PlotNames; vector<double> Min; vector<double> Max; vector<TString> Label; vector<TString> SaveFig;
+	//PlotNames.push_back("DeltaPTPlot");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_0"); Min.push_back(0.); Max.push_back(7.99); Label.push_back("(a)"); SaveFig.push_back("Fig24");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_1"); Min.push_back(0.); Max.push_back(22.); Label.push_back("(b)"); SaveFig.push_back("Fig25");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_2"); Min.push_back(0.); Max.push_back(44.); Label.push_back("(c)"); SaveFig.push_back("Fig26");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_3"); Min.push_back(0.); Max.push_back(63.);	Label.push_back("(d)"); SaveFig.push_back("Fig27");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -52,17 +52,16 @@ void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 	// MC Samples to compare
 
 	vector<TString> MCSampleBand;
-	vector<TString> Label;
-	vector<TString> SaveFig;
+	vector<TString> MCSampleLatex;	
 
-	MCSampleBand.push_back("OverlayGENIE"); Label.push_back("(a) G18");  SaveFig.push_back("Fig56");
-//	MCSampleBand.push_back("GiBUU");
+	MCSampleBand.push_back("OverlayGENIE"); MCSampleLatex.push_back("G18");
+	//MCSampleBand.push_back("GiBUU"); MCSampleLatex.push_back("GiBUU");
 //	MCSampleBand.push_back("GiBUUNoFSI");	
 //	MCSampleBand.push_back("GiBUUTscaling");	
 //	MCSampleBand.push_back("NEUT");
 //	MCSampleBand.push_back("NEUTv5401_RFG");	
 //	MCSampleBand.push_back("Overlay9NuWro");
-	MCSampleBand.push_back("GENIEv2"); Label.push_back("(b) Gv2"); SaveFig.push_back("Fig57");
+//	MCSampleBand.push_back("GENIEv2");
 	// MCSampleBand.push_back("GENIEv2LFG");
 	// MCSampleBand.push_back("GENIEv2EffSF");		
 	// MCSampleBand.push_back("Genie_v3_0_6_Out_Of_The_Box");					
@@ -123,36 +122,35 @@ void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 				PlotCanvas->cd();
 				PlotCanvas->SetBottomMargin(0.14);
 				PlotCanvas->SetTopMargin(0.12);
-				PlotCanvas->SetLeftMargin(0.19);
+				PlotCanvas->SetLeftMargin(0.15);
 				PlotCanvas->SetRightMargin(0.03);				
 				PlotCanvas->Draw();
 
-	//			TLegend* legData = new TLegend(0.23,0.67,0.67,0.78);
-				TLegend* legData = new TLegend(0.23,0.74,0.67,0.86);			
+	//			TLegend* legData = new TLegend(0.51,0.68,0.97,0.8);
+				TLegend* legData = new TLegend(0.54,0.75,0.96,0.87);			
 				legData->SetBorderSize(0);
 				legData->SetTextSize(TextSize);
 				legData->SetTextFont(FontStyle);
 				legData->SetNColumns(1);
-				legData->SetMargin(0.08);	
-				legData->SetFillStyle(0);	
+				legData->SetMargin(0.08);
+				legData->SetFillColor(0);		
 
-	//			TLegend* legUnc = new TLegend(0.23,0.67,0.67,0.78);
-				TLegend* legUnc = new TLegend(0.235,0.68,0.6,0.74);			
+				TLegend* legUnc = new TLegend(0.532,0.69,0.942,0.75);			
 				legUnc->SetBorderSize(0);
 				legUnc->SetTextSize(TextSize);
 				legUnc->SetTextFont(FontStyle);
 				legUnc->SetNColumns(2);
-				legUnc->SetMargin(0.15);	
-				legUnc->SetFillStyle(0);					
+				legUnc->SetMargin(0.2);
+				legUnc->SetFillColor(0);							
 
-	//			TLegend* leg = new TLegend(0.24,0.79,0.68,0.88);
-				TLegend* leg = new TLegend(0.64,0.74,0.88,0.86);
+	//			TLegend* leg = new TLegend(0.52,0.81,0.98,0.9);
+				TLegend* leg = new TLegend(0.535,0.59,0.8,0.69);			
 				leg->SetBorderSize(0);
 				leg->SetTextSize(TextSize);
 				leg->SetTextFont(FontStyle);
 				leg->SetNColumns(2);
-				leg->SetMargin(0.18);
-				leg->SetFillStyle(0);	
+				leg->SetMargin(0.29);	
+				leg->SetFillColor(0);		
 
 				//----------------------------------------//
 
@@ -160,7 +158,8 @@ void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 
 				TH1D* BeamOnShapeStat = (TH1D*)( fXSec->Get("StatShape_" + PlotNames[iplot]) );
 				BeamOnShapeStat->GetYaxis()->SetRangeUser(Min[iplot],Max[iplot]);
-				BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.45);				
+				BeamOnShapeStat->GetYaxis()->SetTitleOffset(1.05);				
+				BeamOnShapeStat->SetLineWidth(2);				
 				BeamOnShapeStat->Draw("e1x0 same");
 
 				//----------------------------------------//
@@ -198,6 +197,7 @@ void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 				BeamOnShapeStat->Draw("e1x0 same");
 
 				TH1D* BeamOnStatOnly = (TH1D*)( fXSec->Get("StatOnly_" + PlotNames[iplot]) );
+				BeamOnStatOnly->SetLineWidth(2);				
 				BeamOnStatOnly->Draw("e1x0 same");
 
 				TH1D* BeamOnNormOnly = (TH1D*)( fXSec->Get("NormOnly_" + PlotNames[iplot]) );
@@ -209,28 +209,28 @@ void PRD_DeltaAlphaTInDeltaPT_InteBreakdown() {
 				//----------------------------------------//	
 
 				double tor860_wcut = Fulltor860_wcut_Combined;
-				TString LabelPOT = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";
+				TString LabelPOT = ToString(tor860_wcut).ReplaceAll("e"," #times 10").ReplaceAll("+","^{")+"} POT";	
 
 				legData->AddEntry(BeamOnShapeStat,"MicroBooNE Data","");
-				legData->AddEntry(BeamOnShapeStat,LabelPOT,"");	
+				legData->AddEntry(BeamOnShapeStat,LabelPOT,"");			
 
 				legUnc->AddEntry(BeamOnShapeStat,"Stat#oplusShape","ep");
 				legUnc->AddEntry(BeamOnNormOnly,"Norm","f");				
 
-				legData->Draw();	
-				legUnc->Draw();
-				leg->Draw();
+				legData->Draw();
+				legUnc->Draw();	
+				leg->Draw();	
 
 				TLatex *textSlice = new TLatex();
 				textSlice->SetTextFont(FontStyle);
 				textSlice->SetTextSize(TextSize);
-				textSlice->DrawLatexNDC(0.2, 0.92, Label[igen] + ", " +LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
+				textSlice->DrawLatexNDC(0.17, 0.92, Label[iplot] + " " + MCSampleLatex[igen] + ", " + LatexLabel[ MapUncorCor[PlotNames[iplot]] ]);			
 
 				gPad->RedrawAxis();
 
 				//----------------------------------------//
 
-				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[igen]+".pdf");
+				PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
 				//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_InteBreakDown_" + MCSampleBand[igen] + "_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 				delete PlotCanvas;						
 

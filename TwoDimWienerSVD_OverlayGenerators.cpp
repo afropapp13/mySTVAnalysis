@@ -295,6 +295,7 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 			NameOfSamples.push_back("Genie_v3_0_6_RFG_NoRPA"); Colors.push_back(GiBUUColor); Labels.push_back("G18 RFG NoRPA ");			
 			NameOfSamples.push_back("Genie_v3_0_6_EffSF"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF  ");
 			NameOfSamples.push_back("Genie_v3_0_6_EffSF_NoRPA"); Colors.push_back(GiBUUColor); Labels.push_back("G18 EffSF NoRPA ");					
+			NameOfSamples.push_back("v3_2_0_G18_10d_02_11a"); Colors.push_back(GiBUUColor); Labels.push_back("G18_10d_02_11a ");
 
 		}		             
 
@@ -431,7 +432,8 @@ void TwoDimWienerSVD_OverlayGenerators(bool PlotGENIE = true, bool PlotGen = fal
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG" ||  
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_RFG_NoRPA" ||					  
 					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF" ||
-					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF_NoRPA" ||  
+					NameOfSamples[WhichSample] == "Genie_v3_0_6_EffSF_NoRPA" || 
+					NameOfSamples[WhichSample] == "v3_2_0_G18_10d_02_11a" || 					 
 					NameOfSamples[WhichSample] == "SuSav2" ||
 					NameOfSamples[WhichSample] == "G21hA" ||
 					NameOfSamples[WhichSample] == "G21G4" ||

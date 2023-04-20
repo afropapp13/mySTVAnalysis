@@ -58,11 +58,11 @@ void PRD_DeltaPtxInDeltaPtySlices_Genie() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
-	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9);
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(15.49);
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(104.);	
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(13.);
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> SaveFig;
+	PlotNames.push_back("DeltaPtxPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(39.9); SaveFig.push_back("Fig92");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0"); PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(15.49); SaveFig.push_back("Fig93");
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(104.); SaveFig.push_back("Fig94");	
+	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2"); PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(13.); SaveFig.push_back("Fig95");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -260,7 +260,8 @@ void PRD_DeltaPtxInDeltaPtySlices_Genie() {
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			//delete PlotCanvas;	
 
 			//----------------------------------------//

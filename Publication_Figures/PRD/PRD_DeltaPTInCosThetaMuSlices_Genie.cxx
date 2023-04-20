@@ -59,12 +59,12 @@ void PRD_DeltaPTInCosThetaMuSlices_Genie() {
 
 	//----------------------------------------//
 
-	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max;
+	vector<TString> PlotNames; vector<TString> PanelLabels; vector<double> Min; vector<double> Max; vector<TString> SaveFig;
 //	PlotNames.push_back("DeltaPTPlot"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(44.);
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(7.99);
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(22.);	
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(44.);
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(63.);
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_0"); PanelLabels.push_back("(a)"); Min.push_back(0.); Max.push_back(7.99); SaveFig.push_back("Fig32");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_1");PanelLabels.push_back("(b)"); Min.push_back(0.); Max.push_back(22.); SaveFig.push_back("Fig33");	
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_2"); PanelLabels.push_back("(c)"); Min.push_back(0.); Max.push_back(44.); SaveFig.push_back("Fig34");
+	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot_3");	PanelLabels.push_back("(d)"); Min.push_back(0.); Max.push_back(63.);  SaveFig.push_back("Fig35");
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -214,52 +214,53 @@ void PRD_DeltaPTInCosThetaMuSlices_Genie() {
 
 			//----------------------------------------//			
 
-			myTxtFile << "Unfolded Covariance Matrix \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
+			// myTxtFile << "Unfolded Covariance Matrix \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
+			// myTxtFile << "       ";
+			// for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
+			// myTxtFile << endl;
 
-			for (int xbin = 1; xbin <= NBins; xbin++) {
+			// for (int xbin = 1; xbin <= NBins; xbin++) {
 
-				myTxtFile << "Bin " << xbin << "  ";
+			// 	myTxtFile << "Bin " << xbin << "  ";
 
-				for (int ybin = 1; ybin <= NBins; ybin++) {	
+			// 	for (int ybin = 1; ybin <= NBins; ybin++) {	
 
-					double CovBinValue = Cov->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << CovBinValue << "   ";
+			// 		double CovBinValue = Cov->GetBinContent(xbin,ybin);
+			// 		myTxtFile << std::setprecision(8) << CovBinValue << "   ";
 
-				}	
+			// 	}	
 				
-				myTxtFile << endl;
+			// 	myTxtFile << endl;
 
-			}	
+			// }	
 
-			myTxtFile << endl << endl;	
+			// myTxtFile << endl << endl;	
 
 			//----------------------------------------//
 
 			TH2D* Ac = (TH2D*)fXSec->Get("Ac_"+PlotNames[iplot]);
-			myTxtFile << "Additional Smearing Matrix \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
-			myTxtFile << "       ";
-			for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
-			myTxtFile << endl;
 
-			for (int xbin = 1; xbin <= NBins; xbin++) {
+			// myTxtFile << "Additional Smearing Matrix \\delta p_{T} " << LatexLabel[ Mapping[ PlotNames[iplot] ] ] << endl;
+			// myTxtFile << "       ";
+			// for (int ybin = 1; ybin <= NBins; ybin++) { myTxtFile << "Bin " << ybin << "  "; }
+			// myTxtFile << endl;
 
-				myTxtFile << "Bin " << xbin << "  ";				
+			// for (int xbin = 1; xbin <= NBins; xbin++) {
 
-				for (int ybin = 1; ybin <= NBins; ybin++) {	
+			// 	myTxtFile << "Bin " << xbin << "  ";				
 
-					double AcBinValue = Ac->GetBinContent(xbin,ybin);
-					myTxtFile << std::setprecision(8) << AcBinValue << "   ";
+			// 	for (int ybin = 1; ybin <= NBins; ybin++) {	
 
-				}	
+			// 		double AcBinValue = Ac->GetBinContent(xbin,ybin);
+			// 		myTxtFile << std::setprecision(8) << AcBinValue << "   ";
+
+			// 	}	
 				
-				myTxtFile << endl;
+			// 	myTxtFile << endl;
 
-			}	
+			// }	
 
-			myTxtFile << endl << endl;			
+			// myTxtFile << endl << endl;			
 
 			//----------------------------------------//
 			//----------------------------------------//						
@@ -340,7 +341,8 @@ void PRD_DeltaPTInCosThetaMuSlices_Genie() {
 
 			//----------------------------------------//
 
-			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/"+SaveFig[iplot]+".pdf");
+			//PlotCanvas->SaveAs("/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance/Figures/PRD_Genie_"+PlotNames[iplot]+"_"+Runs[irun]+"_"+UBCodeVersion+".pdf");
 			//delete PlotCanvas;	
 
 			//----------------------------------------//

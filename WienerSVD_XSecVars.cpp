@@ -11,6 +11,9 @@
 #include <TMatrixD.h>
 #include <TVectorD.h>
 
+#include <iostream>     // std::cout, std::fixed
+#include <iomanip>      // std::setprecision
+
 #include "ubana/myClasses/Constants.h"
 
 using namespace std;
@@ -23,30 +26,6 @@ using namespace Constants;
 
 //---------------------------------------------//
 
-TH2D* Multiply(TH2D* rotmatrix, TH2D* covmatrix) {
-
-	TH2D* rotmatrix_clone = (TH2D*)(rotmatrix->Clone());
-
-	int XBins = covmatrix->GetXaxis()->GetNbins();
-	int YBins = covmatrix->GetYaxis()->GetNbins();
-
-	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
-
-	TMatrixD rot(XBins,XBins);
-	TMatrixD cov(XBins,XBins);
-
-	H2M(rotmatrix, rot, kFALSE); // X axis: Reco, Y axis: True
-	H2M(covmatrix, cov, kFALSE); // X axis: Reco, Y axis: True
-
-	TMatrixD product = rot * cov;
-	M2H(product, rotmatrix_clone);	
-
-	return rotmatrix_clone;
-
-}
-
-//---------------------------------------------//
-
 void WienerSVD_XSecVars() {
 
 	//---------------------------------------------//
@@ -55,6 +34,8 @@ void WienerSVD_XSecVars() {
 	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);
+
+	std::cout << std::setprecision(3) << std::fixed;	
 
 	TString ExactFileLocation = PathToFiles+CutExtension;
 
@@ -133,7 +114,16 @@ void WienerSVD_XSecVars() {
 	DetVars.push_back("NormCCMEC_UBGenie");
 	DetVars.push_back("NormNCMEC_UBGenie");
 	DetVars.push_back("RDecBR1eta_UBGenie");
-	DetVars.push_back("RDecBR1gamma_UBGenie");					
+	DetVars.push_back("RDecBR1gamma_UBGenie");	
+
+	// Unisims
+
+	// DetVars.push_back("UnShortAxFFCCQEshape_UBGenie");
+	// DetVars.push_back("UnShortDecayAngMEC_UBGenie");
+	// DetVars.push_back("UnShortRPA_CCQE_UBGenie");
+	// DetVars.push_back("UnShortTheta_Delta2Npi_UBGenie");
+	// DetVars.push_back("UnShortVecFFCCQEshape_UBGenie");
+	// DetVars.push_back("UnShortXSecShape_CCMEC_UBGenie");									
 
 	int ndetvars = DetVars.size();	
 
@@ -161,17 +151,29 @@ void WienerSVD_XSecVars() {
 
 		// Rotation matrices to rotate into regularized phase space
 
-		TH2D* rotmatrix = (TH2D*)(xsecfile->Get("CovRot"+PlotNames[iplot]));
-		TH2D* transrotmatrix = (TH2D*)(xsecfile->Get("TranspCovRot"+PlotNames[iplot]));	
+		TH1D* xsecfullunc = (TH1D*)(xsecfile->Get("XSecReco"+PlotNames[iplot]));
 
 		// Total xsec syst		
 
-		TH2D* nomcovmatrix = (TH2D*)(nomcov_xsecfile->Get("XSec_Covariance_"+PlotNames[iplot]+"_Combined"));		
+		TH2D* nomcovmatrix = (TH2D*)(nomcov_xsecfile->Get("XSec_Covariance_"+PlotNames[iplot]+"_Combined"));
+		TH2D* nomfraccovmatrix = (TH2D*)(nomcov_xsecfile->Get("XSec_FracCovariance_"+PlotNames[iplot]+"_Combined"));						
+
+		//---------------------------------------------//
+
+		double calcxsecunc = TMath::Sqrt(nomfraccovmatrix->GetBinContent(1,1)) * 100.;		
+
+		double entry = xsecfullunc->GetBinContent(1);
+		double error = xsecfullunc->GetBinError(1);		
+		double ratio = error / entry * 100.;
+
+		// Sacling factor due to efficiency corrections
+		double sf = ratio / calcxsecunc;	
 
 		//---------------------------------------------//	
 
 		double 	All_UBGenieValue = 0.;
-		double 	TotalXSecFracUnc = 0.;								
+		double 	TotalUnfXSecFracUnc = 0.;
+		double 	TotalEventsXSecFracUnc = 0.;										
 
 		// Loop over the xsec variations
 
@@ -181,74 +183,72 @@ void WienerSVD_XSecVars() {
 
 			TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + Vars[ivar] + "_CovarianceMatrices_Overlay9_Combined_"+UBCodeVersion+".root";
 			TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");
+			TH2D* ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_FracCovariance_"+PlotNames[iplot]+"_Combined"));					
 
-			TH2D* ivar_nomcovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_Covariance_"+PlotNames[iplot]+"_Combined"));
-			TH2D* ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_FracCovariance_"+PlotNames[iplot]+"_Combined"));			
+			double localxsecevents = ivar_nomfraccovmatrix->GetBinContent(1,1);
+			double localxsecunf = localxsecevents * TMath::Power(sf,2.);	
 
-			TH2D* ivar_unf_nomcovmatrix = Multiply( transrotmatrix , Multiply(ivar_nomcovmatrix,rotmatrix) );
-			TH2D* ivar_unf_nomfraccovmatrix = Multiply( transrotmatrix , Multiply(ivar_nomfraccovmatrix,rotmatrix) );			
+			cout << Vars[ivar] << ", fractional contribution = " << TMath::Sqrt( localxsecunf ) * 100. << " %"<< endl;			
 
-			cout << Vars[ivar] << " = " << TMath::Sqrt( ivar_nomcovmatrix->GetBinContent(1,1) );
-			cout << ", fractional contrinution = " << TMath::Sqrt( ivar_nomfraccovmatrix->GetBinContent(1,1) ) * 100. << endl;
+			TotalEventsXSecFracUnc += localxsecevents;
+			TotalUnfXSecFracUnc += localxsecunf;			
 
-			if (Vars[ivar] == "All_UBGenie") { All_UBGenieValue = ivar_unf_nomcovmatrix->GetBinContent(1,1); }
-
-			TotalXSecFracUnc += ivar_nomfraccovmatrix->GetBinContent(1,1);
+			if (Vars[ivar] == "All_UBGenie") { All_UBGenieValue = localxsecevents; }
 
 			//---------------------------------------------//
 
 		} // end of the loop over the xsec variations
 
-		cout << "Total summed xsec fractional uncertainty = " << TMath::Sqrt(TotalXSecFracUnc) * 100. << "%" << endl;
-		cout << "Total xsec fractional uncertainty = " << TMath::Sqrt(nomcovmatrix->GetBinContent(1,1)) * 100. << "%" << endl;		
+		double summedxsecunc = TMath::Sqrt(TotalEventsXSecFracUnc) * 100.;
 
-		//---------------------------------------------//									
-
-		double 	DetAll_UBGenieValue = 0.;	
-/*
-		// Loop over the detailed xsec variations
-
-		for (int idetvar = 0; idetvar < ndetvars; idetvar++) {
-
-				// 2nd: smaller production with detailed xsec variations
-
-				TString redcov_xsecfile_name = MigrationMatrixPath+"WienerSVD_DetailedXSec_CovarianceMatrices_Overlay9_Run1_DecompXSecUnc_"+UBCodeVersion+".root";
-				TFile* redcov_xsecfile = TFile::Open(redcov_xsecfile_name,"readonly");
-
-			//---------------------------------------------//
-
-			TH2D* detcovmatrix = (TH2D*)(nomcov_xsecfile->Get(DetVars[idetvar] + "_Covariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));				
-
-			DetAll_UBGenieValue += detcovmatrix->GetBinContent(1,1);
-
-			//---------------------------------------------//				
-
-		} // end of the loop over the detailed xsec variations			
+		cout << endl << "Sanity check" << endl;
+		cout << "Total summed xsec fractional uncertainty = " << summedxsecunc << " %" << endl;
+		cout << "Total xsec fractional uncertainty (events) = " << calcxsecunc << " %" << endl;	
+		cout << "Total xsec fractional uncertainty (unf) = " << ratio << " %" << endl << endl;							
 
 		//---------------------------------------------//	
 
-		// Scaling factor to account for differences due to statistic fluctuations between the two xsec systematics files
-
-		double sf = DetAll_UBGenieValue / DetAll_UBGenieValue;								
-
-		// Loop over the detailed xsec variations
+		double DetAll_UBGenieValue = 0.;	
 
 		for (int idetvar = 0; idetvar < ndetvars; idetvar++) {
 
-			//---------------------------------------------//				
+			if ( !(string(DetVars[idetvar]).find("UnShort") != std::string::npos) ) {
 
-			TH2D* detcovmatrix = (TH2D*)(nomcov_xsecfile->Get(DetVars[idetvar] + "_Covariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));
+				TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + DetVars[idetvar] + "_CovarianceMatrices_Overlay9_Run1_DecompXSecUnc_"+UBCodeVersion+".root";
+				TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");
+				TH2D* detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_FracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));	
 
-			detcovmatrix->Scale(sf);
+				double localxsecevents = detfraccovmatrix->GetBinContent(1,1);
+				DetAll_UBGenieValue += localxsecevents;
 
-			TH2D* unf_detcovmatrix = Multiply( transrotmatrix , Multiply(detcovmatrix,rotmatrix) );
+			}
 
-			cout << DetVars[idetvar] << " = " << TMath::Abs( unf_detcovmatrix->GetBinContent(1,1) ) << endl;
+		}		
 
-			//---------------------------------------------//
+		double sf_sample = All_UBGenieValue	/ DetAll_UBGenieValue;
 
-		} // end of the loop over the detailed xsec variations			
-*/
+		//---------------------------------------------//						
+
+		// Loop over the detailed xsec variations
+
+		double sumxsecunc = 0.;
+
+		for (int idetvar = 0; idetvar < ndetvars; idetvar++) {
+
+			TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + DetVars[idetvar] + "_CovarianceMatrices_Overlay9_Run1_DecompXSecUnc_"+UBCodeVersion+".root";
+			TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");			
+			TH2D* detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_FracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));							
+
+			double localfracunc = detfraccovmatrix->GetBinContent(1,1) * TMath::Power(sf,2.) * TMath::Power(sf_sample,2.);
+			if ( !(string(DetVars[idetvar]).find("UnShort") != std::string::npos) ) { sumxsecunc += localfracunc; }
+
+			cout << DetVars[idetvar] << ", fractional contribution = " << TMath::Sqrt( detfraccovmatrix->GetBinContent(1,1) ) * 100. << " %"<< endl;						
+
+		} // end of the loop over the detailed xsec variations		
+
+		double detailedcalcunc = TMath::Sqrt(sumxsecunc) * 100.;
+		cout << endl << "Total All_UBGenie detailed xsec unc = " << detailedcalcunc << " %" << endl;	
+
 	} // end of the loop over the plots
 
 	//---------------------------------------------//
