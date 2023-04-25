@@ -20,7 +20,9 @@ using namespace Constants;
 
 //----------------------------------------//
 
-void WienerXSecUncertainty() {
+// Label = "" / "Signal" / "Bkg"
+
+void SignalBkgWienerXSecUncertainty(TString Label = "") {
 
 	//----------------------------------------//
 
@@ -60,17 +62,12 @@ void WienerXSecUncertainty() {
 		vector<int> Colors; Colors.clear();	
 
 		UncSource.push_back("NuWro"); Colors.push_back(kCyan);
-		UncSource.push_back("Stat"); Colors.push_back(kRed+1);
 		UncSource.push_back("LY"); Colors.push_back(kGreen+2);
 		UncSource.push_back("TPC"); Colors.push_back(kOrange+1);
 		UncSource.push_back("SCERecomb2"); Colors.push_back(kBlue);	
 		UncSource.push_back("XSec"); Colors.push_back(kMagenta);
 		UncSource.push_back("G4"); Colors.push_back(kViolet+1);		
-		UncSource.push_back("Flux"); Colors.push_back(kYellow+2);
-		UncSource.push_back("Dirt"); Colors.push_back(kCyan+2);
-		UncSource.push_back("POT"); Colors.push_back(kGreen);
-		UncSource.push_back("NTarget"); Colors.push_back(kMagenta-10);
-		UncSource.push_back("MCStat"); Colors.push_back(kGray);			
+		UncSource.push_back("Flux"); Colors.push_back(kYellow+2);		
 
 		const int NSources = UncSource.size();																		
 
@@ -157,7 +154,7 @@ void WienerXSecUncertainty() {
 
 			for (int isource = 0; isource < NSources; isource++) {
 
-				UncPlot[isource] = (TH1D*)(fXSec->Get(UncSource[isource] + "Reco" + PlotNames[WhichPlot]));
+				UncPlot[isource] = (TH1D*)(fXSec->Get(Label + UncSource[isource] + "Reco" + PlotNames[WhichPlot]));
 
 				for (int ibin = 1; ibin <= NBins; ibin++) {
 
@@ -188,25 +185,15 @@ void WienerXSecUncertainty() {
 			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
 
 				double NuWroUnc = UncPlot[0]->GetBinContent(1);
-				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[11]->GetBinContent(1),2.) );		
-				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) + TMath::Power(UncPlot[4]->GetBinContent(1),2.) );				
-				double XSecUnc = TMath::Sqrt( TMath::Power(UncPlot[5]->GetBinContent(1),2.) + TMath::Power(NuWroUnc,2.) );
-				double FluxUnc = UncPlot[7]->GetBinContent(1);
-				double G4Unc = UncPlot[6]->GetBinContent(1);
-				double DirtUnc = UncPlot[8]->GetBinContent(1);
-				double POTUnc = UncPlot[9]->GetBinContent(1);
-				double NTargetUnc = UncPlot[10]->GetBinContent(1);
+				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) );				
+				double XSecUnc = TMath::Sqrt( TMath::Power(UncPlot[4]->GetBinContent(1),2.) + TMath::Power(NuWroUnc,2.) );
+				double FluxUnc = UncPlot[6]->GetBinContent(1);
+				double G4Unc = UncPlot[5]->GetBinContent(1);
 
 				cout << " Flux = " <<  FluxUnc << " %" << endl;
 				cout << " XSec = " <<  XSecUnc << " %" << endl;
 				cout << " Det = " <<  DetUnc << " %" << endl;
-				//cout << " NuWro = " <<  NuWroUnc << " %" << endl;
-				cout << " POT = " <<  POTUnc << " %" << endl;				
-				cout << " Stat = " <<  StatUnc << " %" << endl;	
-				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						
-				cout << " G4 = " <<  G4Unc << " %" << endl;		
-				cout << " Dirt = " <<  DirtUnc << " %" << endl;			
-	
+				cout << " G4 = " <<  G4Unc << " %" << endl;			
 
 				double ManualTotalUnc = 0;
 
@@ -235,7 +222,7 @@ void WienerXSecUncertainty() {
 			//----------------------------------------//
 
 			// Saving the canvas with the uncertainties on the final xsec
-			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/XSecUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs("./myPlots/pdf/"+UBCodeVersion+"/BeamOn9/" + Label + "XSecUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
 //			delete PlotCanvas;					
 
 			//----------------------------------------//

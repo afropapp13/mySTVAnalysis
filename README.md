@@ -175,10 +175,11 @@ hadd -f myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root myXSec/
 root -b DataGeneratorBreakdown.cxx
 
 root -b WienerXSecUncertainty.cxx
+
 root -b
-.L WienerXSecUncertainty.cxx++
-WienerXSecUncertainty("Signal")
-WienerXSecUncertainty("Bkg")
+.L SignalBkgWienerXSecUncertainty.cxx++
+SignalBkgWienerXSecUncertainty("Signal")
+SignalBkgWienerXSecUncertainty("Bkg")
 
 #.x IntegratedXSecs.cpp
 
