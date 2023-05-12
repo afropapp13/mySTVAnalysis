@@ -28,10 +28,10 @@ void IntegratedXSecs() {
 
 	vector<TString> PlotNames;
 
-	PlotNames.push_back("DeltaPtxPlot"); 
-//	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
-//	PlotNames.push_back("DeltaPhiTPlot");
+//	PlotNames.push_back("DeltaPtxPlot"); 
+	PlotNames.push_back("DeltaPTPlot"); 
+	PlotNames.push_back("DeltaAlphaTPlot"); 
+	PlotNames.push_back("DeltaPhiTPlot");
 //	PlotNames.push_back("MuonMomentumPlot"); 
 //	PlotNames.push_back("MuonCosThetaPlot");
 //	PlotNames.push_back("MuonCosThetaSingleBinPlot");	 
@@ -52,9 +52,9 @@ void IntegratedXSecs() {
 //	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_1");	
 //	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot_2");
 
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2");		
+//	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_0");
+//	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_1");
+//	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot_2");		
 
 	const int N1DPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << N1DPlots << endl;
