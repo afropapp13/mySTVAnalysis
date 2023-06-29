@@ -21,10 +21,10 @@ void DataReleaseRootFile() {
 	PlotNames.push_back("DeltaAlpha3Dq");	
 	PlotNames.push_back("SerialDeltaAlpha3Dq_DeltaPn");
 	PlotNames.push_back("DeltaPhi3D");	
-	PlotNames.push_back("DeltaPnPar");
-	PlotNames.push_back("DeltaPnPerp");	
 	PlotNames.push_back("DeltaPnPerpx");
-	PlotNames.push_back("DeltaPnPerpy");		
+	PlotNames.push_back("DeltaPnPerpy");	
+	PlotNames.push_back("DeltaPnPerp");
+	PlotNames.push_back("DeltaPnPar");		
 
 	const int NPlots = PlotNames.size();
 	cout << "Number of 1D Plots = " << NPlots << endl;
@@ -40,7 +40,7 @@ void DataReleaseRootFile() {
 
 		// Data release
 
-		TString drname = "/home/afroditi/Dropbox/Apps/Overleaf/General Imbalance Variables for Measuring Nuclear Effects and Demonstration with MicroBooNE Data/figures/gen/Afro/DataRelease.root";
+		TString drname = "/home/afroditi/Dropbox/Apps/Overleaf/General Imbalance Variables for Measuring Nuclear Effects and Demonstration with MicroBooNE Data/figures/gen/Afro/BinScheme.txt";
 		TFile* fdr = new TFile(drname,"recreate");
 
 		//----------------------------------------//		

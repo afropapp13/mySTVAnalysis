@@ -63,7 +63,8 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 	// -------------------------------------------------------------------------------------
 
 	vector<TString> PlotNames;
-	PlotNames.push_back("MuonCosThetaSingleBinPlot"); 
+	PlotNames.push_back("MuonCosThetaSingleBinPlot");
+	PlotNames.push_back("DeltaPTPlot");	 
 
 	const int N1DPlots = PlotNames.size();
 		
@@ -100,6 +101,14 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 	vector<vector <TH2D*> > FracCovariances; FracCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));
 	vector<vector <TH2D*> > CorrMatrices; CorrMatrices.resize(NRuns,vector<TH2D*>(N1DPlots));	
 	vector<vector <TH2D*> > Covariances; Covariances.resize(NRuns,vector<TH2D*>(N1DPlots));	
+
+	vector<vector <TH2D*> > SignalFracCovariances; SignalFracCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));
+	vector<vector <TH2D*> > SignalCorrMatrices; SignalCorrMatrices.resize(NRuns,vector<TH2D*>(N1DPlots));	
+	vector<vector <TH2D*> > SignalCovariances; SignalCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));
+	
+	vector<vector <TH2D*> > BkgFracCovariances; BkgFracCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));
+	vector<vector <TH2D*> > BkgCorrMatrices; BkgCorrMatrices.resize(NRuns,vector<TH2D*>(N1DPlots));	
+	vector<vector <TH2D*> > BkgCovariances; BkgCovariances.resize(NRuns,vector<TH2D*>(N1DPlots));	
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -875,7 +884,13 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
 					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
-					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);				
+					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);	
+
+					SignalAltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
+					SignalAltBeamOnPlots[WhichPlot][alt]->Add(NonCC1pPlots[WhichPlot]);
+
+					BkgAltBeamOnPlots[WhichPlot][alt] = (TH1D*)CC1pPlots[WhichPlot]->Clone();
+					BkgAltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);								
 
 				}		
 
@@ -979,6 +994,12 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 			FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
 			Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
 			
+			SignalFracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_SignalFracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			SignalCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_SignalCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			
+			BkgFracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_BkgFracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			BkgCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_BkgCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);						
+
 			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 
 				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
@@ -987,7 +1008,19 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 					FracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
 
 					Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
-					Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);									
+					Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);	
+
+					SignalFracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
+					SignalFracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
+
+					SignalCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
+					SignalCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
+					
+					BkgFracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
+					BkgFracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);
+
+					BkgCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,0.);
+					BkgCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,0.);													
 
 				}  // end of the loop over bin Y
 
@@ -1005,7 +1038,13 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 					double DataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
 
 					double AltDataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-					double AltDataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;								
+					double AltDataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					double SignalAltDataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double SignalAltDataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					double BkgAltDataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double BkgAltDataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;													
 
 					// Y Bin entry / error
 
@@ -1014,6 +1053,12 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 
 					double AltDataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 					double AltDataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					double SignalAltDataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+					double SignalAltDataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+					double BkgAltDataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+					double BkgAltDataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;					
 
 					//----------------------------------------//
 
@@ -1080,7 +1125,95 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 
 						Covariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,CovEntry);
 						Covariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,CovError);
+
+						//----------------------------------------//
 							
+						// Signal covariances
+							
+						double SignalCurrentFracCovEntry = SignalFracCovariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+						double SignalCurrentFracCovError = SignalFracCovariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
+
+						double SignalCurrentCovEntry = SignalCovariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+						double SignalCurrentCovError = SignalCovariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
+
+						SignalAltDataEntryX = SignalAltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						SignalAltDataErrorX = SignalAltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						SignalAltDataEntryY = SignalAltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						SignalAltDataErrorY = SignalAltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						double SignalLocalFracCovEntry = TMath::Max( ((SignalAltDataEntryX - DataEntryX) / DataEntryX) * ( (SignalAltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+						double SignalLocalCovEntry = TMath::Max( (SignalAltDataEntryX - DataEntryX) * (SignalAltDataEntryY - DataEntryY),1E-8);
+
+						double SignalLocalFracCovError = 1E-8;
+						double SignalLocalCovError = 1E-8;
+
+						if (AltUniverses[alt] > 2 || Run == "Run1_DecompXSecUnc") {
+
+							SignalLocalFracCovEntry = SignalLocalFracCovEntry * 1. / AltUniverses[alt];
+							SignalLocalFracCovError = SignalLocalFracCovError * 1. / AltUniverses[alt];
+
+							SignalLocalCovEntry = SignalLocalCovEntry * 1. / AltUniverses[alt];
+							SignalLocalCovError = SignalLocalCovError * 1. / AltUniverses[alt];
+
+						}
+
+						SignalCovFracEntry = SignalCurrentFracCovEntry + SignalLocalFracCovEntry;
+						SignalCovEntry = SignalCurrentCovEntry + SignalLocalCovEntry;
+
+						SignalCovFracError = 1E-8;
+						SignalCovError = 1E-8;
+
+						SignalFracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,SignalCovFracEntry);
+						SignalFracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,SignalCovFracError);
+
+						SignalCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,SignalCovEntry);
+						SignalCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,SignalCovError);
+							
+						//----------------------------------------//
+							
+						// Bkg covariances							
+							
+						double BkgCurrentFracCovEntry = BkgFracCovariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+						double BkgCurrentFracCovError = BkgFracCovariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
+
+						double BkgCurrentCovEntry = BkgCovariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
+						double BkgCurrentCovError = BkgCovariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
+
+						BkgAltDataEntryX = BkgAltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						BkgAltDataErrorX = BkgAltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						BkgAltDataEntryY = BkgAltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						BkgAltDataErrorY = BkgAltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+
+						double BkgLocalFracCovEntry = TMath::Max( ((BkgAltDataEntryX - DataEntryX) / DataEntryX) * ( (BkgAltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+						double BkgLocalCovEntry = TMath::Max( (BkgAltDataEntryX - DataEntryX) * (BkgAltDataEntryY - DataEntryY),1E-8);
+
+						double BkgLocalFracCovError = 1E-8;
+						double BkgLocalCovError = 1E-8;
+
+						if (AltUniverses[alt] > 2 || Run == "Run1_DecompXSecUnc") {
+
+							BkgLocalFracCovEntry = BkgLocalFracCovEntry * 1. / AltUniverses[alt];
+							BkgLocalFracCovError = BkgLocalFracCovError * 1. / AltUniverses[alt];
+
+							BkgLocalCovEntry = BkgLocalCovEntry * 1. / AltUniverses[alt];
+							BkgLocalCovError = BkgLocalCovError * 1. / AltUniverses[alt];
+
+						}
+
+						BkgCovFracEntry = BkgCurrentFracCovEntry + BkgLocalFracCovEntry;
+						BkgCovEntry = BkgCurrentCovEntry + BkgLocalCovEntry;
+
+						BkgCovFracError = 1E-8;
+						BkgCovError = 1E-8;
+
+						BkgFracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,BkgCovFracEntry);
+						BkgFracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,BkgCovFracError);
+
+						BkgCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,BkgCovEntry);
+						BkgCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,BkgCovError);																				
+	
 						//----------------------------------------//
 
 					} // End of the loop over the alternative universes
@@ -1097,6 +1230,26 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 
 					//----------------------------------------//
 
+					// Setting the elements of the signal Cov Matrix	
+
+					SignalFracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,SignalCovFracEntry);
+					SignalFracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,SignalCovFracError);
+
+					SignalCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,SignalCovEntry);
+					SignalCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,SignalCovError);
+
+					//----------------------------------------//
+
+					// Setting the elements of the bkg Cov Matrix	
+
+					BkgFracCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,BkgCovFracEntry);
+					BkgFracCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,BkgCovFracError);
+
+					BkgCovariances[WhichRun][WhichPlot]->SetBinContent(WhichXBin+1,WhichYBin+1,BkgCovEntry);
+					BkgCovariances[WhichRun][WhichPlot]->SetBinError(WhichXBin+1,WhichYBin+1,BkgCovError);					
+
+					//----------------------------------------//
+
 				}  // end of the loop over bin Y
 
 			} // end of the loop over bin X
@@ -1104,7 +1257,13 @@ void WienerSVD_IndividualCovarianceMatrices(TString Syst = "None",TString Run = 
 			FileCovarianceMatrices->cd();
 
 			FracCovariances[WhichRun][WhichPlot]->Write();			
-			Covariances[WhichRun][WhichPlot]->Write();						
+			Covariances[WhichRun][WhichPlot]->Write();	
+
+			SignalFracCovariances[WhichRun][WhichPlot]->Write();			
+			SignalCovariances[WhichRun][WhichPlot]->Write();
+
+			BkgFracCovariances[WhichRun][WhichPlot]->Write();			
+			BkgCovariances[WhichRun][WhichPlot]->Write();								
 
 		} // End of the loop over the plots
 

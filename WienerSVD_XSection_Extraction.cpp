@@ -829,7 +829,9 @@ void WienerSVD_XSection_Extraction(TString OverlaySample = "", bool ClosureTest 
 				double G4Error = TMath::Sqrt( UnfG4Cov(i-1,i-1) ) / Width;
 				unfG4->SetBinError(i, G4Error);
 
-				double DirtError = TMath::Sqrt( UnfDirtCov(i-1,i-1) ) / Width;
+				double DirtErrorCovEntry = UnfDirtCov(i-1,i-1);
+				if (DirtErrorCovEntry < 0.) { DirtErrorCovEntry = 0.; }
+				double DirtError = TMath::Sqrt( DirtErrorCovEntry ) / Width;
 				unfDirt->SetBinError(i, DirtError);
 
 				double POTError = TMath::Sqrt( UnfPOTCov(i-1,i-1) ) / Width;

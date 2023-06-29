@@ -73,6 +73,7 @@ root -b Systematics.cpp
 root -b
 .L ../../myClasses/Util.C
 .x WienerSVD_DetectorVars.cpp
+# XSec variation breakdown
 .x WienerSVD_XSecVars.cpp
 
 #################################################################################################################################
