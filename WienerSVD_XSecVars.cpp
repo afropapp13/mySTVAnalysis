@@ -171,9 +171,9 @@ void WienerSVD_XSecVars() {
 
 		//---------------------------------------------//	
 
-		double 	All_UBGenieValue = 0.;
-		double 	TotalUnfXSecFracUnc = 0.;
-		double 	TotalEventsXSecFracUnc = 0.;										
+		double 	All_UBGenieValue = 0., TotalUnfXSecFracUnc = 0., TotalEventsXSecFracUnc = 0.;
+		double 	Signal_All_UBGenieValue = 0., Signal_TotalUnfXSecFracUnc = 0., Signal_TotalEventsXSecFracUnc = 0.;
+		double 	Bkg_All_UBGenieValue = 0., Bkg_TotalUnfXSecFracUnc = 0., Bkg_TotalEventsXSecFracUnc = 0.;														
 
 		// Loop over the xsec variations
 
@@ -183,32 +183,60 @@ void WienerSVD_XSecVars() {
 
 			TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + Vars[ivar] + "_CovarianceMatrices_Overlay9_Combined_"+UBCodeVersion+".root";
 			TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");
-			TH2D* ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_FracCovariance_"+PlotNames[iplot]+"_Combined"));					
+
+			TH2D* ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_FracCovariance_"+PlotNames[iplot]+"_Combined"));
+			TH2D* signal_ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_SignalFracCovariance_"+PlotNames[iplot]+"_Combined"));
+			TH2D* bkg_ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_BkgFracCovariance_"+PlotNames[iplot]+"_Combined"));											
 
 			double localxsecevents = ivar_nomfraccovmatrix->GetBinContent(1,1);
-			double localxsecunf = localxsecevents * TMath::Power(sf,2.);	
+			double localxsecunf = localxsecevents * TMath::Power(sf,2.);
 
-			cout << Vars[ivar] << ", fractional contribution = " << TMath::Sqrt( localxsecunf ) * 100. << " %"<< endl;			
+			double signal_localxsecevents = signal_ivar_nomfraccovmatrix->GetBinContent(1,1);
+			double signal_localxsecunf = signal_localxsecevents * TMath::Power(sf,2.);
+
+			double bkg_localxsecevents = bkg_ivar_nomfraccovmatrix->GetBinContent(1,1);
+			double bkg_localxsecunf = bkg_localxsecevents * TMath::Power(sf,2.);							
+
+			cout << Vars[ivar] << ", fractional contribution = " << TMath::Sqrt( localxsecunf ) * 100. << " %";
+			cout << ", " << TMath::Sqrt( signal_localxsecunf ) * 100. << " %";
+			cout << ", " << TMath::Sqrt( bkg_localxsecunf ) * 100. << " %" << endl;						
 
 			TotalEventsXSecFracUnc += localxsecevents;
-			TotalUnfXSecFracUnc += localxsecunf;			
+			TotalUnfXSecFracUnc += localxsecunf;
 
-			if (Vars[ivar] == "All_UBGenie") { All_UBGenieValue = localxsecevents; }
+			Signal_TotalEventsXSecFracUnc += signal_localxsecevents;
+			Signal_TotalUnfXSecFracUnc += signal_localxsecunf;
+
+			Bkg_TotalEventsXSecFracUnc += bkg_localxsecevents;
+			Bkg_TotalUnfXSecFracUnc += bkg_localxsecunf;									
+
+			if (Vars[ivar] == "All_UBGenie") { 
+				
+				All_UBGenieValue = localxsecevents;
+				Signal_All_UBGenieValue = signal_localxsecevents;
+				Bkg_All_UBGenieValue = bkg_localxsecevents;								 
+				
+			}
 
 			//---------------------------------------------//
 
 		} // end of the loop over the xsec variations
 
 		double summedxsecunc = TMath::Sqrt(TotalEventsXSecFracUnc) * 100.;
+		double signal_summedxsecunc = TMath::Sqrt(Signal_TotalEventsXSecFracUnc) * 100.;
+		double bkg_summedxsecunc = TMath::Sqrt(Bkg_TotalEventsXSecFracUnc) * 100.;				
 
-		cout << endl << "Sanity check" << endl;
+		cout << endl << "Sanity check" << endl << endl;
+
 		cout << "Total summed xsec fractional uncertainty = " << summedxsecunc << " %" << endl;
 		cout << "Total xsec fractional uncertainty (events) = " << calcxsecunc << " %" << endl;	
 		cout << "Total xsec fractional uncertainty (unf) = " << ratio << " %" << endl << endl;							
 
 		//---------------------------------------------//	
 
-		double DetAll_UBGenieValue = 0.;	
+		double DetAll_UBGenieValue = 0.;
+		double Signal_DetAll_UBGenieValue = 0.;
+		double Bkg_DetAll_UBGenieValue = 0.;					
 
 		for (int idetvar = 0; idetvar < ndetvars; idetvar++) {
 
@@ -216,10 +244,19 @@ void WienerSVD_XSecVars() {
 
 				TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + DetVars[idetvar] + "_CovarianceMatrices_Overlay9_Run1_DecompXSecUnc_"+UBCodeVersion+".root";
 				TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");
-				TH2D* detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_FracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));	
+				
+				TH2D* detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_FracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));
+				TH2D* signal_detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_SignalFracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));					
+				TH2D* bkg_detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_BkgFracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));
 
 				double localxsecevents = detfraccovmatrix->GetBinContent(1,1);
 				DetAll_UBGenieValue += localxsecevents;
+
+				double signal_localxsecevents = signal_detfraccovmatrix->GetBinContent(1,1);
+				Signal_DetAll_UBGenieValue += signal_localxsecevents;
+
+				double bkg_localxsecevents = bkg_detfraccovmatrix->GetBinContent(1,1);
+				Bkg_DetAll_UBGenieValue += bkg_localxsecevents;								
 
 			}
 
@@ -232,22 +269,43 @@ void WienerSVD_XSecVars() {
 		// Loop over the detailed xsec variations
 
 		double sumxsecunc = 0.;
+		double signal_sumxsecunc = 0.;
+		double bkg_sumxsecunc = 0.;				
 
 		for (int idetvar = 0; idetvar < ndetvars; idetvar++) {
 
 			TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + DetVars[idetvar] + "_CovarianceMatrices_Overlay9_Run1_DecompXSecUnc_"+UBCodeVersion+".root";
 			TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");			
-			TH2D* detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_FracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));							
+
+			TH2D* detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_FracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));
+			TH2D* signal_detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_SignalFracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));
+			TH2D* bkg_detfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(DetVars[idetvar] + "_BkgFracCovariance_"+PlotNames[iplot]+"_Run1_DecompXSecUnc"));													
 
 			double localfracunc = detfraccovmatrix->GetBinContent(1,1) * TMath::Power(sf,2.) * TMath::Power(sf_sample,2.);
-			if ( !(string(DetVars[idetvar]).find("UnShort") != std::string::npos) ) { sumxsecunc += localfracunc; }
+			double signal_localfracunc = signal_detfraccovmatrix->GetBinContent(1,1) * TMath::Power(sf,2.) * TMath::Power(sf_sample,2.);
+			double bkg_localfracunc = bkg_detfraccovmatrix->GetBinContent(1,1) * TMath::Power(sf,2.) * TMath::Power(sf_sample,2.);						
 
-			cout << DetVars[idetvar] << ", fractional contribution = " << TMath::Sqrt( detfraccovmatrix->GetBinContent(1,1) ) * 100. << " %"<< endl;						
+			if ( !(string(DetVars[idetvar]).find("UnShort") != std::string::npos) ) { 
+				
+				sumxsecunc += localfracunc;
+				signal_sumxsecunc += signal_localfracunc;
+				bkg_sumxsecunc += bkg_localfracunc;								 
+				
+			}
+
+			cout << DetVars[idetvar] << ", fractional contribution = " << TMath::Sqrt( detfraccovmatrix->GetBinContent(1,1) ) * 100. << " %";
+			cout << ", " << TMath::Sqrt( signal_detfraccovmatrix->GetBinContent(1,1) ) * 100. << " %";
+			cout << ", " << TMath::Sqrt( bkg_detfraccovmatrix->GetBinContent(1,1) ) * 100. << " %" << endl;
 
 		} // end of the loop over the detailed xsec variations		
 
 		double detailedcalcunc = TMath::Sqrt(sumxsecunc) * 100.;
-		cout << endl << "Total All_UBGenie detailed xsec unc = " << detailedcalcunc << " %" << endl;	
+		double signal_detailedcalcunc = TMath::Sqrt(signal_sumxsecunc) * 100.;
+		double bkg_detailedcalcunc = TMath::Sqrt(bkg_sumxsecunc) * 100.;
+
+		cout << endl << "Total All_UBGenie detailed xsec unc = " << detailedcalcunc << " %" << endl;
+		cout << endl << "Signal All_UBGenie detailed xsec unc = " << signal_detailedcalcunc << " %" << endl;
+		cout << endl << "Bkg All_UBGenie detailed xsec unc = " << bkg_detailedcalcunc << " %" << endl;					
 
 	} // end of the loop over the plots
 

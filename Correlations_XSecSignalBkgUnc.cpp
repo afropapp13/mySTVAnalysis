@@ -26,6 +26,13 @@ using namespace Constants;
 
 //---------------------------------------------//
 
+void MakeBeautiful(TH1D* h){
+
+
+}
+
+//---------------------------------------------//
+
 void Correlations_XSecSignalBkgUnc() {
 
 	//---------------------------------------------//
@@ -34,6 +41,7 @@ void Correlations_XSecSignalBkgUnc() {
 	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);
+	gStyle->SetPaintTextFormat("4.4f");	
 
 	std::cout << std::setprecision(3) << std::fixed;	
 
@@ -42,7 +50,8 @@ void Correlations_XSecSignalBkgUnc() {
 	//---------------------------------------------//
 
 	vector<TString> PlotNames;
-	PlotNames.push_back("DeltaPTPlot"); 
+	PlotNames.push_back("DeltaPTPlot");
+	PlotNames.push_back("MuonCosThetaSingleBinPlot");	 
 
 	const int nplots = PlotNames.size();
 
@@ -60,7 +69,7 @@ void Correlations_XSecSignalBkgUnc() {
 	//Vars.push_back("ThetaDelta2NRad_UBGenie");
 	//Vars.push_back("Theta_Delta2Npi_UBGenie");
 	//Vars.push_back("VecFFCCQEshape_UBGenie");
-	//Vars.push_back("XSecShape_CCMEC_UBGenie");
+	Vars.push_back("XSecShape_CCMEC_UBGenie");
 	//Vars.push_back("All_UBGenie");
 
 	int nvars = Vars.size();							
@@ -79,12 +88,39 @@ void Correlations_XSecSignalBkgUnc() {
 
 			//---------------------------------------------//				
 
+			// Total covariance matrix
+
 			TString ivar_cov_xsecfile_name = MigrationMatrixPath+"IndividualWienerSVD_" + Vars[ivar] + "_CovarianceMatrices_Overlay9_Combined_"+UBCodeVersion+".root";
 			cout << ivar_cov_xsecfile_name << endl;
 			TFile* ivar_nomcov_xsecfile = TFile::Open(ivar_cov_xsecfile_name,"readonly");
-			TH2D* ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_FracCovariance_"+PlotNames[iplot]+"_Combined"));		
 
-			ivar_nomfraccovmatrix->Draw("coltz");			
+			TH2D* ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_FracCovariance_"+PlotNames[iplot]+"_Combined"));
+			TH2D* signal_ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_SignalFracCovariance_"+PlotNames[iplot]+"_Combined"));
+			TH2D* bkg_ivar_nomfraccovmatrix = (TH2D*)(ivar_nomcov_xsecfile->Get(Vars[ivar] + "_BkgFracCovariance_"+PlotNames[iplot]+"_Combined"));							
+
+			TString canvas_name_total = "total_fraccov_"+PlotNames[iplot]+"_"+Vars[ivar];
+			TCanvas* plot_canvas_total = new TCanvas(canvas_name_total,canvas_name_total,205,34,1024,768);
+			plot_canvas_total->cd();
+			plot_canvas_total->SetRightMargin(0.15);					
+			ivar_nomfraccovmatrix->SetMarkerColor(kWhite);
+			ivar_nomfraccovmatrix->Draw("coltz");	
+			ivar_nomfraccovmatrix->SaveAs(PlotPath+"Overlay9/"+canvas_name_total+".pdf");
+
+			TString canvas_name_signal = "signal_fraccov_"+PlotNames[iplot]+"_"+Vars[ivar];
+			TCanvas* plot_canvas_signal = new TCanvas(canvas_name_signal,canvas_name_signal,205,34,1024,768);
+			plot_canvas_signal->cd();
+			plot_canvas_signal->SetRightMargin(0.15);					
+			signal_ivar_nomfraccovmatrix->SetMarkerColor(kWhite);
+			signal_ivar_nomfraccovmatrix->Draw("coltz");	
+			signal_ivar_nomfraccovmatrix->SaveAs(PlotPath+"Overlay9/"+canvas_name_signal+".pdf");
+
+			TString canvas_name_bkg = "bkg_fraccov_"+PlotNames[iplot]+"_"+Vars[ivar];
+			TCanvas* plot_canvas_bkg = new TCanvas(canvas_name_bkg,canvas_name_bkg,205,34,1024,768);
+			plot_canvas_bkg->cd();
+			plot_canvas_bkg->SetRightMargin(0.15);					
+			bkg_ivar_nomfraccovmatrix->SetMarkerColor(kWhite);
+			bkg_ivar_nomfraccovmatrix->Draw("coltz");	
+			bkg_ivar_nomfraccovmatrix->SaveAs(PlotPath+"Overlay9/"+canvas_name_bkg+".pdf");											
 
 			//---------------------------------------------//
 

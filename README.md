@@ -138,6 +138,8 @@ WienerSVD_Merge_Covariances("Overlay9","GENIEv2Overlay9","GENIEv2Overlay9")
 # .L WienerSVD_XSecVars.cpp++
 # WienerSVD_XSecVars()
 
+#root -b Correlations_XSecSignalBkgUnc
+
 #################################################################################################################################
 
 # Fake data studies with Wiener SVD
