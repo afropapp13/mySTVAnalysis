@@ -85,7 +85,9 @@ do
 		
 		cp ${OverlayXSec}/NoTuneOverlay9WienerSVD_XSections_${plot}_Combined_v08_00_00_52.pdf	"${OutPutDir}"	
 		
-		cp ${OverlayXSec}/TwiceMECOverlay9WienerSVD_XSections_${plot}_Combined_v08_00_00_52.pdf	"${OutPutDir}"						
+		cp ${OverlayXSec}/TwiceMECOverlay9WienerSVD_XSections_${plot}_Combined_v08_00_00_52.pdf	"${OutPutDir}"	
+		
+		#cp ${BeamOnXSec}/InteractionBreakdown/InteractionBreakDown_{OverlayGENIE,GiBUU,NEUT,Overlay9NuWro,G21,GENIEv2}_*_Combined_v08_00_00_52.pdf	"${OutPutDir}"								
 				
 	#fi
 	
