@@ -11,19 +11,18 @@
 #include <TMatrixD.h>
 #include <TVectorD.h>
 
-#include "ubana/myClasses/Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
-#include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
-#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
+#include "../myClasses/myFunctions.cpp"
 
-#include "ubana/myClasses/Util.h"
+#include "../myClasses/Util.h"
 
 //----------------------------------------//
 
-void FakeData_WienerSVD_StatCovarianceMatrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
+void fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -31,7 +30,6 @@ void FakeData_WienerSVD_StatCovarianceMatrices(TString Syst = "None",TString Bas
 
 	// -------------------------------------------------------------------------------------
 
-	GlobalSettings();
 	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);

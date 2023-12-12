@@ -19,15 +19,14 @@
 #include <sstream>
 #include <string>
 
-#include "ubana/myClasses/Constants.h"
-#include "ubana/myClasses/Util.h"
-#include "ubana/myClasses/WienerSVD.h"
+#include "../myClasses/Constants.h"
+#include "../myClasses/Util.h"
+#include "../myClasses/WienerSVD.h"
 
 using namespace std;
 using namespace Constants;
 
-#include "ubana/AnalysisCode/Secondary_Code/GlobalSettings.cpp"
-#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
+#include "../myClasses/myFunctions.cpp"
 
 // -----------------------------------------------------------------------------------------------
 
@@ -197,7 +196,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 // -----------------------------------------------------------------------------------------------
 
-void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "", TString Tune = "") {
+void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "", TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -216,7 +215,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 
 	// -------------------------------------------------------------------------------------
 
-	GlobalSettings();
 	TGaxis::SetMaxDigits(3);			
 
 	// -------------------------------------------------------------------------------------
@@ -250,7 +248,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 		UncSources.push_back("Stat");
 		UncSources.push_back("XSec");
 		UncSources.push_back("MC_Stat");
-		UncSources.push_back("NuWro");			
+		//UncSources.push_back("NuWro");			
 
 	} else {
 
@@ -265,7 +263,7 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 		UncSources.push_back("POT"); 
 		UncSources.push_back("NTarget");
 		UncSources.push_back("MC_Stat");
-		UncSources.push_back("NuWro");		
+		//UncSources.push_back("NuWro");		
 
 	}
 
@@ -292,50 +290,8 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 	vector<TH2D*> FluxCovariances; FluxCovariances.resize(NPlots);
 	vector<TH2D*> DirtCovariances; DirtCovariances.resize(NPlots);	
 	vector<TH2D*> POTCovariances; POTCovariances.resize(NPlots);
-	vector<TH2D*> NuWroCovariances; NuWroCovariances.resize(NPlots);
+	//vector<TH2D*> NuWroCovariances; NuWroCovariances.resize(NPlots);
 	vector<TH2D*> NTargetCovariances; NTargetCovariances.resize(NPlots);
-
-	//----------------------------------------//
-
-	vector<TH2D*> SignalFracCovariances; SignalFracCovariances.resize(NPlots);
-	vector<TH2D*> SignalFracStatCovariances; SignalFracStatCovariances.resize(NPlots);
-	vector<TH2D*> SignalFracSystCovariances; SignalFracSystCovariances.resize(NPlots);
-	
-	vector<TH2D*> SignalCovariances; SignalCovariances.resize(NPlots);
-	vector<TH2D*> SignalStatCovariances; SignalStatCovariances.resize(NPlots);
-	vector<TH2D*> SignalMCStatCovariances; SignalMCStatCovariances.resize(NPlots);	
-	vector<TH2D*> SignalSystCovariances; SignalSystCovariances.resize(NPlots);	
-	vector<TH2D*> SignalLYCovariances; SignalLYCovariances.resize(NPlots);	
-	vector<TH2D*> SignalTPCCovariances; SignalTPCCovariances.resize(NPlots);
-	vector<TH2D*> SignalSCERecomb2Covariances; SignalSCERecomb2Covariances.resize(NPlots);
-	vector<TH2D*> SignalXSecCovariances; SignalXSecCovariances.resize(NPlots);
-	vector<TH2D*> SignalG4Covariances; SignalG4Covariances.resize(NPlots);
-	vector<TH2D*> SignalFluxCovariances; SignalFluxCovariances.resize(NPlots);
-	vector<TH2D*> SignalDirtCovariances; SignalDirtCovariances.resize(NPlots);	
-	vector<TH2D*> SignalPOTCovariances; SignalPOTCovariances.resize(NPlots);
-	vector<TH2D*> SignalNuWroCovariances; SignalNuWroCovariances.resize(NPlots);
-	vector<TH2D*> SignalNTargetCovariances; SignalNTargetCovariances.resize(NPlots);	
-
-	//----------------------------------------//
-
-	vector<TH2D*> BkgFracCovariances; BkgFracCovariances.resize(NPlots);
-	vector<TH2D*> BkgFracStatCovariances; BkgFracStatCovariances.resize(NPlots);
-	vector<TH2D*> BkgFracSystCovariances; BkgFracSystCovariances.resize(NPlots);
-	
-	vector<TH2D*> BkgCovariances; BkgCovariances.resize(NPlots);
-	vector<TH2D*> BkgStatCovariances; BkgStatCovariances.resize(NPlots);
-	vector<TH2D*> BkgMCStatCovariances; BkgMCStatCovariances.resize(NPlots);	
-	vector<TH2D*> BkgSystCovariances; BkgSystCovariances.resize(NPlots);	
-	vector<TH2D*> BkgLYCovariances; BkgLYCovariances.resize(NPlots);	
-	vector<TH2D*> BkgTPCCovariances; BkgTPCCovariances.resize(NPlots);
-	vector<TH2D*> BkgSCERecomb2Covariances; BkgSCERecomb2Covariances.resize(NPlots);
-	vector<TH2D*> BkgXSecCovariances; BkgXSecCovariances.resize(NPlots);
-	vector<TH2D*> BkgG4Covariances; BkgG4Covariances.resize(NPlots);
-	vector<TH2D*> BkgFluxCovariances; BkgFluxCovariances.resize(NPlots);
-	vector<TH2D*> BkgDirtCovariances; BkgDirtCovariances.resize(NPlots);	
-	vector<TH2D*> BkgPOTCovariances; BkgPOTCovariances.resize(NPlots);
-	vector<TH2D*> BkgNuWroCovariances; BkgNuWroCovariances.resize(NPlots);
-	vector<TH2D*> BkgNTargetCovariances; BkgNTargetCovariances.resize(NPlots);									
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -420,12 +376,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				TString LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 				TString LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 
-				TString SignalLocalCovMatrixName = UncSources[WhichSample]+"_SignalCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-				TString SignalLocalFracCovMatrixName = UncSources[WhichSample]+"_SignalFracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-
-				TString BkgLocalCovMatrixName = UncSources[WhichSample]+"_BkgCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-				TString BkgLocalFracCovMatrixName = UncSources[WhichSample]+"_BkgFracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];											
-
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs
 
@@ -436,37 +386,15 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_Run3";
 					LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_Run3";
 
-					SignalLocalCovMatrixName = UncSources[WhichSample]+"_SignalCovariance_"+PlotNames[WhichPlot]+"_Run3";
-					SignalLocalFracCovMatrixName = UncSources[WhichSample]+"_SignalFracCovariance_"+PlotNames[WhichPlot]+"_Run3";
-
-					BkgLocalCovMatrixName = UncSources[WhichSample]+"_BkgCovariance_"+PlotNames[WhichPlot]+"_Run3";
-					BkgLocalFracCovMatrixName = UncSources[WhichSample]+"_BkgFracCovariance_"+PlotNames[WhichPlot]+"_Run3";															
-
 				}
 
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
 				TH2D* LocalCovMatrixClone = (TH2D*)(LocalCovMatrix->Clone() );
 				TH2D* LocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalFracCovMatrixName) );
 
-				TH2D* SignalLocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(SignalLocalCovMatrixName) );
-				TH2D* SignalLocalCovMatrixClone = (TH2D*)(SignalLocalCovMatrix->Clone() );
-				TH2D* SignalLocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(SignalLocalFracCovMatrixName) );
-
-				TH2D* BkgLocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(BkgLocalCovMatrixName) );
-				TH2D* BkgLocalCovMatrixClone = (TH2D*)(BkgLocalCovMatrix->Clone() );
-				TH2D* BkgLocalFracCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(BkgLocalFracCovMatrixName) );											
-
 				LocalCovMatrix->SetDirectory(0);
 				LocalFracCovMatrix->SetDirectory(0);				
 				LocalCovMatrixClone->SetDirectory(0);
-
-				SignalLocalCovMatrix->SetDirectory(0);
-				SignalLocalFracCovMatrix->SetDirectory(0);				
-				SignalLocalCovMatrixClone->SetDirectory(0);
-
-				BkgLocalCovMatrix->SetDirectory(0);
-				BkgLocalFracCovMatrix->SetDirectory(0);				
-				BkgLocalCovMatrixClone->SetDirectory(0);									
 
 				CovFiles[WhichSample]->Close();
 
@@ -478,12 +406,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 					StatCovariances[WhichPlot] = LocalCovMatrix; 
 					FracStatCovariances[WhichPlot] = LocalFracCovMatrix;
 
-					SignalStatCovariances[WhichPlot] = SignalLocalCovMatrix; 
-					SignalFracStatCovariances[WhichPlot] = SignalLocalFracCovMatrix;
-
-					BkgStatCovariances[WhichPlot] = BkgLocalCovMatrix; 
-					BkgFracStatCovariances[WhichPlot] = BkgLocalFracCovMatrix;															
-				
 				} else {
 
 					if (WhichSample == 1) { 
@@ -494,12 +416,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 						SystCovariances[WhichPlot] = LocalCovMatrixClone; 
 						FracSystCovariances[WhichPlot] = LocalFracCovMatrix;
 
-						SignalSystCovariances[WhichPlot] = SignalLocalCovMatrixClone; 
-						SignalFracSystCovariances[WhichPlot] = SignalLocalFracCovMatrix;
-
-						BkgSystCovariances[WhichPlot] = BkgLocalCovMatrixClone; 
-						BkgFracSystCovariances[WhichPlot] = BkgLocalFracCovMatrix;												
-
 					} else { 
 
 						if ( StatCovariances[WhichPlot]->GetNbinsX() != LocalCovMatrixClone->GetNbinsX() )
@@ -508,99 +424,70 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 						SystCovariances[WhichPlot]->Add(LocalCovMatrixClone); 
 						FracSystCovariances[WhichPlot]->Add(LocalFracCovMatrix);
 
-						SignalSystCovariances[WhichPlot]->Add(SignalLocalCovMatrixClone); 
-						SignalFracSystCovariances[WhichPlot]->Add(SignalLocalFracCovMatrix);
-						
-						BkgSystCovariances[WhichPlot]->Add(BkgLocalCovMatrixClone); 
-						BkgFracSystCovariances[WhichPlot]->Add(BkgLocalFracCovMatrix);													 
-						
 					}					
 
 					if (UncSources[WhichSample] == "MC_Stat") { 
 						
 						MCStatCovariances[WhichPlot] = LocalCovMatrix;
-						SignalMCStatCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgMCStatCovariances[WhichPlot] = BkgLocalCovMatrix;												 
-						
 					}
 
 					if (UncSources[WhichSample] == "LY") { 
 						
 						LYCovariances[WhichPlot] = LocalCovMatrix;
-						SignalLYCovariances[WhichPlot] = SignalLocalCovMatrix;						
-						BkgLYCovariances[WhichPlot] = BkgLocalCovMatrix;
 						
 					}
 
 					if (UncSources[WhichSample] == "TPC") { 
 						
 						TPCCovariances[WhichPlot] = LocalCovMatrix;
-						SignalTPCCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgTPCCovariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "SCERecomb2") { 
 						
 						SCERecomb2Covariances[WhichPlot] = LocalCovMatrix;
-						SignalSCERecomb2Covariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgSCERecomb2Covariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "XSec") { 
 						
 						XSecCovariances[WhichPlot] = LocalCovMatrix;
-						SignalXSecCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgXSecCovariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "G4") { 
 						
 						G4Covariances[WhichPlot] = LocalCovMatrix;
-						SignalG4Covariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgG4Covariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "Flux") { 
 						
 						FluxCovariances[WhichPlot] = LocalCovMatrix;
-						SignalFluxCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgFluxCovariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "Dirt") { 
 						
 						DirtCovariances[WhichPlot] = LocalCovMatrix;
-						SignalDirtCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgDirtCovariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "POT") { 
 						
 						POTCovariances[WhichPlot] = LocalCovMatrix;
-						SignalPOTCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgPOTCovariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}
 
 					if (UncSources[WhichSample] == "NuWro") { 
 						
-						NuWroCovariances[WhichPlot] = LocalCovMatrix;
-						SignalNuWroCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgNuWroCovariances[WhichPlot] = BkgLocalCovMatrix;												 
+					//	NuWroCovariances[WhichPlot] = LocalCovMatrix;
 
 					}
 
 					if (UncSources[WhichSample] == "NTarget") { 
 						
 						NTargetCovariances[WhichPlot] = LocalCovMatrix;
-						SignalNTargetCovariances[WhichPlot] = SignalLocalCovMatrix;
-						BkgNTargetCovariances[WhichPlot] = BkgLocalCovMatrix;												 
 						
 					}																				
 
@@ -628,8 +515,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 			TotalFileCovarianceMatrices->cd();
 
 			MCStatCovariances[WhichPlot]->Write("MCStatCovariance_"+PlotNames[WhichPlot]);
-			SignalMCStatCovariances[WhichPlot]->Write("SignalMCStatCovariance_"+PlotNames[WhichPlot]);
-			BkgMCStatCovariances[WhichPlot]->Write("BkgMCStatCovariance_"+PlotNames[WhichPlot]);						
 
 			if (BeamOn9 == "") {
 
@@ -641,54 +526,18 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				FluxCovariances[WhichPlot]->Write("FluxCovariance_"+PlotNames[WhichPlot]);
 				DirtCovariances[WhichPlot]->Write("DirtCovariance_"+PlotNames[WhichPlot]);
 				POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);
-				NuWroCovariances[WhichPlot]->Write("NuWroCovariance_"+PlotNames[WhichPlot]);							
+				//NuWroCovariances[WhichPlot]->Write("NuWroCovariance_"+PlotNames[WhichPlot]);							
 				NTargetCovariances[WhichPlot]->Write("NTargetCovariance_"+PlotNames[WhichPlot]);
-
-				SignalLYCovariances[WhichPlot]->Write("SignalLYCovariance_"+PlotNames[WhichPlot]);
-				SignalTPCCovariances[WhichPlot]->Write("SignalTPCCovariance_"+PlotNames[WhichPlot]);			
-				SignalSCERecomb2Covariances[WhichPlot]->Write("SignalSCERecomb2Covariance_"+PlotNames[WhichPlot]);			
-				SignalXSecCovariances[WhichPlot]->Write("SignalXSecCovariance_"+PlotNames[WhichPlot]);
-				SignalG4Covariances[WhichPlot]->Write("SignalG4Covariance_"+PlotNames[WhichPlot]);			
-				SignalFluxCovariances[WhichPlot]->Write("SignalFluxCovariance_"+PlotNames[WhichPlot]);
-				SignalDirtCovariances[WhichPlot]->Write("SignalDirtCovariance_"+PlotNames[WhichPlot]);
-				SignalPOTCovariances[WhichPlot]->Write("SignalPOTCovariance_"+PlotNames[WhichPlot]);
-				SignalNuWroCovariances[WhichPlot]->Write("SignalNuWroCovariance_"+PlotNames[WhichPlot]);							
-				SignalNTargetCovariances[WhichPlot]->Write("SignalNTargetCovariance_"+PlotNames[WhichPlot]);
-
-				BkgLYCovariances[WhichPlot]->Write("BkgLYCovariance_"+PlotNames[WhichPlot]);
-				BkgTPCCovariances[WhichPlot]->Write("BkgTPCCovariance_"+PlotNames[WhichPlot]);			
-				BkgSCERecomb2Covariances[WhichPlot]->Write("BkgSCERecomb2Covariance_"+PlotNames[WhichPlot]);			
-				BkgXSecCovariances[WhichPlot]->Write("BkgXSecCovariance_"+PlotNames[WhichPlot]);
-				BkgG4Covariances[WhichPlot]->Write("BkgG4Covariance_"+PlotNames[WhichPlot]);			
-				BkgFluxCovariances[WhichPlot]->Write("BkgFluxCovariance_"+PlotNames[WhichPlot]);
-				BkgDirtCovariances[WhichPlot]->Write("BkgDirtCovariance_"+PlotNames[WhichPlot]);
-				BkgPOTCovariances[WhichPlot]->Write("BkgPOTCovariance_"+PlotNames[WhichPlot]);
-				BkgNuWroCovariances[WhichPlot]->Write("BkgNuWroCovariance_"+PlotNames[WhichPlot]);							
-				BkgNTargetCovariances[WhichPlot]->Write("BkgNTargetCovariance_"+PlotNames[WhichPlot]);								
 
 			}			
 
 			StatCovariances[WhichPlot]->Write("StatCovariance_"+PlotNames[WhichPlot]);
 			FracStatCovariances[WhichPlot]->Write("FracStatCovariance_"+PlotNames[WhichPlot]);
 
-			SignalStatCovariances[WhichPlot]->Write("SignalStatCovariance_"+PlotNames[WhichPlot]);
-			SignalFracStatCovariances[WhichPlot]->Write("SignalFracStatCovariance_"+PlotNames[WhichPlot]);
-
-			BkgStatCovariances[WhichPlot]->Write("BkgStatCovariance_"+PlotNames[WhichPlot]);
-			BkgFracStatCovariances[WhichPlot]->Write("BkgFracStatCovariance_"+PlotNames[WhichPlot]);								
-
 			SystCovariances[WhichPlot]->Write("SystCovariance_"+PlotNames[WhichPlot]);
 			FracSystCovariances[WhichPlot]->Write("FracSystCovariance_"+PlotNames[WhichPlot]);
 
-			SignalSystCovariances[WhichPlot]->Write("SignalSystCovariance_"+PlotNames[WhichPlot]);
-			SignalFracSystCovariances[WhichPlot]->Write("SignalFracSystCovariance_"+PlotNames[WhichPlot]);
-
-			BkgSystCovariances[WhichPlot]->Write("BkgSystCovariance_"+PlotNames[WhichPlot]);
-			BkgFracSystCovariances[WhichPlot]->Write("BkgFracSystCovariance_"+PlotNames[WhichPlot]);								
-
 			TH2D* CloneCovariances = (TH2D*)(StatCovariances[WhichPlot]->Clone());
-			TH2D* SignalCloneCovariances = (TH2D*)(SignalStatCovariances[WhichPlot]->Clone());
-			TH2D* BkgCloneCovariances = (TH2D*)(BkgStatCovariances[WhichPlot]->Clone());			
 
 			if ( SystCovariances[WhichPlot]->GetNbinsX() != CloneCovariances->GetNbinsX() )
 				{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }	
@@ -696,27 +545,14 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 			CloneCovariances->Add(SystCovariances[WhichPlot]);
 			CloneCovariances->Write("TotalCovariance_"+PlotNames[WhichPlot]);
 
-			SignalCloneCovariances->Add(SignalSystCovariances[WhichPlot]);
-			SignalCloneCovariances->Write("SignalTotalCovariance_"+PlotNames[WhichPlot]);
-
-			BkgCloneCovariances->Add(BkgSystCovariances[WhichPlot]);
-			BkgCloneCovariances->Write("BkgTotalCovariance_"+PlotNames[WhichPlot]);						
 
 			TH2D* CloneFracCovariances = (TH2D*)(FracStatCovariances[WhichPlot]->Clone());
-			TH2D* SignalCloneFracCovariances = (TH2D*)(SignalFracStatCovariances[WhichPlot]->Clone());
-			TH2D* BkgCloneFracCovariances = (TH2D*)(BkgFracStatCovariances[WhichPlot]->Clone());						
 
 			if ( FracSystCovariances[WhichPlot]->GetNbinsX() != CloneFracCovariances->GetNbinsX() )
 				{ cout << PlotNames[WhichPlot] << " covariance matrix with different number of bins" << endl; }		
 
 			CloneFracCovariances->Add(FracSystCovariances[WhichPlot]);
 			CloneFracCovariances->Write("FracTotalCovariance_"+PlotNames[WhichPlot]);
-
-			SignalCloneFracCovariances->Add(SignalFracSystCovariances[WhichPlot]);
-			SignalCloneFracCovariances->Write("SignalFracTotalCovariance_"+PlotNames[WhichPlot]);
-
-			BkgCloneFracCovariances->Add(BkgFracSystCovariances[WhichPlot]);
-			BkgCloneFracCovariances->Write("BkgFracTotalCovariance_"+PlotNames[WhichPlot]);								
 
 			// ------------------------------------------------------------------
 
@@ -755,8 +591,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 				// Store correlation matrices
 
 				TH2D* CorrMatrix = (TH2D*)(CloneCovariances->Clone());
-				TH2D* SignalCorrMatrix = (TH2D*)(SignalCloneCovariances->Clone());
-				TH2D* BkgCorrMatrix = (TH2D*)(BkgCloneCovariances->Clone());				
 
 				int NBins = CorrMatrix->GetNbinsX();				
 
@@ -769,18 +603,6 @@ void WienerSVD_Merge_Covariances(TString OverlaySample = "Overlay9", TString Bea
 						double YBinValue = CloneCovariances->GetBinContent(WhichYBin+1,WhichYBin+1);						
 						double CorrBinValue = BinValue / ( TMath::Sqrt(XBinValue) * TMath::Sqrt(YBinValue) ); 
 						CorrMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,CorrBinValue);
-
-						double SignalBinValue = SignalCloneCovariances->GetBinContent(WhichXBin+1,WhichYBin+1);
-						double SignalXBinValue = SignalCloneCovariances->GetBinContent(WhichXBin+1,WhichXBin+1);
-						double SignalYBinValue = SignalCloneCovariances->GetBinContent(WhichYBin+1,WhichYBin+1);						
-						double SignalCorrBinValue = SignalBinValue / ( TMath::Sqrt(SignalXBinValue) * TMath::Sqrt(SignalYBinValue) ); 
-						SignalCorrMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,SignalCorrBinValue);
-
-						double BkgBinValue = BkgCloneCovariances->GetBinContent(WhichXBin+1,WhichYBin+1);
-						double BkgXBinValue = BkgCloneCovariances->GetBinContent(WhichXBin+1,WhichXBin+1);
-						double BkgYBinValue = BkgCloneCovariances->GetBinContent(WhichYBin+1,WhichYBin+1);						
-						double BkgCorrBinValue = BkgBinValue / ( TMath::Sqrt(BkgXBinValue) * TMath::Sqrt(BkgYBinValue) ); 
-						BkgCorrMatrix->SetBinContent(WhichXBin+1,WhichYBin+1,BkgCorrBinValue);												
 
 					}
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-void script_NuWro() {
+void run_nuwro() {
 
 	vector<TString> WhichSampleArray;
 
@@ -13,11 +13,11 @@ void script_NuWro() {
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L ResponseMatrices.cpp++");
+	gROOT->ProcessLine(".L response_matrices.cxx++");
 
 	for (int i =0;i < (int)(WhichSampleArray.size()); i++) {
 
-		gROOT->ProcessLine("ResponseMatrices(\""+WhichSampleArray[i]+"\",false,\"\",true)");
+		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",false,\"\",true)");
 
 	}
 

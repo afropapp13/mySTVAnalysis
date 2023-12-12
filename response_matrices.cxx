@@ -6,12 +6,12 @@
 #include <TString.h>
 #include <TStyle.h>
 
-#include "ubana/myClasses/Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
-void ResponseMatrices(TString OverlaySample, bool DetVar = false, TString Tune = "", bool NuWro = false) {
+void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune = "", bool NuWro = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -29,10 +29,11 @@ void ResponseMatrices(TString OverlaySample, bool DetVar = false, TString Tune =
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
-	// v52
+	
 	VectorCuts.push_back("");
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
+	VectorCuts.push_back("_CRT");
 
 	int NCuts = (int)(VectorCuts.size());	
 

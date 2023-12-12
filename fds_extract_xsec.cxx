@@ -18,14 +18,14 @@
 #include <sstream>
 #include <string>
 
-#include "ubana/myClasses/Constants.h"
-#include "ubana/myClasses/Util.h"
-#include "ubana/myClasses/WienerSVD.h"
+#include "../myClasses/Constants.h"
+#include "../myClasses/Util.h"
+#include "../myClasses/WienerSVD.h"
 
 using namespace std;
 using namespace Constants;
 
-#include "ubana/AnalysisCode/Secondary_Code/myFunctions.cpp"
+#include "../myClasses/myFunctions.cpp"
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ void ReweightXSec(TH1D* h, double SF = 1.) {
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
-void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", TString BeamOnSample = "BeamOn9") {
+void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample = "BeamOn9") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -86,6 +86,7 @@ void FakeData_WienerSVD_XSection_Extraction(TString OverlaySample = "Overlay9", 
 	VectorCuts.push_back("");
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
+	VectorCuts.push_back("_CRT");
 
 	int NCuts = (int)(VectorCuts.size());	
 

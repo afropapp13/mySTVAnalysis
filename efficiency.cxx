@@ -11,12 +11,12 @@
 #include <iostream>
 #include <vector>
 
-#include "ubana/myClasses/Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
-void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
+void efficiency(TString OverlaySample, bool DetVar = false) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -34,10 +34,10 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 
 	vector<TString> VectorCuts; VectorCuts.clear();
 
-	// v52
 	VectorCuts.push_back("");
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
+	VectorCuts.push_back("_CRT");
 
 	int NCuts = (int)(VectorCuts.size());	
 	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
@@ -45,20 +45,6 @@ void StandardEfficiencies(TString OverlaySample, bool DetVar = false) {
 	// -------------------------------------------------------------------------------------
 
 	vector<TString> PlotNamesClone = PlotNames;
-//	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
-
-	PlotNamesClone.push_back("VertexXPlot");
-	PlotNamesClone.push_back("VertexYPlot");
-	PlotNamesClone.push_back("VertexZPlot");
-
-	PlotNamesClone.push_back("EvPlot");
-	PlotNamesClone.push_back("NuPlot");
-
-	PlotNamesClone.push_back("MuonTrueMomentumLongitudinalRatio");
-	PlotNamesClone.push_back("ProtonTrueMomentumLongitudinalRatio");
-	PlotNamesClone.push_back("MuonTrueMomentumTransverseRatio");
-	PlotNamesClone.push_back("ProtonTrueMomentumTransverseRatio");
 
 	// -------------------------------------------------------------------------------------
 

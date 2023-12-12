@@ -6,12 +6,12 @@
 #include <TString.h>
 #include <TStyle.h>
 
-#include "ubana/myClasses/Constants.h"
+#include "../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
 
-void MigrationMatrices(TString OverlaySample) {
+void migration_matrices(TString OverlaySample) {
 
 	// -------------------------------------------------------------------------------------
 
@@ -37,10 +37,11 @@ void MigrationMatrices(TString OverlaySample) {
 	TString CutExtension = "_NoCuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
-	// v52
+	
 	VectorCuts.push_back("");
 	VectorCuts.push_back("_PID");
 	VectorCuts.push_back("_NuScore");
+	VectorCuts.push_back("_CRT");
 
 	int NCuts = (int)(VectorCuts.size());	
 
