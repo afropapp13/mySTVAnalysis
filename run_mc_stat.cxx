@@ -22,9 +22,6 @@
 
 			gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\")");
 
-			gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\",false,\"NoTune\")");
-			gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"_"+TString(std::to_string(k))+"\",false,\"TwiceMEC\")");					
-
 		}
 
 	}
