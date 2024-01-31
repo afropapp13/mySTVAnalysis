@@ -123,6 +123,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();
 	TGaxis::SetMaxDigits(3);
+	gStyle->SetOptStat(0);
 
 	// -------------------------------------------------------------------------------------
 
@@ -643,7 +644,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 				EventRatePlotCanvas->SetBottomMargin(0.17);
 				EventRatePlotCanvas->SetLeftMargin(0.15);
 
-				TLegend* leg = new TLegend(0.2,0.91,0.9,0.99);
+				TLegend* leg = new TLegend(0.25,0.91,0.9,0.99);
 				leg->SetBorderSize(0);
 				leg->SetTextFont(FontStyle);
 				leg->SetTextSize(TextSize-0.02);

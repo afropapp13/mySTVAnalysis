@@ -516,7 +516,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
 
-			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
+			//std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -576,6 +576,10 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			// --------------------------------------------------------------------------------------------------
 
 			V2H(unfold, unf);
+
+			// Decomposition of systematic uncertainties into shape / normalization uncertainty
+
+			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------					
 
@@ -729,7 +733,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unf->GetYaxis()->CenterTitle();
 			unf->GetYaxis()->SetLabelSize(TextSize);
 			unf->GetYaxis()->SetLabelFont(FontStyle);
-			unf->GetYaxis()->SetTitleSize(TextSize);
+			unf->GetYaxis()->SetTitleSize(TextSize-0.01);
 			unf->GetYaxis()->SetTitleFont(FontStyle);			
 			unf->GetYaxis()->SetNdivisions(6);
 
