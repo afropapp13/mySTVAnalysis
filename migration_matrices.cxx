@@ -212,7 +212,8 @@ void migration_matrices(TString OverlaySample) {
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
 					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);					
-					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
+					//Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
+					Plots[WhichSample][WhichPlot]->Draw("colz"); 
 					
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");

@@ -231,7 +231,8 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 
 					} else {
 
-						Plots[WhichSample][WhichPlot]->Draw("text colz e");
+						//Plots[WhichSample][WhichPlot]->Draw("text colz e");
+						Plots[WhichSample][WhichPlot]->Draw("colz");
 
 					} 
 					

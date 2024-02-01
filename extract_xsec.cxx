@@ -100,8 +100,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 
 	// -------------------------------------------------------------------------------------
 
-//	vector<TString> PlotNames;
-//	PlotNames.push_back("DeltaPTPlot"); 
+	//vector<TString> PlotNames;
+	//PlotNames.push_back("MuonCosThetaPlot"); 
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
@@ -516,7 +516,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
 
-			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
+			//std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -576,6 +576,10 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			// --------------------------------------------------------------------------------------------------
 
 			V2H(unfold, unf);
+
+			// Decomposition of systematic uncertainties into shape / normalization uncertainty
+
+			std::vector<TMatrixD> NormShapeVector = tools.MatrixDecomp(n,measure,UnfSystCov);
 
 			// --------------------------------------------------------------------------------------------------					
 
@@ -729,7 +733,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unf->GetYaxis()->CenterTitle();
 			unf->GetYaxis()->SetLabelSize(TextSize);
 			unf->GetYaxis()->SetLabelFont(FontStyle);
-			unf->GetYaxis()->SetTitleSize(TextSize);
+			unf->GetYaxis()->SetTitleSize(TextSize-0.01);
 			unf->GetYaxis()->SetTitleFont(FontStyle);			
 			unf->GetYaxis()->SetNdivisions(6);
 
@@ -845,7 +849,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			TString FullCanvasName = "/"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 			if (ClosureTest == true) { FullCanvasName = "/ClosureTest_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf"; }
 			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);	
-			delete PlotCanvas;			
+			//delete PlotCanvas;			
 
 			// ----------------------------------------------------------------------------------------------------------------		
 

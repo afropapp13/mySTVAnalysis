@@ -522,7 +522,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.17);
-			PlotCanvas->SetTopMargin(0.13);			
+			PlotCanvas->SetTopMargin(0.16);			
 			PlotCanvas->SetLeftMargin(0.21);			
 		
 			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
@@ -777,19 +777,19 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
-			TLegend* legData = new TLegend(0.22,0.89,0.79,0.98);
+			TLegend* legData = new TLegend(0.22,0.85,0.79,0.98);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.05);
 			legData->SetTextFont(FontStyle);
-			legData->SetNColumns(2);
+			legData->SetNColumns(1);
 			legData->SetMargin(0.1);
 
 			//------------------------------//
 
 			// Chi2 calculation
 
-			double FDChi2, FDpval; int FDNdof;
-			double CVChi2, CVpval; int CVNdof;	
+			double FDChi2, FDpval, FDsigma; int FDNdof;
+			double CVChi2, CVpval, CVsigma; int CVNdof;	
 
 			TH2D* CovClone = (TH2D*)(unfcov->Clone());
 
@@ -829,11 +829,11 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 
 			}		
 
-			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval);	
-			TString CVChi2NdofAlt = "(" + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +"), p = " + to_string_with_precision(CVpval,2);						
-			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval);	
-			TString FDChi2NdofAlt = "(" + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +"), p = " + to_string_with_precision(FDpval,2);			
-
+			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval,CVsigma);	
+			TString CVChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma";		
+	
+			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval,FDsigma);	
+			TString FDChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +", p = " + to_string_with_precision(FDpval,2) + ", " + to_string_with_precision(FDsigma,2) + "#sigma";
 			//------------------------------//				
 
 			TString ReducedLabel = 	BeamOnSample;
