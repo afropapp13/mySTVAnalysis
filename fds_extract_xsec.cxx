@@ -871,57 +871,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			}	
 
 			//------------------------------//
-/*
-			// intrinsic bias (Ac-I) * s_bar formula
-
-			TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
-			TH1D* bias2 = new TH1D("bias2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias2 w.r.t. unfolded result",n, Nuedges);
-			TMatrixD unit(n,n);
-			unit.UnitMatrix();
-			TVectorD intrinsicbias = (AddSmear - unit)*signal;
-			TVectorD intrinsicbias2 = (AddSmear - unit)*unfold;
-
-			for (int i = 0; i < n; i++) {
-
-			    if (signal(i) != 0) { intrinsicbias(i) = intrinsicbias(i)/signal(i); }
-			    else { intrinsicbias(i) = 0.; }
-			    if (unfold(i) != 0) { intrinsicbias2(i) = intrinsicbias2(i)/unfold(i); }
-			    else { intrinsicbias2(i) = 0.; }
-			}	
-
-			V2H(intrinsicbias, bias);
-			V2H(intrinsicbias2, bias2);				
-
-			//------------------------------//
-
-			// Diagonal Uncertainty
-
-			TH1D* fracError = new TH1D("fracError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Fractional uncertainty", n, Nuedges);
-			TH1D* absError = new TH1D("absError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "absolute uncertainty", n, Nuedges);
-
-			for (int i = 1; i <= n; i++) {
-
-			    fracError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1))/unfold(i-1));
-			    absError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1)));
-			}
-    
-			/// MSE
-			TH1D* MSE = new TH1D("MSE_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance+bias^2", n, Nuedges);
-			TH1D* MSE2 = new TH1D("MSE2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance", n, Nuedges);
-    
-			for (int i = 0; i < n; i++) {
-
-			    MSE->SetBinContent(i+1, TMath::Power(intrinsicbias2(i)*unfold(i),2)+UnfoldCov(i,i));
-			    MSE2->SetBinContent(i+1, UnfoldCov(i,i));
-
-			}
-
-			// convert matrix/vector to histogram and save
-
-			M2H(AddSmear, smear);
-			V2H(WF, wiener);
-*/
-			//------------------------------//
 
 			ExtractedXSec->cd();
 
