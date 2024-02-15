@@ -248,7 +248,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 		UncSources.push_back("Stat");
 		UncSources.push_back("XSec");
 		UncSources.push_back("MC_Stat");
-		//UncSources.push_back("NuWro");			
+		UncSources.push_back("NuWro");			
 
 	} else {
 
@@ -263,7 +263,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 		UncSources.push_back("POT"); 
 		UncSources.push_back("NTarget");
 		UncSources.push_back("MC_Stat");
-		//UncSources.push_back("NuWro");		
+		UncSources.push_back("NuWro");		
 
 	}
 
