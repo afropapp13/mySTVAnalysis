@@ -423,9 +423,9 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			// BeamOn = Alternative model for fake data studies in this case
 			// Thus we grab the CC1p part, without any subtractions
 
-			TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
-//			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
-//			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
+			//TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
+			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
+			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
 
 			int m = DataPlot->GetNbinsX();			
 			TString XTitle = DataPlot->GetXaxis()->GetTitle();
