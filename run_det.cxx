@@ -37,8 +37,8 @@
 
 		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",true)");
 
-		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",true,\"NoTune\")");
-		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",true,\"TwiceMEC\")");				
+		//gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",true,\"NoTune\")");
+		//gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",true,\"TwiceMEC\")");				
 
 	}
 

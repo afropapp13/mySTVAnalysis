@@ -69,12 +69,14 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 //	Runs.push_back("Run5");	
 	Runs.push_back("Combined");	
 
-	if (DetVar) {
+	// For runs 1-3, we used run 3 det vars
+
+	/*if (DetVar) {
 
 		Runs.clear();
 		Runs.push_back("Run3");
 
-	}		
+	}*/		
 
 	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	

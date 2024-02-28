@@ -143,13 +143,16 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 //	Runs.push_back("Run5");			
 	Runs.push_back("Combined");
 
-	if (Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" || Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2" 
+	// For runs 1-3, we used the detector variations for run 3
+	// For runs 1-5, we also include the run 4 & 5 det vars
+
+	/*if (Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" || Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2" 
 	|| Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_SCERecomb2" ) {
 
 		Runs.clear();
 		Runs.push_back("Run3");
 
-	}
+	}*/
 
 	const int NRuns = (int)(Runs.size());
 

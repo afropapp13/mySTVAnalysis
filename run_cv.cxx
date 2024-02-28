@@ -27,9 +27,9 @@ void run_cv() {
 
 		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\")");
 
-		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",false,\"NoTune\")");
+		//gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",false,\"NoTune\")");
 
-		gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",false,\"TwiceMEC\")");				
+		//gROOT->ProcessLine("response_matrices(\""+WhichSampleArray[i]+"\",false,\"TwiceMEC\")");				
 
 	}
 
