@@ -61,12 +61,14 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 //	Runs.push_back("Run5");				
 	Runs.push_back("Combined");	
 
-	if (DetVar) {
+	// For runs 1-3, we used only run 3 det vars
+
+	/*if (DetVar) {
 
 		Runs.clear();
 		Runs.push_back("Run3");
 
-	}			
+	}*/			
 
 	int NRuns = (int)(Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;

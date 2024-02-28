@@ -38,3 +38,8 @@ root -b produce_xsecs_fds.cxx
 
 #################################################################################################################################
 
+cd ../myEvents
+
+root -b topological_breakdown.cxx
+root -b interaction_breakdown.cxx
+
