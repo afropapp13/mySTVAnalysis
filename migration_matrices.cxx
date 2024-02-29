@@ -203,7 +203,7 @@ void migration_matrices(TString OverlaySample) {
 					Plots[WhichSample][WhichPlot]->GetYaxis()->CenterTitle();
 					Plots[WhichSample][WhichPlot]->GetYaxis()->SetNdivisions(5);
 					Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitleOffset(1.);				
-									
+								
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(8);				
@@ -211,9 +211,37 @@ void migration_matrices(TString OverlaySample) {
 
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
-					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun]);					
-					Plots[WhichSample][WhichPlot]->Draw("text colz e"); 
-					
+					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun] + " Migration Matrix, " + LatexLabel[PlotNames[WhichPlot]]);	
+
+				
+					//------------------------------//
+
+					// The N-dimensional analysis has been developed based on the bin number, not the actual range
+
+					if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+						TString XaxisTitle = Plots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
+						XaxisTitle.ReplaceAll("deg","bin #");
+						XaxisTitle.ReplaceAll("GeV/c","bin #");
+						XaxisTitle.ReplaceAll("GeV","bin #");				
+						Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitle(XaxisTitle);
+
+						TString YaxisTitle = Plots[WhichSample][WhichPlot]->GetYaxis()->GetTitle();
+						YaxisTitle.ReplaceAll("deg","bin #");
+						YaxisTitle.ReplaceAll("GeV/c","bin #");
+						YaxisTitle.ReplaceAll("GeV","bin #");				
+						Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitle(YaxisTitle);						
+
+						Plots[WhichSample][WhichPlot]->Draw("colz");						
+
+					} else {
+
+						Plots[WhichSample][WhichPlot]->Draw("text colz e");
+
+					} 
+	
+					//------------------------------//
+	
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
