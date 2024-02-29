@@ -113,6 +113,12 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 	TH1D::SetDefaultSumw2();
 	TH2D::SetDefaultSumw2();
+	
+	double TextSize = 0.07;
+	
+	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(TextSize,"t"); 
+	gStyle->SetTitleFont(FontStyle,"t");
+	gStyle->SetOptStat(0);
 
 	//if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) { return; }
 	//else {
