@@ -219,7 +219,9 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 					pEffPlot->GetXaxis()->SetLabelFont(FontStyle);
 					pEffPlot->GetXaxis()->SetTitle(PlotsTrue[WhichSample][WhichPlot]->GetXaxis()->GetTitle());
 					pEffPlot->GetXaxis()->SetTitleSize(TextSize);
+					pEffPlot->GetXaxis()->SetTitleOffset(1.1);
 					pEffPlot->GetXaxis()->SetLabelSize(TextSize);
+					pEffPlot->GetXaxis()->SetLabelOffset(0.02);
 					pEffPlot->GetXaxis()->SetNdivisions(9);
 
 					pEffPlot->GetYaxis()->CenterTitle();
@@ -236,6 +238,7 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 					PlotEffCanvas->cd();
+					PlotEffCanvas->SetTopMargin(0.11);
 					PlotEffCanvas->SetBottomMargin(0.16);
 					PlotEffCanvas->SetLeftMargin(0.18);
 
