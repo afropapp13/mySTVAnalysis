@@ -27,7 +27,7 @@ void produce_xsecs() {
 
 		// Closure test
 
-//		gROOT->ProcessLine("extract_xsec(\""+WhichSampleArray[i]+"\",true)");
+		gROOT->ProcessLine("extract_xsec(\""+WhichSampleArray[i]+"\",true)");
 
 	}
 

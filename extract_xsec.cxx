@@ -523,6 +523,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			// Start plotting
 		
 			TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+			if (ClosureTest == true) { CanvasName = "ClosureTest_" +CanvasName; }	
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.16);
