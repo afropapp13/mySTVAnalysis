@@ -1019,7 +1019,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				TLatex *text = new TLatex();
 				text->SetTextFont(FontStyle);
 				text->SetTextSize(0.06);
-				text->DrawTextNDC(0.3, 0.92, Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+				text->DrawLatexNDC(0.3, 0.92, Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
 				TString SmearCanvas = "/Smear_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);

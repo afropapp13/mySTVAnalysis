@@ -156,6 +156,11 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		unc->GetYaxis()->SetNdivisions(5);
 		unc->GetYaxis()->SetTitleOffset(0.7);				
 		unc->GetYaxis()->SetRangeUser(0.,49.);
+		if (string(PlotName).find("SingleBin") != std::string::npos) {	
+		
+			unc->GetYaxis()->SetRangeUser(0.,12.);	
+
+		}
 
 		unc->SetLineWidth(2);		
 		unc->SetLineColor(Colors[Color+1]);
