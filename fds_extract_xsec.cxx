@@ -513,6 +513,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			PlotCanvas->SetBottomMargin(0.17);
 			PlotCanvas->SetTopMargin(0.16);			
 			PlotCanvas->SetLeftMargin(0.21);			
+			PlotCanvas->SetRightMargin(0.03);			
 		
 			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
@@ -766,7 +767,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
-			TLegend* legData = new TLegend(0.22,0.85,0.79,0.98);
+			TLegend* legData = new TLegend(0.21,0.85,0.78,0.98);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.05);
 			legData->SetTextFont(FontStyle);

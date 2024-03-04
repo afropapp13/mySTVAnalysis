@@ -155,38 +155,13 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 		unc->GetYaxis()->SetNdivisions(5);
 		unc->GetYaxis()->SetTitleOffset(0.7);				
 		unc->GetYaxis()->SetRangeUser(0.,49.);
+		if (string(PlotName).find("SingleBin") != std::string::npos) {	
+		
+			unc->GetYaxis()->SetRangeUser(0.,12.);	
 
-		if (PlotName == "DeltaPTPlot") { unc->GetYaxis()->SetRangeUser(0.,46.); }
-		if (PlotName == "DeltaAlphaTPlot") { unc->GetYaxis()->SetRangeUser(0.,18.); }
-		if (PlotName == "DeltaPhiTPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
-		if (PlotName == "MuonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }
-		if (PlotName == "MuonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }
-		if (PlotName == "MuonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }			
-		if (PlotName == "ProtonPhiPlot") { unc->GetYaxis()->SetRangeUser(0.,19.); }
-		if (PlotName == "ProtonMomentumPlot") { unc->GetYaxis()->SetRangeUser(0.,29.); }	
-		if (PlotName == "ProtonCosThetaPlot") { unc->GetYaxis()->SetRangeUser(0.,34.); }	
-		if (PlotName == "DeltaPLPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }
-		if (PlotName == "DeltaPnPlot") { unc->GetYaxis()->SetRangeUser(0.,43.); }
-		if (PlotName == "DeltaPtxPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }		
-		if (PlotName == "DeltaPtyPlot") { unc->GetYaxis()->SetRangeUser(0.,39.); }	
-		if (PlotName == "PMissMinusPlot") { unc->GetYaxis()->SetRangeUser(0.,49.); }
-		if (PlotName == "ECalPlot") { unc->GetYaxis()->SetRangeUser(0.,109.); }	
-
-		if (PlotName == "MuonCosThetaSingleBinPlot") { 
-
-			unc->GetXaxis()->SetTitleSize(0.);
-			unc->GetXaxis()->SetLabelSize(0.);			
-
-			unc->GetYaxis()->SetRangeUser(0.,12.); 
-			
 		}
 
-		if ( string(PlotName).find("Serial") != std::string::npos) {
 
-			unc->GetYaxis()->SetRangeUser(0.,119.);
-
-		}							
-					
 		unc->SetLineWidth(2);		
 		unc->SetLineColor(Colors[Color+1]);
 		unc->SetMarkerColor(Colors[Color+1]);			
@@ -370,14 +345,14 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs
 
-				if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC"  || UncSources[WhichSample] == "SCERecomb2" || UncSources[WhichSample] == "MC_LY" 
-				|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "MC_SCERecomb2" || UncSources[WhichSample] == "SmEff_LY" 
-				|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
+				//if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC"  || UncSources[WhichSample] == "SCERecomb2" || UncSources[WhichSample] == "MC_LY" 
+				//|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "MC_SCERecomb2" || UncSources[WhichSample] == "SmEff_LY" 
+				//|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
 
-//					FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
-					FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
+//				//	FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
+				//	FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
 
-				}
+				//}
 
 				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
 				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
@@ -390,14 +365,14 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 				// For the detector variation, we follow the PeLEE recipe
 				// Only Run3 and propagate across all runs
 
-				if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC" || UncSources[WhichSample] == "SCERecomb2" || UncSources[WhichSample] == "MC_LY" 
-				|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "MC_SCERecomb2" || UncSources[WhichSample] == "SmEff_LY" 
-				|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
+				//if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC" || UncSources[WhichSample] == "SCERecomb2" || UncSources[WhichSample] == "MC_LY" 
+				//|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "MC_SCERecomb2" || UncSources[WhichSample] == "SmEff_LY" 
+				//|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
 
-					LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_Run3";
-					LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_Run3";
+				//	LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_Run3";
+				//	LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_Run3";
 
-				}
+				//}
 
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
 				TH2D* LocalCovMatrixClone = (TH2D*)(LocalCovMatrix->Clone() );
