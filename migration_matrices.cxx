@@ -207,7 +207,7 @@ void migration_matrices(TString OverlaySample) {
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelFont(FontStyle);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(8);				
-					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(-0.1,1.);
+					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0.,1.);
 
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
