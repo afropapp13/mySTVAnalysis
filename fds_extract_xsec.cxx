@@ -721,6 +721,13 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			//unf->Draw("e1x0 same"); // Full unc : XSec + Stat + MC Stat
 			unfMCStat->Draw("e1x0 same"); // Only MC Stat
 
+			TLatex *textSlice = new TLatex();
+			textSlice->SetTextFont(FontStyle);
+			textSlice->SetTextSize(0.06);
+			TString PlotNameDuplicate = PlotNames[WhichPlot];
+			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
+			textSlice->DrawLatexNDC(0.24, 0.77, LatexLabel[ReducedPlotName]);				
+
 			//------------------------------//
 			/*
 			if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {			
