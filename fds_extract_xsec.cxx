@@ -522,7 +522,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.17);
-			PlotCanvas->SetTopMargin(0.16);			
+			PlotCanvas->SetTopMargin(0.17);			
 			PlotCanvas->SetLeftMargin(0.21);			
 			PlotCanvas->SetRightMargin(0.03);			
 		
@@ -732,6 +732,13 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			//unf->Draw("e1x0 same"); // Full unc : XSec + Stat + MC Stat
 			unfMCStat->Draw("e1x0 same"); // Only MC Stat
 
+			TLatex *textSlice = new TLatex();
+			textSlice->SetTextFont(FontStyle);
+			textSlice->SetTextSize(0.06);
+			TString PlotNameDuplicate = PlotNames[WhichPlot];
+			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
+			textSlice->DrawLatexNDC(0.24, 0.77, LatexLabel[ReducedPlotName]);				
+
 			//------------------------------//
 			/*
 			if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {			
@@ -778,7 +785,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
-			TLegend* legData = new TLegend(0.21,0.85,0.78,0.98);
+			TLegend* legData = new TLegend(0.21,0.84,0.78,0.98);
 			legData->SetBorderSize(0);
 			legData->SetTextSize(0.05);
 			legData->SetTextFont(FontStyle);
@@ -908,49 +915,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			//MSE2->Write("MSE2"+PlotNames[WhichPlot]);
 			ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]); // response matrix
 
-			// ---------------------------------------------------------------------------------------------------------------------------
-/*
-			// Make the additional smearing matrix pretty
-
-			TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-			TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
-			SmearPlotCanvas->cd();
-			SmearPlotCanvas->SetBottomMargin(0.16);
-			SmearPlotCanvas->SetTopMargin(0.13);			
-			SmearPlotCanvas->SetLeftMargin(0.2);
-			SmearPlotCanvas->SetRightMargin(0.2);
-
-			smear->GetXaxis()->CenterTitle();
-			smear->GetXaxis()->SetLabelFont(FontStyle);
-			smear->GetXaxis()->SetTitleFont(FontStyle);
-			smear->GetXaxis()->SetLabelSize(TextSize);
-			smear->GetXaxis()->SetTitleSize(TextSize);
-			smear->GetXaxis()->SetNdivisions(6);
-
-			smear->GetYaxis()->CenterTitle();
-			smear->GetYaxis()->SetLabelFont(FontStyle);
-			smear->GetYaxis()->SetTitleFont(FontStyle);
-			smear->GetYaxis()->SetLabelSize(TextSize);
-			smear->GetYaxis()->SetTitleSize(TextSize);
-			smear->GetYaxis()->SetNdivisions(6);	
-
-			smear->GetZaxis()->SetLabelFont(FontStyle);
-			smear->GetZaxis()->SetTitleFont(FontStyle);
-			smear->GetZaxis()->SetLabelSize(TextSize);
-			smear->GetZaxis()->SetTitleSize(TextSize);
-
-			smear->Draw("coltz");
-
-			TLatex *text = new TLatex();
-			text->SetTextFont(FontStyle);
-			text->SetTextSize(0.06);
-			text->DrawTextNDC(0.47, 0.92, Runs[WhichRun]);
-
-			TString SmearCanvas = "/"+BeamOnSample+"Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
-			if (OverlaySample != "Overlay9") { SmearCanvas = "/"+BeamOnSample+"Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+"_"+OverlaySample+".pdf"; }
-			SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
-			delete SmearPlotCanvas;
-*/
 			// ---------------------------------------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots

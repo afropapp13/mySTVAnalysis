@@ -128,7 +128,6 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 	// -------------------------------------------------------------------------------------
 
 //	vector<TString> PlotNames;
-//	PlotNames.push_back("ThetaZPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 
 	const int N1DPlots = PlotNames.size();
