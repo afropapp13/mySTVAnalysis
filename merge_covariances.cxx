@@ -120,18 +120,23 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	gStyle->SetTitleFont(FontStyle,"t");
 	gStyle->SetOptStat(0);
 
-	//if (string(UncSources).find("POT") != std::string::npos || string(UncSources).find("NTarget") != std::string::npos) { return; }
-	//else {
+	std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed-10, kGray,kMagenta-10};
 
-		std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed-10, kGray,kMagenta-10};
+	int n = LocalCovMatrix->GetNbinsX();
+	TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
+	if (string(PlotName).find("Serial") != std::string::npos) {  
 
-		int n = LocalCovMatrix->GetNbinsX();
-		TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
-		double Nuedges[n+1];
+		TitleX.ReplaceAll("deg","bin #");
+		TitleX.ReplaceAll("GeV/c","bin #");
+		TitleX.ReplaceAll("GeV","bin #");				
+	
+	}
+
+	double Nuedges[n+1];
 				    
-		for (int i = 0; i < n+1; i++) { Nuedges[i] = LocalCovMatrix->GetXaxis()->GetBinLowEdge(i+1); }
+	for (int i = 0; i < n+1; i++) { Nuedges[i] = LocalCovMatrix->GetXaxis()->GetBinLowEdge(i+1); }
 
-		TH1D* unc = new TH1D("unc_"+PlotName+"_"+Run+"_"+UncSources,";"+TitleX+";Uncertainty [%]",n,Nuedges);	
+	TH1D* unc = new TH1D("unc_"+PlotName+"_"+Run+"_"+UncSources,";"+TitleX+";Uncertainty [%]",n,Nuedges);	
 
         for (int i = 1; i <= n; i++) {
 
@@ -140,43 +145,43 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
         }
 
-		unc->GetXaxis()->SetTitleFont(FontStyle);
-		unc->GetXaxis()->SetLabelFont(FontStyle);
-		unc->GetXaxis()->SetTitleSize(TextSize);
-		unc->GetXaxis()->SetLabelSize(TextSize);	
-		unc->GetXaxis()->CenterTitle();
-		unc->GetXaxis()->SetNdivisions(8);
+	unc->GetXaxis()->SetTitleFont(FontStyle);
+	unc->GetXaxis()->SetLabelFont(FontStyle);
+	unc->GetXaxis()->SetTitleSize(TextSize);
+	unc->GetXaxis()->SetLabelSize(TextSize);	
+	unc->GetXaxis()->CenterTitle();
+	unc->GetXaxis()->SetNdivisions(8);
 		
-		unc->GetYaxis()->SetLabelFont(FontStyle);
-		unc->GetYaxis()->SetTitleFont(FontStyle);
-		unc->GetYaxis()->SetTitleSize(TextSize);
-		unc->GetYaxis()->SetLabelSize(TextSize);	
-		unc->GetYaxis()->CenterTitle();
-		unc->GetYaxis()->SetNdivisions(5);
-		unc->GetYaxis()->SetTitleOffset(0.7);				
-		unc->GetYaxis()->SetRangeUser(0.,49.);
-		if (string(PlotName).find("SingleBin") != std::string::npos) {	
+	unc->GetYaxis()->SetLabelFont(FontStyle);
+	unc->GetYaxis()->SetTitleFont(FontStyle);
+	unc->GetYaxis()->SetTitleSize(TextSize);
+	unc->GetYaxis()->SetLabelSize(TextSize);	
+	unc->GetYaxis()->CenterTitle();
+	unc->GetYaxis()->SetNdivisions(5);
+	unc->GetYaxis()->SetTitleOffset(0.7);				
+	unc->GetYaxis()->SetRangeUser(0.,49.);
+
+	if (string(PlotName).find("SingleBin") != std::string::npos) {	
 		
-			unc->GetYaxis()->SetRangeUser(0.,12.);	
+		unc->GetYaxis()->SetRangeUser(0.,12.);	
 
-		}
+	}
 
+	unc->SetLineWidth(2);		
+	unc->SetLineColor(Colors[Color+1]);
+	unc->SetMarkerColor(Colors[Color+1]);			
 
-		unc->SetLineWidth(2);		
-		unc->SetLineColor(Colors[Color+1]);
-		unc->SetMarkerColor(Colors[Color+1]);			
+	gStyle->SetPaintTextFormat("4.1f");
+	unc->Draw("hist text0 same");
 
-		gStyle->SetPaintTextFormat("4.1f");
-		unc->Draw("hist text0 same");
+	leg->AddEntry(unc,UncSources);
 
-		leg->AddEntry(unc,UncSources);
+	TLatex *textSlice = new TLatex();
+	textSlice->SetTextFont(FontStyle);
+	textSlice->SetTextSize(TextSize);
+	textSlice->DrawLatexNDC(0.13, 0.78, LatexLabel[ PlotName ]);	
 
-		TLatex *textSlice = new TLatex();
-		textSlice->SetTextFont(FontStyle);
-		textSlice->SetTextSize(TextSize);
-		textSlice->DrawLatexNDC(0.13, 0.78, LatexLabel[ PlotName ]);	
-
-		// ----------------------------------------------------------------
+	// ----------------------------------------------------------------
 
 }
 
@@ -276,7 +281,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 	vector<TH2D*> FluxCovariances; FluxCovariances.resize(NPlots);
 	vector<TH2D*> DirtCovariances; DirtCovariances.resize(NPlots);	
 	vector<TH2D*> POTCovariances; POTCovariances.resize(NPlots);
-	//vector<TH2D*> NuWroCovariances; NuWroCovariances.resize(NPlots);
+	vector<TH2D*> NuWroCovariances; NuWroCovariances.resize(NPlots);
 	vector<TH2D*> NTargetCovariances; NTargetCovariances.resize(NPlots);
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -467,7 +472,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 
 					if (UncSources[WhichSample] == "NuWro") { 
 						
-					//	NuWroCovariances[WhichPlot] = LocalCovMatrix;
+						NuWroCovariances[WhichPlot] = LocalCovMatrix;
 
 					}
 
@@ -512,7 +517,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 				FluxCovariances[WhichPlot]->Write("FluxCovariance_"+PlotNames[WhichPlot]);
 				DirtCovariances[WhichPlot]->Write("DirtCovariance_"+PlotNames[WhichPlot]);
 				POTCovariances[WhichPlot]->Write("POTCovariance_"+PlotNames[WhichPlot]);
-				//NuWroCovariances[WhichPlot]->Write("NuWroCovariance_"+PlotNames[WhichPlot]);							
+				NuWroCovariances[WhichPlot]->Write("NuWroCovariance_"+PlotNames[WhichPlot]);							
 				NTargetCovariances[WhichPlot]->Write("NTargetCovariance_"+PlotNames[WhichPlot]);
 
 			}			

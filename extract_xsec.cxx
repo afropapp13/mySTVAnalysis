@@ -77,6 +77,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 	TH2D::SetDefaultSumw2();	
 	gStyle->SetOptStat(0);
 	gStyle->SetEndErrorSize(6);	
+	gStyle->SetTitleFont(FontStyle,"t");	
+	gStyle->SetTitleSize(TextSize,"t");	
 
 	TString Subtract = "";
 	int DecimalAccuracy = 2;
@@ -186,7 +188,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 		vector<TH2D*> DirtCovarianceMatrices; DirtCovarianceMatrices.clear();
 		vector<TH2D*> POTCovarianceMatrices; POTCovarianceMatrices.clear();
 		vector<TH2D*> NTargetCovarianceMatrices; NTargetCovarianceMatrices.clear();	
-		//vector<TH2D*> NuWroCovarianceMatrices; NuWroCovarianceMatrices.clear();
+		vector<TH2D*> NuWroCovarianceMatrices; NuWroCovarianceMatrices.clear();
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -343,7 +345,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			G4CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("G4Covariance_"+PlotNames[WhichPlot]));
 			DirtCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("DirtCovariance_"+PlotNames[WhichPlot]));
 			POTCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("POTCovariance_"+PlotNames[WhichPlot]));
-			//NuWroCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NuWroCovariance_"+PlotNames[WhichPlot]));			
+			NuWroCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NuWroCovariance_"+PlotNames[WhichPlot]));			
 			NTargetCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("NTargetCovariance_"+PlotNames[WhichPlot]));
 
 			// -----------------------------------------------------------------------------------------------------
@@ -382,7 +384,6 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			RESPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
 			DISPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
 			COHPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));																	 
-
 			// -------------------------------------------------------------------------------------------
 
 			// Construct vectors (for 1D histogram) and matrices (for 2D histogram) for input
@@ -467,7 +468,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			H2M(G4CovarianceMatrices[WhichPlot], g4covariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(DirtCovarianceMatrices[WhichPlot], dirtcovariance, kTRUE); // X axis: True, Y axis: Reco
 			H2M(POTCovarianceMatrices[WhichPlot], potcovariance, kTRUE); // X axis: True, Y axis: Reco
-			//H2M(NuWroCovarianceMatrices[WhichPlot], nuwrocovariance, kTRUE); // X axis: True, Y axis: Reco			
+			H2M(NuWroCovarianceMatrices[WhichPlot], nuwrocovariance, kTRUE); // X axis: True, Y axis: Reco			
 			H2M(NTargetCovarianceMatrices[WhichPlot], ntargetcovariance, kTRUE); // X axis: True, Y axis: Reco
 
 			// ------------------------------------------------------------------------------------------
@@ -511,7 +512,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			TMatrixD UnfG4Cov = CovRotation*g4covariance*CovRotation_T;
 			TMatrixD UnfDirtCov = CovRotation*dirtcovariance*CovRotation_T;
 			TMatrixD UnfPOTCov = CovRotation*potcovariance*CovRotation_T;
-			//TMatrixD UnfNuWroCov = CovRotation*nuwrocovariance*CovRotation_T;			
+			TMatrixD UnfNuWroCov = CovRotation*nuwrocovariance*CovRotation_T;			
 			TMatrixD UnfNTargetCov = CovRotation*ntargetcovariance*CovRotation_T;	
 
 			// Decomposition of systematic uncertainties into shape / normalization uncertainty
@@ -544,7 +545,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			TH1D* unfG4 = new TH1D("unfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfDirt = new TH1D("unfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* unfPOT = new TH1D("unfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			//TH1D* unfNuWro = new TH1D("unfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+			TH1D* unfNuWro = new TH1D("unfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
 			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);	
 
 			TH1D* signalunfMCStat = new TH1D("signalunfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
@@ -557,7 +558,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			TH1D* signalunfG4 = new TH1D("signalunfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* signalunfDirt = new TH1D("signalunfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* signalunfPOT = new TH1D("signalunfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			//TH1D* signalunfNuWro = new TH1D("signalunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+			TH1D* signalunfNuWro = new TH1D("signalunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
 			TH1D* signalunfNTarget = new TH1D("signalunfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
 			TH1D* bkgunfMCStat = new TH1D("bkgunfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
@@ -570,7 +571,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			TH1D* bkgunfG4 = new TH1D("bkgunfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* bkgunfDirt = new TH1D("bkgunfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TH1D* bkgunfPOT = new TH1D("bkgunfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			//TH1D* bkgunfNuWro = new TH1D("bkgunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+			TH1D* bkgunfNuWro = new TH1D("bkgunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
 			TH1D* bkgunfNTarget = new TH1D("bkgunfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);																	
 
 			// --------------------------------------------------------------------------------------------------
@@ -618,7 +619,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unfG4 = (TH1D*)(unf->Clone());
 			unfDirt = (TH1D*)(unf->Clone());
 			unfPOT = (TH1D*)(unf->Clone());
-			//unfNuWro = (TH1D*)(unf->Clone());			
+			unfNuWro = (TH1D*)(unf->Clone());			
 			unfNTarget = (TH1D*)(unf->Clone());
 
 			signalunfStat = (TH1D*)(unf->Clone());
@@ -631,7 +632,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			signalunfG4 = (TH1D*)(unf->Clone());
 			signalunfDirt = (TH1D*)(unf->Clone());
 			signalunfPOT = (TH1D*)(unf->Clone());
-			//signalunfNuWro = (TH1D*)(unf->Clone());			
+			signalunfNuWro = (TH1D*)(unf->Clone());			
 			signalunfNTarget = (TH1D*)(unf->Clone());
 
 			bkgunfStat = (TH1D*)(unf->Clone());
@@ -644,7 +645,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			bkgunfG4 = (TH1D*)(unf->Clone());
 			bkgunfDirt = (TH1D*)(unf->Clone());
 			bkgunfPOT = (TH1D*)(unf->Clone());
-			//bkgunfNuWro = (TH1D*)(unf->Clone());			
+			bkgunfNuWro = (TH1D*)(unf->Clone());			
 			bkgunfNTarget = (TH1D*)(unf->Clone());																		
 
 			myXSecTxtFile << PlotNames[WhichPlot] << endl << endl;			
@@ -704,8 +705,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				double POTError = TMath::Sqrt( UnfPOTCov(i-1,i-1) ) / Width;
 				unfPOT->SetBinError(i, POTError);
 
-				//double NuWroError = TMath::Sqrt( UnfNuWroCov(i-1,i-1) ) / Width;
-				//unfNuWro->SetBinError(i, NuWroError);				
+				double NuWroError = TMath::Sqrt( UnfNuWroCov(i-1,i-1) ) / Width;
+				unfNuWro->SetBinError(i, NuWroError);				
 
 				double NTargetError = TMath::Sqrt( UnfNTargetCov(i-1,i-1) ) / Width;
 				unfNTarget->SetBinError(i, NTargetError);																				
@@ -942,7 +943,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				unfG4->Write("G4Reco"+PlotNames[WhichPlot]);
 				unfDirt->Write("DirtReco"+PlotNames[WhichPlot]);
 				unfPOT->Write("POTReco"+PlotNames[WhichPlot]);
-				//unfNuWro->Write("NuWroReco"+PlotNames[WhichPlot]);				
+				unfNuWro->Write("NuWroReco"+PlotNames[WhichPlot]);				
 				unfNTarget->Write("NTargetReco"+PlotNames[WhichPlot]);
 
 				unfFullUnc->Write("RecoFullUnc"+PlotNames[WhichPlot]);				
@@ -1024,6 +1025,51 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
 				delete SmearPlotCanvas;
 
+				// ---------------------------------------------------------------------------------------------------------------------------
+
+				// Make the unfolded covariance matrix pretty
+
+				TString UnfCovCanvasName = "UnfCov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+				TCanvas* UnfCovPlotCanvas = new TCanvas(UnfCovCanvasName,UnfCovCanvasName,205,34,1024,768);
+				UnfCovPlotCanvas->cd();
+				UnfCovPlotCanvas->SetBottomMargin(0.17);
+				UnfCovPlotCanvas->SetTopMargin(0.13);			
+				UnfCovPlotCanvas->SetLeftMargin(0.2);
+				UnfCovPlotCanvas->SetRightMargin(0.2);
+
+				unfcov->GetXaxis()->CenterTitle();
+				unfcov->GetXaxis()->SetLabelFont(FontStyle);
+				unfcov->GetXaxis()->SetTitleFont(FontStyle);
+				unfcov->GetXaxis()->SetLabelSize(TextSize);
+				unfcov->GetXaxis()->SetTitleSize(TextSize);
+				unfcov->GetXaxis()->SetNdivisions(6);
+				unfcov->GetXaxis()->SetTitle("i bin " + Xtitle);
+
+				unfcov->GetYaxis()->CenterTitle();
+				unfcov->GetYaxis()->SetLabelFont(FontStyle);
+				unfcov->GetYaxis()->SetTitleFont(FontStyle);
+				unfcov->GetYaxis()->SetLabelSize(TextSize);
+				unfcov->GetYaxis()->SetTitleSize(TextSize);
+				unfcov->GetYaxis()->SetNdivisions(6);
+				unfcov->GetYaxis()->SetTitle("j bin " + Ytitle);					
+
+				unfcov->GetZaxis()->SetLabelFont(FontStyle);
+				unfcov->GetZaxis()->SetTitleFont(FontStyle);
+				unfcov->GetZaxis()->SetLabelSize(TextSize);
+				unfcov->GetZaxis()->SetTitleSize(TextSize);
+
+				gStyle->SetPaintTextFormat("4.2f");
+				unfcov->SetMarkerColor(kWhite);
+				unfcov->Draw("coltz text");
+
+				unfcov->SetTitle(Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+
+				TString UnfCovCanvas = "/UnfCov_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+				UnfCovPlotCanvas->SaveAs(CanvasPath+UnfCovCanvas);
+				delete UnfCovPlotCanvas;
+
+				// ---------------------------------------------------------------------------------------------------------------------------
+
 			}
 
 			// ---------------------------------------------------------------------------------------------------------------------------
@@ -1036,8 +1082,6 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
 
 		}
-
-//		for (int i = 0; i < NSamples; i++) { FileSample[i]->Close(); }
 
 	} // End of the loop over the runs	
 

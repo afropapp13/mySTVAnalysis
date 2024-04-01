@@ -70,6 +70,11 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 	TH2D::SetDefaultSumw2();	
 	gStyle->SetOptStat(0);
 	gStyle->SetEndErrorSize(4);	
+	gStyle->SetTitleFont(FontStyle,"t");	
+	gStyle->SetTitleSize(TextSize,"t");	
+	gStyle->SetPalette(55); 
+	const Int_t NCont = 999; 
+	gStyle->SetNumberContours(NCont);
 
 	TString Subtract = "";
 
@@ -96,29 +101,11 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 
 //	vector<TString> PlotNames;
 //	PlotNames.push_back("DeltaPTPlot"); 
-//	PlotNames.push_back("DeltaAlphaTPlot"); 
-//	PlotNames.push_back("DeltaPhiTPlot");
-//	PlotNames.push_back("MuonMomentumPlot"); 
-//	PlotNames.push_back("MuonCosThetaPlot"); 
-//	PlotNames.push_back("MuonPhiPlot");
-//	PlotNames.push_back("ProtonMomentumPlot"); 
-//	PlotNames.push_back("ProtonCosThetaPlot");
-//	PlotNames.push_back("ProtonPhiPlot");
-//	PlotNames.push_back("ECalPlot");
-//	PlotNames.push_back("EQEPlot"); 
-//	PlotNames.push_back("Q2Plot");
-
-//	PlotNames.push_back("CCQEMuonMomentumPlot"); 
-//	PlotNames.push_back("CCQEMuonCosThetaPlot"); 
-//	PlotNames.push_back("CCQEProtonMomentumPlot"); 
-//	PlotNames.push_back("CCQEProtonCosThetaPlot");
 
 	const int N1DPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------
-
-	gStyle->SetPalette(55); const Int_t NCont = 999; gStyle->SetNumberContours(NCont); gStyle->SetTitleSize(0.07,"t");
 
 	vector<TString> LabelsOfSamples;
 	vector<TString> NameOfSamples;
@@ -133,11 +120,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 	//----------------------------------------//
 
 	vector<TString> Runs;
-//	Runs.push_back("Run1");
-////	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
-////	Runs.push_back("Run4");
-////	Runs.push_back("Run5");	
 	Runs.push_back("Combined");			
 
 	int NRuns = (int)(Runs.size());
@@ -378,7 +360,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 
 		} // End of the loop over the samples
 
-		//----------------------------------------//
+		// ----------------------------------------------------------------------------------------------------------------------------------
 
 		// Loop over the event rate plots
 
@@ -411,8 +393,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			// Thus we grab the CC1p part, without any subtractions
 
 			//TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
-			
-			// Treat the fake data sample as if it was data
 			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
 			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
 
@@ -521,6 +501,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 
 			V2H(unfold, unf); 	
 			M2H(UnfoldCov, unfcov);		
+			M2H(AddSmear, smear);
 
 			// --------------------------------------------------------------------------------------------------						
 
@@ -728,47 +709,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
 			textSlice->DrawLatexNDC(0.24, 0.77, LatexLabel[ReducedPlotName]);				
 
-			//------------------------------//
-			/*
-			if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {			
-
-				// Only for the NuWro fake data study
-				// use any residual (GENIE - NuWro)/ sqrt(12) diffs
-				// as an unfolding model uncertainty
-
-				TH1D* UnfUnc = (TH1D*)(TrueUnf->Clone());
-
-				for (int ibin = 1; ibin <= (int)(TrueUnf->GetXaxis()->GetNbins()); ibin++) {
-
-					double UnfPoint = unfMCStat-> GetBinContent(ibin);
-					double UnfError = unfMCStat-> GetBinError(ibin);
-					double TruePoint = AltTrueUnf-> GetBinContent(ibin);								
-
-					if ( TMath::Abs(UnfPoint - TruePoint) <  UnfError) {
-
-						UnfUnc->SetBinContent(ibin,0.);
-
-					} else {
-
-						double Uncertainty = TMath::Abs( TMath::Abs(UnfPoint - TruePoint) - UnfError ) / TMath::Sqrt(12);
-						UnfUnc->SetBinContent(ibin,Uncertainty);
-
-					}
-
-				}
-
-				UnfUnc->SetLineColor(kRed+1);
-				UnfUnc->SetFillColor(kRed+1);			
-				UnfUnc->Draw("e2 same");
-
-				fUnc->cd();
-				UnfUnc->Write("UnfUnc_"+PlotNames[WhichPlot]);
-
-			}
-			*/
-
-			//------------------------------//
-
 			// Legend & POT Normalization
 
 			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
@@ -827,11 +767,10 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			}		
 
 			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval,CVsigma);	
-			TString CVChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma";
-
+			TString CVChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma";		
+	
 			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval,FDsigma);	
 			TString FDChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +", p = " + to_string_with_precision(FDpval,2) + ", " + to_string_with_precision(FDsigma,2) + "#sigma";
-
 			//------------------------------//				
 
 			TString ReducedLabel = 	BeamOnSample;
@@ -869,57 +808,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			}	
 
 			//------------------------------//
-/*
-			// intrinsic bias (Ac-I) * s_bar formula
-
-			TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
-			TH1D* bias2 = new TH1D("bias2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias2 w.r.t. unfolded result",n, Nuedges);
-			TMatrixD unit(n,n);
-			unit.UnitMatrix();
-			TVectorD intrinsicbias = (AddSmear - unit)*signal;
-			TVectorD intrinsicbias2 = (AddSmear - unit)*unfold;
-
-			for (int i = 0; i < n; i++) {
-
-			    if (signal(i) != 0) { intrinsicbias(i) = intrinsicbias(i)/signal(i); }
-			    else { intrinsicbias(i) = 0.; }
-			    if (unfold(i) != 0) { intrinsicbias2(i) = intrinsicbias2(i)/unfold(i); }
-			    else { intrinsicbias2(i) = 0.; }
-			}	
-
-			V2H(intrinsicbias, bias);
-			V2H(intrinsicbias2, bias2);				
-
-			//------------------------------//
-
-			// Diagonal Uncertainty
-
-			TH1D* fracError = new TH1D("fracError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Fractional uncertainty", n, Nuedges);
-			TH1D* absError = new TH1D("absError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "absolute uncertainty", n, Nuedges);
-
-			for (int i = 1; i <= n; i++) {
-
-			    fracError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1))/unfold(i-1));
-			    absError->SetBinContent(i, TMath::Sqrt(UnfoldCov(i-1, i-1)));
-			}
-    
-			/// MSE
-			TH1D* MSE = new TH1D("MSE_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance+bias^2", n, Nuedges);
-			TH1D* MSE2 = new TH1D("MSE2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance", n, Nuedges);
-    
-			for (int i = 0; i < n; i++) {
-
-			    MSE->SetBinContent(i+1, TMath::Power(intrinsicbias2(i)*unfold(i),2)+UnfoldCov(i,i));
-			    MSE2->SetBinContent(i+1, UnfoldCov(i,i));
-
-			}
-
-			// convert matrix/vector to histogram and save
-
-			M2H(AddSmear, smear);
-			V2H(WF, wiener);
-*/
-			//------------------------------//
 
 			ExtractedXSec->cd();
 
@@ -946,24 +834,16 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			smear->Write("Ac"+PlotNames[WhichPlot]); // additional smearing matrix
 			unfcov->Write("UnfCov"+PlotNames[WhichPlot]); // unfolded covariance matrix
 			CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]); // covariance matrix		
-			//wiener->Write("Wiener"+PlotNames[WhichPlot]);
-			//diff->Write("Diff"+PlotNames[WhichPlot]);
-			//bias->Write("Bias"+PlotNames[WhichPlot]);
-			//bias2->Write("Bias2"+PlotNames[WhichPlot]);
-			//fracError->Write("FracErr"+PlotNames[WhichPlot]);
-			//absError->Write("AbsErr"+PlotNames[WhichPlot]);
-			//MSE->Write("MSE"+PlotNames[WhichPlot]);
-			//MSE2->Write("MSE2"+PlotNames[WhichPlot]);
 			ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]); // response matrix
 
 			// ---------------------------------------------------------------------------------------------------------------------------
-/*
+
 			// Make the additional smearing matrix pretty
 
 			TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 			TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
 			SmearPlotCanvas->cd();
-			SmearPlotCanvas->SetBottomMargin(0.16);
+			SmearPlotCanvas->SetBottomMargin(0.17);
 			SmearPlotCanvas->SetTopMargin(0.13);			
 			SmearPlotCanvas->SetLeftMargin(0.2);
 			SmearPlotCanvas->SetRightMargin(0.2);
@@ -974,41 +854,36 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			smear->GetXaxis()->SetLabelSize(TextSize);
 			smear->GetXaxis()->SetTitleSize(TextSize);
 			smear->GetXaxis()->SetNdivisions(6);
+			TString Xtitle = unfMCStat->GetXaxis()->GetTitle();
+			smear->GetXaxis()->SetTitle("True " + Xtitle);
 
 			smear->GetYaxis()->CenterTitle();
 			smear->GetYaxis()->SetLabelFont(FontStyle);
 			smear->GetYaxis()->SetTitleFont(FontStyle);
 			smear->GetYaxis()->SetLabelSize(TextSize);
 			smear->GetYaxis()->SetTitleSize(TextSize);
-			smear->GetYaxis()->SetNdivisions(6);	
+			smear->GetYaxis()->SetNdivisions(6);
+			smear->GetYaxis()->SetTitle("Reco " + Xtitle);					
 
 			smear->GetZaxis()->SetLabelFont(FontStyle);
 			smear->GetZaxis()->SetTitleFont(FontStyle);
 			smear->GetZaxis()->SetLabelSize(TextSize);
 			smear->GetZaxis()->SetTitleSize(TextSize);
+			smear->GetZaxis()->SetRangeUser(-0.3,1.);				
 
-			smear->Draw("coltz");
+			gStyle->SetPaintTextFormat("4.2f");
+			smear->SetMarkerColor(kWhite);
+			smear->SetMarkerSize(0.6);	
+			
+			smear->SetTitle(Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
-			TLatex *text = new TLatex();
-			text->SetTextFont(FontStyle);
-			text->SetTextSize(0.06);
-			text->DrawTextNDC(0.47, 0.92, Runs[WhichRun]);
+			smear->Draw("coltz text");
 
-			TString SmearCanvas = "/"+BeamOnSample+"Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
-			if (OverlaySample != "Overlay9") { SmearCanvas = "/"+BeamOnSample+"Smear_WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+"_"+OverlaySample+".pdf"; }
+			TString SmearCanvas = "/Smear_"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 			SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
 			delete SmearPlotCanvas;
-*/
-			// ---------------------------------------------------------------------------------------------------------------------------
 
 		} // End of the loop over the plots
-
-		//if (BeamOnSample == "Overlay9NuWro" && OverlaySample == "Overlay9") {
-
-		//	cout << endl << "File " << fUncName << " created" << endl;
-		//	fUnc->Close();
-
-		//}
 
 		ExtractedXSec->Close();
 		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
