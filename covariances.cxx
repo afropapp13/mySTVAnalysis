@@ -86,7 +86,7 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 
 // -----------------------------------------------------------------------------------------------------------------------------------
 
-TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
+/*TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 
 	TH1D* TrueClone = (TH1D*)(True->Clone());
 
@@ -107,7 +107,7 @@ TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
 	return TrueClone;
 
 }
-
+*/
 // ------------------------------------------------------------------------------------------------------------------------------
 
 // TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "DetailedXSec" "G4" "Flux" "Dirt" "MC_Stat" "NuWro"

@@ -36,6 +36,9 @@ merge_covariances("Overlay9","TwiceMECOverlay9","TwiceMECOverlay9")
 # Fake data studies with Wiener SVD
 root -b produce_xsecs_fds.cxx
 
+# xsec uncertainties
+root -b plot_xsec_unc.cxx
+
 #################################################################################################################################
 
 cd ../myEvents
