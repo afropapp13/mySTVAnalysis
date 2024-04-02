@@ -316,11 +316,11 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 				MCERPlotCanvas->SetLeftMargin(0.1);
 //				MCERPlotCanvas->SetRightMargin(0.25);
 				MCERPlotCanvas->SetRightMargin(0.05);
-				MCERPlotCanvas->SetTopMargin(0.15);			
+				MCERPlotCanvas->SetTopMargin(0.16);			
 
-				legMC = new TLegend(0.15,0.89,0.9,0.99);
+				legMC = new TLegend(0.15,0.85,0.9,0.98);
 				legMC->SetBorderSize(0);
-				legMC->SetTextSize(0.04);
+				legMC->SetTextSize(0.06);
 				legMC->SetTextFont(FontStyle);
 				legMC->SetNColumns(5);			
 
