@@ -729,6 +729,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unf->GetXaxis()->SetTitleSize(TextSize);
 			unf->GetXaxis()->SetTitleFont(FontStyle);			
 			unf->GetXaxis()->SetNdivisions(6);	
+			bin_number_x_title(unf);
 
 			unf->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 			unf->GetYaxis()->CenterTitle();
@@ -994,6 +995,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				smear->GetXaxis()->SetLabelSize(TextSize);
 				smear->GetXaxis()->SetTitleSize(TextSize);
 				smear->GetXaxis()->SetNdivisions(6);
+				bin_number_x_title(smear);
 				TString Xtitle = smear->GetXaxis()->GetTitle();
 				smear->GetXaxis()->SetTitle("True " + Xtitle);
 
@@ -1003,6 +1005,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				smear->GetYaxis()->SetLabelSize(TextSize);
 				smear->GetYaxis()->SetTitleSize(TextSize);
 				smear->GetYaxis()->SetNdivisions(6);
+				bin_number_y_title(smear);
 				TString Ytitle = smear->GetYaxis()->GetTitle();
 				smear->GetYaxis()->SetTitle("Reco " + Ytitle);					
 
@@ -1016,10 +1019,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				smear->SetMarkerColor(kWhite);
 				smear->Draw("coltz text");
 
-				TLatex *text = new TLatex();
-				text->SetTextFont(FontStyle);
-				text->SetTextSize(0.06);
-				text->DrawLatexNDC(0.3, 0.92, Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+				smear->SetTitle("A_{C}, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
 				TString SmearCanvas = "/Smear_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
@@ -1062,7 +1062,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				unfcov->SetMarkerColor(kWhite);
 				unfcov->Draw("coltz text");
 
-				unfcov->SetTitle(Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+				unfcov->SetTitle("Cov, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
 				TString UnfCovCanvas = "/UnfCov_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				UnfCovPlotCanvas->SaveAs(CanvasPath+UnfCovCanvas);
