@@ -84,30 +84,6 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 
 }
 
-// -----------------------------------------------------------------------------------------------------------------------------------
-
-TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
-
-	TH1D* TrueClone = (TH1D*)(True->Clone());
-
-	int XBins = SmearMatrix->GetXaxis()->GetNbins();
-	int YBins = SmearMatrix->GetYaxis()->GetNbins();
-
-	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
-
-	TVectorD signal(XBins);
-	TMatrixD response(XBins,XBins);
-
-	H2V(True, signal);
-	H2M(SmearMatrix, response, kFALSE); // X axis: Reco, Y axis: True
-
-	TVectorD RecoSpace = response * signal;
-	V2H(RecoSpace, TrueClone);	
-
-	return TrueClone;
-
-}
-
 // ------------------------------------------------------------------------------------------------------------------------------
 
 // TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "DetailedXSec" "G4" "Flux" "Dirt" "MC_Stat" "NuWro"

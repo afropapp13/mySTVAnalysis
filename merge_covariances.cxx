@@ -234,9 +234,12 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 
 	vector<TString> UncSources;
 
-	if (BeamOn9 != "") { // Fake data study, we need only the Stat/MC_Stat & XSec covariances
+	if (BeamOn9 != "") { // Fake data study, we need only the MC_Stat & XSec covariances
 
-		UncSources.push_back("Stat");
+		// removed on April 3 2024
+		// since we use the same MC events
+		// the MC stat uncertainty is same
+		//UncSources.push_back("Stat");
 		UncSources.push_back("XSec");
 		UncSources.push_back("MC_Stat");
 		UncSources.push_back("NuWro");			

@@ -729,7 +729,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unf->GetXaxis()->SetTitleSize(TextSize);
 			unf->GetXaxis()->SetTitleFont(FontStyle);			
 			unf->GetXaxis()->SetNdivisions(6);	
-			bin_number_x_title(unf);
+			//bin_number_x_title(unf);
 
 			unf->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 			unf->GetYaxis()->CenterTitle();
