@@ -663,7 +663,6 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			// ----------------------------------------//	
 
 			double max = 1.3 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
-//			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);
 			unfMCStat->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);	
 
 			//------------------------------//

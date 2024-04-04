@@ -71,7 +71,7 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	if (Label == "Corr" && !(string(PlotNames).find("Serial") != std::string::npos) ) { h->Draw("colz text"); }
 	else { h->Draw("colz"); }
 	
-	PlotCanvas->SaveAs(PlotPath+BaseMC+"/"+Tune+"WienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+"_"+UBCodeVersion+".pdf");
+	PlotCanvas->SaveAs(PlotPath+BaseMC+"/ER_"+Tune+"WienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+"_"+UBCodeVersion+".pdf");
 	
 	delete PlotCanvas;	
 
@@ -355,8 +355,8 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOnSample != "BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString FileName = MigrationMatrixPath+Tune+"ER_WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOnSample != "BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"ER_WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
@@ -495,12 +495,18 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 					// CV truth plot times the corresponding response matrix for a given universe 
 					// and then add the beam related backgrounds in the given universe
 
-					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
+					// The line below should be used for xsec purposes
+					//AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
+					//And this one should be used for event rate uncertainties
+					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltCC1pPlots[WhichPlot][alt]->Clone();
 					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);
 
 					if (Syst == "MC_Stat") {
 
-						AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
+						// The line below should be used for xsec purposes
+						//AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
+						// And this one should be used for event rate uncertainties
+						AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltCC1pPlots[WhichPlot][alt]->Clone();
 
 					}					
 
@@ -612,7 +618,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 				leg->Draw();
 
-				TString EventRateCanvasName = "/"+Tune+"EventRate_WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
+				TString EventRateCanvasName = "/ER_"+Tune+"EventRate_WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
 				EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
 				delete EventRatePlotCanvas;
 
@@ -698,7 +704,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 					leg->Draw();
 
-					TString EventRateCanvasName = "/"+Tune+"EventRate_WienerSVD_"+Syst+UniAltModels[unialt]+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
+					TString EventRateCanvasName = "/ER_"+Tune+"EventRate_WienerSVD_"+Syst+UniAltModels[unialt]+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
 					EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
 					delete EventRatePlotCanvas;
 
@@ -742,19 +748,19 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 			
 					// X Bin entry / error
 			
-					double DataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-					double DataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double DataEntryX = DataPlot->GetBinContent(WhichXBin+1);
+					double DataErrorX = DataPlot->GetBinError(WhichXBin+1);
 			
-					double AltDataEntryX = DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-					double AltDataErrorX = DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+					double AltDataEntryX = DataPlot->GetBinContent(WhichXBin+1);
+					double AltDataErrorX = DataPlot->GetBinError(WhichXBin+1);
 								
 					// Y Bin entry / error
 
-					double DataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-					double DataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+					double DataEntryY = DataPlot->GetBinContent(WhichYBin+1);
+					double DataErrorY = DataPlot->GetBinError(WhichYBin+1);
 
-					double AltDataEntryY = DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-					double AltDataErrorY = DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+					double AltDataEntryY = DataPlot->GetBinContent(WhichYBin+1);
+					double AltDataErrorY = DataPlot->GetBinError(WhichYBin+1);
 
 					// -------------------------------------------------------------------------------------------------------
 					// -------------------------------------------------------------------------------------------------------
@@ -769,11 +775,11 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 					if (Syst == "NTarget" || Syst == "MC_NTarget"  || Syst == "SmEff_NTarget") {
 
-						AltDataEntryX = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-						AltDataErrorX = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataEntryX = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichXBin+1);
+						AltDataErrorX = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichXBin+1);
 
-						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1);
+						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1);
 
 						CovFracEntry = TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
 						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
@@ -783,11 +789,11 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 					} else if (Syst == "POT" || Syst == "MC_POT" || Syst == "SmEff_POT") {
 
-						AltDataEntryX = (1+POTUncertainty) * DataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-						AltDataErrorX = (1+POTUncertainty) * DataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataEntryX = (1+POTUncertainty) * DataPlot->GetBinContent(WhichXBin+1);
+						AltDataErrorX = (1+POTUncertainty) * DataPlot->GetBinError(WhichXBin+1);
 
-						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1);
+						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1);
 
 						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
 						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
@@ -798,11 +804,11 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 					} else if (Syst == "Dirt" || Syst == "MC_Dirt" || Syst == "SmEff_Dirt") {
 
-						AltDataEntryX = AltDataPlot->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-						AltDataErrorX = AltDataPlot->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataEntryX = AltDataPlot->GetBinContent(WhichXBin+1);
+						AltDataErrorX = AltDataPlot->GetBinError(WhichXBin+1);
 
-						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1);
+						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1);
 
 						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX ) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
 						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
@@ -874,11 +880,11 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 							double CurrentCovEntry = Covariances[WhichRun][WhichPlot]->GetBinContent(WhichXBin+1,WhichYBin+1);
 							double CurrentCovError = Covariances[WhichRun][WhichPlot]->GetBinError(WhichXBin+1,WhichYBin+1);
 
-							AltDataEntryX = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
-							AltDataErrorX = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1) / (IntegratedFlux * NTargets) * Units;
+							AltDataEntryX = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichXBin+1);
+							AltDataErrorX = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichXBin+1);
 
-							AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
-							AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
+							AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1);
+							AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1);
 
 							double LocalFracCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
 							double LocalCovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);

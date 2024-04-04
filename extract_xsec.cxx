@@ -729,7 +729,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unf->GetXaxis()->SetTitleSize(TextSize);
 			unf->GetXaxis()->SetTitleFont(FontStyle);			
 			unf->GetXaxis()->SetNdivisions(6);	
-			bin_number_x_title(unf);
+			//bin_number_x_title(unf);
 
 			unf->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
 			unf->GetYaxis()->CenterTitle();
@@ -739,7 +739,10 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 			unf->GetYaxis()->SetTitleFont(FontStyle);			
 			unf->GetYaxis()->SetNdivisions(6);
 
-			unf->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,XSecRange[PlotNames[WhichPlot]].second);
+			double min = XSecRange[PlotNames[WhichPlot]].first;
+			double max = XSecRange[PlotNames[WhichPlot]].second;
+			
+			unf->GetYaxis()->SetRangeUser(min,max);
 			unf->SetLineColor(BeamOnColor);
 			unf->SetMarkerColor(BeamOnColor);
 			unf->SetMarkerStyle(20);
