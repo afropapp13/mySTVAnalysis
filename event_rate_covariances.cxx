@@ -81,7 +81,7 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 
 // TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "DetailedXSec" "G4" "Flux" "Dirt" "MC_Stat" "NuWro"
 
-void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
+void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamOnSample = "BeamOn9",TString BeamOffSample = "ExtBNB9",TString DirtSample = "OverlayDirt9", TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 

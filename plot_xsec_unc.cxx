@@ -141,7 +141,7 @@ void plot_xsec_unc() {
 			TotalUnc->GetYaxis()->SetTitle("Uncertainty [%]");
 			TotalUnc->GetYaxis()->CenterTitle();			
 			if ( PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot")  { TotalUnc->GetYaxis()->SetRangeUser(0.,14.9); }		
-			else {  TotalUnc->GetYaxis()->SetRangeUser(0.,49.9); }	
+			else {  TotalUnc->GetYaxis()->SetRangeUser(0.,59.9); }	
 
 			TotalUnc->Draw("hist text0 same");	
 			leg->AddEntry(TotalUnc,"Total","l");

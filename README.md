@@ -12,6 +12,9 @@ root -b systematics.cxx
 root -b merge_covariances.cxx
 root -b produce_xsecs.cxx
 
+root -b event_rate_systematics.cxx
+root -b event_rate_merge_covariances.cxx
+
 #################################################################################################################################
 
 # Fake data studies
