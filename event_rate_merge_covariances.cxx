@@ -101,7 +101,7 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 	if (Label == "Corr" && !(string(PlotNames).find("Serial") != std::string::npos) ) { h->Draw("colz text"); }
 	else { h->Draw("colz"); }
 	
-	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
+	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/ER_"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
 	
 	delete PlotCanvas;
 
@@ -187,7 +187,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 
 // -----------------------------------------------------------------------------------------------
 
-void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "", TString Tune = "") {
+void event_rate_merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "", TString Tune = "") {
 
 	// -------------------------------------------------------------------------------------
 
@@ -290,8 +290,8 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOn9 != "") { TotalFileCovarianceSpecName = Tune + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "ER_WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOn9 != "") { TotalFileCovarianceSpecName = Tune + "ER_WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
 		TFile* TotalFileCovarianceMatrices = new TFile(TotalFileCovarianceName,"recreate");
@@ -304,7 +304,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 
 			TCanvas* MCERPlotCanvas = nullptr;
 			TLegend* legMC = nullptr;
-			TString MCERCanvasName = Tune + "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+			TString MCERCanvasName = Tune + "ER_MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
 
 			if (StorePlots) {
 
@@ -318,7 +318,7 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 				MCERPlotCanvas->SetRightMargin(0.05);
 				MCERPlotCanvas->SetTopMargin(0.16);			
 
-				legMC = new TLegend(0.15,0.82,0.9,0.98);
+				legMC = new TLegend(0.15,0.85,0.9,0.98);
 				legMC->SetBorderSize(0);
 				legMC->SetTextSize(0.06);
 				legMC->SetTextFont(FontStyle);
@@ -340,24 +340,10 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 
 				// Opening the file containing the covariance matrices for each one of the systematics
 
-//				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				if (BeamOn9 != "" && UncSources[WhichSample] == "Stat") { FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				TString FileCovarianceSpecName = "ER_WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				if (BeamOn9 != "" && UncSources[WhichSample] == "Stat") { FileCovarianceSpecName = Tune + "ER_WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 				if (BeamOn9 != "" && UncSources[WhichSample] == "NuWro" && ( Tune == "GENIEv2" || Tune == "NoTune" || Tune == "TwiceMEC" ) ) 
-					{ FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
-
-
-				// For the detector variation, we follow the PeLEE recipe
-				// Only Run3 and propagate across all runs
-
-				//if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC"  || UncSources[WhichSample] == "SCERecomb2" || UncSources[WhichSample] == "MC_LY" 
-				//|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "MC_SCERecomb2" || UncSources[WhichSample] == "SmEff_LY" 
-				//|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
-
-//				//	FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
-				//	FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_Run3_"+UBCodeVersion+".root";
-
-				//}
+					{ FileCovarianceSpecName = "ER_WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
 				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
@@ -366,18 +352,6 @@ void merge_covariances(TString OverlaySample = "Overlay9", TString BeamOn9 = "",
 
 				TString LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
 				TString LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-
-				// For the detector variation, we follow the PeLEE recipe
-				// Only Run3 and propagate across all runs
-
-				//if (UncSources[WhichSample] == "LY" || UncSources[WhichSample] == "TPC" || UncSources[WhichSample] == "SCERecomb2" || UncSources[WhichSample] == "MC_LY" 
-				//|| UncSources[WhichSample] == "MC_TPC" || UncSources[WhichSample] == "MC_SCERecomb2" || UncSources[WhichSample] == "SmEff_LY" 
-				//|| UncSources[WhichSample] == "SmEff_TPC" || UncSources[WhichSample] == "SmEff_SCERecomb2" ) {
-
-				//	LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_Run3";
-				//	LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_Run3";
-
-				//}
 
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
 				TH2D* LocalCovMatrixClone = (TH2D*)(LocalCovMatrix->Clone() );
