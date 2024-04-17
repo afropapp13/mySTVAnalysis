@@ -12,6 +12,8 @@
 #include <vector>
 
 #include "../myClasses/Constants.h"
+#include "../myClasses/myFunctions.cpp"
+
 
 using namespace std;
 using namespace Constants;
@@ -223,6 +225,7 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 					pEffPlot->GetXaxis()->SetLabelSize(TextSize);
 					pEffPlot->GetXaxis()->SetLabelOffset(0.02);
 					pEffPlot->GetXaxis()->SetNdivisions(9);
+					bin_number_x_title(pEffPlot);
 
 					pEffPlot->GetYaxis()->CenterTitle();
 					pEffPlot->GetYaxis()->SetTitleFont(FontStyle);

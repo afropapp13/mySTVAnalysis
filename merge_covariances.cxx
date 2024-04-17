@@ -120,7 +120,7 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	gStyle->SetTitleFont(FontStyle,"t");
 	gStyle->SetOptStat(0);
 
-	std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue,kMagenta, kViolet+1, kYellow + 2, kCyan+1, kGreen, kRed-10, kGray,kMagenta-10};
+	std::vector<int> Colors{kBlack, kRed+1,kGreen+2,kOrange+1,kBlue+1,kMagenta, kViolet+1, kYellow + 2, kYellow, kAzure+7, kRed-10, kGray,kCyan};
 
 	int n = LocalCovMatrix->GetNbinsX();
 	TString TitleX =  LocalCovMatrix->GetXaxis()->GetTitle();
@@ -168,10 +168,12 @@ void ReturnUncPlot(TH2D* LocalCovMatrix,TString PlotName, TString Run,TString Un
 	}
 
 	unc->SetLineWidth(2);		
+	if (UncSources == "Total") { unc->SetLineWidth(4); }
 	unc->SetLineColor(Colors[Color+1]);
 	unc->SetMarkerColor(Colors[Color+1]);			
 
 	gStyle->SetPaintTextFormat("4.1f");
+	gPad->RedrawAxis();
 	unc->Draw("hist text0 same");
 
 	leg->AddEntry(unc,UncSources);
