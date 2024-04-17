@@ -869,8 +869,9 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			smear->GetZaxis()->SetTitleFont(FontStyle);
 			smear->GetZaxis()->SetLabelSize(TextSize);
 			smear->GetZaxis()->SetTitleSize(TextSize);
-			smear->GetZaxis()->SetRangeUser(-0.3,1.);				
-
+			smear->GetZaxis()->SetRangeUser(-0.99,1.49);				
+			smear->GetZaxis()->SetNdivisions(6);
+	
 			gStyle->SetPaintTextFormat("4.2f");
 			smear->SetMarkerColor(kWhite);
 			smear->SetMarkerSize(0.6);	

@@ -55,21 +55,21 @@ void plot_xsec_unc() {
 		//----------------------------------------//
 
 		vector<TString> UncSource; UncSource.clear();
+
 		vector<int> Colors; Colors.clear();	
 
-		UncSource.push_back("NuWro"); Colors.push_back(kCyan);
 		UncSource.push_back("Stat"); Colors.push_back(kRed+1);
 		UncSource.push_back("LY"); Colors.push_back(kGreen+2);
 		UncSource.push_back("TPC"); Colors.push_back(kOrange+1);
-		UncSource.push_back("SCERecomb2"); Colors.push_back(kBlue);	
+		UncSource.push_back("SCERecomb2"); Colors.push_back(kBlue+1);	
 		UncSource.push_back("XSec"); Colors.push_back(kMagenta);
 		UncSource.push_back("G4"); Colors.push_back(kViolet+1);		
 		UncSource.push_back("Flux"); Colors.push_back(kYellow+2);
-		UncSource.push_back("Dirt"); Colors.push_back(kCyan+2);
-		UncSource.push_back("POT"); Colors.push_back(kGreen);
-		UncSource.push_back("NTarget"); Colors.push_back(kMagenta-10);
-		UncSource.push_back("MCStat"); Colors.push_back(kGray);			
-
+		UncSource.push_back("Dirt"); Colors.push_back(kYellow);
+		UncSource.push_back("POT"); Colors.push_back(kAzure+7);
+		UncSource.push_back("NTarget"); Colors.push_back(kRed-10);
+		UncSource.push_back("MCStat"); Colors.push_back(kGray);				UncSource.push_back("NuWro"); Colors.push_back(kCyan);
+	
 		const int NSources = UncSource.size();																		
 
 		//----------------------------------------//
@@ -122,7 +122,7 @@ void plot_xsec_unc() {
 			}
 
 			TotalUnc->SetLineColor(kBlack);
-			TotalUnc->SetLineWidth(2);
+			TotalUnc->SetLineWidth(3);
 
 			if ( PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot")  { TotalUnc->GetXaxis()->SetNdivisions(0); }		
 			else { TotalUnc->GetXaxis()->SetNdivisions(8); }	
@@ -141,7 +141,7 @@ void plot_xsec_unc() {
 			TotalUnc->GetYaxis()->SetTitle("Uncertainty [%]");
 			TotalUnc->GetYaxis()->CenterTitle();			
 			if ( PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot")  { TotalUnc->GetYaxis()->SetRangeUser(0.,14.9); }		
-			else {  TotalUnc->GetYaxis()->SetRangeUser(0.,59.9); }	
+			else {  TotalUnc->GetYaxis()->SetRangeUser(0.,69.9); }	
 
 			TotalUnc->Draw("hist text0 same");	
 			leg->AddEntry(TotalUnc,"Total","l");

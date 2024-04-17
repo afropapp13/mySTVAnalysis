@@ -1013,7 +1013,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				smear->GetZaxis()->SetTitleFont(FontStyle);
 				smear->GetZaxis()->SetLabelSize(TextSize);
 				smear->GetZaxis()->SetTitleSize(TextSize);
-				smear->GetZaxis()->SetRangeUser(-0.1,1.);				
+				smear->GetZaxis()->SetRangeUser(-0.59,0.99);				
 
 				gStyle->SetPaintTextFormat("4.2f");
 				smear->SetMarkerColor(kWhite);
