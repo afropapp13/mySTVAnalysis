@@ -535,7 +535,49 @@ void event_rate_merge_covariances(TString OverlaySample = "Overlay9", TString Be
 				// Plot the total unc on top of everything else
 
 				ReturnUncPlot(CloneFracCovariances,PlotNames[WhichPlot],Runs[WhichRun],"Total",-1,legMC);
-		
+	
+				//----------------------------------------//
+
+				// Plot vertical lines
+				// Add latex label with phase space limits
+
+				if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+					TString clone_name = PlotNames[WhichPlot];
+					clone_name.ReplaceAll("Reco","");
+					vector<int> bin_break_points = get_3d_bin_break_points( map_to_3d_bin.at(clone_name) );
+
+					int nbreaks = bin_break_points.size() - 1;
+					vector<TLine*> line; line.resize(nbreaks);
+
+					for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
+
+						line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0., bin_break_points.at(ipoint) + 0.5, 89. );
+						line.at(ipoint)->SetLineStyle(kDashed);
+						line.at(ipoint)->Draw("same");
+
+					}
+	
+					//----------------------------------------//
+
+					vector<TLatex*> slice; slice.resize(nbreaks+1);
+
+					for (int ipoint = 0; ipoint < nbreaks + 1; ipoint ++) {
+
+			
+						slice.at(ipoint) = new TLatex();
+						slice.at(ipoint)->SetTextFont(FontStyle);
+						slice.at(ipoint)->SetTextSize(0.025);
+						TString phase_space = MapUncorCor[ clone_name + "_" + TString(std::to_string(ipoint) ) ];
+						if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 5. , 0.83 * 89., LatexLabel[phase_space ]); }
+						else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 5. , 0.83 * 89., LatexLabel[phase_space ]); }
+
+
+					}
+
+				}
+
+	
 				// ------------------------------------------------------------------
 
 				MCERPlotCanvas->SaveAs(PlotPath+OverlaySample+"/"+MCERCanvasName+".pdf");
