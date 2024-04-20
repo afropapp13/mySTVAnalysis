@@ -14,6 +14,7 @@
 #include <string>
 
 #include "../myClasses/Constants.h"
+#include "../myClasses/myFunctions.cpp"
 
 using namespace std;
 using namespace Constants;
@@ -225,6 +226,55 @@ void plot_xsec_unc() {
 
 			gPad->RedrawAxis();
 			leg->Draw();	
+
+			//----------------------------------------//
+
+			// Plot vertical lines
+			// Add latex label with phase space limits
+
+			TString clone_name = PlotNames[WhichPlot];
+			clone_name.ReplaceAll("Reco","");
+
+			if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+				vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
+
+				int nbreaks = bin_break_points.size() - 1;
+				vector<TLine*> line; line.resize(nbreaks);
+
+				for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
+
+					line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0., bin_break_points.at(ipoint) + 0.5, 69. );
+					line.at(ipoint)->SetLineStyle(kDashed);
+					line.at(ipoint)->Draw("same");
+
+				}
+	
+				//----------------------------------------//
+
+				vector<TLatex*> slice; slice.resize(nbreaks+1);
+
+				for (int ipoint = 0; ipoint < nbreaks + 1; ipoint ++) {
+
+	
+					slice.at(ipoint) = new TLatex();
+					slice.at(ipoint)->SetTextFont(FontStyle);
+					slice.at(ipoint)->SetTextSize(0.02);
+					TString phase_space = MapUncorCor[ clone_name + "_" + TString(std::to_string(ipoint) ) ];
+					if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 3. , 0.6 * 89., LatexLabel[phase_space ]); }
+					else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 3. , 0.6 * 89., LatexLabel[phase_space ]); }
+
+
+				}
+
+			}
+	
+			//----------------------------------------//
+
+			TLatex *textSlice = new TLatex();
+			textSlice->SetTextFont(FontStyle);
+			textSlice->SetTextSize(TextSize);
+			textSlice->DrawLatexNDC(0.13, 0.84, LatexLabel[ clone_name ]);	
 
 			//----------------------------------------//
 

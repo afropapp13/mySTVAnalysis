@@ -14,7 +14,6 @@
 #include "../myClasses/Constants.h"
 #include "../myClasses/myFunctions.cpp"
 
-
 using namespace std;
 using namespace Constants;
 
@@ -63,7 +62,7 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 //	Runs.push_back("Run5");				
 	Runs.push_back("Combined");	
 
-	// For runs 1-3, we used only run 3 det vars
+	// For runs 1-3, we used only run3 det vars
 
 	/*if (DetVar) {
 
@@ -244,6 +243,7 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 					PlotEffCanvas->SetTopMargin(0.11);
 					PlotEffCanvas->SetBottomMargin(0.16);
 					PlotEffCanvas->SetLeftMargin(0.18);
+
 					PlotEffCanvas->cd();
 
 					pEffPlot->SetMarkerColor(kBlack);
@@ -260,6 +260,49 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 					if ( !(string(PlotNamesClone[WhichPlot]).find("VertexZ") != std::string::npos) ) 
 						{ textEff->DrawLatexNDC(0.22, 0.93, LatexLabel[PlotNamesClone[WhichPlot]]); }					
 				
+					//----------------------------------------//
+
+					// Plot vertical lines
+					// Add latex label with phase space limits
+
+					if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+						TString clone_name = PlotNames[WhichPlot];
+						clone_name.ReplaceAll("Reco","");
+						vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
+
+						int nbreaks = bin_break_points.size() - 1;
+						vector<TLine*> line; line.resize(nbreaks);
+
+						for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
+
+							line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0., bin_break_points.at(ipoint) + 0.5, pEffPlot->GetMaximum() );
+							line.at(ipoint)->SetLineStyle(kDashed);
+							line.at(ipoint)->Draw("same");
+
+						}
+	
+						//----------------------------------------//
+
+						vector<TLatex*> slice; slice.resize(nbreaks+1);
+
+						for (int ipoint = 0; ipoint < nbreaks + 1; ipoint ++) {
+
+			
+							slice.at(ipoint) = new TLatex();
+							slice.at(ipoint)->SetTextFont(FontStyle);
+							slice.at(ipoint)->SetTextSize(0.02);
+							TString phase_space = MapUncorCor[ clone_name + "_" + TString(std::to_string(ipoint) ) ];
+							if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 5. , 0.9 * pEffPlot->GetMaximum(), LatexLabel[phase_space ]); }
+							else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 5. , 0.9 * pEffPlot->GetMaximum(), LatexLabel[phase_space ]); }
+
+
+						}
+
+					}
+
+					//----------------------------------------//
+	
 					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
 					TString CanvasEffRatioName = "StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
