@@ -69,7 +69,8 @@ void plot_xsec_unc() {
 		UncSource.push_back("Dirt"); Colors.push_back(kYellow);
 		UncSource.push_back("POT"); Colors.push_back(kAzure+7);
 		UncSource.push_back("NTarget"); Colors.push_back(kRed-10);
-		UncSource.push_back("MCStat"); Colors.push_back(kGray);				UncSource.push_back("NuWro"); Colors.push_back(kCyan);
+		UncSource.push_back("MCStat"); Colors.push_back(kGray);
+		UncSource.push_back("NuWro"); Colors.push_back(kCyan);
 	
 		const int NSources = UncSource.size();																		
 
@@ -185,16 +186,16 @@ void plot_xsec_unc() {
 
 			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
 
-				double NuWroUnc = UncPlot[0]->GetBinContent(1);
-				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[11]->GetBinContent(1),2.) );		
-				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) + TMath::Power(UncPlot[4]->GetBinContent(1),2.) );				
-				double XSecUnc = TMath::Sqrt( TMath::Power(UncPlot[5]->GetBinContent(1),2.) + TMath::Power(NuWroUnc,2.) );
-				double FluxUnc = UncPlot[7]->GetBinContent(1);
-				double G4Unc = UncPlot[6]->GetBinContent(1);
-				double DirtUnc = UncPlot[8]->GetBinContent(1);
-				double POTUnc = UncPlot[9]->GetBinContent(1);
-				double NTargetUnc = UncPlot[10]->GetBinContent(1);
-
+				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[0]->GetBinContent(1),2.) + TMath::Power(UncPlot[10]->GetBinContent(1),2.) );		
+				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) );				
+				double FluxUnc = UncPlot[6]->GetBinContent(1);
+				double G4Unc = UncPlot[5]->GetBinContent(1);
+				double DirtUnc = UncPlot[7]->GetBinContent(1);
+				double POTUnc = UncPlot[8]->GetBinContent(1);
+				double NTargetUnc = UncPlot[9]->GetBinContent(1);
+				double NuWroUnc = UncPlot[1]->GetBinContent(1);
+				double XSecUnc = TMath::Sqrt( TMath::Power(UncPlot[4]->GetBinContent(1),2.) + TMath::Power(NuWroUnc,2.) );
+	
 				cout << " Flux = " <<  FluxUnc << " %" << endl;
 				cout << " XSec = " <<  XSecUnc << " %" << endl;
 				cout << " Det = " <<  DetUnc << " %" << endl;
