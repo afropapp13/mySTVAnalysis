@@ -42,14 +42,19 @@ void fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC = "Overla
 
 	const int N1DPlots = PlotNames.size();
 		
-	// -------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");			
+	Runs.push_back("Run1");
+	Runs.push_back("Run1A_open_trigger");
+	Runs.push_back("Run1B_open_trigger");
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4a");
+	Runs.push_back("Run4b");
+	Runs.push_back("Run4c");
+	Runs.push_back("Run4d");
+	Runs.push_back("Run5");			
 	Runs.push_back("Combined");
 
 	const int NRuns = (int)(Runs.size());

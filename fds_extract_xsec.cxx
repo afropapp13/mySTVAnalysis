@@ -679,7 +679,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 
 				TString YaxisTitle = VarLabel[PlotNames[WhichPlot]];
 				YaxisTitle.ReplaceAll("deg","");
-				YaxisTitle.ReplaceAll("GeV/c","");
+				YaxisTitle.ReplaceAll("(GeV/c)","");
 				YaxisTitle.ReplaceAll("GeV","");
 				YaxisTitle.ReplaceAll("/c","");
 				YaxisTitle.ReplaceAll("^{2}","");												

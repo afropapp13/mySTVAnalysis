@@ -25,6 +25,8 @@ void efficiency(TString OverlaySample, bool DetVar = false) {
 	gStyle->SetOptStat(0);	
 	TGaxis::SetMaxDigits(4);
 	TGaxis::SetExponentOffset(-0.05, 0., "y");	
+	TH1::AddDirectory(kFALSE); 
+	TH2::AddDirectory(kFALSE); 
 	
 	double TextSize = 0.07;
 
