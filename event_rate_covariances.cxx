@@ -102,13 +102,17 @@ void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TS
 	const int N1DPlots = PlotNames.size();
 		
 	// -------------------------------------------------------------------------------------------------------------------------------------
-
 	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");			
+	Runs.push_back("Run1");
+	Runs.push_back("Run1A_open_trigger");
+	Runs.push_back("Run1B_open_trigger");
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4a");
+	Runs.push_back("Run4b");
+	Runs.push_back("Run4c");
+	Runs.push_back("Run4d");
+	Runs.push_back("Run5");			
 	Runs.push_back("Combined");
 
         // For runs 1-3, we used the detector variations for run 3
@@ -781,8 +785,13 @@ void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TS
 						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1);
 						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1);
 
-						CovFracEntry = TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
-						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -795,8 +804,13 @@ void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TS
 						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1);
 						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1);
 
-						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
-						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -810,8 +824,13 @@ void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TS
 						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1);
 						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1);
 
-						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX ) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
-						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -845,8 +864,14 @@ void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TS
 
 						}
 
-						CovFracEntry = TMath::Max( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) ,1E-8);
-						CovEntry = TMath::Max( DataEntryX * DataEntryY,1E-8);
+						CovFracEntry = ( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) > 0 ) ? \
+							       TMath::Max( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) ,1E-8) : \
+							       TMath::Min( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) ,1E-8);
+		
+
+						CovEntry = ( DataEntryX * DataEntryY > 0 ) ? \
+							   TMath::Max( DataEntryX * DataEntryY,1E-8) : \
+							   TMath::Min( DataEntryX * DataEntryY,1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -886,8 +911,14 @@ void event_rate_covariances(TString Syst = "None",TString BaseMC = "Overlay9",TS
 							AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1);
 							AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1);
 
-							double LocalFracCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
-							double LocalCovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+							double LocalFracCovEntry = ( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) >0 ) ? \
+										   TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+										   TMath::Min( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+
+							double LocalCovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+									       TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+									       TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 							double LocalFracCovError = 1E-8;
 							double LocalCovError = 1E-8;

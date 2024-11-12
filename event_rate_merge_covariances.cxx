@@ -222,11 +222,16 @@ void event_rate_merge_covariances(TString OverlaySample = "Overlay9", TString Be
 	// -----------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");				
+	Runs.push_back("Run1");
+	Runs.push_back("Run1A_open_trigger");
+	Runs.push_back("Run1B_open_trigger");
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4a");
+	Runs.push_back("Run4b");
+	Runs.push_back("Run4c");
+	Runs.push_back("Run4d");
+	Runs.push_back("Run5");				
 	Runs.push_back("Combined");				
 
 	int NRuns = (int)(Runs.size());
@@ -567,10 +572,10 @@ void event_rate_merge_covariances(TString OverlaySample = "Overlay9", TString Be
 			
 						slice.at(ipoint) = new TLatex();
 						slice.at(ipoint)->SetTextFont(FontStyle);
-						slice.at(ipoint)->SetTextSize(0.025);
+						slice.at(ipoint)->SetTextSize(0.04);
 						TString phase_space = MapUncorCor[ clone_name + "_" + TString(std::to_string(ipoint) ) ];
-						if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 5. , 0.83 * 89., LatexLabel[phase_space ]); }
-						else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 5. , 0.83 * 89., LatexLabel[phase_space ]); }
+						if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 3. , 0.7 * 89., LatexLabel[phase_space ]); }
+						else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 3. , 0.7 * 89., LatexLabel[phase_space ]); }
 
 
 					}

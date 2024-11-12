@@ -49,11 +49,6 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	h->GetYaxis()->SetNdivisions(5);
 	h->GetYaxis()->SetTitleOffset(1.);			
 
-//	h->SetTitle(Runs + " " + Syst);	
-
-//	double CovMax = TMath::Min(1.,1.05 * h->GetMaximum());
-//	double CovMin = TMath::Min(0.,1.05 * h->GetMinimum());
-
 	double CovMax = FindTwoDimHistoMaxValue(h);
 	double CovMin = FindTwoDimHistoMinValue(h);
 
@@ -84,6 +79,30 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 
 }
 
+// -----------------------------------------------------------------------------------------------------------------------------------
+
+/*TH1D* Multiply(TH1D* True, TH2D* SmearMatrix) {
+
+	TH1D* TrueClone = (TH1D*)(True->Clone());
+
+	int XBins = SmearMatrix->GetXaxis()->GetNbins();
+	int YBins = SmearMatrix->GetYaxis()->GetNbins();
+
+	if (XBins != YBins) { std::cout << "Not symmetric matrix" << std::endl; }
+
+	TVectorD signal(XBins);
+	TMatrixD response(XBins,XBins);
+
+	H2V(True, signal);
+	H2M(SmearMatrix, response, kFALSE); // X axis: Reco, Y axis: True
+
+	TVectorD RecoSpace = response * signal;
+	V2H(RecoSpace, TrueClone);	
+
+	return TrueClone;
+
+}
+*/
 // ------------------------------------------------------------------------------------------------------------------------------
 
 // TString Syst = "Stat" "POT" "NTarget" "LY" "TPC" "SCERecomb2" "XSec" "DetailedXSec" "G4" "Flux" "Dirt" "MC_Stat" "NuWro"
@@ -104,7 +123,6 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 	// -------------------------------------------------------------------------------------
 
 //	vector<TString> PlotNames;
-//	PlotNames.push_back("DeltaPTPlot"); 
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 
 	const int N1DPlots = PlotNames.size();
@@ -112,23 +130,17 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");			
+	Runs.push_back("Run1");
+	Runs.push_back("Run1A_open_trigger");
+	Runs.push_back("Run1B_open_trigger");
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4a");
+	Runs.push_back("Run4b");
+	Runs.push_back("Run4c");
+	Runs.push_back("Run4d");
+	Runs.push_back("Run5");			
 	Runs.push_back("Combined");
-
-	// For runs 1-3, we used the detector variations for run 3
-	// For runs 1-5, we also include the run 4 & 5 det vars
-
-	/*if (Syst == "LY" || Syst == "TPC" || Syst == "SCERecomb2" || Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2" 
-	|| Syst == "SmEff_LY" || Syst == "SmEff_TPC" || Syst == "SmEff_SCERecomb2" ) {
-
-		Runs.clear();
-		Runs.push_back("Run3");
-
-	}*/
 
 	const int NRuns = (int)(Runs.size());
 
@@ -180,7 +192,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 	//----------------------------------------//
 
-	if (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") {
+	if (Syst == "LY") {
 
 		AltModels.push_back("_LYDown"); Colors.push_back(kRed+1); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_LYRayleigh"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
@@ -190,7 +202,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 	//----------------------------------------//	
 
-	if (Syst == "TPC" || Syst == "MC_TPC" || Syst == "SmEff_TPC") {
+	if (Syst == "TPC") {
 
 		AltModels.push_back("_X"); Colors.push_back(kRed+1); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_YZ"); Colors.push_back(kGreen+2); Universes.push_back(1); AltUniverses.push_back(1);
@@ -201,7 +213,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 	//----------------------------------------//	
 
-	if (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2" || Syst == "SmEff_SCERecomb2") {
+	if (Syst == "SCERecomb2") {
 
 		AltModels.push_back("_SCE"); Colors.push_back(kBlue); Universes.push_back(1); AltUniverses.push_back(1);
 		AltModels.push_back("_Recombination2"); Colors.push_back(kMagenta); Universes.push_back(1); AltUniverses.push_back(1);
@@ -210,7 +222,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 	//----------------------------------------//
 
-	if (Syst == "XSec" || Syst == "MC_XSec" || Syst == "SmEff_XSec") {
+	if (Syst == "XSec") {
 
 		UniAltModels.push_back("_AxFFCCQEshape_UBGenie"); Universes.push_back(2); 
 		UniAltModels.push_back("_DecayAngMEC_UBGenie"); Universes.push_back(2);
@@ -236,72 +248,9 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 	}
 
-	//----------------------------------------//
-
-	if (Syst == "DetailedXSec") {
-
-		UniAltModels.push_back("_AGKYpT1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_AGKYxF1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_AhtBY_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_BhtBY_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_CV1uBY_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_CV2uBY_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_EtaNCEL_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrAbs_N_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrAbs_pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrCEx_N_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrCEx_pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrInel_N_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrInel_pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrPiProd_N_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FrPiProd_pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FracDelta_CCMEC_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_FracPN_CCMEC_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MFP_N_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MFP_pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MaCCQE_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MaCCRES_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MaNCEL_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MaNCRES_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MvCCRES_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_MvNCRES_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarnCC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarnCC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarnNC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarnNC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarpCC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarpCC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarpNC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvbarpNC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvnCC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvnCC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvnNC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvnNC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvpCC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvpCC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvpNC1pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NonRESBGvpNC2pi_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NormCCMEC_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NormNCMEC_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_RDecBR1eta_UBGenie"); Universes.push_back(2);				
-		UniAltModels.push_back("_RDecBR1gamma_UBGenie"); Universes.push_back(2);
-
-		for (int UniAlt = 0; UniAlt < (int)(UniAltModels.size()); UniAlt++ ) {
-
-			for (int Uni = 0; Uni < Universes[UniAlt]; Uni++ ) {
-
-				AltModels.push_back(UniAltModels[UniAlt]+"_"+TString(std::to_string(Uni))); Colors.push_back(kGreen+2);
-	 			AltUniverses.push_back(Universes[UniAlt]);
-
-			}
-
-		}
-
-	}	
-
 	//----------------------------------------//	
 
-	if (Syst == "G4" || Syst == "MC_G4" || Syst == "SmEff_G4") {
+	if (Syst == "G4") {
 
 		UniAltModels.push_back("_reinteractions"); Universes.push_back(100);
 
@@ -320,7 +269,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 	//----------------------------------------//	
 
-	if (Syst == "Flux" || Syst == "MC_Flux" || Syst == "SmEff_Flux") {
+	if (Syst == "Flux") {
 
 		UniAltModels.push_back("_fluxes"); Universes.push_back(100);
 
@@ -402,17 +351,11 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//		// Until Run3 NuWro is produced
-//		if ( Runs[WhichRun] == "Run3" && (BaseMC == "Overlay9NuWro" || BeamOnSample == "Overlay9NuWro") ) 
-//			{ continue;}
-
-		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);
 
-		if (Syst == "Flux" || Syst == "MC_Flux" || Syst == "SmEff_Flux") {
+		if (Syst == "Flux") {
 
 			UniFlux.clear();
 
@@ -439,7 +382,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
 
-		if (Syst == "LY" || Syst == "TPC" || Syst == "MC_LY" || Syst == "MC_TPC"  || Syst == "SmEff_LY" || Syst == "SmEff_TPC") { 
+		if (Syst == "LY" || Syst == "TPC") { 
 
 			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CV"+CutExtension+".root"; 
 			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_CV_"+UBCodeVersion+".root"; 
@@ -447,7 +390,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 		}
 
-		if (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2"  || Syst == "SmEff_SCERecomb2") { 
+		if (Syst == "SCERecomb2") { 
 
 			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra"+CutExtension+".root"; 
 			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root"; 
@@ -780,7 +723,7 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 			// -------------------------------------------------------------------------------------------------------
 			// -------------------------------------------------------------------------------------------------------
-			
+
 			int NBins = BeamOnPlots[WhichPlot]->GetXaxis()->GetNbins();
 			const double* ArrayBins = BeamOnPlots[WhichPlot]->GetXaxis()->GetXbins()->GetArray();
 			TString XTitle = BeamOnPlots[WhichPlot]->GetXaxis()->GetTitle();
@@ -807,8 +750,8 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 			} // end of the loop over bin X
 
 			// -------------------------------------------------------------------------------------------------------
-			
-			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
+
+		for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 			
 				for (int WhichYBin = 0; WhichYBin < NBins; WhichYBin++) {
 			
@@ -847,8 +790,13 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 						AltDataEntryY = (1+NTargetUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = (1+NTargetUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovFracEntry = TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
-						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -861,8 +809,13 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 						AltDataEntryY = (1+POTUncertainty) * DataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = (1+POTUncertainty) * DataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
-						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -876,8 +829,13 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 						AltDataEntryY = AltDataPlot->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 						AltDataErrorY = AltDataPlot->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-						CovFracEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX ) * ( (AltDataEntryY - DataEntryY) / DataEntryY ),1E-8);
-						CovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -911,8 +869,14 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 
 						}
 
-						CovFracEntry = TMath::Max( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) ,1E-8);
-						CovEntry = TMath::Max( DataEntryX * DataEntryY,1E-8);
+						CovFracEntry = ( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) > 0 ) ? \
+							       TMath::Max( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) ,1E-8) : \
+							       TMath::Min( (DataEntryX / DataEntryXCV) * (DataEntryY / DataEntryYCV) ,1E-8);
+		
+
+						CovEntry = ( DataEntryX * DataEntryY > 0 ) ? \
+							   TMath::Max( DataEntryX * DataEntryY,1E-8) : \
+							   TMath::Min( DataEntryX * DataEntryY,1E-8);
 
 						CovFracError = 1E-8;
 						CovError = 1E-8;
@@ -952,8 +916,14 @@ void covariances(TString Syst = "None",TString BaseMC = "Overlay9",TString BeamO
 							AltDataEntryY = AltBeamOnPlots[WhichPlot][alt]->GetBinContent(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 							AltDataErrorY = AltBeamOnPlots[WhichPlot][alt]->GetBinError(WhichYBin+1) / (IntegratedFlux * NTargets) * Units;
 
-							double LocalFracCovEntry = TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
-							double LocalCovEntry = TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+							double LocalFracCovEntry = ( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) >0 ) ? \
+										   TMath::Max( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+										   TMath::Min( ((AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+
+							double LocalCovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+									       TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+									       TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
 
 							double LocalFracCovError = 1E-8;
 							double LocalCovError = 1E-8;

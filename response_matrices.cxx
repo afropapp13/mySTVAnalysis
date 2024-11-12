@@ -15,6 +15,9 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 
 	// -------------------------------------------------------------------------------------
 
+	TH1::AddDirectory(kFALSE); 
+	TH2::AddDirectory(kFALSE); 
+	
 	TH2D::SetDefaultSumw2();
 	
 	double TextSize = 0.07;
@@ -62,21 +65,17 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
 	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-//	Runs.push_back("Run5");	
+	Runs.push_back("Run1");
+	Runs.push_back("Run1A_open_trigger");
+	Runs.push_back("Run1B_open_trigger");
+	Runs.push_back("Run2");
+	Runs.push_back("Run3");
+	Runs.push_back("Run4a");
+	Runs.push_back("Run4b");
+	Runs.push_back("Run4c");
+	Runs.push_back("Run4d");
+	Runs.push_back("Run5");	
 	Runs.push_back("Combined");	
-
-	// For runs 1-3, we used run 3 det vars
-
-	/*if (DetVar) {
-
-		Runs.clear();
-		Runs.push_back("Run3");
-
-	}*/		
 
 	const int NRuns = (int)(Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	
@@ -103,7 +102,7 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 
 		TString FileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+\
 				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-		TFile* FileResponseMatrices = new TFile(FileName,"recreate");
+		TFile* FileResponseMatrices = TFile::Open(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 		
@@ -111,9 +110,6 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 
 			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+NameOfSamples[WhichSample]+"_"+\
 							  Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
-
-			TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
 
 			// Jul 8 2021: after discussion with Xin, if flux variations, the truth level should always be the CV
 
@@ -124,9 +120,12 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 
 			}
 
-		}
+			else {
 
-		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
+							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
+
+			}
 
 			for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
 
@@ -233,7 +232,8 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 
 					} else {
 
-						Plots[WhichSample][WhichPlot]->Draw("text colz e");
+						//Plots[WhichSample][WhichPlot]->Draw("text colz e");
+						Plots[WhichSample][WhichPlot]->Draw("colz");
 
 					} 
 	
@@ -243,7 +243,10 @@ void response_matrices(TString OverlaySample, bool DetVar = false, TString Tune 
 						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				
-				 
+	
+					delete Plots[WhichSample][WhichPlot];
+					delete TruePlots[WhichSample][WhichPlot];
+	
 				}
 
 			} // End of the loop over the plots
