@@ -203,7 +203,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 		}
 
 		// For the fake data studies with the default overlay MC and alternative fake data
-		// we need only the stat, mc stat, xsec and unfolding uncertainties
+		// we need only the stat, mc stat, and xsec uncertainties
 
 		if (OverlaySample == "Overlay9" && BeamOnSample == "Overlay9NuWro") { 
 			FileCovarianceName = MigrationMatrixPath+"Overlay9NuWroWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
