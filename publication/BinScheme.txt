@@ -1,0 +1,81 @@
+SerialThetaVis_ECalPlot
+
+Bin # & Slice & Low edge & High edge
+
+1 & 0 < E_{reco} < 0.5 GeV & 0 & 10
+2 & 0 < E_{reco} < 0.5 GeV & 10 & 20
+3 & 0 < E_{reco} < 0.5 GeV & 20 & 30
+4 & 0 < E_{reco} < 0.5 GeV & 30 & 40
+5 & 0 < E_{reco} < 0.5 GeV & 40 & 50
+6 & 0 < E_{reco} < 0.5 GeV & 50 & 60
+7 & 0 < E_{reco} < 0.5 GeV & 60 & 70
+8 & 0 < E_{reco} < 0.5 GeV & 70 & 80
+9 & 0 < E_{reco} < 0.5 GeV & 80 & 90
+10 & 0 < E_{reco} < 0.5 GeV & 90 & 115
+11 & 0 < E_{reco} < 0.5 GeV & 115 & 180
+12 & 0.5 < E_{reco} < 0.8 GeV & 0 & 5
+13 & 0.5 < E_{reco} < 0.8 GeV & 5 & 10
+14 & 0.5 < E_{reco} < 0.8 GeV & 10 & 15
+15 & 0.5 < E_{reco} < 0.8 GeV & 15 & 20
+16 & 0.5 < E_{reco} < 0.8 GeV & 20 & 25
+17 & 0.5 < E_{reco} < 0.8 GeV & 25 & 30
+18 & 0.5 < E_{reco} < 0.8 GeV & 30 & 40
+19 & 0.5 < E_{reco} < 0.8 GeV & 40 & 50
+20 & 0.5 < E_{reco} < 0.8 GeV & 50 & 60
+21 & 0.5 < E_{reco} < 0.8 GeV & 60 & 180
+22 & 0.8 < E_{reco} < 2 GeV & 0 & 5
+23 & 0.8 < E_{reco} < 2 GeV & 5 & 10
+24 & 0.8 < E_{reco} < 2 GeV & 10 & 15
+25 & 0.8 < E_{reco} < 2 GeV & 15 & 20
+26 & 0.8 < E_{reco} < 2 GeV & 20 & 30
+27 & 0.8 < E_{reco} < 2 GeV & 30 & 180
+
+
+SerialThetaVis_DeltaPnPlot
+
+Bin # & Slice & Low edge & High edge
+
+1 & p_{n} < 0.2 GeV/c & 0 & 10
+2 & p_{n} < 0.2 GeV/c & 10 & 20
+3 & p_{n} < 0.2 GeV/c & 20 & 180
+4 & 0.2 < p_{n} < 0.4 GeV/c & 0 & 10
+5 & 0.2 < p_{n} < 0.4 GeV/c & 10 & 20
+6 & 0.2 < p_{n} < 0.4 GeV/c & 20 & 30
+7 & 0.2 < p_{n} < 0.4 GeV/c & 30 & 40
+8 & 0.2 < p_{n} < 0.4 GeV/c & 40 & 50
+9 & 0.2 < p_{n} < 0.4 GeV/c & 50 & 60
+10 & 0.2 < p_{n} < 0.4 GeV/c & 60 & 180
+11 & p_{n} > 0.4 GeV/c & 0 & 30
+12 & p_{n} > 0.4 GeV/c & 30 & 40
+13 & p_{n} > 0.4 GeV/c & 40 & 50
+14 & p_{n} > 0.4 GeV/c & 50 & 60
+15 & p_{n} > 0.4 GeV/c & 60 & 70
+16 & p_{n} > 0.4 GeV/c & 70 & 80
+17 & p_{n} > 0.4 GeV/c & 80 & 90
+18 & p_{n} > 0.4 GeV/c & 90 & 115
+19 & p_{n} > 0.4 GeV/c & 115 & 180
+
+
+SerialThetaVis_PMissPlot
+
+Bin # & Slice & Low edge & High edge
+
+1 & |p_{miss}| < 0.12 GeV/c & 0 & 10
+2 & |p_{miss}| < 0.12 GeV/c & 10 & 20
+3 & |p_{miss}| < 0.12 GeV/c & 20 & 30
+4 & |p_{miss}| < 0.12 GeV/c & 30 & 40
+5 & |p_{miss}| < 0.12 GeV/c & 40 & 50
+6 & |p_{miss}| < 0.12 GeV/c & 50 & 60
+7 & |p_{miss}| < 0.12 GeV/c & 60 & 180
+8 & |p_{miss}| > 0.12 GeV/c & 0 & 15
+9 & |p_{miss}| > 0.12 GeV/c & 15 & 30
+10 & |p_{miss}| > 0.12 GeV/c & 30 & 40
+11 & |p_{miss}| > 0.12 GeV/c & 40 & 50
+12 & |p_{miss}| > 0.12 GeV/c & 50 & 60
+13 & |p_{miss}| > 0.12 GeV/c & 60 & 70
+14 & |p_{miss}| > 0.12 GeV/c & 70 & 80
+15 & |p_{miss}| > 0.12 GeV/c & 80 & 90
+16 & |p_{miss}| > 0.12 GeV/c & 90 & 115
+17 & |p_{miss}| > 0.12 GeV/c & 115 & 180
+
+

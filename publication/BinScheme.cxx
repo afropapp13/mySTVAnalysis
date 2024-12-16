@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 
-#include "../../../myClasses/Constants.h"
+#include "../../myClasses/Constants.h"
 
 using namespace std;
 using namespace Constants;
@@ -33,17 +33,9 @@ void BinScheme() {
 	//----------------------------------------//
 
 	vector<TString> PlotNames;
-	PlotNames.push_back("SerialDeltaPT_DeltaAlphaTPlot");
-	PlotNames.push_back("SerialDeltaPT_MuonCosThetaPlot");
-	PlotNames.push_back("SerialDeltaPT_ProtonCosThetaPlot");		
-	PlotNames.push_back("SerialDeltaAlphaT_DeltaPTPlot");
-	PlotNames.push_back("SerialDeltaAlphaT_MuonCosThetaPlot");
-	PlotNames.push_back("SerialDeltaAlphaT_ProtonCosThetaPlot");	
-	PlotNames.push_back("SerialDeltaPhiT_DeltaPTPlot");		
-	PlotNames.push_back("SerialDeltaPtx_DeltaPtyPlot");
-	PlotNames.push_back("SerialECal_DeltaPTPlot");
-	PlotNames.push_back("SerialECal_DeltaAlphaTPlot");			
-	PlotNames.push_back("SerialECal_DeltaPtyPlot");
+	PlotNames.push_back("SerialThetaVis_ECalPlot");
+	PlotNames.push_back("SerialThetaVis_DeltaPnPlot");
+	PlotNames.push_back("SerialThetaVis_PMissPlot");
 	
 	const int NPlots = PlotNames.size();
 	
@@ -53,14 +45,14 @@ void BinScheme() {
 
 	// Open the file that contains all the xsecs
 
-	TString XSecFileName = "../../myXSec/v08_00_00_52/GenXSec/All_XSecs_Combined_v08_00_00_52.root";
+	TString XSecFileName = PathToExtractedXSec+"/WienerSVD_ExtractedXSec_Overlay9_Combined_"+UBCodeVersion+".root";
 	TFile* fXSec = new TFile(XSecFileName,"readonly");
 
 	//----------------------------------------//
 
 	// Data release
 
-	TString TxtName = "/home/afroditi/Dropbox/Apps/Overleaf/MicroBooNE_KinematicImbalance_PRD_Rename/BinScheme.txt";
+	TString TxtName = "./BinScheme.txt";
 	ofstream myTxtFile;
 	myTxtFile.open(TxtName);		
 
@@ -72,17 +64,9 @@ void BinScheme() {
 
 		//----------------------------------------//
 	
-		if (PlotNames[iplot] == "SerialDeltaPT_DeltaAlphaTPlot") { binning = TwoDArrayNBinsDeltaPTInDeltaAlphaTSlices; }
-		if (PlotNames[iplot] == "SerialDeltaPT_MuonCosThetaPlot") { binning = TwoDArrayNBinsDeltaPTInMuonCosThetaSlices; }
-		if (PlotNames[iplot] == "SerialDeltaPT_ProtonCosThetaPlot") { binning = TwoDArrayNBinsDeltaPTInProtonCosThetaSlices; }				
-		if (PlotNames[iplot] == "SerialDeltaAlphaT_DeltaPTPlot") { binning = TwoDArrayNBinsDeltaAlphaTInDeltaPTSlices; }
-		if (PlotNames[iplot] == "SerialDeltaAlphaT_MuonCosThetaPlot") { binning = TwoDArrayNBinsDeltaAlphaTInMuonCosThetaSlices; }
-		if (PlotNames[iplot] == "SerialDeltaAlphaT_ProtonCosThetaPlot") { binning = TwoDArrayNBinsDeltaAlphaTInProtonCosThetaSlices; }	
-		if (PlotNames[iplot] == "SerialDeltaPhiT_DeltaPTPlot") { binning = TwoDArrayNBinsDeltaPhiTInDeltaPTSlices; }					
-		if (PlotNames[iplot] == "SerialDeltaPtx_DeltaPtyPlot") { binning = TwoDArrayNBinsDeltaPtxInDeltaPtySlices; }
-		if (PlotNames[iplot] == "SerialECal_DeltaPTPlot") { binning = TwoDArrayNBinsECalInDeltaPTSlices; }
-		if (PlotNames[iplot] == "SerialECal_DeltaAlphaTPlot") { binning = TwoDArrayNBinsECalInDeltaAlphaTSlices; }
-		if (PlotNames[iplot] == "SerialECal_DeltaPtyPlot") { binning = TwoDArrayNBinsECalInDeltaPtySlices; }										
+		if (PlotNames[iplot] == "SerialThetaVis_ECalPlot") { binning = TwoDArrayNBinsThetaVisInECalSlices; }
+		if (PlotNames[iplot] == "SerialThetaVis_DeltaPnPlot") { binning = TwoDArrayNBinsThetaVisInDeltaPnSlices; }
+		if (PlotNames[iplot] == "SerialThetaVis_PMissPlot") { binning = TwoDArrayNBinsThetaVisInPMissSlices; }
 
 		//----------------------------------------//
 		
@@ -97,7 +81,7 @@ void BinScheme() {
 
 		//----------------------------------------//
 
-		TH1D* BeamOnFullUnc = (TH1D*)( fXSec->Get("FullUnc_" + PlotNames[iplot]) );	
+		TH1D* BeamOnFullUnc = (TH1D*)( fXSec->Get("RecoFullUnc" + PlotNames[iplot]) );	
 		int NBins = BeamOnFullUnc->GetXaxis()->GetNbins();
 					
 		myTxtFile << PlotNames[iplot] << endl << endl;		
