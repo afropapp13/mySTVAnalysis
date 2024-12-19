@@ -1020,7 +1020,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 
 				gStyle->SetPaintTextFormat("4.2f");
 				smear->SetMarkerColor(kWhite);
-				smear->Draw("coltz text");
+				//smear->Draw("coltz text");
+				smear->Draw("coltz");
 
 				smear->SetTitle("A_{C}, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
@@ -1063,7 +1064,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 
 				gStyle->SetPaintTextFormat("4.2f");
 				unfcov->SetMarkerColor(kWhite);
-				unfcov->Draw("coltz text");
+				//unfcov->Draw("coltz text");
+				unfcov->Draw("coltz");
 
 				unfcov->SetTitle("Cov, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
