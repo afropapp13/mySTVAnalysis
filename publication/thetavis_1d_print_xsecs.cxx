@@ -98,7 +98,7 @@ void thetavis_1d_print_xsecs() {
 				double BinValue = BeamOnFullUnc->GetBinContent(ibin);
 				double BinError = BeamOnFullUnc->GetBinError(ibin);				
 
-				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::setprecision(8) << " & " << BinValue << " & " <<  BinError << "\\\\" << endl;
+				myTxtFile << ibin << std::setprecision(4) << " & " << BinLow << " & " << BinHigh << std::fixed << std::setprecision(4) << " & " << BinValue << " & " <<  BinError << "\\\\" << endl;
 
 			}
 				

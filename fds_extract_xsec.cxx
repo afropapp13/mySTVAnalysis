@@ -766,10 +766,19 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			}		
 
 			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval,CVsigma);	
-			TString CVChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma";		
+		
+			TString CVChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma'";		
+	
+			// Special case bc ROOT goes nuts when the p value is very small
+	
+			if (BeamOnSample == "Overlay9NuWro" && PlotNames[WhichPlot] == "SerialThetaVis_DeltaPnPlot" ) { 
+
+				CVChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", 9.37#sigma'";
+
+			}
 	
 			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval,FDsigma);	
-			TString FDChi2NdofAlt = "#chi^{2}/ndof = " + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +", p = " + to_string_with_precision(FDpval,2) + ", " + to_string_with_precision(FDsigma,2) + "#sigma";
+			TString FDChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +", p = " + to_string_with_precision(FDpval,2) + ", " + to_string_with_precision(FDsigma,2) + "#sigma'";
 			//------------------------------//				
 
 			TString ReducedLabel = 	BeamOnSample;
