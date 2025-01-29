@@ -1021,9 +1021,10 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				gStyle->SetPaintTextFormat("4.2f");
 				smear->SetMarkerColor(kWhite);
 				//smear->Draw("coltz text");
-				smear->Draw("coltz");
+				smear->Draw("coltz0");
 
 				smear->SetTitle("A_{C}, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+				if (Runs[WhichRun] == "Combined") { smear->SetTitle("A_{C}, " + LatexLabel[PlotNames[WhichPlot]]); }
 
 				TString SmearCanvas = "/Smear_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
@@ -1068,6 +1069,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				unfcov->Draw("coltz");
 
 				unfcov->SetTitle("Cov, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+				if (Runs[WhichRun] == "Combined") { unfcov->SetTitle("Cov, " + LatexLabel[PlotNames[WhichPlot]]); }
+
 
 				TString UnfCovCanvas = "/UnfCov_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				UnfCovPlotCanvas->SaveAs(CanvasPath+UnfCovCanvas);

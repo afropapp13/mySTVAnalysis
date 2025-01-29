@@ -885,7 +885,7 @@ void fds_extract_xsec(TString OverlaySample = "Overlay9", TString BeamOnSample =
 			
 			smear->SetTitle(Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
-			smear->Draw("coltz text");
+			smear->Draw("coltz0 text");
 
 			TString SmearCanvas = "/Smear_"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 			SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);

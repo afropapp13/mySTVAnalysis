@@ -70,6 +70,10 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 
 	h->SetTitle("Total " + Title + ", " + LatexLabel[ MapUncorCor[PlotNames] ] );	
 
+	if (PlotNames == "SerialThetaVis_ECalPlot") { h->SetTitle("Total " + Title + ", All events: E_{reco} slices");	}
+	if (PlotNames == "SerialThetaVis_DeltaPnPlot") { h->SetTitle("Total " + Title + ", All events: p_{n} slices");	}
+	if (PlotNames == "SerialThetaVis_PMissPlot") { h->SetTitle("Total " + Title + ", All events: p_{miss} slices");	}
+
 	h->GetZaxis()->SetRangeUser(FracCovMin,FracCovMax);
 	h->GetZaxis()->CenterTitle();
 	h->GetZaxis()->SetTitleFont(FontStyle);
