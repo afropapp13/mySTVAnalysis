@@ -60,22 +60,32 @@ SerialThetaVis_PMissPlot
 
 Bin # & Slice & Low edge & High edge
 
-1 & |p_{miss}| < 0.12 GeV/c & 0 & 10
-2 & |p_{miss}| < 0.12 GeV/c & 10 & 20
-3 & |p_{miss}| < 0.12 GeV/c & 20 & 30
-4 & |p_{miss}| < 0.12 GeV/c & 30 & 40
-5 & |p_{miss}| < 0.12 GeV/c & 40 & 50
-6 & |p_{miss}| < 0.12 GeV/c & 50 & 60
-7 & |p_{miss}| < 0.12 GeV/c & 60 & 180
-8 & |p_{miss}| > 0.12 GeV/c & 0 & 15
-9 & |p_{miss}| > 0.12 GeV/c & 15 & 30
-10 & |p_{miss}| > 0.12 GeV/c & 30 & 40
-11 & |p_{miss}| > 0.12 GeV/c & 40 & 50
-12 & |p_{miss}| > 0.12 GeV/c & 50 & 60
-13 & |p_{miss}| > 0.12 GeV/c & 60 & 70
-14 & |p_{miss}| > 0.12 GeV/c & 70 & 80
-15 & |p_{miss}| > 0.12 GeV/c & 80 & 90
-16 & |p_{miss}| > 0.12 GeV/c & 90 & 115
-17 & |p_{miss}| > 0.12 GeV/c & 115 & 180
+1 & |p_{miss}| < 0.10 GeV/c & 0 & 10
+2 & |p_{miss}| < 0.10 GeV/c & 10 & 20
+3 & |p_{miss}| < 0.10 GeV/c & 20 & 30
+4 & |p_{miss}| < 0.10 GeV/c & 30 & 40
+5 & |p_{miss}| < 0.10 GeV/c & 40 & 50
+6 & |p_{miss}| < 0.10 GeV/c & 50 & 60
+7 & |p_{miss}| < 0.10 GeV/c & 60 & 180
+8 & 0.10 < |p_{miss}| < 0.20 GeV/c & 0 & 15
+9 & 0.10 < |p_{miss}| < 0.20 GeV/c & 15 & 30
+10 & 0.10 < |p_{miss}| < 0.20 GeV/c & 30 & 40
+11 & 0.10 < |p_{miss}| < 0.20 GeV/c & 40 & 50
+12 & 0.10 < |p_{miss}| < 0.20 GeV/c & 50 & 60
+13 & 0.10 < |p_{miss}| < 0.20 GeV/c & 60 & 70
+14 & 0.10 < |p_{miss}| < 0.20 GeV/c & 70 & 80
+15 & 0.10 < |p_{miss}| < 0.20 GeV/c & 80 & 90
+16 & 0.10 < |p_{miss}| < 0.20 GeV/c & 90 & 115
+17 & 0.10 < |p_{miss}| < 0.20 GeV/c & 115 & 180
+18 & |p_{miss}| > 0.20 GeV/c & 0 & 15
+19 & |p_{miss}| > 0.20 GeV/c & 15 & 30
+20 & |p_{miss}| > 0.20 GeV/c & 30 & 40
+21 & |p_{miss}| > 0.20 GeV/c & 40 & 50
+22 & |p_{miss}| > 0.20 GeV/c & 50 & 60
+23 & |p_{miss}| > 0.20 GeV/c & 60 & 70
+24 & |p_{miss}| > 0.20 GeV/c & 70 & 80
+25 & |p_{miss}| > 0.20 GeV/c & 80 & 90
+26 & |p_{miss}| > 0.20 GeV/c & 90 & 115
+27 & |p_{miss}| > 0.20 GeV/c & 115 & 180
 
 
