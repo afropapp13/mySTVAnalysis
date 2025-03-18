@@ -1023,8 +1023,13 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				//smear->Draw("coltz text");
 				smear->Draw("coltz0");
 
-				smear->SetTitle("A_{C}, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
-				if (Runs[WhichRun] == "Combined") { smear->SetTitle("A_{C}, " + LatexLabel[PlotNames[WhichPlot]]); }
+				TString slice = "";
+				if (PlotNames[WhichPlot] == "SerialThetaVis_PMissPlot") { slice = ", p_{miss} slices"; }
+				if (PlotNames[WhichPlot] == "SerialThetaVis_DeltaPnPlot") { slice = ", p_{n} slices"; }
+				if (PlotNames[WhichPlot] == "SerialThetaVis_ECalPlot") { slice = ", E_{reco} slices"; }								 
+
+				smear->SetTitle("A_{C}, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]] + slice);
+				if (Runs[WhichRun] == "Combined") { smear->SetTitle("A_{C}, " + LatexLabel[PlotNames[WhichPlot]] + slice); }
 
 				TString SmearCanvas = "/Smear_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
@@ -1068,8 +1073,8 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				//unfcov->Draw("coltz text");
 				unfcov->Draw("coltz");
 
-				unfcov->SetTitle("Cov, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
-				if (Runs[WhichRun] == "Combined") { unfcov->SetTitle("Cov, " + LatexLabel[PlotNames[WhichPlot]]); }
+				unfcov->SetTitle("Cov, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]] + slice);
+				if (Runs[WhichRun] == "Combined") { unfcov->SetTitle("Cov, " + LatexLabel[PlotNames[WhichPlot]] + slice); }
 
 
 				TString UnfCovCanvas = "/UnfCov_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
