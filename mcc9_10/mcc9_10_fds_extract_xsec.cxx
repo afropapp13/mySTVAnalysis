@@ -1,0 +1,895 @@
+#include <TFile.h>
+#include <TH1D.h>
+#include <TH2D.h>
+#include <TCanvas.h>
+#include <TString.h>
+#include <TStyle.h>
+#include <TLegend.h>
+#include <TLegendEntry.h>
+#include <TEfficiency.h>
+#include <TMath.h>
+#include <TLatex.h>
+#include <TLine.h>
+#include <TMatrixD.h>
+#include <TVectorD.h>
+
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include <string>
+
+#include "../../myClasses/Constants.h"
+#include "../../myClasses/Util.h"
+#include "../../myClasses/WienerSVD.h"
+
+using namespace std;
+using namespace Constants;
+
+#include "../../myClasses/myFunctions.cpp"
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+TString ToStringPOT(double num) {
+
+	std::ostringstream start;
+	start << num;
+	string start1 = start.str();
+	return start1;
+
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+void ReweightXSec(TH1D* h, double SF = 1.) {
+
+	int NBins = h->GetXaxis()->GetNbins();
+
+	for (int i = 0; i < NBins; i++) {
+
+		double CurrentEntry = h->GetBinContent(i+1);
+		double NewEntry = CurrentEntry * SF / h->GetBinWidth(i+1);
+
+		double CurrentError = h->GetBinError(i+1);
+		double NewError = CurrentError * SF / h->GetBinWidth(i+1);
+
+		h->SetBinContent(i+1,NewEntry); 
+		h->SetBinError(i+1,NewError); 
+//		h->SetBinError(i+1,0.000001); 
+
+	}
+
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------
+
+void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TString BeamOnSample = "mcc9_10_BeamOn9") {
+
+	// -------------------------------------------------------------------------------------
+
+	TH1D::SetDefaultSumw2();
+	TH2D::SetDefaultSumw2();	
+	gStyle->SetOptStat(0);
+	gStyle->SetEndErrorSize(4);	
+	gStyle->SetTitleFont(FontStyle,"t");	
+	gStyle->SetTitleSize(TextSize,"t");	
+	gStyle->SetPalette(55); 
+	const Int_t NCont = 999; 
+	gStyle->SetNumberContours(NCont);
+
+	TString Subtract = "";
+
+	int DecimalAccuracy = 2;
+
+	// -------------------------------------------------------------------------------------
+
+	int NEventsPassingSelectionCuts = 0;
+	TString CutExtension = "_NoCuts";
+
+	vector<TString> VectorCuts; VectorCuts.clear();
+
+	// v52
+	VectorCuts.push_back("");
+	VectorCuts.push_back("_PID");
+	VectorCuts.push_back("_NuScore");
+	VectorCuts.push_back("_CRT");
+
+	int NCuts = (int)(VectorCuts.size());	
+
+	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
+
+	// -------------------------------------------------------------------------------------
+
+//	vector<TString> PlotNames;
+//	PlotNames.push_back("DeltaPTPlot"); 
+
+	const int N1DPlots = PlotNames.size();
+	//cout << "Number of 1D Plots = " << N1DPlots << endl;
+
+	// -----------------------------------------------------------------------------------------------------------------------------------------
+
+	vector<TString> LabelsOfSamples;
+	vector<TString> NameOfSamples;
+
+	NameOfSamples.push_back(OverlaySample);
+	NameOfSamples.push_back(BeamOnSample);
+	NameOfSamples.push_back("mcc9_10_ExtBNB9"); 
+	NameOfSamples.push_back("mcc9_10_OverlayDirt9");
+	NameOfSamples.push_back("mcc9_10_GenieOverlay");	
+	NameOfSamples.push_back("mcc9_10_AltEventGen");	 
+
+	//----------------------------------------//
+
+	vector<TString> Runs;
+	Runs.push_back("Run4b");
+	/*Runs.push_back("Combined");*/		
+
+	int NRuns = (int)(Runs.size());
+	//cout << "Number of Runs = " << NRuns << endl;
+
+	//----------------------------------------//
+
+	// CV Flux File
+
+	TFile* FluxFile = TFile::Open("../MCC9_FluxHist_volTPCActive.root"); 
+	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));		
+
+	//----------------------------------------//
+
+	for (int WhichRun = 0; WhichRun < NRuns; WhichRun++) {
+
+		//----------------------------------------//
+	
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);					
+		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
+			
+		//----------------------------------------//
+
+		vector<TCanvas*> PlotCanvas; PlotCanvas.clear();
+
+		vector<vector<TH1D*> > PlotsReco; PlotsReco.clear();
+		vector<vector<TH1D*> > PlotsTrue; PlotsTrue.clear();
+		vector<vector<TH1D*> > QEPlotsTrue; QEPlotsTrue.clear();
+		vector<vector<TH1D*> > MECPlotsTrue; MECPlotsTrue.clear();
+		vector<vector<TH1D*> > RESPlotsTrue; RESPlotsTrue.clear();
+		vector<vector<TH1D*> > DISPlotsTrue; DISPlotsTrue.clear();
+		vector<vector<TH1D*> > COHPlotsTrue; COHPlotsTrue.clear();		
+		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
+		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
+
+		//vector<TH1D*> UnfUnc; UnfUnc.clear();
+		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
+		vector<TH2D*> CovarianceMatrices; CovarianceMatrices.clear();
+		vector<TH2D*> MCStatCovarianceMatrices; MCStatCovarianceMatrices.clear();		
+
+		//----------------------------------------//
+
+		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+
+		if (OverlaySample == "mcc9_10_NoTuneOverlay9") { 
+			FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		}
+
+		if (OverlaySample == "mcc9_10_GENIEv2Overlay9") { 
+			FileResponseName = MigrationMatrixPath+"GENIEv2FileResponseMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		}		
+
+		if (OverlaySample == "mcc9_10_TwiceMECOverlay9") { 
+			FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		}
+
+		cout << "File Responses = " << FileResponseName << endl;
+		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
+
+		//----------------------------------------//		
+
+		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+
+		if (OverlaySample == "mcc9_10_NoTuneOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}
+
+		if (OverlaySample == "mcc9_10_GENIEv2Overlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2WienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}		
+
+		if (OverlaySample == "mcc9_10_TwiceMECOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}
+
+		// For the fake data studies with the default overlay MC and alternative fake data
+		// we need only the stat, mc stat, and xsec uncertainties
+
+		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_Overlay9NuWro") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_Overlay9NuWroWienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}		
+
+		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_NoTuneOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}
+
+		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "GENIEv2Overlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2Overlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}		
+
+		if (OverlaySample == "Overlay9" && BeamOnSample == "mcc9_10_TwiceMECOverlay9") { 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		}		
+
+		cout << "File Covariances = " << FileCovarianceName << endl;			
+		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
+
+		//----------------------------------------//
+
+		const int NSamples = NameOfSamples.size();
+		vector<TFile*> FileSample; FileSample.clear();
+		
+		TString PathToFilesUBCodeExtension = PathToFiles+CutExtension;
+
+		// Store the extracted xsections & associated files in dedicated file
+
+		TString NameExtractedXSec = PathToExtractedXSec+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+Subtract+".root";
+		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
+
+		// -----------------------------------------------------------------------------------------------------------------------------------------
+
+		// Loop over the samples
+
+		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
+
+			if (
+			NameOfSamples[WhichSample] == "mcc9_10_BeamOn9" || NameOfSamples[WhichSample] == "mcc9_10_Overlay9NuWro" ||
+			NameOfSamples[WhichSample] == "mcc9_10_ExtBNB9" || 
+			NameOfSamples[WhichSample] == "mcc9_10_OverlayDirt9"
+			) { 
+			
+			TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			}
+			
+			if (NameOfSamples[WhichSample] == "mcc9_10_Overlay9") { 
+			
+				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}
+
+			if (NameOfSamples[WhichSample] == "mcc9_10_NoTuneOverlay9") { 
+			
+				TString FileName = "NoTuneSTVStudies_mcc9_10_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}
+
+			if (NameOfSamples[WhichSample] == "mcc9_10_GENIEv2Overlay9") { 
+			
+				TString FileName = "GENIEv2STVStudies_mcc9_10_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}			
+
+			if (NameOfSamples[WhichSample] == "mcc9_10_TwiceMECOverlay9") { 
+			
+				TString FileName = "TwiceMECSTVStudies_mcc9_10_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}						
+
+			if (NameOfSamples[WhichSample] == "mcc9_10_GenieOverlay") { 
+			
+				TString FileName = "TruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";					
+				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
+			
+			}
+
+			if (NameOfSamples[WhichSample] == "mcc9_10_AltEventGen") { 
+			
+				TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				if (BeamOnSample == "mcc9_10_NoTuneOverlay9") { FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOnSample == "mcc9_10_GENIEv2Overlay9") { FileName = "GENIEv2TruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }				
+				if (BeamOnSample == "mcc9_10_TwiceMECOverlay9") { FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
+				if (BeamOnSample == "mcc9_10_Overlay9NuWro") { FileName = "TruthSTVAnalysis_mcc9_10_Overlay9NuWro_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_NoTuneOverlay9") 
+					{ FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_GENIEv2Overlay9") 
+					{ FileName = "GENIEv2STVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }					
+				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_TwiceMECOverlay9") 
+					{ FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }						
+						
+				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
+			
+			}			
+
+			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
+			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
+			vector<TH1D*> QECurrentPlotsTrue; QECurrentPlotsTrue.clear();
+			vector<TH1D*> MECCurrentPlotsTrue; MECCurrentPlotsTrue.clear();
+			vector<TH1D*> RESCurrentPlotsTrue; RESCurrentPlotsTrue.clear();
+			vector<TH1D*> DISCurrentPlotsTrue; DISCurrentPlotsTrue.clear();
+			vector<TH1D*> COHCurrentPlotsTrue; COHCurrentPlotsTrue.clear();			
+			vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
+			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
+
+			// Loop over the plots
+
+			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
+
+				TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
+				CurrentPlotsReco.push_back(histReco);
+
+				TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsBkgReco.push_back(histBkgReco);
+
+				TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
+				CurrentPlotsCC1pReco.push_back(histCC1pReco);
+
+				TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
+				CurrentPlotsTrue.push_back(histTrue);
+
+				TH1D* QEhistTrue = (TH1D*)(FileSample[WhichSample]->Get("QETrue"+PlotNames[WhichPlot]));
+				QECurrentPlotsTrue.push_back(QEhistTrue);
+
+				TH1D* MEChistTrue = (TH1D*)(FileSample[WhichSample]->Get("MECTrue"+PlotNames[WhichPlot]));
+				MECCurrentPlotsTrue.push_back(MEChistTrue);	
+
+				TH1D* REShistTrue = (TH1D*)(FileSample[WhichSample]->Get("RESTrue"+PlotNames[WhichPlot]));
+				RESCurrentPlotsTrue.push_back(REShistTrue);
+
+				TH1D* DIShistTrue = (TH1D*)(FileSample[WhichSample]->Get("DISTrue"+PlotNames[WhichPlot]));
+				DISCurrentPlotsTrue.push_back(DIShistTrue);
+
+				TH1D* COHhistTrue = (TH1D*)(FileSample[WhichSample]->Get("COHTrue"+PlotNames[WhichPlot]));
+				COHCurrentPlotsTrue.push_back(COHhistTrue);					
+		
+			} // End of the loop over the plots
+
+			PlotsReco.push_back(CurrentPlotsReco);		
+			PlotsTrue.push_back(CurrentPlotsTrue);	
+			QEPlotsTrue.push_back(QECurrentPlotsTrue);
+			MECPlotsTrue.push_back(MECCurrentPlotsTrue);
+			RESPlotsTrue.push_back(RESCurrentPlotsTrue);
+			DISPlotsTrue.push_back(DISCurrentPlotsTrue);
+			COHPlotsTrue.push_back(COHCurrentPlotsTrue);				
+			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
+			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
+
+		} // End of the loop over the samples
+
+		// ----------------------------------------------------------------------------------------------------------------------------------
+
+		// Loop over the event rate plots
+
+		for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {	
+
+			//----------------------------------------//			
+
+			//UnfUnc.push_back((TH1D*)FileUnfUnc->Get("UnfUnc_"+PlotNames[WhichPlot]));			
+
+			//----------------------------------------//
+
+			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
+
+			// Already flux-averaged rates
+			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
+			MCStatCovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("MCStatCovariance_"+PlotNames[WhichPlot]));			
+
+			//----------------------------------------//
+
+			// True CC1p Signal MC // No detector/ reconstruction / smearing effects
+
+			int n = PlotsTrue[4][WhichPlot]->GetNbinsX();
+			double Nuedges[n+1];
+			    
+			for (int i = 0; i < n+1; i++) { Nuedges[i] = PlotsTrue[4][WhichPlot]->GetBinLowEdge(i+1); }
+
+			// -------------------------------------------------------------------------------------------------
+
+			// BeamOn = Alternative model for fake data studies in this case
+			// Thus we grab the CC1p part, without any subtractions
+
+			//TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
+			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
+			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
+
+			int m = DataPlot->GetNbinsX();			
+			TString XTitle = DataPlot->GetXaxis()->GetTitle();
+			TString YTitle = DataPlot->GetYaxis()->GetTitle();	
+
+			// Flux-averaged event rates
+			DataPlot->Scale(Units/(IntegratedFlux*NTargets));
+			PlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // CV
+			QEPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			MECPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			RESPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			DISPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			COHPlotsTrue[4][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+
+			PlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets)); // Alt CV
+			QEPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			MECPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			RESPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			DISPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));
+			COHPlotsTrue[5][WhichPlot]->Scale(Units/(IntegratedFlux*NTargets));			
+
+			// -------------------------------------------------------------------------------------------
+
+			// Construct vectors (for 1D histogram) and matrices (for 2D histogram) for input
+
+			TVectorD signal(n);
+			TVectorD QEsignal(n);
+			TVectorD MECsignal(n);
+			TVectorD RESsignal(n);
+			TVectorD DISsignal(n);
+			TVectorD COHsignal(n);			
+			TVectorD altsignal(n);
+			TVectorD QEaltsignal(n);
+			TVectorD MECaltsignal(n);
+			TVectorD RESaltsignal(n);
+			TVectorD DISaltsignal(n);
+			TVectorD COHaltsignal(n);						
+			TVectorD measure(m);
+			TMatrixD response(m, n);
+			TMatrixD covariance(m, m);
+			TMatrixD mcstatcovariance(m, m);			
+			TMatrixD statcovariance(m, m);
+			TMatrixD systcovariance(m, m);
+
+			// Convert input into mathematical formats, easy and clean to be processed. 
+			// Converted defined/implemented in source files, see include/Util.h
+
+			H2V(PlotsTrue[4][WhichPlot], signal);
+			H2V(QEPlotsTrue[4][WhichPlot], QEsignal);
+			H2V(MECPlotsTrue[4][WhichPlot], MECsignal);
+			H2V(RESPlotsTrue[4][WhichPlot], RESsignal);
+			H2V(DISPlotsTrue[4][WhichPlot], DISsignal);
+			H2V(COHPlotsTrue[4][WhichPlot], COHsignal);
+
+			H2V(PlotsTrue[5][WhichPlot], altsignal);
+			H2V(QEPlotsTrue[5][WhichPlot], QEaltsignal);
+			H2V(MECPlotsTrue[5][WhichPlot], MECaltsignal);
+			H2V(RESPlotsTrue[5][WhichPlot], RESaltsignal);
+			H2V(DISPlotsTrue[5][WhichPlot], DISaltsignal);
+			H2V(COHPlotsTrue[5][WhichPlot], COHaltsignal);			
+
+			H2V(DataPlot, measure);
+			H2M(ResponseMatrices[WhichPlot], response, kFALSE); // X axis: Reco, Y axis: True
+			H2M(CovarianceMatrices[WhichPlot], covariance, kTRUE); // X axis: True, Y axis: Reco
+			H2M(MCStatCovarianceMatrices[WhichPlot], mcstatcovariance, kTRUE); // X axis: True, Y axis: Reco
+
+			// ------------------------------------------------------------------------------------------
+
+			// Construct to record additinal smearing matrix and wiener filter (diagomal matrix) elements. 
+    
+			TMatrixD AddSmear(n,n);
+			TVectorD WF(n);
+			TMatrixD UnfoldCov(n,n);
+			TMatrixD CovRotation(n,n);
+
+			// ------------------------------------------------------------------------------------------	
+
+			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
+			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Wiener Filter Vector",n,0,n);
+			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+
+			// --------------------------------------------------------------------------------------------------
+
+			// Core implementation of Wiener-SVD
+			// AddSmear and WF to record the core information in the unfolding.
+
+			TVectorD unfold = WienerSVD(response, signal, measure, covariance, 2, 0.5, AddSmear, WF, UnfoldCov,CovRotation);
+
+			// --------------------------------------------------------------------------------------------------
+
+			// Start plotting
+		
+			TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
+			PlotCanvas->cd();
+			PlotCanvas->SetBottomMargin(0.17);
+			PlotCanvas->SetTopMargin(0.17);			
+			PlotCanvas->SetLeftMargin(0.21);			
+			PlotCanvas->SetRightMargin(0.03);			
+		
+			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+
+			// --------------------------------------------------------------------------------------------------
+
+			V2H(unfold, unf); 	
+			M2H(UnfoldCov, unfcov);		
+			M2H(AddSmear, smear);
+
+			// --------------------------------------------------------------------------------------------------						
+
+			// Setting the uncertainty using the fake data matrix: Stat + MC Stat + XSec
+
+			for (int i = 1; i <= n;i++ ) { 
+
+				// default / total uncertainty
+				// XSec / Stat / MC Stat unc
+				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) );
+				unf->SetBinError(i, CovUnc );							
+
+			}
+
+			ReweightXSec(unf);		
+
+			// ------------------------------------------------------------------------------------
+
+			// Start plotting 				
+
+			unf->GetXaxis()->CenterTitle();
+			unf->GetXaxis()->SetLabelSize(TextSize);
+			unf->GetXaxis()->SetLabelFont(FontStyle);
+			unf->GetXaxis()->SetTitleSize(TextSize);
+			unf->GetXaxis()->SetTitleFont(FontStyle);			
+			unf->GetXaxis()->SetNdivisions(6);	
+
+			unf->GetYaxis()->SetTitle(VarLabel[PlotNames[WhichPlot]]);
+			unf->GetYaxis()->CenterTitle();
+			unf->GetYaxis()->SetLabelSize(TextSize);
+			unf->GetYaxis()->SetLabelFont(FontStyle);
+			unf->GetYaxis()->SetTitleSize(TextSize);
+			unf->GetYaxis()->SetTitleFont(FontStyle);			
+			unf->GetYaxis()->SetNdivisions(6);
+
+			unf->SetLineColor(BeamOnColor);
+			unf->SetMarkerColor(BeamOnColor);
+			unf->SetMarkerStyle(20);
+			unf->SetMarkerSize(1.);	
+
+			//----------------------------------------//
+
+			// Unfolded MC Stat covariance
+			TMatrixD CovRotation_T (TMatrixD::kTransposed, CovRotation); 
+			TMatrixD UnfMCStatCov = CovRotation*mcstatcovariance*CovRotation_T; 				
+
+			TH1D* unfMCStat = (TH1D*)(unf->Clone());	
+
+			for (int i = 1; i <= n;i++ ) { 
+
+				double BinWidth = unf->GetBinWidth(i);			
+
+				// Stat, MC Stat, XSec uncertainties
+				double CovUnc = TMath::Sqrt(UnfoldCov(i-1,i-1) ) / BinWidth;					
+				unfMCStat->SetBinError(i, CovUnc );												
+
+			}						
+
+			// ----------------------------------------//		
+
+			// The Nominal MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
+
+			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD AcTrueUnfold = AddSmear * signal;
+			V2H(AcTrueUnfold, TrueUnf);
+
+			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD QEAcTrueUnfold = AddSmear * QEsignal;
+			V2H(QEAcTrueUnfold, QETrueUnf);
+
+			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD MECAcTrueUnfold = AddSmear * MECsignal;
+			V2H(MECAcTrueUnfold, MECTrueUnf);
+
+			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD RESAcTrueUnfold = AddSmear * RESsignal;
+			V2H(RESAcTrueUnfold, RESTrueUnf);
+
+			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD DISAcTrueUnfold = AddSmear * DISsignal;
+			V2H(DISAcTrueUnfold, DISTrueUnf);
+
+			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD COHAcTrueUnfold = AddSmear * COHsignal;
+			V2H(COHAcTrueUnfold, COHTrueUnf);			
+
+			ReweightXSec(TrueUnf);
+			ReweightXSec(QETrueUnf);
+			ReweightXSec(MECTrueUnf);			
+			ReweightXSec(RESTrueUnf);
+			ReweightXSec(DISTrueUnf);			
+			ReweightXSec(COHTrueUnf);
+			
+			TrueUnf->SetLineColor(OverlayColor);
+			TrueUnf->SetMarkerColor(OverlayColor);	
+
+			// ----------------------------------------//
+
+			// Same for the alternative MC CC1p prediction (NuWro et al)
+
+			TH1D* NoSmearAltTrueUnf = new TH1D("NoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* AltTrueUnf = new TH1D("AltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD NoSmearAltTrueUnfold = altsignal;
+			TVectorD AltAcTrueUnfold = AddSmear * altsignal;
+			V2H(NoSmearAltTrueUnfold, NoSmearAltTrueUnf);
+			V2H(AltAcTrueUnfold, AltTrueUnf);
+
+			TH1D* QENoSmearAltTrueUnf = new TH1D("QENoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* QEAltTrueUnf = new TH1D("QEAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD QENoSmearAltTrueUnfold = QEaltsignal;
+			TVectorD QEAltAcTrueUnfold = AddSmear * QEaltsignal;
+			V2H(QENoSmearAltTrueUnfold, QENoSmearAltTrueUnf);
+			V2H(QEAltAcTrueUnfold, QEAltTrueUnf);
+
+			TH1D* MECNoSmearAltTrueUnf = new TH1D("MECNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* MECAltTrueUnf = new TH1D("MECAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD MECNoSmearAltTrueUnfold = MECaltsignal;
+			TVectorD MECAltAcTrueUnfold = AddSmear * MECaltsignal;
+			V2H(MECNoSmearAltTrueUnfold, MECNoSmearAltTrueUnf);
+			V2H(MECAltAcTrueUnfold, MECAltTrueUnf);
+
+			TH1D* RESNoSmearAltTrueUnf = new TH1D("RESNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* RESAltTrueUnf = new TH1D("RESAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD RESNoSmearAltTrueUnfold = RESaltsignal;
+			TVectorD RESAltAcTrueUnfold = AddSmear * RESaltsignal;
+			V2H(RESNoSmearAltTrueUnfold, RESNoSmearAltTrueUnf);
+			V2H(RESAltAcTrueUnfold, RESAltTrueUnf);
+
+			TH1D* DISNoSmearAltTrueUnf = new TH1D("DISNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* DISAltTrueUnf = new TH1D("DISAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD DISNoSmearAltTrueUnfold = DISaltsignal;
+			TVectorD DISAltAcTrueUnfold = AddSmear * DISaltsignal;
+			V2H(DISNoSmearAltTrueUnfold, DISNoSmearAltTrueUnf);
+			V2H(DISAltAcTrueUnfold, DISAltTrueUnf);
+
+			TH1D* COHNoSmearAltTrueUnf = new TH1D("COHNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* COHAltTrueUnf = new TH1D("COHAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TVectorD COHNoSmearAltTrueUnfold = COHaltsignal;
+			TVectorD COHAltAcTrueUnfold = AddSmear * COHaltsignal;
+			V2H(COHNoSmearAltTrueUnfold, COHNoSmearAltTrueUnf);
+			V2H(COHAltAcTrueUnfold, COHAltTrueUnf);															
+
+			ReweightXSec(NoSmearAltTrueUnf);
+			ReweightXSec(AltTrueUnf);
+			ReweightXSec(QENoSmearAltTrueUnf);
+			ReweightXSec(QEAltTrueUnf);
+			ReweightXSec(MECNoSmearAltTrueUnf);
+			ReweightXSec(MECAltTrueUnf);
+			ReweightXSec(RESNoSmearAltTrueUnf);
+			ReweightXSec(RESAltTrueUnf);
+			ReweightXSec(DISNoSmearAltTrueUnf);
+			ReweightXSec(DISAltTrueUnf);
+			ReweightXSec(COHNoSmearAltTrueUnf);
+			ReweightXSec(COHAltTrueUnf);															
+
+			AltTrueUnf->SetLineColor(kOrange+7);
+			AltTrueUnf->SetMarkerColor(kOrange+7);	
+
+			// ----------------------------------------//	
+
+			double max = 1.3 * TMath::Max(unf->GetMaximum(), AltTrueUnf->GetMaximum());		
+			unfMCStat->GetYaxis()->SetRangeUser(XSecRange[PlotNames[WhichPlot]].first,max);	
+
+			//------------------------------//
+
+			// The N-dimensional analysis has been developed based on the bin number, not the actual range
+
+			if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+				TString XaxisTitle = unfMCStat->GetXaxis()->GetTitle();
+				XaxisTitle.ReplaceAll("deg","bin #");
+				XaxisTitle.ReplaceAll("GeV/c","bin #");
+				XaxisTitle.ReplaceAll("GeV","bin #");				
+				unfMCStat->GetXaxis()->SetTitle(XaxisTitle);
+
+				TString YaxisTitle = VarLabel[PlotNames[WhichPlot]];
+				YaxisTitle.ReplaceAll("deg","");
+				YaxisTitle.ReplaceAll("(GeV/c)","");
+				YaxisTitle.ReplaceAll("GeV","");
+				YaxisTitle.ReplaceAll("/c","");
+				YaxisTitle.ReplaceAll("^{2}","");												
+				unfMCStat->GetYaxis()->SetTitle(YaxisTitle);				
+
+			}			
+
+			//------------------------------//					
+
+			// Draw the data points first to get the beautiful canvas 
+			PlotCanvas->cd();
+			//unf->Draw("e1x0"); // Full unc : XSec + Stat + MC Stat
+			unfMCStat->Draw("e1x0");
+			TrueUnf->Draw("hist same");
+			AltTrueUnf->Draw("hist same");
+
+			// Plotting again so that the data points are on top 
+			PlotCanvas->cd();
+			//unf->Draw("e1x0 same"); // Full unc : XSec + Stat + MC Stat
+			unfMCStat->Draw("e1x0 same"); // Only MC Stat
+
+			TLatex *textSlice = new TLatex();
+			textSlice->SetTextFont(FontStyle);
+			textSlice->SetTextSize(0.06);
+			TString PlotNameDuplicate = PlotNames[WhichPlot];
+			TString ReducedPlotName = PlotNameDuplicate.ReplaceAll("Reco","") ;
+			textSlice->DrawLatexNDC(0.24, 0.77, LatexLabel[ReducedPlotName]);				
+
+			// Legend & POT Normalization
+
+			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
+			TString Label = ToStringPOT(tor860_wcut)+" POT";
+
+			TLegend* legData = new TLegend(0.21,0.84,0.78,0.98);
+			legData->SetBorderSize(0);
+			legData->SetTextSize(0.05);
+			legData->SetTextFont(FontStyle);
+			legData->SetNColumns(1);
+			legData->SetMargin(0.1);
+
+			//------------------------------//
+
+			// Chi2 calculation
+
+			double FDChi2, FDpval, FDsigma; int FDNdof;
+			double CVChi2, CVpval, CVsigma; int CVNdof;	
+
+			TH2D* CovClone = (TH2D*)(unfcov->Clone());
+
+			for (int ix = 1; ix <= n; ix++) {
+
+				for (int iy = 1; iy <= n; iy++) {
+
+					double WidthX = unfcov->GetXaxis()->GetBinWidth(ix);
+					double WidthY = unfcov->GetYaxis()->GetBinWidth(iy);
+
+					double TwoDWidth = WidthX * WidthY;
+
+					double BinContent = unfcov->GetBinContent(ix,iy);	
+					double NewBinContent = BinContent/TwoDWidth;																	
+
+					// Only for the diagonal elements
+					// Add the unfolding uncertainty
+					// On top of everything else
+					// That is done both for the final xsec result and for the unfolded covariance
+					if (ix == iy) { 
+						// unfolded covariance matrix
+//						double UnfUncBin = UnfUnc[WhichPlot]->GetBinContent(ix);
+						double UnfUncBin = 0.;
+
+						NewBinContent = NewBinContent + TMath::Power(UnfUncBin,2.) ;					 
+
+						// xsec uncertainty
+						double CurrentUnc = PlotsReco[0][WhichPlot]->GetBinError(ix);
+						double NewError = TMath::Sqrt( TMath::Power(CurrentUnc,2.) + TMath::Power(UnfUncBin,2.) ) ;
+						PlotsReco[0][WhichPlot]->SetBinError(ix,NewError);
+						
+					}
+
+					CovClone->SetBinContent(ix,iy,NewBinContent);										
+
+				}	
+
+			}		
+
+			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval,CVsigma);	
+		
+			TString CVChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma'";		
+	
+			// Special case bc ROOT goes nuts when the p value is very small
+	
+			if (BeamOnSample == "mcc9_10_Overlay9NuWro" && PlotNames[WhichPlot] == "SerialThetaVis_DeltaPnPlot" ) { 
+
+				CVChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", 9.37#sigma'";
+
+			}
+	
+			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval,FDsigma);	
+			TString FDChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +", p = " + to_string_with_precision(FDpval,2) + ", " + to_string_with_precision(FDsigma,2) + "#sigma'";
+			//------------------------------//				
+
+			TString ReducedLabel = 	BeamOnSample;
+			TString PrintLabel = ReducedLabel.ReplaceAll("mcc9_10_Overlay9","");	
+
+			legData->AddEntry(unf,"Unfolded " + PrintLabel,"ep");
+
+			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"G18 "+ CVChi2NdofAlt,"l");
+			lMC->SetTextColor(OverlayColor);
+
+			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"True " + PrintLabel + " " + FDChi2NdofAlt,"l");
+			lAltMC->SetTextColor(kOrange+7);				
+
+			legData->Draw();
+			
+			TString CanvasPath = PlotPath+"mcc9_10_Overlay9";
+			TString FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+			if (OverlaySample != "mcc9_10_Overlay9") { FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+"_"+OverlaySample+".pdf"; }
+			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);	
+			delete PlotCanvas;			
+
+			//------------------------------//
+
+			TH1D* diff = new TH1D("diff_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Fractional difference of unf and signal model",n, Nuedges);
+			
+			for(int i=1; i <= n; i++) {
+			
+				double s2s = 0;
+				double u = unf->GetBinContent(i);
+				double t = signal(i-1);
+				if (t != 0) { s2s = u/t - 1; }
+				else { s2s = 1.; } // attention to this t = 0
+				diff->SetBinContent(i, s2s); // in percentage 
+
+			}	
+
+			//------------------------------//
+
+			ExtractedXSec->cd();
+
+			unf->Write("Reco"+PlotNames[WhichPlot]); // "Data" xsec
+			unfMCStat->Write("MCStatReco"+PlotNames[WhichPlot]); // "Data" only with MC stat uncertainties		
+			TrueUnf->Write("True"+PlotNames[WhichPlot]); // MC after multiplication by Ac
+			QETrueUnf->Write("QETrue"+PlotNames[WhichPlot]);
+			MECTrueUnf->Write("MECTrue"+PlotNames[WhichPlot]);
+			RESTrueUnf->Write("RESTrue"+PlotNames[WhichPlot]);
+			DISTrueUnf->Write("DISTrue"+PlotNames[WhichPlot]);				
+			COHTrueUnf->Write("COHTrue"+PlotNames[WhichPlot]);			
+			NoSmearAltTrueUnf->Write("NoSmearAltTrue"+PlotNames[WhichPlot]); // alternative MC w/o multiplication by Ac
+			QENoSmearAltTrueUnf->Write("QENoSmearAltTrue"+PlotNames[WhichPlot]);	
+			MECNoSmearAltTrueUnf->Write("MECNoSmearAltTrue"+PlotNames[WhichPlot]);
+			RESNoSmearAltTrueUnf->Write("RESNoSmearAltTrue"+PlotNames[WhichPlot]);
+			DISNoSmearAltTrueUnf->Write("DISNoSmearAltTrue"+PlotNames[WhichPlot]);
+			COHNoSmearAltTrueUnf->Write("COHNoSmearAltTrue"+PlotNames[WhichPlot]);									
+			AltTrueUnf->Write("AltTrue"+PlotNames[WhichPlot]); // alternative MC with multiplication by Ac
+			QEAltTrueUnf->Write("QEAltTrue"+PlotNames[WhichPlot]);
+			MECAltTrueUnf->Write("MECAltTrue"+PlotNames[WhichPlot]);
+			RESAltTrueUnf->Write("RESAltTrue"+PlotNames[WhichPlot]);
+			DISAltTrueUnf->Write("DISAltTrue"+PlotNames[WhichPlot]);
+			COHAltTrueUnf->Write("COHAltTrue"+PlotNames[WhichPlot]);												
+			smear->Write("Ac"+PlotNames[WhichPlot]); // additional smearing matrix
+			unfcov->Write("UnfCov"+PlotNames[WhichPlot]); // unfolded covariance matrix
+			CovarianceMatrices[WhichPlot]->Write("Cov"+PlotNames[WhichPlot]); // covariance matrix		
+			ResponseMatrices[WhichPlot]->Write("Response"+PlotNames[WhichPlot]); // response matrix
+
+			// ---------------------------------------------------------------------------------------------------------------------------
+
+			// Make the additional smearing matrix pretty
+
+			TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+			TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
+			SmearPlotCanvas->cd();
+			SmearPlotCanvas->SetBottomMargin(0.17);
+			SmearPlotCanvas->SetTopMargin(0.13);			
+			SmearPlotCanvas->SetLeftMargin(0.2);
+			SmearPlotCanvas->SetRightMargin(0.2);
+
+			smear->GetXaxis()->CenterTitle();
+			smear->GetXaxis()->SetLabelFont(FontStyle);
+			smear->GetXaxis()->SetTitleFont(FontStyle);
+			smear->GetXaxis()->SetLabelSize(TextSize);
+			smear->GetXaxis()->SetTitleSize(TextSize);
+			smear->GetXaxis()->SetNdivisions(6);
+			TString Xtitle = unfMCStat->GetXaxis()->GetTitle();
+			smear->GetXaxis()->SetTitle("True " + Xtitle);
+
+			smear->GetYaxis()->CenterTitle();
+			smear->GetYaxis()->SetLabelFont(FontStyle);
+			smear->GetYaxis()->SetTitleFont(FontStyle);
+			smear->GetYaxis()->SetLabelSize(TextSize);
+			smear->GetYaxis()->SetTitleSize(TextSize);
+			smear->GetYaxis()->SetNdivisions(6);
+			smear->GetYaxis()->SetTitle("Reco " + Xtitle);					
+
+			smear->GetZaxis()->SetLabelFont(FontStyle);
+			smear->GetZaxis()->SetTitleFont(FontStyle);
+			smear->GetZaxis()->SetLabelSize(TextSize);
+			smear->GetZaxis()->SetTitleSize(TextSize);
+			smear->GetZaxis()->SetRangeUser(-0.3,1.);				
+
+			gStyle->SetPaintTextFormat("4.2f");
+			smear->SetMarkerColor(kWhite);
+			smear->SetMarkerSize(0.6);	
+			
+			smear->SetTitle(Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+
+			smear->Draw("coltz0 text");
+
+			TString SmearCanvas = "/Smear_"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+			SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
+			delete SmearPlotCanvas;
+
+		} // End of the loop over the plots
+
+		ExtractedXSec->Close();
+		std::cout << std::endl << "File " << NameExtractedXSec << " created" << std::endl << std::endl;
+
+	} // End of the loop over the runs	
+
+} // End of the program 
