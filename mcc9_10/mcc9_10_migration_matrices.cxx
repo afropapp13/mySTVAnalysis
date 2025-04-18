@@ -81,19 +81,9 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 	NameOfSamples.push_back("mcc9_10_Overlay9");
 	const int NSamples = NameOfSamples.size();
 		
-	// -------------------------------------------------------------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------------------------------------------------------------			
 
-	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-	Runs.push_back("Run4b");
-	Runs.push_back("Run4b_noweights");	
-//	Runs.push_back("Run5");				
-//	Runs.push_back("Combined");				
-
-	const int NRuns = (int)(Runs.size());
+	const int NRuns = (int)(xsec_Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	
 
 	// -------------------------------------------------------------------------------------
@@ -110,7 +100,7 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 		// -------------------------------------------------------------------------------------
 
 		TString FileName = MigrationMatrixPath+"FileMigrationMatrices_"+\
-				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileMigrationMatrices = new TFile(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
@@ -118,7 +108,7 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
 			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+CutExtension+".root");
+				xsec_Runs[WhichRun]+CutExtension+".root");
 
 		}
 
@@ -181,7 +171,7 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 	
 				if (OverlaySample == "") {
 		
-					TString PlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+NameOfSamples[WhichSample];
+					TString PlotCanvasName = xsec_Runs[WhichRun]+"_"+PlotNames[WhichPlot]+NameOfSamples[WhichSample];
 					TCanvas* PlotCanvas = new TCanvas(PlotCanvasName,PlotCanvasName,205,34,1024,768);
 					PlotCanvas->cd();
 					PlotCanvas->SetBottomMargin(0.16);
@@ -245,7 +235,7 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 					//------------------------------//
 		
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
-						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+						+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				
 				 

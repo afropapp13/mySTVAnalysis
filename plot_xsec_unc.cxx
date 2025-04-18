@@ -186,7 +186,8 @@ void plot_xsec_unc() {
 
 			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
 
-				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[0]->GetBinContent(1),2.) + TMath::Power(UncPlot[10]->GetBinContent(1),2.) );		
+				double DataStatUnc = UncPlot[0]->GetBinContent(1);		
+				double MCStatUnc = UncPlot[10]->GetBinContent(1);		
 				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) );				
 				double FluxUnc = UncPlot[6]->GetBinContent(1);
 				double G4Unc = UncPlot[5]->GetBinContent(1);
@@ -201,7 +202,8 @@ void plot_xsec_unc() {
 				cout << " Det = " <<  DetUnc << " %" << endl;
 				cout << " NuWro = " <<  NuWroUnc << " %" << endl;
 				cout << " POT = " <<  POTUnc << " %" << endl;				
-				cout << " Stat = " <<  StatUnc << " %" << endl;	
+				cout << " Data Stat = " <<  DataStatUnc << " %" << endl;	
+				cout << " MC Stat = " <<  MCStatUnc << " %" << endl;	
 				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						
 				cout << " G4 = " <<  G4Unc << " %" << endl;		
 				cout << " Dirt = " <<  DirtUnc << " %" << endl;			

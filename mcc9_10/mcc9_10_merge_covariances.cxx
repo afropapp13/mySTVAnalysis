@@ -223,23 +223,9 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 	const int NPlots = PlotNames.size();
 	//cout << "Number of 1D Plots = " << NPlots << endl;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------------------------		
 
-	vector<TString> Runs;
-	/*Runs.push_back("Run1");
-	Runs.push_back("Run1A_open_trigger");
-	Runs.push_back("Run1B_open_trigger");
-	Runs.push_back("Run2");
-	Runs.push_back("Run3");
-	Runs.push_back("Run4a");*/
-	Runs.push_back("Run4b");
-	/*Runs.push_back("Run4b_noweights");	
-	Runs.push_back("Run4c");
-	Runs.push_back("Run4d");
-	Runs.push_back("Run5");				
-	Runs.push_back("Combined");*/			
-
-	int NRuns = (int)(Runs.size());
+	int NRuns = (int)(xsec_Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -302,8 +288,8 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOn9 != "") { TotalFileCovarianceSpecName = Tune + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString TotalFileCovarianceSpecName = Tune + BeamOn9 + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOn9 != "") { TotalFileCovarianceSpecName = Tune + "WienerSVD_Total_CovarianceMatrices_"+OverlaySample+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 		TString TotalFileCovarianceName = MigrationMatrixPath + TotalFileCovarianceSpecName;
 		TFile* TotalFileCovarianceMatrices = new TFile(TotalFileCovarianceName,"recreate");
@@ -316,7 +302,7 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 			TCanvas* MCERPlotCanvas = nullptr;
 			TLegend* legMC = nullptr;
-			TString MCERCanvasName = Tune + "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+Runs[WhichRun];
+			TString MCERCanvasName = Tune + "MCERSyst_"+PlotNames[WhichPlot]+OverlaySample+"_"+xsec_Runs[WhichRun];
 
 			if (StorePlots) {
 
@@ -352,19 +338,19 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 				// Opening the file containing the covariance matrices for each one of the systematics
 
-//				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-				if (BeamOn9 != "" && UncSources[WhichSample] == "Stat") { FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+//				TString FileCovarianceSpecName = BeamOn9+"WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				TString FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+				if (BeamOn9 != "" && UncSources[WhichSample] == "Stat") { FileCovarianceSpecName = Tune + "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 				if (BeamOn9 != "" && UncSources[WhichSample] == "NuWro" && ( Tune == "GENIEv2" || Tune == "NoTune" || Tune == "TwiceMEC" ) ) 
-					{ FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+					{ FileCovarianceSpecName = "WienerSVD_" + UncSources[WhichSample] + "_CovarianceMatrices_"+OverlaySample+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 				TString FileCovarianceName = MigrationMatrixPath + FileCovarianceSpecName;
 				CovFiles[WhichSample] = new TFile(FileCovarianceName,"readonly");
 
 				// -----------------------------------------------------------------------------------------------------------------------------------------
 
-				TString LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
-				TString LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+				TString LocalCovMatrixName = UncSources[WhichSample]+"_Covariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
+				TString LocalFracCovMatrixName = UncSources[WhichSample]+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
 
 				TH2D* LocalCovMatrix = (TH2D*)( CovFiles[WhichSample]->Get(LocalCovMatrixName) );
 				TH2D* LocalCovMatrixClone = (TH2D*)(LocalCovMatrix->Clone() );
@@ -479,7 +465,7 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 					MCERPlotCanvas->cd();  leg = legMC;
 
-					ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],Runs[WhichRun],UncSources[WhichSample],Counter,leg);
+					ReturnUncPlot(LocalFracCovMatrix,PlotNames[WhichPlot],xsec_Runs[WhichRun],UncSources[WhichSample],Counter,leg);
 					Counter++;		
 
 				}
@@ -545,7 +531,7 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 				// Plot the total unc on top of everything else
 
-				ReturnUncPlot(CloneFracCovariances,PlotNames[WhichPlot],Runs[WhichRun],"Total",-1,legMC);
+				ReturnUncPlot(CloneFracCovariances,PlotNames[WhichPlot],xsec_Runs[WhichRun],"Total",-1,legMC);
 		
 				// ------------------------------------------------------------------
 
@@ -556,13 +542,13 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 				// Plot the 2D total covariance matrices
 
-				PlotCov(CloneCovariances,"",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun],Tune);
+				PlotCov(CloneCovariances,"",PlotNames[WhichPlot],OverlaySample,xsec_Runs[WhichRun],Tune);
 
 				// ---------------------------------------------------------------------------------------------
 
 				// Plot the 2D total fractional covariance matrices
 
-				PlotCov(CloneFracCovariances,"Frac",PlotNames[WhichPlot],OverlaySample,Runs[WhichRun],Tune);
+				PlotCov(CloneFracCovariances,"Frac",PlotNames[WhichPlot],OverlaySample,xsec_Runs[WhichRun],Tune);
 
 				// -------------------------------------------------------------------------------------------	
 
@@ -586,7 +572,7 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 				}			
 
-				PlotCov(CorrMatrix, "Corr", PlotNames[WhichPlot], OverlaySample, Runs[WhichRun],Tune);											
+				PlotCov(CorrMatrix, "Corr", PlotNames[WhichPlot], OverlaySample, xsec_Runs[WhichRun],Tune);											
 
 				// ---------------------------------------------------------------------------------------------
 
@@ -598,7 +584,7 @@ void mcc9_10_merge_covariances(TString OverlaySample = "mcc9_10_Overlay9", TStri
 
 		cout << endl << "Covariance matrix file " << TotalFileCovarianceName << " has been created" << endl << endl;
 
-		cout << "Merging of covariance matrices for run " << Runs[WhichRun] << " completed!" << endl;
+		cout << "Merging of covariance matrices for run " << xsec_Runs[WhichRun] << " completed!" << endl;
 
 	} // End of the loop over the runs	
 

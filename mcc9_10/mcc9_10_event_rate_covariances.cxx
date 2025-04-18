@@ -100,23 +100,8 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 //	PlotNames.push_back("DeltaAlphaTPlot"); 
 
 	const int N1DPlots = PlotNames.size();
-		
-	// -------------------------------------------------------------------------------------------------------------------------------------
-	vector<TString> Runs;
-	/*Runs.push_back("Run1");
-	Runs.push_back("Run1A_open_trigger");
-	Runs.push_back("Run1B_open_trigger");
-	Runs.push_back("Run2");
-	Runs.push_back("Run3");
-	Runs.push_back("Run4a");*/
-	Runs.push_back("Run4b");
-	/*Runs.push_back("Run4b_noweights");	
-	Runs.push_back("Run4c");
-	Runs.push_back("Run4d");
-	Runs.push_back("Run5");			
-	Runs.push_back("Combined");*/
 
-	const int NRuns = (int)(Runs.size());
+	const int NRuns = (int)(xsec_Runs.size());
 
 	// -------------------------------------------------------------------------------------
 
@@ -326,7 +311,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(xsec_Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);
 
 		if (Syst == "Flux") {
@@ -344,40 +329,40 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+Tune+"ER_WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"ER_WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString FileName = MigrationMatrixPath+Tune+"ER_WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"ER_WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
 		// Open base files
 
 		TString ExactFileLocation = PathToFiles+CutExtension;
-		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+CutExtension+".root";
-		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
+		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 
 		if (Syst == "LY" || Syst == "TPC") { 
 
-			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CV"+CutExtension+".root"; 
-			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_CV_"+UBCodeVersion+".root"; 
-			ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_CV_"+UBCodeVersion+".root";
+			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV"+CutExtension+".root"; 
+			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV_"+UBCodeVersion+".root"; 
+			ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV_"+UBCodeVersion+".root";
 
 		}
 
 		if (Syst == "SCERecomb2") { 
 
-			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra"+CutExtension+".root"; 
-			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root"; 
-			ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root";
+			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra"+CutExtension+".root"; 
+			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root"; 
+			ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root";
 
 		}
 
 		TFile* FileResponseMatrices = new TFile(ResponseFileName,"readonly");
 		TrueMCFileSample[WhichRun] = TFile::Open(TrueTStringBaseMC,"readonly");
 		MCFileSample[WhichRun] = TFile::Open(TStringBaseMC,"readonly");
-		BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
-		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
-		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+DirtSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
+		BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
 
 		// -------------------------------------------------------------------------------------
 
@@ -402,20 +387,20 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 			for (int alt = 0; alt < NAltModels; alt++ ) {
 
-				if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+				if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 					{ continue;}
 
 				// Open Alternative MC files & ReAlternative Response Matrices
 
-				TString TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+AltModels[alt]+CutExtension+".root";
-				if (Syst == "NuWro") { TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_mcc9_10_Overlay9NuWro_"+Runs[WhichRun]+CutExtension+".root"; }
+				TString TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+AltModels[alt]+CutExtension+".root";
+				if (Syst == "NuWro") { TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_mcc9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+CutExtension+".root"; }
 				AltMCFileSample[WhichRun][alt] = TFile::Open(TStringAltBaseMC,"readonly");
 
 				AltCC1pPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("CC1pReco"+PlotNames[WhichPlot]));
 				AltNonCC1pPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("NonCC1pReco"+PlotNames[WhichPlot]));			
 
-				TString TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+AltModels[alt]+"_"+UBCodeVersion+".root";
-				if (Syst == "NuWro") { TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_mcc9_10_Overlay9NuWro_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";}
+				TString TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+AltModels[alt]+"_"+UBCodeVersion+".root";
+				if (Syst == "NuWro") { TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_mcc9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";}
 				AltMCFileSampleResponseMatrix[WhichRun][alt] = TFile::Open(TStringAltBaseMCResponseMatrix,"readonly");
 
 				TH2D* AltResponseMatrix = (TH2D*)(AltMCFileSampleResponseMatrix[WhichRun][alt]->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
@@ -476,7 +461,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
-					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 						{ continue;}
 
 					// Make a copy of the alternative "CC1p" plot
@@ -541,7 +526,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 				|| Syst == "MC_LY" || Syst == "MC_TPC" || Syst == "MC_SCERecomb2") 
 			) {
 
-				TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
+				TString EventRatePlotCanvasName = xsec_Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 				TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
 				EventRatePlotCanvas->SetBottomMargin(0.17);
 				EventRatePlotCanvas->SetLeftMargin(0.15);
@@ -582,7 +567,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
-					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 						{ continue;}
 
 					AltBeamOnPlots[WhichPlot][alt]->SetMarkerColor(Colors[alt]);
@@ -606,7 +591,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 				leg->Draw();
 
-				TString EventRateCanvasName = "/ER_"+Tune+"EventRate_WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
+				TString EventRateCanvasName = "/ER_"+Tune+"EventRate_WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
 				EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
 				delete EventRatePlotCanvas;
 
@@ -623,7 +608,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 				for (int unialt = 0; unialt < (int)(UniAltModels.size()); unialt++ ) {
 
-					TString EventRatePlotCanvasName = Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
+					TString EventRatePlotCanvasName = xsec_Runs[WhichRun]+"_"+PlotNames[WhichPlot]+"_"+Syst;
 					TCanvas* EventRatePlotCanvas = new TCanvas(EventRatePlotCanvasName,EventRatePlotCanvasName,205,34,1024,768);
 					EventRatePlotCanvas->SetBottomMargin(0.17);
 					EventRatePlotCanvas->SetLeftMargin(0.15);
@@ -692,7 +677,7 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 					leg->Draw();
 
-					TString EventRateCanvasName = "/ER_"+Tune+"EventRate_WienerSVD_"+Syst+UniAltModels[unialt]+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
+					TString EventRateCanvasName = "/ER_"+Tune+"EventRate_WienerSVD_"+Syst+UniAltModels[unialt]+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
 					EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
 					delete EventRatePlotCanvas;
 
@@ -711,8 +696,8 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 			// Declare the matrix & initialize the entries to 0
 
-			FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
-			Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
 			
 			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 
@@ -872,11 +857,11 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 						
 							//----------------------------------------//
 
-							if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+							if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 								{ continue;}
 
 							if ( (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2" || Syst == "SmEff_SCERecomb2") 
-								&& Runs[WhichRun] == "Run1" && AltModels[alt] == "_CVextra") 
+								&& xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_CVextra") 
 								{ continue;}	
 								
 							//----------------------------------------//	
@@ -968,13 +953,13 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 				// Store covariance matrices
 
-				StoreCanvas(Covariances[WhichRun][WhichPlot], "", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);
+				StoreCanvas(Covariances[WhichRun][WhichPlot], "", Syst, PlotNames[WhichPlot], BaseMC, xsec_Runs[WhichRun],Tune);
 
 				// -------------------------------------------------------------------------------------------	
 
 				// Store fractional covariance matrices
 
-				StoreCanvas(FracCovariances[WhichRun][WhichPlot], "Frac", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);
+				StoreCanvas(FracCovariances[WhichRun][WhichPlot], "Frac", Syst, PlotNames[WhichPlot], BaseMC, xsec_Runs[WhichRun],Tune);
 
 				// -------------------------------------------------------------------------------------------	
 
@@ -1005,9 +990,9 @@ void mcc9_10_event_rate_covariances(TString Syst = "None",TString BaseMC = "mcc9
 
 				}			
 
-				StoreCanvas(CorrMatrices[WhichRun][WhichPlot], "Corr", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);				
+				StoreCanvas(CorrMatrices[WhichRun][WhichPlot], "Corr", Syst, PlotNames[WhichPlot], BaseMC, xsec_Runs[WhichRun],Tune);				
 
-				CorrMatrices[WhichRun][WhichPlot]->Write(Syst+"_CorrCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]);
+				CorrMatrices[WhichRun][WhichPlot]->Write(Syst+"_CorrCovariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun]);
 
 				// -------------------------------------------------------------------------------------------
 

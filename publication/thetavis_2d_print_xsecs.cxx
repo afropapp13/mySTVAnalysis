@@ -48,8 +48,8 @@ void thetavis_2d_print_xsecs() {
 	// 2D analysis
 
 	PlotNames.push_back("ThetaVis_ECalPlot"); Units.push_back("[$10^{-38}\\mathrm{\\frac{cm^{2}}{deg\\,GeV\\,Ar}}$]"); 
-	PlotNames.push_back("ThetaVis_DeltaPnPlot");  Units.push_back("[$10^{-38}\\mathrm{\\frac{cm^{2}}{deg\\,(GeV/c)\\,Ar}}$]");
-	PlotNames.push_back("ThetaVis_PMissPlot");  Units.push_back("[$10^{-38}\\mathrm{\\frac{cm^{2}}{deg\\,(GeV/c)\\,Ar}}$]");
+	PlotNames.push_back("ThetaVis_DeltaPnPlot");  Units.push_back("[$10^{-38}\\mathrm{\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,Ar}}$]");
+	PlotNames.push_back("ThetaVis_PMissPlot");  Units.push_back("[$10^{-38}\\mathrm{\\frac{cm^{2}}{deg\\,(GeV/\\textit{c})\\,Ar}}$]");
 	
 	const int N1DPlots = PlotNames.size();
 
@@ -240,6 +240,7 @@ void thetavis_2d_print_xsecs() {
 
 			TString LatexLabelString = "$\\mathrm{"+LatexLabel[ MapUncorCor[ NameCopy ] ]+"}$";
 			LatexLabelString.ReplaceAll("#","\\").ReplaceAll(" ","\\,");
+			LatexLabelString.ReplaceAll("c","\\textit{c}");
 	
 			myTxtFile << "\\begin{table}[H]" << endl;
 			myTxtFile << "\\raggedright" << endl;	
@@ -247,10 +248,10 @@ void thetavis_2d_print_xsecs() {
 			myTxtFile << "\\small" << endl;
 			myTxtFile << "\\begin{tabular}{ |c|c|c|c|c| }" << endl;	
 			myTxtFile << "\\hline" << endl;						
-			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\theta_{\\mathrm{vis}}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\multicolumn{5}{|c|}{Cross section as a function of $\\theta_{\\mathrm{vis}}$, " << LatexLabelString << "} \\\\" << endl;
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "Bin \\# & Low edge [deg] & High edge [deg] & Cross Section " << Units[iplot] <<" & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "Bin \\# & $\\theta_{\\mathrm{vis}}$ low edge [deg] & $\\theta_{\\mathrm{vis}}$ high edge [deg] & Cross section " << Units[iplot] <<" & Uncertainty " << Units[iplot] << " \\\\" << endl;			
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;	
 

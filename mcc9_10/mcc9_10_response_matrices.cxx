@@ -64,21 +64,7 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 		
 	// -------------------------------------------------------------------------------------------------------------------------------------
 
-	vector<TString> Runs;
-	// Runs.push_back("Run1");
-	// Runs.push_back("Run1A_open_trigger");
-	// Runs.push_back("Run1B_open_trigger");
-	// Runs.push_back("Run2");
-	// Runs.push_back("Run3");
-	// Runs.push_back("Run4a");
-	Runs.push_back("Run4b");
-	Runs.push_back("Run4b_noweights");	
-	// Runs.push_back("Run4c");
-	// Runs.push_back("Run4d");
-	// Runs.push_back("Run5");	
-	// Runs.push_back("Combined");	
-
-	const int NRuns = (int)(Runs.size());
+	const int NRuns = (int)(xsec_Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;	
 
 	// -------------------------------------------------------------------------------------
@@ -102,7 +88,7 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 		// -------------------------------------------------------------------------------------
 
 		TString FileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+\
-				NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileResponseMatrices = TFile::Open(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
@@ -110,21 +96,21 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 			TString ExactFileLocation = PathToFiles+CutExtension;
 
 			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
+				xsec_Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
 
 			// Jul 8 2021: after discussion with Xin, if flux variations, the truth level should always be the CV
 
 			if (string(OverlaySample).find("fluxes") != std::string::npos) {
 
 				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
+					xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
 
 			}
 
 			else {
 
 				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
-							  Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
+					xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
 
 			}
 
@@ -205,7 +191,7 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetLabelSize(TextSize);
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetNdivisions(5);				
 
-					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun] + " Response Matrix, " + LatexLabel[PlotNames[WhichPlot]]);	
+					Plots[WhichSample][WhichPlot]->SetTitle(xsec_Runs[WhichRun] + " Response Matrix, " + LatexLabel[PlotNames[WhichPlot]]);	
 
 					Plots[WhichSample][WhichPlot]->GetZaxis()->SetRangeUser(0,1.1*Plots[WhichSample][WhichPlot]->GetMaximum());
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
@@ -241,7 +227,7 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 					//------------------------------//
 				
 					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/"+Tune+"ResponseMatrices_"+PlotNames[WhichPlot]
-						+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+						+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
 					
 					delete PlotCanvas;				
 	

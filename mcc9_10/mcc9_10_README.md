@@ -44,7 +44,7 @@ root -b mcc9_10_produce_xsecs_fds.cxx
 
 #################################################################################################################################
 
-cd ../myEvents/mcc9_10
+cd ../../myEvents/mcc9_10
 
 root -b mcc9_10_topological_breakdown.cxx
 root -b mcc9_10_interaction_breakdown.cxx

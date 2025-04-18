@@ -83,10 +83,10 @@ void thetavis_1d_print_xsecs() {
 			myTxtFile << "\\small" << endl;
 			myTxtFile << "\\begin{tabular}{ |c|c|c|c|c| }" << endl;	
 			myTxtFile << "\\hline" << endl;						
-			myTxtFile << "\\multicolumn{5}{|c|}{Cross Section $\\theta_{\\mathrm{vis}}$, " << LatexLabelString << "} \\\\" << endl;
+			myTxtFile << "\\multicolumn{5}{|c|}{Cross section as a function of $\\theta_{\\mathrm{vis}}$, " << LatexLabelString << "} \\\\" << endl;
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;			
-			myTxtFile << "Bin \\# & Low edge [deg] & High edge [deg] & Cross Section " << Units[iplot] <<" & Uncertainty " << Units[iplot] << " \\\\" << endl;			
+			myTxtFile << "Bin \\# & $\\theta_{\\mathrm{vis}}$ low edge [deg] & $\\theta_{\\mathrm{vis}}$ high edge [deg] & Cross section " << Units[iplot] <<" & Uncertainty " << Units[iplot] << " \\\\" << endl;			
 			myTxtFile << "\\hline" << endl;
 			myTxtFile << "\\hline" << endl;	
 

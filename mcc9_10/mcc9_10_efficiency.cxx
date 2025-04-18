@@ -54,28 +54,9 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 	const int N1DPlots = PlotNamesClone.size();
 	//cout << "Number of 1D Plots = " << N1DPlots << endl;
 
-	// ------------------------------------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------------------------------	
 
-	vector<TString> Runs;
-	//Runs.push_back("Run1");
-//	Runs.push_back("Run2");
-	//Runs.push_back("Run3");
-//	Runs.push_back("Run4");
-	Runs.push_back("Run4b");
-	Runs.push_back("Run4b_noweights");	
-//	Runs.push_back("Run5");				
-//	Runs.push_back("Combined");	
-
-	// For runs 1-3, we used only run3 det vars
-
-	/*if (DetVar) {
-
-		Runs.clear();
-		Runs.push_back("Run3");
-
-	}*/			
-
-	int NRuns = (int)(Runs.size());
+	int NRuns = (int)(xsec_Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
 	// -------------------------------------------------------------------------------------------------------------------------------
@@ -104,10 +85,10 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
 			TString STVPath = PathToFiles+"/"+CutExtension+"/";
-			TString STVName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+			TString STVName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+CutExtension+".root";
 			FileSample.push_back(TFile::Open(STVPath+STVName));
 			
-			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 			TruthFileSample.push_back(TFile::Open(TrueSTVPath+TrueSTVName));
 
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
@@ -132,7 +113,7 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString EfficiencyName = "FileStandardEfficiences_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
+			TString EfficiencyName = "FileStandardEfficiences_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
 			Name = FileEfficienciesPath + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
 
@@ -191,12 +172,12 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 					TLatex *text = new TLatex();
 					text->SetTextFont(FontStyle);
 					text->SetTextSize(0.08);
-					text->DrawTextNDC(0.18, 0.8, Runs[WhichRun]);
+					text->DrawTextNDC(0.18, 0.8, xsec_Runs[WhichRun]);
 
 					// ----------------------------------------------------------------------------------------
 				
 					TString CanvasPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasPdfName = PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasPdfName = PlotNamesClone[WhichPlot]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
 					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
 
 					delete PlotCanvas;
@@ -241,7 +222,7 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 					pEffPlot->Scale(100.);
 					pEffPlot->GetYaxis()->SetRangeUser(0.,1.2*pEffPlot->GetMaximum());
 
-					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun];
+					TString CanvasEffName = NameOfSamples[WhichSample]+"_"+"StandardEff"+PlotNamesClone[WhichPlot]+"_"+xsec_Runs[WhichRun];
 					TCanvas* PlotEffCanvas = new TCanvas(CanvasEffName,CanvasEffName,205,34,1024,768);
 					PlotEffCanvas->cd();
 					PlotEffCanvas->SetTopMargin(0.11);
@@ -260,7 +241,7 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 					TLatex *textEff = new TLatex();
 					textEff->SetTextFont(FontStyle);
 					textEff->SetTextSize(TextSize);
-					if (Runs[WhichRun] != "Combined") { textEff->DrawTextNDC(0.22, 0.8, Runs[WhichRun]); }
+					if (xsec_Runs[WhichRun] != "Combined") { textEff->DrawTextNDC(0.22, 0.8, xsec_Runs[WhichRun]); }
 					if ( !(string(PlotNamesClone[WhichPlot]).find("VertexZ") != std::string::npos) ) 
 						{ textEff->DrawLatexNDC(0.22, 0.93, LatexLabel[PlotNamesClone[WhichPlot]]); }					
 				

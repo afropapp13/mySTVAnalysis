@@ -123,18 +123,9 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 	
 	int DataIndex = -1.;
 
-	// -----------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------------------------		
 
-	vector<TString> Runs;
-//	Runs.push_back("Run1");
-////	Runs.push_back("Run2");
-//	Runs.push_back("Run3");
-////	Runs.push_back("Run4");
-	Runs.push_back("Run4b");
-////	Runs.push_back("Run5");	
-//	Runs.push_back("Combined");			
-
-	int NRuns = (int)(Runs.size());
+	int NRuns = (int)(xsec_Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
 	//----------------------------------------//
@@ -156,9 +147,9 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(xsec_Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);
-		//cout << Runs[WhichRun] << " Integrated flux = " << IntegratedFlux << endl;
+		//cout << xsec_Runs[WhichRun] << " Integrated flux = " << IntegratedFlux << endl;
 				
 		// -------------------------------------------------------------------------------------		
 
@@ -193,10 +184,10 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileResponseName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileResponseName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
-		TString FileCovarianceName = MigrationMatrixPath+Tune+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = MigrationMatrixPath+Tune+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -213,14 +204,14 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 		// File to store xsecs for data release
 
-		TString XSecTxtName = PathToExtractedXSec+"TxtXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".txt";
+		TString XSecTxtName = PathToExtractedXSec+"TxtXSec_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".txt";
 		ofstream myXSecTxtFile;
 
 		if (ClosureTest == false) {
 
-			NameExtractedXSec = PathToExtractedXSec+Tune+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
+			NameExtractedXSec = PathToExtractedXSec+Tune+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root";
 			if (Tune != "") 
-				{ NameExtractedXSec = PathToExtractedXSec+"AltMC"+Tune+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root"; }
+				{ NameExtractedXSec = PathToExtractedXSec+"AltMC"+Tune+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+Subtract+".root"; }
 			ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 			// ---------------------------------------------------------------------------------------------------------------------------------------
@@ -229,7 +220,7 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			myXSecTxtFile.open(XSecTxtName);
 			myXSecTxtFile << std::fixed << std::setprecision(2);
-			myXSecTxtFile << Runs[WhichRun] << endl << endl;
+			myXSecTxtFile << xsec_Runs[WhichRun] << endl << endl;
 			myXSecTxtFile << "Bin #; Bin Low Edge; Bin High Edge; Bin Entry [10^{-38} cm^{2}]; Bin Error [10^{-38} cm^{2}]" << endl << endl;
 
 		}		
@@ -248,20 +239,20 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 				NameOfSamples[WhichSample] == "mcc9_10_OverlayDirt9"
 			) { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			}
 			
 			if (NameOfSamples[WhichSample] == "mcc9_10_Overlay9") { 
 			
-				TString FileName = Tune+"STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+OverlaySample+CutExtension+".root";
+				TString FileName = Tune+"STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 				
 			}
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_GenieOverlay") { 
 			
-				TString FileName = Tune+"TruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				TString FileName = Tune+"TruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
 				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 				
 			}
@@ -483,13 +474,13 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			// ------------------------------------------------------------------------------------------	
 
-			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
-			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Wiener Filter Vector",n,0,n);
-			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);			
-			TH2D* normunfcov = new TH2D("normunfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Norm Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
-			TH2D* shapeunfcov = new TH2D("shapeunfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Shape Unfolded spectrum covariance", n, Nuedges, n, Nuedges);						
-			TH2D* covrot = new TH2D("covrot_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Covariance rotation matrix", n, Nuedges, n, Nuedges);
-			TH2D* transpcovrot = new TH2D("transpcovrot_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Transpose covariance rotation matrix", n, Nuedges, n, Nuedges);			
+			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
+			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Wiener Filter Vector",n,0,n);
+			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);			
+			TH2D* normunfcov = new TH2D("normunfcov_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Norm Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+			TH2D* shapeunfcov = new TH2D("shapeunfcov_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Shape Unfolded spectrum covariance", n, Nuedges, n, Nuedges);						
+			TH2D* covrot = new TH2D("covrot_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Covariance rotation matrix", n, Nuedges, n, Nuedges);
+			TH2D* transpcovrot = new TH2D("transpcovrot_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Transpose covariance rotation matrix", n, Nuedges, n, Nuedges);			
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -524,56 +515,56 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			// Start plotting
 		
-			TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+			TString CanvasName = PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.16);
 			PlotCanvas->SetTopMargin(0.13);			
 			PlotCanvas->SetLeftMargin(0.21);			
 		
-			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfFullUnc = new TH1D("unfFullUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
+			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfFullUnc = new TH1D("unfFullUnc_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfShapeOnly = new TH1D("unfShapeOnly_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfNormOnly = new TH1D("unfNormOnly_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);			
 
-			TH1D* unfMCStat = new TH1D("unfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			/*TH1D* unfLY = new TH1D("unfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfTPC = new TH1D("unfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfSCERecomb2 = new TH1D("unfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/
-			TH1D* unfFlux = new TH1D("unfFlux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfXSec = new TH1D("unfXSec_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfG4 = new TH1D("unfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfDirt = new TH1D("unfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* unfPOT = new TH1D("unfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			/*TH1D* unfNuWro = new TH1D("unfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/			
-			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);	
+			TH1D* unfMCStat = new TH1D("unfMCStat_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfStat = new TH1D("unfStat_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			/*TH1D* unfLY = new TH1D("unfLY_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfTPC = new TH1D("unfTPC_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfSCERecomb2 = new TH1D("unfSCERecomb2_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/
+			TH1D* unfFlux = new TH1D("unfFlux_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfXSec = new TH1D("unfXSec_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfG4 = new TH1D("unfG4_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfDirt = new TH1D("unfDirt_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unfPOT = new TH1D("unfPOT_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			/*TH1D* unfNuWro = new TH1D("unfNuWro_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/			
+			TH1D* unfNTarget = new TH1D("unfNTarget_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);	
 
-			TH1D* signalunfMCStat = new TH1D("signalunfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfStat = new TH1D("signalunfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			/*TH1D* signalunfLY = new TH1D("signalunfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfTPC = new TH1D("signalunfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfSCERecomb2 = new TH1D("signalunfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/
-			TH1D* signalunfFlux = new TH1D("signalunfFlux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfXSec = new TH1D("signalunfXSec_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfG4 = new TH1D("signalunfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfDirt = new TH1D("signalunfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* signalunfPOT = new TH1D("signalunfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			/*TH1D* signalunfNuWro = new TH1D("signalunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/			
-			TH1D* signalunfNTarget = new TH1D("signalunfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfMCStat = new TH1D("signalunfMCStat_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfStat = new TH1D("signalunfStat_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			/*TH1D* signalunfLY = new TH1D("signalunfLY_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfTPC = new TH1D("signalunfTPC_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfSCERecomb2 = new TH1D("signalunfSCERecomb2_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/
+			TH1D* signalunfFlux = new TH1D("signalunfFlux_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfXSec = new TH1D("signalunfXSec_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfG4 = new TH1D("signalunfG4_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfDirt = new TH1D("signalunfDirt_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* signalunfPOT = new TH1D("signalunfPOT_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			/*TH1D* signalunfNuWro = new TH1D("signalunfNuWro_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/			
+			TH1D* signalunfNTarget = new TH1D("signalunfNTarget_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
-			TH1D* bkgunfMCStat = new TH1D("bkgunfMCStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfStat = new TH1D("bkgunfStat_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			/*TH1D* bkgunfLY = new TH1D("bkgunfLY_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfTPC = new TH1D("bkgunfTPC_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfSCERecomb2 = new TH1D("bkgunfSCERecomb2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/
-			TH1D* bkgunfFlux = new TH1D("bkgunfFlux_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfXSec = new TH1D("bkgunfXSec_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfG4 = new TH1D("bkgunfG4_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfDirt = new TH1D("bkgunfDirt_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* bkgunfPOT = new TH1D("bkgunfPOT_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			/*TH1D* bkgunfNuWro = new TH1D("bkgunfNuWro_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/			
-			TH1D* bkgunfNTarget = new TH1D("bkgunfNTarget_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);																	
+			TH1D* bkgunfMCStat = new TH1D("bkgunfMCStat_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfStat = new TH1D("bkgunfStat_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			/*TH1D* bkgunfLY = new TH1D("bkgunfLY_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfTPC = new TH1D("bkgunfTPC_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfSCERecomb2 = new TH1D("bkgunfSCERecomb2_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/
+			TH1D* bkgunfFlux = new TH1D("bkgunfFlux_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfXSec = new TH1D("bkgunfXSec_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfG4 = new TH1D("bkgunfG4_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfDirt = new TH1D("bkgunfDirt_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* bkgunfPOT = new TH1D("bkgunfPOT_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			/*TH1D* bkgunfNuWro = new TH1D("bkgunfNuWro_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);*/			
+			TH1D* bkgunfNTarget = new TH1D("bkgunfNTarget_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);																	
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -765,27 +756,27 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			// The MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
 
-			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD AcTrueUnfold = AddSmear * signal;
 			V2H(AcTrueUnfold, TrueUnf);
 
-			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD QEAcTrueUnfold = AddSmear * QEsignal;
 			V2H(QEAcTrueUnfold, QETrueUnf);
 
-			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD MECAcTrueUnfold = AddSmear * MECsignal;
 			V2H(MECAcTrueUnfold, MECTrueUnf);
 
-			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD RESAcTrueUnfold = AddSmear * RESsignal;
 			V2H(RESAcTrueUnfold, RESTrueUnf);
 
-			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD DISAcTrueUnfold = AddSmear * DISsignal;
 			V2H(DISAcTrueUnfold, DISTrueUnf);
 
-			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD COHAcTrueUnfold = AddSmear * COHsignal;
 			V2H(COHAcTrueUnfold, COHTrueUnf);															
 
@@ -859,7 +850,7 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			// ----------------------------------------------------------------------------------------------------------------		
 
-			TH1D* diff = new TH1D("diff_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Fractional difference of unf and signal model",n, Nuedges);
+			TH1D* diff = new TH1D("diff_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Fractional difference of unf and signal model",n, Nuedges);
 			
 			for(int i=1; i <= n; i++) {
 			
@@ -876,8 +867,8 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			// intrinsic bias (Ac-I) * s_bar formula
 
-			TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
-			TH1D* bias2 = new TH1D("bias2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"intrinsic bias2 w.r.t. unfolded result",n, Nuedges);
+			TH1D* bias = new TH1D("bias_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"intrinsic bias w.r.t. model",n, Nuedges);
+			TH1D* bias2 = new TH1D("bias2_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"intrinsic bias2 w.r.t. unfolded result",n, Nuedges);
 			TMatrixD unit(n,n);
 			unit.UnitMatrix();
 			TVectorD intrinsicbias = (AddSmear - unit)*signal;
@@ -898,8 +889,8 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 			// Diagonal Uncertainty
 
-			TH1D* fracError = new TH1D("fracError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Fractional uncertainty", n, Nuedges);
-			TH1D* absError = new TH1D("absError_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "absolute uncertainty", n, Nuedges);
+			TH1D* fracError = new TH1D("fracError_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun], "Fractional uncertainty", n, Nuedges);
+			TH1D* absError = new TH1D("absError_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun], "absolute uncertainty", n, Nuedges);
 
 			for (int i = 1; i <= n; i++) {
 
@@ -908,8 +899,8 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 			}
     
 			/// MSE
-			TH1D* MSE = new TH1D("MSE_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance+bias^2", n, Nuedges);
-			TH1D* MSE2 = new TH1D("MSE2_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun], "Mean Square Error: variance", n, Nuedges);
+			TH1D* MSE = new TH1D("MSE_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun], "Mean Square Error: variance+bias^2", n, Nuedges);
+			TH1D* MSE2 = new TH1D("MSE2_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun], "Mean Square Error: variance", n, Nuedges);
     
 			for (int i = 0; i < n; i++) {
 
@@ -985,7 +976,7 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 				// Make the additional smearing matrix pretty
 
-				TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+				TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
 				TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
 				SmearPlotCanvas->cd();
 				SmearPlotCanvas->SetBottomMargin(0.17);
@@ -1040,7 +1031,7 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 
 				// Make the unfolded covariance matrix pretty
 
-				TString UnfCovCanvasName = "UnfCov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+				TString UnfCovCanvasName = "UnfCov_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
 				TCanvas* UnfCovPlotCanvas = new TCanvas(UnfCovCanvasName,UnfCovCanvasName,205,34,1024,768);
 				UnfCovPlotCanvas->cd();
 				UnfCovPlotCanvas->SetBottomMargin(0.17);

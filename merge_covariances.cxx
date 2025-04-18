@@ -104,7 +104,33 @@ void PlotCov(TH2D* h, TString Label, TString PlotNames, TString OverlaySamples, 
 
 	if (Label == "Corr" && !(string(PlotNames).find("Serial") != std::string::npos) ) { h->Draw("colz text"); }
 	else { h->Draw("colz"); }
+
+	//--------------------//
+
+	// dashed lines
+
+	if (string(PlotNames).find("Serial") != std::string::npos) {	
+
+		TString clone_name = PlotNames;
+		clone_name.ReplaceAll("Reco","");
+		vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
+
+		int nbreaks = bin_break_points.size() - 1;
+		vector<TLine*> line; line.resize(nbreaks);
+
+		for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
+
+			line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0., bin_break_points.at(ipoint) + 0.5, h->GetMaximum() );
+			line.at(ipoint)->SetLineStyle(kDashed);
+			line.at(ipoint)->SetLineColor(kMagenta);
+			line.at(ipoint)->Draw("same");
+
+		}
 	
+	}
+	
+	//--------------------//
+
 	PlotCanvas->SaveAs(PlotPath+OverlaySamples+"/"+Tune+"WienerSVD_Total_"+Label+"CovarianceMatrices_"+PlotNames+OverlaySamples+"_"+Runs+"_"+UBCodeVersion+".pdf");
 	
 	delete PlotCanvas;

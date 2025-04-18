@@ -119,11 +119,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 	//----------------------------------------//
 
-	vector<TString> Runs;
-	Runs.push_back("Run4b");
-	/*Runs.push_back("Combined");*/		
-
-	int NRuns = (int)(Runs.size());
+	int NRuns = (int)(xsec_Runs.size());
 	//cout << "Number of Runs = " << NRuns << endl;
 
 	//----------------------------------------//
@@ -139,7 +135,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 		//----------------------------------------//
 	
-		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);					
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(xsec_Runs[WhichRun]);					
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);	
 			
 		//----------------------------------------//
@@ -163,18 +159,18 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 		//----------------------------------------//
 
-		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 
 		if (OverlaySample == "mcc9_10_NoTuneOverlay9") { 
-			FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+			FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		}
 
 		if (OverlaySample == "mcc9_10_GENIEv2Overlay9") { 
-			FileResponseName = MigrationMatrixPath+"GENIEv2FileResponseMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+			FileResponseName = MigrationMatrixPath+"GENIEv2FileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		}		
 
 		if (OverlaySample == "mcc9_10_TwiceMECOverlay9") { 
-			FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+			FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 		}
 
 		cout << "File Responses = " << FileResponseName << endl;
@@ -182,37 +178,37 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 		//----------------------------------------//		
 
-		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 
 		if (OverlaySample == "mcc9_10_NoTuneOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}
 
 		if (OverlaySample == "mcc9_10_GENIEv2Overlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2WienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2WienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}		
 
 		if (OverlaySample == "mcc9_10_TwiceMECOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}
 
 		// For the fake data studies with the default overlay MC and alternative fake data
 		// we need only the stat, mc stat, and xsec uncertainties
 
 		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_Overlay9NuWro") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_Overlay9NuWroWienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_Overlay9NuWroWienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}		
 
 		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_NoTuneOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}
 
 		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "GENIEv2Overlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2Overlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2Overlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}		
 
 		if (OverlaySample == "Overlay9" && BeamOnSample == "mcc9_10_TwiceMECOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
 		}		
 
 		cout << "File Covariances = " << FileCovarianceName << endl;			
@@ -227,7 +223,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 		// Store the extracted xsections & associated files in dedicated file
 
-		TString NameExtractedXSec = PathToExtractedXSec+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+Subtract+".root";
+		TString NameExtractedXSec = PathToExtractedXSec+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+Subtract+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -242,58 +238,58 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			NameOfSamples[WhichSample] == "mcc9_10_OverlayDirt9"
 			) { 
 			
-			TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+			TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
 			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			}
 			
 			if (NameOfSamples[WhichSample] == "mcc9_10_Overlay9") { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
 			}
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_NoTuneOverlay9") { 
 			
-				TString FileName = "NoTuneSTVStudies_mcc9_10_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "NoTuneSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
 			}
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_GENIEv2Overlay9") { 
 			
-				TString FileName = "GENIEv2STVStudies_mcc9_10_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "GENIEv2STVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
 			}			
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_TwiceMECOverlay9") { 
 			
-				TString FileName = "TwiceMECSTVStudies_mcc9_10_Overlay9_"+Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "TwiceMECSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
 			}						
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_GenieOverlay") { 
 			
-				TString FileName = "TruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";					
+				TString FileName = "TruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";					
 				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 			
 			}
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_AltEventGen") { 
 			
-				TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-				if (BeamOnSample == "mcc9_10_NoTuneOverlay9") { FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
-				if (BeamOnSample == "mcc9_10_GENIEv2Overlay9") { FileName = "GENIEv2TruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }				
-				if (BeamOnSample == "mcc9_10_TwiceMECOverlay9") { FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
-				if (BeamOnSample == "mcc9_10_Overlay9NuWro") { FileName = "TruthSTVAnalysis_mcc9_10_Overlay9NuWro_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
+				TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+				if (BeamOnSample == "mcc9_10_NoTuneOverlay9") { FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+				if (BeamOnSample == "mcc9_10_GENIEv2Overlay9") { FileName = "GENIEv2TruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }				
+				if (BeamOnSample == "mcc9_10_TwiceMECOverlay9") { FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
+				if (BeamOnSample == "mcc9_10_Overlay9NuWro") { FileName = "TruthSTVAnalysis_mcc9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
 				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_NoTuneOverlay9") 
-					{ FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+					{ FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_GENIEv2Overlay9") 
-					{ FileName = "GENIEv2STVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }					
+					{ FileName = "GENIEv2STVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }					
 				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_TwiceMECOverlay9") 
-					{ FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }						
+					{ FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }						
 						
 				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
 			

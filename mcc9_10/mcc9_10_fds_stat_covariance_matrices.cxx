@@ -42,23 +42,9 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 
 	const int N1DPlots = PlotNames.size();
 		
-	// -----------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------
 
-	vector<TString> Runs;
-	/*Runs.push_back("Run1");
-	Runs.push_back("Run1A_open_trigger");
-	Runs.push_back("Run1B_open_trigger");
-	Runs.push_back("Run2");
-	Runs.push_back("Run3");
-	Runs.push_back("Run4a");*/
-	Runs.push_back("Run4b");
-	/*Runs.push_back("Run4b_noweights");	
-	Runs.push_back("Run4c");
-	Runs.push_back("Run4d");
-	Runs.push_back("Run5");			
-	Runs.push_back("Combined");*/
-
-	const int NRuns = (int)(Runs.size());
+	const int NRuns = (int)(xsec_Runs.size());
 
 	// -------------------------------------------------------------------------------------
 
@@ -95,36 +81,36 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-		double DataPOT = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);						
+		double DataPOT = PeLEE_ReturnBeamOnRunPOT(xsec_Runs[WhichRun]);						
 		double IntegratedFlux = (HistoFlux->Integral() * DataPOT / POTPerSpill / Nominal_UB_XY_Surface);
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString FileName = MigrationMatrixPath+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
 
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
 		// Open base files
 
 		TString ExactFileLocation = PathToFiles+CutExtension;
-		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+Runs[WhichRun]+CutExtension+".root";
-		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
+		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
 
 		TFile* FileResponseMatrices = new TFile(ResponseFileName,"readonly");
 		TrueMCFileSample[WhichRun] = TFile::Open(TrueTStringBaseMC,"readonly");
 		MCFileSample[WhichRun] = TFile::Open(TStringBaseMC,"readonly");
-		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
-		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+DirtSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly");
+		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
 
 		if (BeamOnSample == "mcc9_10_NoTuneOverlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/NoTuneSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root","readonly"); }
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/NoTuneSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }
 		else if (BeamOnSample == "mcc9_10_GENIEv2Overlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/GENIEv2STVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root","readonly"); }			
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/GENIEv2STVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }			
 		else if (BeamOnSample == "mcc9_10_TwiceMECOverlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/TwiceMECSTVStudies_Overlay9_"+Runs[WhichRun]+CutExtension+".root","readonly"); }			
-		else { BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+Runs[WhichRun]+CutExtension+".root","readonly"); }
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/TwiceMECSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }			
+		else { BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }
 
 		// -------------------------------------------------------------------------------------
 
@@ -158,8 +144,8 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 
 			// Declare the matrix & initialize the entries to 0
 
-			FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
-			Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			FracCovariances[WhichRun][WhichPlot] = new TH2D(Syst+"_FracCovariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
+			Covariances[WhichRun][WhichPlot] = new TH2D(Syst+"_Covariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";i bin "+XTitle+";j bin "+XTitle,NBins,ArrayBins,NBins,ArrayBins);
 
 			for (int WhichXBin = 0; WhichXBin < NBins; WhichXBin++) { 
 
