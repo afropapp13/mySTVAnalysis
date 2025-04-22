@@ -1031,6 +1031,41 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				smear->SetTitle("A_{C}, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]] + slice);
 				if (Runs[WhichRun] == "Combined") { smear->SetTitle("A_{C}, " + LatexLabel[PlotNames[WhichPlot]] + slice); }
 
+				//--------------------//
+
+				// dashed lines
+
+				if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+					TString clone_name = PlotNames[WhichPlot];
+					clone_name.ReplaceAll("Reco","");
+					cout << "clone_name = " << clone_name << endl;
+					vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
+
+					int nbreaks = bin_break_points.size() - 1;
+					vector<TLine*> line; line.resize(nbreaks);
+					vector<TLine*> vert_line; vert_line.resize(nbreaks);					
+
+					for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
+
+						line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0.5, bin_break_points.at(ipoint) + 0.5, n+0.5 );
+						line.at(ipoint)->SetLineStyle(kDashed);
+						line.at(ipoint)->SetLineColor(kMagenta);
+						line.at(ipoint)->SetLineWidth(2);						
+						line.at(ipoint)->Draw("same");
+
+						vert_line.at(ipoint) = new TLine( 0.5, bin_break_points.at(ipoint) + 0.5, n+0.5, bin_break_points.at(ipoint) + 0.5 );
+						vert_line.at(ipoint)->SetLineStyle(kDashed);
+						vert_line.at(ipoint)->SetLineColor(kMagenta);
+						vert_line.at(ipoint)->SetLineWidth(2);
+						vert_line.at(ipoint)->Draw("same");						
+
+					}
+				
+				}
+
+				//--------------------//					
+
 				TString SmearCanvas = "/Smear_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
 				delete SmearPlotCanvas;
@@ -1053,7 +1088,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				unfcov->GetXaxis()->SetLabelSize(TextSize);
 				unfcov->GetXaxis()->SetTitleSize(TextSize);
 				unfcov->GetXaxis()->SetNdivisions(6);
-				unfcov->GetXaxis()->SetTitle("i bin " + Xtitle);
+				unfcov->GetXaxis()->SetTitle(Xtitle);
 
 				unfcov->GetYaxis()->CenterTitle();
 				unfcov->GetYaxis()->SetLabelFont(FontStyle);
@@ -1061,7 +1096,7 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				unfcov->GetYaxis()->SetLabelSize(TextSize);
 				unfcov->GetYaxis()->SetTitleSize(TextSize);
 				unfcov->GetYaxis()->SetNdivisions(6);
-				unfcov->GetYaxis()->SetTitle("j bin " + Ytitle);					
+				unfcov->GetYaxis()->SetTitle(Ytitle);					
 
 				unfcov->GetZaxis()->SetLabelFont(FontStyle);
 				unfcov->GetZaxis()->SetTitleFont(FontStyle);
@@ -1076,6 +1111,40 @@ void extract_xsec(TString OverlaySample = "", bool ClosureTest = false, TString 
 				unfcov->SetTitle("Cov, " + Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]] + slice);
 				if (Runs[WhichRun] == "Combined") { unfcov->SetTitle("Cov, " + LatexLabel[PlotNames[WhichPlot]] + slice); }
 
+				//--------------------//
+
+				// dashed lines
+
+				if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
+
+					TString clone_name = PlotNames[WhichPlot];
+					clone_name.ReplaceAll("Reco","");
+					cout << "clone_name = " << clone_name << endl;
+					vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
+
+					int nbreaks = bin_break_points.size() - 1;
+					vector<TLine*> line; line.resize(nbreaks);
+					vector<TLine*> vert_line; vert_line.resize(nbreaks);					
+
+					for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
+
+						line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0.5, bin_break_points.at(ipoint) + 0.5, n+0.5 );
+						line.at(ipoint)->SetLineStyle(kDashed);
+						line.at(ipoint)->SetLineColor(kMagenta);
+						line.at(ipoint)->SetLineWidth(2);						
+						line.at(ipoint)->Draw("same");
+
+						vert_line.at(ipoint) = new TLine( 0.5, bin_break_points.at(ipoint) + 0.5, n+0.5, bin_break_points.at(ipoint) + 0.5 );
+						vert_line.at(ipoint)->SetLineStyle(kDashed);
+						vert_line.at(ipoint)->SetLineColor(kMagenta);
+						vert_line.at(ipoint)->SetLineWidth(2);
+						vert_line.at(ipoint)->Draw("same");						
+
+					}
+				
+				}
+
+				//--------------------//				
 
 				TString UnfCovCanvas = "/UnfCov_"+Tune+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
 				UnfCovPlotCanvas->SaveAs(CanvasPath+UnfCovCanvas);
