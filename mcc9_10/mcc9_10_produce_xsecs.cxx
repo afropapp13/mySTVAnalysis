@@ -13,9 +13,9 @@ void mcc9_10_produce_xsecs() {
 
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L ../../myClasses/Tools.cxx++");
-	gROOT->ProcessLine(".L ../../myClasses/Util.C++");
-	gROOT->ProcessLine(".L ../../myClasses/WienerSVD.C++");
+	gROOT->ProcessLine(".L ../../../generators/Tools.cxx++");
+	gROOT->ProcessLine(".L ../../../generators/Util.C++");
+	gROOT->ProcessLine(".L ../../../generators/WienerSVD.C++");
 
 	// -----------------------------------------------------------------------------------------
 

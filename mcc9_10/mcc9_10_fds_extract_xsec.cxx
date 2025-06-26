@@ -18,14 +18,13 @@
 #include <sstream>
 #include <string>
 
-#include "../../myClasses/Constants.h"
-#include "../../myClasses/Util.h"
-#include "../../myClasses/WienerSVD.h"
+#include "../../../generators/constants.h"
+#include "../../../generators/Util.h"
+#include "../../../generators/WienerSVD.h"
+#include "../../../generators/helper_functions.cxx"
 
 using namespace std;
-using namespace Constants;
-
-#include "../../myClasses/myFunctions.cpp"
+using namespace constants;
 
 // -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -76,22 +75,17 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 	const Int_t NCont = 999; 
 	gStyle->SetNumberContours(NCont);
 
-	TString Subtract = "";
-
 	int DecimalAccuracy = 2;
 
 	// -------------------------------------------------------------------------------------
 
 	int NEventsPassingSelectionCuts = 0;
-	TString CutExtension = "_NoCuts";
+	TString CutExtension = "_nocuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
 
 	// v52
 	VectorCuts.push_back("");
-	VectorCuts.push_back("_PID");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_CRT");
 
 	int NCuts = (int)(VectorCuts.size());	
 
@@ -126,7 +120,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 	// CV Flux File
 
-	TFile* FluxFile = TFile::Open("../MCC9_FluxHist_volTPCActive.root"); 
+	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));		
 
 	//----------------------------------------//
@@ -150,7 +144,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 		vector<vector<TH1D*> > DISPlotsTrue; DISPlotsTrue.clear();
 		vector<vector<TH1D*> > COHPlotsTrue; COHPlotsTrue.clear();		
 		vector<vector<TH1D*> > PlotsBkgReco; PlotsBkgReco.clear();
-		vector<vector<TH1D*> > PlotsCC1pReco; PlotsCC1pReco.clear();
+		vector<vector<TH1D*> > PlotsNCCOHReco; PlotsNCCOHReco.clear();
 
 		//vector<TH1D*> UnfUnc; UnfUnc.clear();
 		vector<TH2D*> ResponseMatrices; ResponseMatrices.clear();
@@ -159,18 +153,10 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 		//----------------------------------------//
 
-		TString FileResponseName = MigrationMatrixPath+"FileResponseMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString FileResponseName = migration_matrices_path+"FileResponseMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+".root";
 
-		if (OverlaySample == "mcc9_10_NoTuneOverlay9") { 
-			FileResponseName = MigrationMatrixPath+"NoTuneFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		}
-
-		if (OverlaySample == "mcc9_10_GENIEv2Overlay9") { 
-			FileResponseName = MigrationMatrixPath+"GENIEv2FileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		}		
-
-		if (OverlaySample == "mcc9_10_TwiceMECOverlay9") { 
-			FileResponseName = MigrationMatrixPath+"TwiceMECFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		if (OverlaySample == "mcc9_10_RSOverlay9") { 
+			FileResponseName = migration_matrices_path+"RSFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root";
 		}
 
 		cout << "File Responses = " << FileResponseName << endl;
@@ -178,37 +164,17 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 		//----------------------------------------//		
 
-		TString FileCovarianceName = MigrationMatrixPath+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString FileCovarianceName = migration_matrices_path+"WienerSVD_Total_CovarianceMatrices_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+".root";	
 
-		if (OverlaySample == "mcc9_10_NoTuneOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
-		}
-
-		if (OverlaySample == "mcc9_10_GENIEv2Overlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2WienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
-		}		
-
-		if (OverlaySample == "mcc9_10_TwiceMECOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		if (OverlaySample == "mcc9_10_RSOverlay9") { 
+			FileCovarianceName = migration_matrices_path+"mcc9_10_RSWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+".root"; 
 		}
 
 		// For the fake data studies with the default overlay MC and alternative fake data
-		// we need only the stat, mc stat, and xsec uncertainties
+		// we need only the stat, mc stat, and xsec uncertainties	
 
-		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_Overlay9NuWro") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_Overlay9NuWroWienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
-		}		
-
-		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_NoTuneOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_NoTuneOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
-		}
-
-		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "GENIEv2Overlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_GENIEv2Overlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
-		}		
-
-		if (OverlaySample == "Overlay9" && BeamOnSample == "mcc9_10_TwiceMECOverlay9") { 
-			FileCovarianceName = MigrationMatrixPath+"mcc9_10_TwiceMECOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; 
+		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_RSOverlay9") { 
+			FileCovarianceName = migration_matrices_path+"mcc9_10_RSOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; 
 		}		
 
 		cout << "File Covariances = " << FileCovarianceName << endl;			
@@ -219,11 +185,11 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 		const int NSamples = NameOfSamples.size();
 		vector<TFile*> FileSample; FileSample.clear();
 		
-		TString PathToFilesUBCodeExtension = PathToFiles+CutExtension;
+		TString PathToFilesUBCodeExtension = event_selection_file_path+CutExtension;
 
 		// Store the extracted xsections & associated files in dedicated file
 
-		TString NameExtractedXSec = PathToExtractedXSec+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+Subtract+".root";
+		TString NameExtractedXSec = xsec_path+BeamOnSample+"WienerSVD_ExtractedXSec_"+NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+".root";
 		TFile* ExtractedXSec = TFile::Open(NameExtractedXSec,"recreate");
 
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -238,62 +204,42 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			NameOfSamples[WhichSample] == "mcc9_10_OverlayDirt9"
 			) { 
 			
-			TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
-			FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+				TString FileName = "ncpi0_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
+				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+
 			}
 			
 			if (NameOfSamples[WhichSample] == "mcc9_10_Overlay9") { 
 			
-				TString FileName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "ncpi0_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
-			}
+			}	
 
-			if (NameOfSamples[WhichSample] == "mcc9_10_NoTuneOverlay9") { 
+			if (NameOfSamples[WhichSample] == "mcc9_10_RSOverlay9") { 
 			
-				TString FileName = "NoTuneSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
+				TString FileName = "RSncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
-			}
-
-			if (NameOfSamples[WhichSample] == "mcc9_10_GENIEv2Overlay9") { 
+			}	
 			
-				TString FileName = "GENIEv2STVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
-				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
-			
-			}			
-
-			if (NameOfSamples[WhichSample] == "mcc9_10_TwiceMECOverlay9") { 
-			
-				TString FileName = "TwiceMECSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
-				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
-			
-			}						
-
 			if (NameOfSamples[WhichSample] == "mcc9_10_GenieOverlay") { 
 			
-				TString FileName = "TruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";					
-				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
+				TString FileName = "Truthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root";					
+				FileSample.push_back(TFile::Open(event_selection_file_path+FileName));  
 			
-			}
+			}			
 
 			if (NameOfSamples[WhichSample] == "mcc9_10_AltEventGen") { 
 			
-				TString FileName = "TruthSTVAnalysis_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-				if (BeamOnSample == "mcc9_10_NoTuneOverlay9") { FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
-				if (BeamOnSample == "mcc9_10_GENIEv2Overlay9") { FileName = "GENIEv2TruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }				
-				if (BeamOnSample == "mcc9_10_TwiceMECOverlay9") { FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }		
-				if (BeamOnSample == "mcc9_10_Overlay9NuWro") { FileName = "TruthSTVAnalysis_mcc9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }	
-				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_NoTuneOverlay9") 
-					{ FileName = "NoTuneTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
-				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_GENIEv2Overlay9") 
-					{ FileName = "GENIEv2STVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }					
-				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_TwiceMECOverlay9") 
-					{ FileName = "TwiceMECTruthSTVAnalysis_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }						
+				TString FileName = "Truthncpi0_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+OverlaySample+".root";
+				if (BeamOnSample == "mcc9_10_RSOverlay9") { FileName = "RSTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }		
+				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_RSOverlay9") 
+					{ FileName = "RSTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }						
 						
-				FileSample.push_back(TFile::Open(PathToFiles+FileName));  
+				FileSample.push_back(TFile::Open(event_selection_file_path+FileName));  
 			
-			}			
+			}				
 
 			vector<TH1D*> CurrentPlotsReco; CurrentPlotsReco.clear();
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
@@ -303,7 +249,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			vector<TH1D*> DISCurrentPlotsTrue; DISCurrentPlotsTrue.clear();
 			vector<TH1D*> COHCurrentPlotsTrue; COHCurrentPlotsTrue.clear();			
 			vector<TH1D*> CurrentPlotsBkgReco; CurrentPlotsBkgReco.clear();
-			vector<TH1D*> CurrentPlotsCC1pReco; CurrentPlotsCC1pReco.clear();
+			vector<TH1D*> CurrentPlotsNCCOHReco; CurrentPlotsNCCOHReco.clear();
 
 			// Loop over the plots
 
@@ -312,11 +258,11 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 				TH1D* histReco = (TH1D*)(FileSample[WhichSample]->Get("Reco"+PlotNames[WhichPlot]));
 				CurrentPlotsReco.push_back(histReco);
 
-				TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
+				TH1D* histBkgReco = (TH1D*)(FileSample[WhichSample]->Get("NonNCCOHReco"+PlotNames[WhichPlot]));
 				CurrentPlotsBkgReco.push_back(histBkgReco);
 
-				TH1D* histCC1pReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pReco"+PlotNames[WhichPlot]));
-				CurrentPlotsCC1pReco.push_back(histCC1pReco);
+				TH1D* histNCCOHReco = (TH1D*)(FileSample[WhichSample]->Get("NCCOHReco"+PlotNames[WhichPlot]));
+				CurrentPlotsNCCOHReco.push_back(histNCCOHReco);
 
 				TH1D* histTrue = (TH1D*)(FileSample[WhichSample]->Get("True"+PlotNames[WhichPlot]));
 				CurrentPlotsTrue.push_back(histTrue);
@@ -346,7 +292,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			DISPlotsTrue.push_back(DISCurrentPlotsTrue);
 			COHPlotsTrue.push_back(COHCurrentPlotsTrue);				
 			PlotsBkgReco.push_back(CurrentPlotsBkgReco);
-			PlotsCC1pReco.push_back(CurrentPlotsCC1pReco);
+			PlotsNCCOHReco.push_back(CurrentPlotsNCCOHReco);
 
 		} // End of the loop over the samples
 
@@ -362,7 +308,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			//----------------------------------------//
 
-			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
+			ResponseMatrices.push_back((TH2D*)FileResponseMatrices->Get("POTScaledNCCOHReco"+PlotNames[WhichPlot]+"2D"));
 
 			// Already flux-averaged rates
 			CovarianceMatrices.push_back((TH2D*)FileCovarianceMatrices->Get("TotalCovariance_"+PlotNames[WhichPlot]));
@@ -370,7 +316,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			//----------------------------------------//
 
-			// True CC1p Signal MC // No detector/ reconstruction / smearing effects
+			// True NCCOH Signal MC // No detector/ reconstruction / smearing effects
 
 			int n = PlotsTrue[4][WhichPlot]->GetNbinsX();
 			double Nuedges[n+1];
@@ -380,9 +326,9 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			// -------------------------------------------------------------------------------------------------
 
 			// BeamOn = Alternative model for fake data studies in this case
-			// Thus we grab the CC1p part, without any subtractions
+			// Thus we grab the NCCOH part, without any subtractions
 
-			//TH1D* DataPlot = (TH1D*)(PlotsCC1pReco[1][WhichPlot]->Clone());
+			//TH1D* DataPlot = (TH1D*)(PlotsNCCOHReco[1][WhichPlot]->Clone());
 			TH1D* DataPlot = (TH1D*)(PlotsReco[1][WhichPlot]->Clone());
 			DataPlot->Add(PlotsBkgReco[0][WhichPlot],-1);
 
@@ -462,9 +408,9 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			// ------------------------------------------------------------------------------------------	
 
-			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
-			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Wiener Filter Vector",n,0,n);
-			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
+			TH2D* smear = new TH2D("smear_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+XTitle,n,Nuedges,n,Nuedges);
+			TH1D* wiener = new TH1D("wiener_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Wiener Filter Vector",n,0,n);
+			TH2D* unfcov = new TH2D("unfcov_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -477,7 +423,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			// Start plotting
 		
-			TString CanvasName = PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+			TString CanvasName = PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
 			TCanvas* PlotCanvas = new TCanvas(CanvasName,CanvasName,205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.17);
@@ -485,7 +431,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			PlotCanvas->SetLeftMargin(0.21);			
 			PlotCanvas->SetRightMargin(0.03);			
 		
-			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* unf = new TH1D("unf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 
 			// --------------------------------------------------------------------------------------------------
 
@@ -552,29 +498,29 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			// ----------------------------------------//		
 
-			// The Nominal MC CC1p prediction has to be multiplied by the additional smearing matrix Ac
+			// The Nominal MC NCCOH prediction has to be multiplied by the additional smearing matrix Ac
 
-			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* TrueUnf = new TH1D("TrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD AcTrueUnfold = AddSmear * signal;
 			V2H(AcTrueUnfold, TrueUnf);
 
-			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* QETrueUnf = new TH1D("QETrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD QEAcTrueUnfold = AddSmear * QEsignal;
 			V2H(QEAcTrueUnfold, QETrueUnf);
 
-			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* MECTrueUnf = new TH1D("MECTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD MECAcTrueUnfold = AddSmear * MECsignal;
 			V2H(MECAcTrueUnfold, MECTrueUnf);
 
-			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* RESTrueUnf = new TH1D("RESTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD RESAcTrueUnfold = AddSmear * RESsignal;
 			V2H(RESAcTrueUnfold, RESTrueUnf);
 
-			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* DISTrueUnf = new TH1D("DISTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD DISAcTrueUnfold = AddSmear * DISsignal;
 			V2H(DISAcTrueUnfold, DISTrueUnf);
 
-			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* COHTrueUnf = new TH1D("COHTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD COHAcTrueUnfold = AddSmear * COHsignal;
 			V2H(COHAcTrueUnfold, COHTrueUnf);			
 
@@ -590,45 +536,45 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			// ----------------------------------------//
 
-			// Same for the alternative MC CC1p prediction (NuWro et al)
+			// Same for the alternative MC NCCOH prediction (NuWro et al)
 
-			TH1D* NoSmearAltTrueUnf = new TH1D("NoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* AltTrueUnf = new TH1D("AltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* NoSmearAltTrueUnf = new TH1D("NoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* AltTrueUnf = new TH1D("AltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD NoSmearAltTrueUnfold = altsignal;
 			TVectorD AltAcTrueUnfold = AddSmear * altsignal;
 			V2H(NoSmearAltTrueUnfold, NoSmearAltTrueUnf);
 			V2H(AltAcTrueUnfold, AltTrueUnf);
 
-			TH1D* QENoSmearAltTrueUnf = new TH1D("QENoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* QEAltTrueUnf = new TH1D("QEAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* QENoSmearAltTrueUnf = new TH1D("QENoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* QEAltTrueUnf = new TH1D("QEAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD QENoSmearAltTrueUnfold = QEaltsignal;
 			TVectorD QEAltAcTrueUnfold = AddSmear * QEaltsignal;
 			V2H(QENoSmearAltTrueUnfold, QENoSmearAltTrueUnf);
 			V2H(QEAltAcTrueUnfold, QEAltTrueUnf);
 
-			TH1D* MECNoSmearAltTrueUnf = new TH1D("MECNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* MECAltTrueUnf = new TH1D("MECAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* MECNoSmearAltTrueUnf = new TH1D("MECNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* MECAltTrueUnf = new TH1D("MECAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD MECNoSmearAltTrueUnfold = MECaltsignal;
 			TVectorD MECAltAcTrueUnfold = AddSmear * MECaltsignal;
 			V2H(MECNoSmearAltTrueUnfold, MECNoSmearAltTrueUnf);
 			V2H(MECAltAcTrueUnfold, MECAltTrueUnf);
 
-			TH1D* RESNoSmearAltTrueUnf = new TH1D("RESNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* RESAltTrueUnf = new TH1D("RESAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* RESNoSmearAltTrueUnf = new TH1D("RESNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* RESAltTrueUnf = new TH1D("RESAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD RESNoSmearAltTrueUnfold = RESaltsignal;
 			TVectorD RESAltAcTrueUnfold = AddSmear * RESaltsignal;
 			V2H(RESNoSmearAltTrueUnfold, RESNoSmearAltTrueUnf);
 			V2H(RESAltAcTrueUnfold, RESAltTrueUnf);
 
-			TH1D* DISNoSmearAltTrueUnf = new TH1D("DISNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* DISAltTrueUnf = new TH1D("DISAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* DISNoSmearAltTrueUnf = new TH1D("DISNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* DISAltTrueUnf = new TH1D("DISAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD DISNoSmearAltTrueUnfold = DISaltsignal;
 			TVectorD DISAltAcTrueUnfold = AddSmear * DISaltsignal;
 			V2H(DISNoSmearAltTrueUnfold, DISNoSmearAltTrueUnf);
 			V2H(DISAltAcTrueUnfold, DISAltTrueUnf);
 
-			TH1D* COHNoSmearAltTrueUnf = new TH1D("COHNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
-			TH1D* COHAltTrueUnf = new TH1D("COHAltTrueUnf_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* COHNoSmearAltTrueUnf = new TH1D("COHNoSmearAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
+			TH1D* COHAltTrueUnf = new TH1D("COHAltTrueUnf_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],";"+XTitle+";"+YTitle,n,Nuedges);
 			TVectorD COHNoSmearAltTrueUnfold = COHaltsignal;
 			TVectorD COHAltAcTrueUnfold = AddSmear * COHaltsignal;
 			V2H(COHNoSmearAltTrueUnfold, COHNoSmearAltTrueUnf);
@@ -700,7 +646,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			// Legend & POT Normalization
 
-			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(Runs[WhichRun]);
+			double tor860_wcut = PeLEE_ReturnBeamOnRunPOT(xsec_Runs[WhichRun]);
 			TString Label = ToStringPOT(tor860_wcut)+" POT";
 
 			TLegend* legData = new TLegend(0.21,0.84,0.78,0.98);
@@ -755,7 +701,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			}		
 
-			CalcChiSquared(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval,CVsigma);	
+			calc_chi2(TrueUnf,unfMCStat,CovClone,CVChi2,CVNdof,CVpval,CVsigma);	
 		
 			TString CVChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(CVChi2,1) + "/" + TString(std::to_string(CVNdof)) +", p = " + to_string_with_precision(CVpval,2) + ", " + to_string_with_precision(CVsigma,2) + "#sigma'";		
 	
@@ -767,7 +713,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			}
 	
-			CalcChiSquared(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval,FDsigma);	
+			calc_chi2(AltTrueUnf,unfMCStat,CovClone,FDChi2,FDNdof,FDpval,FDsigma);	
 			TString FDChi2NdofAlt = "#chi^{2}/ndf = " + to_string_with_precision(FDChi2,1) + "/" + TString(std::to_string(FDNdof)) +", p = " + to_string_with_precision(FDpval,2) + ", " + to_string_with_precision(FDsigma,2) + "#sigma'";
 			//------------------------------//				
 
@@ -779,20 +725,20 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			TLegendEntry* lMC = legData->AddEntry(TrueUnf,"G18 "+ CVChi2NdofAlt,"l");
 			lMC->SetTextColor(OverlayColor);
 
-			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"True " + PrintLabel + " " + FDChi2NdofAlt,"l");
+			TLegendEntry* lAltMC = legData->AddEntry(AltTrueUnf,"true alt gen " + FDChi2NdofAlt,"l");
 			lAltMC->SetTextColor(kOrange+7);				
 
 			legData->Draw();
 			
-			TString CanvasPath = PlotPath+"mcc9_10_Overlay9";
-			TString FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
-			if (OverlaySample != "mcc9_10_Overlay9") { FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+"_"+OverlaySample+".pdf"; }
+			TString CanvasPath = plot_path+"mcc9_10_Overlay9";
+			TString FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+".pdf";
+			if (OverlaySample != "mcc9_10_Overlay9") { FullCanvasName = "/"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+OverlaySample+".pdf"; }
 			PlotCanvas->SaveAs(CanvasPath+FullCanvasName);	
 			delete PlotCanvas;			
 
 			//------------------------------//
 
-			TH1D* diff = new TH1D("diff_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun],"Fractional difference of unf and signal model",n, Nuedges);
+			TH1D* diff = new TH1D("diff_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],"Fractional difference of unf and signal model",n, Nuedges);
 			
 			for(int i=1; i <= n; i++) {
 			
@@ -838,7 +784,7 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 
 			// Make the additional smearing matrix pretty
 
-			TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun];
+			TString SmearCanvasName = "Smear_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun];
 			TCanvas* SmearPlotCanvas = new TCanvas(SmearCanvasName,SmearCanvasName,205,34,1024,768);
 			SmearPlotCanvas->cd();
 			SmearPlotCanvas->SetBottomMargin(0.17);
@@ -873,11 +819,11 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			smear->SetMarkerColor(kWhite);
 			smear->SetMarkerSize(0.6);	
 			
-			smear->SetTitle(Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
+			smear->SetTitle(xsec_Runs[WhichRun] + ", " + LatexLabel[PlotNames[WhichPlot]]);
 
 			smear->Draw("coltz0 text");
 
-			TString SmearCanvas = "/Smear_"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+"_"+UBCodeVersion+Subtract+".pdf";
+			TString SmearCanvas = "/Smear_"+BeamOnSample+"WienerSVD_XSections_"+CanvasName+".pdf";
 			SmearPlotCanvas->SaveAs(CanvasPath+SmearCanvas);
 			delete SmearPlotCanvas;
 

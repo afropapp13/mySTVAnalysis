@@ -6,7 +6,7 @@ void mcc9_10_systematics() {
 	// -----------------------------------------------------------------------------------------
 	// -----------------------------------------------------------------------------------------
 
-	gROOT->ProcessLine(".L ../../myClasses/Util.C++");
+	gROOT->ProcessLine(".L ../../../generators/Util.C++");
 
 	gROOT->ProcessLine(".L mcc9_10_covariances.cxx++");
 
@@ -33,6 +33,8 @@ void mcc9_10_systematics() {
 	gROOT->ProcessLine("mcc9_10_covariances(\"SCERecomb2\")");*/
 
 	gROOT->ProcessLine("mcc9_10_covariances(\"MC_Stat\")");
+
+	gROOT->ProcessLine("mcc9_10_covariances(\"test_det\")");	
 
 	/*gROOT->ProcessLine("mcc9_10_covariances(\"NuWro\")");*/	
 

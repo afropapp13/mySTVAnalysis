@@ -8,7 +8,7 @@
 	
 	WhichSampleArray.push_back("_AxFFCCQEshape_UBGenie"); Universes.push_back(2);
 	WhichSampleArray.push_back("_DecayAngMEC_UBGenie"); Universes.push_back(2);
-	WhichSampleArray.push_back("_NormCCCOH_UBGenie"); Universes.push_back(2);
+    WhichSampleArray.push_back("_NormCCCOH_UBGenie"); Universes.push_back(2);
 	WhichSampleArray.push_back("_NormNCCOH_UBGenie"); Universes.push_back(2);
 //	WhichSampleArray.push_back("_RPA_CCQE_Reduced_UBGenie"); Universes.push_back(2);
 	WhichSampleArray.push_back("_RPA_CCQE_UBGenie"); Universes.push_back(2);

@@ -13,11 +13,11 @@
 #include <sstream>
 #include <string>
 
-#include "../../myClasses/Constants.h"
-#include "../../myClasses/myFunctions.cpp"
+#include "../../../generators/constants.h"
+#include "../../../generators/helper_functions.cxx"
 
 using namespace std;
-using namespace Constants;
+using namespace constants;
 
 //----------------------------------------//
 
@@ -43,11 +43,7 @@ void mcc9_10_plot_xsec_unc() {
 
 	//----------------------------------------//
 
-	vector<TString> Runs;
-	Runs.push_back("Run4b");
-	/*Runs.push_back("Combined");*/
-
-	int NRuns = (int)(Runs.size());
+	int NRuns = (int)(xsec_Runs.size());
 	cout << "Number of Runs = " << NRuns << endl;
 
 	//----------------------------------------//
@@ -61,16 +57,17 @@ void mcc9_10_plot_xsec_unc() {
 		vector<int> Colors; Colors.clear();	
 
 		UncSource.push_back("Stat"); Colors.push_back(kRed+1);
+		UncSource.push_back("MCStat"); Colors.push_back(kGray);		
 		/*UncSource.push_back("LY"); Colors.push_back(kGreen+2);
 		UncSource.push_back("TPC"); Colors.push_back(kOrange+1);
-		UncSource.push_back("SCERecomb2"); Colors.push_back(kBlue+1);*/	
+		UncSource.push_back("SCERecomb2"); Colors.push_back(kBlue+1);*/			
 		UncSource.push_back("XSec"); Colors.push_back(kMagenta);
 		UncSource.push_back("G4"); Colors.push_back(kViolet+1);		
 		UncSource.push_back("Flux"); Colors.push_back(kYellow+2);
 		UncSource.push_back("Dirt"); Colors.push_back(kYellow);
 		UncSource.push_back("POT"); Colors.push_back(kAzure+7);
 		UncSource.push_back("NTarget"); Colors.push_back(kRed-10);
-		UncSource.push_back("MCStat"); Colors.push_back(kGray);
+		UncSource.push_back("test_det"); Colors.push_back(kBlue+1);		
 		/*UncSource.push_back("NuWro"); Colors.push_back(kCyan);*/
 	
 		const int NSources = UncSource.size();																		
@@ -78,7 +75,7 @@ void mcc9_10_plot_xsec_unc() {
 		//----------------------------------------//
 
 		// XSec file
-		TFile* fXSec = TFile::Open(PathToExtractedXSec + "/WienerSVD_ExtractedXSec_mcc9_10_Overlay9_"+Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
+		TFile* fXSec = TFile::Open(xsec_path + "/WienerSVD_ExtractedXSec_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root","readonly");
 
 		//----------------------------------------//
 
@@ -96,7 +93,7 @@ void mcc9_10_plot_xsec_unc() {
 
 			// Canvas & legend declaration
 
-			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+Runs[WhichRun],PlotNames[WhichPlot]+"_"+Runs[WhichRun],205,34,1024,768);
+			TCanvas* PlotCanvas = new TCanvas(PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun],205,34,1024,768);
 			PlotCanvas->cd();
 			PlotCanvas->SetBottomMargin(0.15);
 
@@ -127,7 +124,7 @@ void mcc9_10_plot_xsec_unc() {
 			TotalUnc->SetLineColor(kBlack);
 			TotalUnc->SetLineWidth(3);
 
-			if ( PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot")  { TotalUnc->GetXaxis()->SetNdivisions(0); }		
+			if ( PlotNames[WhichPlot] == "SingleBinPlot")  { TotalUnc->GetXaxis()->SetNdivisions(0); }		
 			else { TotalUnc->GetXaxis()->SetNdivisions(8); }	
 			
 			TotalUnc->GetXaxis()->SetTitleSize(TextSize);
@@ -143,7 +140,7 @@ void mcc9_10_plot_xsec_unc() {
 			TotalUnc->GetYaxis()->SetLabelFont(TextFont);			
 			TotalUnc->GetYaxis()->SetTitle("Uncertainty [%]");
 			TotalUnc->GetYaxis()->CenterTitle();			
-			if ( PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot")  { TotalUnc->GetYaxis()->SetRangeUser(0.,14.9); }		
+			if ( PlotNames[WhichPlot] == "SingleBinPlot")  { TotalUnc->GetYaxis()->SetRangeUser(0.,59.); }		
 			else {  TotalUnc->GetYaxis()->SetRangeUser(0.,69.9); }	
 
 			TotalUnc->Draw("hist text0 same");	
@@ -185,10 +182,10 @@ void mcc9_10_plot_xsec_unc() {
 
 			// For the single bin study, print out the corresponding uncertainties
 
-			if (PlotNames[WhichPlot] == "MuonCosThetaSingleBinPlot") {
+			if (PlotNames[WhichPlot] == "SingleBinPlot") {
 
-				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[0]->GetBinContent(1),2.) + TMath::Power(UncPlot[10]->GetBinContent(1),2.) );		
-				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) );				
+				/*double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[0]->GetBinContent(1),2.) + TMath::Power(UncPlot[10]->GetBinContent(1),2.) );		
+				double DetUnc = TMath::Sqrt( TMath::Power(UncPlot[1]->GetBinContent(1),2.) + TMath::Power(UncPlot[2]->GetBinContent(1),2.) + TMath::Power(UncPlot[3]->GetBinContent(1),2.) );	
 				double FluxUnc = UncPlot[6]->GetBinContent(1);
 				double G4Unc = UncPlot[5]->GetBinContent(1);
 				double DirtUnc = UncPlot[7]->GetBinContent(1);
@@ -205,7 +202,25 @@ void mcc9_10_plot_xsec_unc() {
 				cout << " Stat = " <<  StatUnc << " %" << endl;	
 				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						
 				cout << " G4 = " <<  G4Unc << " %" << endl;		
-				cout << " Dirt = " <<  DirtUnc << " %" << endl;			
+				cout << " Dirt = " <<  DirtUnc << " %" << endl;*/
+				
+				double StatUnc = TMath::Sqrt( TMath::Power(UncPlot[0]->GetBinContent(1),2.) + TMath::Power(UncPlot[1]->GetBinContent(1),2.) );		
+				double XSecUnc = UncPlot[2]->GetBinContent(1);
+				double G4Unc = UncPlot[3]->GetBinContent(1);
+				double FluxUnc = UncPlot[4]->GetBinContent(1);				
+				double DirtUnc = UncPlot[5]->GetBinContent(1);
+				double POTUnc = UncPlot[6]->GetBinContent(1);
+				double NTargetUnc = UncPlot[7]->GetBinContent(1);
+				double detUnc = UncPlot[8]->GetBinContent(1);				
+		
+				cout << " Stat = " <<  StatUnc << " %" << endl;	
+				cout << " Det = " <<  detUnc << " %" << endl;					
+				cout << " Flux = " <<  FluxUnc << " %" << endl;
+				cout << " XSec = " <<  XSecUnc << " %" << endl;
+				cout << " POT = " <<  POTUnc << " %" << endl;					
+				cout << " NTarget = " <<  NTargetUnc << " %" << endl;						
+				cout << " G4 = " <<  G4Unc << " %" << endl;		
+				cout << " Dirt = " <<  DirtUnc << " %" << endl;					
 	
 
 				double ManualTotalUnc = 0;
@@ -227,61 +242,12 @@ void mcc9_10_plot_xsec_unc() {
 			}
 
 			gPad->RedrawAxis();
-			leg->Draw();	
-
-			//----------------------------------------//
-
-			// Plot vertical lines
-			// Add latex label with phase space limits
-
-			TString clone_name = PlotNames[WhichPlot];
-			clone_name.ReplaceAll("Reco","");
-
-			if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
-
-				vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
-
-				int nbreaks = bin_break_points.size() - 1;
-				vector<TLine*> line; line.resize(nbreaks);
-
-				for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
-
-					line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0., bin_break_points.at(ipoint) + 0.5, 69. );
-					line.at(ipoint)->SetLineStyle(kDashed);
-					line.at(ipoint)->Draw("same");
-
-				}
-	
-				//----------------------------------------//
-
-				vector<TLatex*> slice; slice.resize(nbreaks+1);
-
-				for (int ipoint = 0; ipoint < nbreaks + 1; ipoint ++) {
-
-	
-					slice.at(ipoint) = new TLatex();
-					slice.at(ipoint)->SetTextFont(FontStyle);
-					slice.at(ipoint)->SetTextSize(0.02);
-					TString phase_space = MapUncorCor[ clone_name + "_" + TString(std::to_string(ipoint) ) ];
-					if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 3. , 0.6 * 89., LatexLabel[phase_space ]); }
-					else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 3. , 0.6 * 89., LatexLabel[phase_space ]); }
-
-
-				}
-
-			}
-	
-			//----------------------------------------//
-
-			TLatex *textSlice = new TLatex();
-			textSlice->SetTextFont(FontStyle);
-			textSlice->SetTextSize(TextSize);
-			textSlice->DrawLatexNDC(0.13, 0.84, LatexLabel[ clone_name ]);	
+			leg->Draw();
 
 			//----------------------------------------//
 
 			// Saving the canvas with the uncertainties on the final xsec
-			PlotCanvas->SaveAs(PlotPath + "/Data9/XSecUnc_"+PlotNames[WhichPlot]+"_"+Runs[WhichRun]+"_"+UBCodeVersion+".pdf");
+			PlotCanvas->SaveAs(plot_path + "/Data9/XSecUnc_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun]+".pdf");
 			delete PlotCanvas;					
 
 			//----------------------------------------//

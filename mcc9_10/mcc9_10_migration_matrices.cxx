@@ -6,20 +6,14 @@
 #include <TString.h>
 #include <TStyle.h>
 
-#include "../../myClasses/Constants.h"
+#include "../../../generators/constants.h"
 
 using namespace std;
-using namespace Constants;
+using namespace constants;
 
 void mcc9_10_migration_matrices(TString OverlaySample) {
 
-	// -------------------------------------------------------------------------------------
-
-//	TString PathToFiles = "/uboone/data/users/"+UserID+"/myEvents/OutputFiles/"+UBCodeVersion+"/";
-//	TString PlotPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myPlots/"+UBCodeVersion+"/"; 
-//	TString MigrationMatrixPath = "/uboone/data/users/"+UserID+"/mySTVAnalysis/myMigrationMatrices/"+UBCodeVersion+"/"; 
-
-	// -------------------------------------------------------------------------------------
+	//------------------------------//
 
 	TH2D::SetDefaultSumw2();
 	
@@ -31,17 +25,15 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 	gStyle->SetTitleFont(FontStyle,"t");
 	gStyle->SetOptStat(0);
 
-	// -------------------------------------------------------------------------------------
+	//------------------------------//
 
 	int NEventsPassingSelectionCuts = 0;
-	TString CutExtension = "_NoCuts";
+	TString CutExtension = "_nocuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
 	
 	VectorCuts.push_back("");
-	VectorCuts.push_back("_PID");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_CRT");
+	//VectorCuts.push_back("_PID");
 
 	int NCuts = (int)(VectorCuts.size());	
 
@@ -99,15 +91,15 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+"FileMigrationMatrices_"+\
-				NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileName = migration_matrices_path+"FileMigrationMatrices_"+\
+				NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+".root";
 		TFile* FileMigrationMatrices = new TFile(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 		
-			TString ExactFileLocation = PathToFiles+CutExtension;
+			TString ExactFileLocation = event_selection_file_path+CutExtension;
 
-			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+NameOfSamples[WhichSample]+"_"+\
+			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/ncpi0_"+NameOfSamples[WhichSample]+"_"+\
 				xsec_Runs[WhichRun]+CutExtension+".root");
 
 		}
@@ -117,7 +109,7 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 			for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
 
 
-				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample][WhichRun]->Get("CC1pReco"+PlotNames[WhichPlot]+"2D"));
+				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample][WhichRun]->Get("NCCOHReco"+PlotNames[WhichPlot]+"2D"));
 				
 				int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
 				int NBinsY = Plots[WhichSample][WhichPlot]->GetYaxis()->GetNbins();								
@@ -203,39 +195,17 @@ void mcc9_10_migration_matrices(TString OverlaySample) {
 
 					Plots[WhichSample][WhichPlot]->SetMarkerColor(kWhite);				
 					Plots[WhichSample][WhichPlot]->SetMarkerSize(0.9);
-					Plots[WhichSample][WhichPlot]->SetTitle(Runs[WhichRun] + " Migration Matrix, " + LatexLabel[PlotNames[WhichPlot]]);	
+					Plots[WhichSample][WhichPlot]->SetTitle(xsec_Runs[WhichRun] + " Migration Matrix, " + LatexLabel[PlotNames[WhichPlot]]);	
 
 					//------------------------------//
 
-					// The N-dimensional analysis has been developed based on the bin number, not the actual range
+					//Plots[WhichSample][WhichPlot]->Draw("text colz e");
+					Plots[WhichSample][WhichPlot]->Draw("text colz");
 
-					if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
-
-						TString XaxisTitle = Plots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
-						XaxisTitle.ReplaceAll("deg","bin #");
-						XaxisTitle.ReplaceAll("GeV/c","bin #");
-						XaxisTitle.ReplaceAll("GeV","bin #");				
-						Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitle(XaxisTitle);
-
-						TString YaxisTitle = Plots[WhichSample][WhichPlot]->GetYaxis()->GetTitle();
-						YaxisTitle.ReplaceAll("deg","bin #");
-						YaxisTitle.ReplaceAll("GeV/c","bin #");
-						YaxisTitle.ReplaceAll("GeV","bin #");				
-						Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitle(YaxisTitle);						
-
-						Plots[WhichSample][WhichPlot]->Draw("colz");						
-
-					} else {
-
-						//Plots[WhichSample][WhichPlot]->Draw("text colz e");
-						Plots[WhichSample][WhichPlot]->Draw("colz");
-
-					} 
-	
 					//------------------------------//
 		
-					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
-						+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+					PlotCanvas->SaveAs(plot_path+NameOfSamples[0]+"/MigrationMatrices_"+PlotNames[WhichPlot]
+						+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+".pdf");
 					
 					delete PlotCanvas;				
 				 

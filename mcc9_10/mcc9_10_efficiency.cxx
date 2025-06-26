@@ -11,11 +11,11 @@
 #include <iostream>
 #include <vector>
 
-#include "../../myClasses/Constants.h"
-#include "../../myClasses/myFunctions.cpp"
+#include "../../../generators/constants.h"
+#include "../../../generators/helper_functions.cxx"
 
 using namespace std;
-using namespace Constants;
+using namespace constants;
 
 void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 
@@ -33,15 +33,13 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 	// -------------------------------------------------------------------------------------
 
 	int NEventsPassingSelectionCuts = 0;
-	TString CutExtension = "_NoCuts";
+	TString CutExtension = "_nocuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
 
 	VectorCuts.push_back("");
-	VectorCuts.push_back("_PID");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_CRT");
-
+	//VectorCuts.push_back("_PID");
+	
 	int NCuts = (int)(VectorCuts.size());	
 	for (int i = 0; i < NCuts; i++) { CutExtension = CutExtension + VectorCuts[i]; }
 
@@ -84,12 +82,12 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString STVPath = PathToFiles+"/"+CutExtension+"/";
-			TString STVName = "STVStudies_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+CutExtension+".root";
+			TString STVPath = event_selection_file_path + "/"+CutExtension+"/";
+			TString STVName = "ncpi0_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+CutExtension+".root";
 			FileSample.push_back(TFile::Open(STVPath+STVName));
 			
-			TString TrueSTVName = "TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
-			TruthFileSample.push_back(TFile::Open(TrueSTVPath+TrueSTVName));
+			TString TrueSTVName = "Truthncpi0_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+".root";
+			TruthFileSample.push_back(TFile::Open(event_selection_file_path+TrueSTVName));
 
 			vector<TH1D*> CurrentPlotsTrue; CurrentPlotsTrue.clear();
 			vector<TH1D*> CurrentPlotsTrueReco; CurrentPlotsTrueReco.clear();
@@ -99,7 +97,8 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 				TH1D* histTrue = (TH1D*)(TruthFileSample[WhichSample]->Get("True"+PlotNamesClone[WhichPlot]));
 				CurrentPlotsTrue.push_back(histTrue);
 
-				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("CC1pTrue"+PlotNamesClone[WhichPlot]));
+
+				TH1D* histTrueReco = (TH1D*)(FileSample[WhichSample]->Get("NCCOHTrue"+PlotNamesClone[WhichPlot]));
 				CurrentPlotsTrueReco.push_back(histTrueReco);
 		
 			}
@@ -113,15 +112,15 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 
-			TString EfficiencyName = "FileStandardEfficiences_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root"; 
-			Name = FileEfficienciesPath + EfficiencyName;
+			TString EfficiencyName = "FileStandardEfficiences_"+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+".root"; 
+			Name = efficiency_path + EfficiencyName;
 			TFile* FileEfficiences = new TFile(Name,"recreate");
 
 			// Loop over the plots
 
 			for (int WhichPlot = 0; WhichPlot < N1DPlots; WhichPlot ++) {
 
-				// Number of event distributions for True CC1p and Reco CC1p
+				// Number of event distributions for True NCCOH and Reco NCCOH
 
 				if (WhichSample == 0 && OverlaySample == "" && DetVar == false) {
 
@@ -165,8 +164,8 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 					PlotsTrue[WhichSample][WhichPlot]->Draw();
 					PlotsTrueReco[WhichSample][WhichPlot]->Draw("same");
 
-					leg->AddEntry(PlotsTrue[WhichSample][WhichPlot],"True CC1p");
-					leg->AddEntry(PlotsTrueReco[WhichSample][WhichPlot],"Reco CC1p");
+					leg->AddEntry(PlotsTrue[WhichSample][WhichPlot],"True NCCOH");
+					leg->AddEntry(PlotsTrueReco[WhichSample][WhichPlot],"Reco NCCOH");
 					leg->Draw();
 
 					TLatex *text = new TLatex();
@@ -176,8 +175,8 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 
 					// ----------------------------------------------------------------------------------------
 				
-					TString CanvasPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasPdfName = PlotNamesClone[WhichPlot]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasPath = plot_path + NameOfSamples[WhichSample]+"/";
+					TString CanvasPdfName = PlotNamesClone[WhichPlot]+"_"+xsec_Runs[WhichRun]+OverlaySample+".pdf";
 					PlotCanvas->SaveAs(CanvasPath + CanvasPdfName); 
 
 					delete PlotCanvas;
@@ -186,7 +185,7 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 
 				// ---------------------------------------------------------------------------------------------------------------------------	
 
-				// Ratios to extract the effective efficiencies			
+				// ratios to extract the efficiencies			
 
 				TH1D* pEffPlot = (TH1D*)PlotsTrueReco[WhichSample][WhichPlot]->Clone();
 				pEffPlot->Divide(PlotsTrue[WhichSample][WhichPlot]);
@@ -209,7 +208,6 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 					pEffPlot->GetXaxis()->SetLabelSize(TextSize);
 					pEffPlot->GetXaxis()->SetLabelOffset(0.02);
 					pEffPlot->GetXaxis()->SetNdivisions(9);
-					bin_number_x_title(pEffPlot);
 
 					pEffPlot->GetYaxis()->CenterTitle();
 					pEffPlot->GetYaxis()->SetTitleFont(FontStyle);
@@ -241,60 +239,17 @@ void mcc9_10_efficiency(TString OverlaySample, bool DetVar = false) {
 					TLatex *textEff = new TLatex();
 					textEff->SetTextFont(FontStyle);
 					textEff->SetTextSize(TextSize);
-					if (xsec_Runs[WhichRun] != "Combined") { textEff->DrawTextNDC(0.22, 0.8, xsec_Runs[WhichRun]); }
-					if ( !(string(PlotNamesClone[WhichPlot]).find("VertexZ") != std::string::npos) ) 
-						{ textEff->DrawLatexNDC(0.22, 0.93, LatexLabel[PlotNamesClone[WhichPlot]]); }					
-				
-					//----------------------------------------//
-
-					// Plot vertical lines
-					// Add latex label with phase space limits
-
-					if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
-
-						TString clone_name = PlotNames[WhichPlot];
-						clone_name.ReplaceAll("Reco","");
-						vector<int> bin_break_points = get_2d_bin_break_points( map_to_2d_bin.at(clone_name) );
-
-						int nbreaks = bin_break_points.size() - 1;
-						vector<TLine*> line; line.resize(nbreaks);
-
-						for (int ipoint = 0; ipoint < nbreaks; ipoint ++) {
-
-							line.at(ipoint) = new TLine( bin_break_points.at(ipoint) + 0.5,0., bin_break_points.at(ipoint) + 0.5, pEffPlot->GetMaximum() );
-							line.at(ipoint)->SetLineStyle(kDashed);
-							line.at(ipoint)->Draw("same");
-
-						}
-	
-						//----------------------------------------//
-
-						vector<TLatex*> slice; slice.resize(nbreaks+1);
-
-						for (int ipoint = 0; ipoint < nbreaks + 1; ipoint ++) {
-
-			
-							slice.at(ipoint) = new TLatex();
-							slice.at(ipoint)->SetTextFont(FontStyle);
-							slice.at(ipoint)->SetTextSize(0.02);
-							TString phase_space = MapUncorCor[ clone_name + "_" + TString(std::to_string(ipoint) ) ];
-							if (ipoint == 0) { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint) / 5. , 0.9 * pEffPlot->GetMaximum(), LatexLabel[phase_space ]); }
-							else { slice.at(ipoint)->DrawLatex( bin_break_points.at(ipoint - 1) + ( bin_break_points.at(ipoint) - bin_break_points.at(ipoint-1) ) / 5. , 0.9 * pEffPlot->GetMaximum(), LatexLabel[phase_space ]); }
-
-
-						}
-
-					}
+					textEff->DrawLatexNDC(0.22, 0.93, LatexLabel[PlotNamesClone[WhichPlot]]);				
 
 					//----------------------------------------//
 	
-					TString CanvasEffPath = PlotPath+NameOfSamples[WhichSample]+"/";
-					TString CanvasEffRatioName = "StandardEff"+PlotNamesClone[WhichPlot]+"_"+Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf";
+					TString CanvasEffPath = plot_path+NameOfSamples[WhichSample]+"/";
+					TString CanvasEffRatioName = "StandardEff"+PlotNamesClone[WhichPlot]+"_"+xsec_Runs[WhichRun]+OverlaySample+".pdf";
 					PlotEffCanvas->SaveAs(CanvasEffPath + CanvasEffRatioName);
 
 					delete PlotEffCanvas;
 									
-				}				
+				}		
 
 			} // End of the loop over the plots
 

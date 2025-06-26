@@ -11,14 +11,12 @@
 #include <TMatrixD.h>
 #include <TVectorD.h>
 
-#include "../../myClasses/Constants.h"
+#include "../../../generators/constants.h"
+#include "../../../generators/helper_functions.cxx"
+#include "../../../generators/Util.h"
 
 using namespace std;
-using namespace Constants;
-
-#include "../../myClasses/myFunctions.cpp"
-
-#include "../../myClasses/Util.h"
+using namespace constants;
 
 //----------------------------------------//
 
@@ -60,8 +58,8 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 
 	// Base Plots
 
-	vector <TH1D*> CC1pPlots; CC1pPlots.resize(N1DPlots); 
-	vector <TH1D*> NonCC1pPlots; NonCC1pPlots.resize(N1DPlots);
+	vector <TH1D*> NCCOHPlots; NCCOHPlots.resize(N1DPlots); 
+	vector <TH1D*> NonNCCOHPlots; NonNCCOHPlots.resize(N1DPlots);
 	vector <TH1D*> BeamOnPlots; BeamOnPlots.resize(N1DPlots);
 	vector <TH1D*> BeamOffPlots; BeamOffPlots.resize(N1DPlots);
 	vector <TH1D*> DirtPlots; DirtPlots.resize(N1DPlots);
@@ -72,7 +70,7 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 	
 	// CV Flux File
 
-	TFile* FluxFile = TFile::Open("../MCC9_FluxHist_volTPCActive.root"); 
+	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 
 	// ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -86,31 +84,27 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString FileName = migration_matrices_path+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root";
+		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = migration_matrices_path+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root"; }
 
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
 		// Open base files
 
-		TString ExactFileLocation = PathToFiles+CutExtension;
-		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
-		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString ExactFileLocation = event_selection_file_path+CutExtension;
+		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"ncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
+		TString TrueTStringBaseMC = event_selection_file_path+"/"+Tune+"Truthncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root";
+		TString ResponseFileName = migration_matrices_path+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root";
 
 		TFile* FileResponseMatrices = new TFile(ResponseFileName,"readonly");
 		TrueMCFileSample[WhichRun] = TFile::Open(TrueTStringBaseMC,"readonly");
 		MCFileSample[WhichRun] = TFile::Open(TStringBaseMC,"readonly");
-		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
-		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/ncpi0_"+BeamOffSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"ncpi0_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
 
-		if (BeamOnSample == "mcc9_10_NoTuneOverlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/NoTuneSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }
-		else if (BeamOnSample == "mcc9_10_GENIEv2Overlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/GENIEv2STVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }			
-		else if (BeamOnSample == "mcc9_10_TwiceMECOverlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/TwiceMECSTVStudies_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }			
-		else { BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }
+		if (BeamOnSample == "mcc9_10_RSOverlay9") 
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/RSncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }			
+		else { BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/ncpi0_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }
 
 		// -------------------------------------------------------------------------------------
 
@@ -120,8 +114,8 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 
 			// Grab base plots
 
-			CC1pPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("CC1pReco"+PlotNames[WhichPlot]));
-			NonCC1pPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
+			NCCOHPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NCCOHReco"+PlotNames[WhichPlot]));
+			NonNCCOHPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NonNCCOHReco"+PlotNames[WhichPlot]));
 			BeamOnPlots[WhichPlot] = (TH1D*)(BeamOnFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
 			BeamOffPlots[WhichPlot] = (TH1D*)(BeamOffFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
 			DirtPlots[WhichPlot] = (TH1D*)(DirtFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
@@ -131,7 +125,7 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 			TH1D* DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
 			DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 			DataPlot->Add(DirtPlots[WhichPlot],-1.);
-			DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);	
+			DataPlot->Add(NonNCCOHPlots[WhichPlot],-1.);	
 
 			// -------------------------------------------------------------------------------------------------------
 			// -------------------------------------------------------------------------------------------------------

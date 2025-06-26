@@ -11,14 +11,12 @@
 #include <TMatrixD.h>
 #include <TVectorD.h>
 
-#include "../../myClasses/Constants.h"
+#include "../../../generators/constants.h"
+#include "../../../generators/helper_functions.cxx"
+#include "../../../generators/Util.h"
 
 using namespace std;
-using namespace Constants;
-
-#include "../../myClasses/myFunctions.cpp"
-
-#include "../../myClasses/Util.h"
+using namespace constants;
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -73,7 +71,7 @@ void StoreCanvas(TH2D* h, TString Label, TString Syst, TString PlotNames, TStrin
 	if (Label == "Corr" && !(string(PlotNames).find("Serial") != std::string::npos) ) { h->Draw("colz text"); }
 	else { h->Draw("colz"); }
 	
-	PlotCanvas->SaveAs(PlotPath+BaseMC+"/"+Tune+"WienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+"_"+UBCodeVersion+".pdf");
+	PlotCanvas->SaveAs(plot_path+BaseMC+"/"+Tune+"WienerSVD_"+Syst+"_"+Label+"CovarianceMatrices_"+PlotNames+BaseMC+"_"+Runs+".pdf");
 	
 	delete PlotCanvas;	
 
@@ -121,11 +119,11 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 	// Base Plots
 
-	vector <TH1D*> TrueCC1pPlots; TrueCC1pPlots.resize(N1DPlots); 
-	vector <TH2D*> CC1pResponseMatrix; CC1pResponseMatrix.resize(N1DPlots); 
-	vector <TH1D*> ClosureTestCC1pPlots; ClosureTestCC1pPlots.resize(N1DPlots); 
-	vector <TH1D*> CC1pPlots; CC1pPlots.resize(N1DPlots); 
-	vector <TH1D*> NonCC1pPlots; NonCC1pPlots.resize(N1DPlots);
+	vector <TH1D*> TrueNCCOHPlots; TrueNCCOHPlots.resize(N1DPlots); 
+	vector <TH2D*> NCCOHResponseMatrix; NCCOHResponseMatrix.resize(N1DPlots); 
+	vector <TH1D*> ClosureTestNCCOHPlots; ClosureTestNCCOHPlots.resize(N1DPlots); 
+	vector <TH1D*> NCCOHPlots; NCCOHPlots.resize(N1DPlots); 
+	vector <TH1D*> NonNCCOHPlots; NonNCCOHPlots.resize(N1DPlots);
 	vector <TH1D*> BeamOnPlots; BeamOnPlots.resize(N1DPlots);
 	vector <TH1D*> BeamOffPlots; BeamOffPlots.resize(N1DPlots);
 	vector <TH1D*> DirtPlots; DirtPlots.resize(N1DPlots);
@@ -138,7 +136,7 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 	
 	// CV Flux File
 
-	TFile* FluxFile = TFile::Open("../MCC9_FluxHist_volTPCActive.root"); 
+	TFile* FluxFile = TFile::Open("MCC9_FluxHist_volTPCActive.root"); 
 	TH1D* HistoFlux = (TH1D*)(FluxFile->Get("hEnumu_cv"));
 
 	// -------------------------------------------------------------------------------------------------------------------------------------
@@ -189,8 +187,8 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 		UniAltModels.push_back("_AxFFCCQEshape_UBGenie"); Universes.push_back(2); 
 		UniAltModels.push_back("_DecayAngMEC_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NormCCCOH_UBGenie"); Universes.push_back(2);
-		UniAltModels.push_back("_NormNCCOH_UBGenie"); Universes.push_back(2);
+		//UniAltModels.push_back("_NormCCCOH_UBGenie"); Universes.push_back(2);
+		//UniAltModels.push_back("_NormNCCOH_UBGenie"); Universes.push_back(2);
 		UniAltModels.push_back("_RPA_CCQE_UBGenie"); Universes.push_back(2);
 		UniAltModels.push_back("_ThetaDelta2NRad_UBGenie"); Universes.push_back(2);
 		UniAltModels.push_back("_Theta_Delta2Npi_UBGenie"); Universes.push_back(2);
@@ -303,9 +301,9 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 	// Alternative Plots (also split into signal and background)
 
-	vector <vector <TH1D*> > AltForwardFoldedCC1pPlots; AltForwardFoldedCC1pPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
-	vector <vector <TH1D*> > AltCC1pPlots; AltCC1pPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
-	vector <vector <TH1D*> > AltNonCC1pPlots; AltNonCC1pPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
+	vector <vector <TH1D*> > AltForwardFoldedNCCOHPlots; AltForwardFoldedNCCOHPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
+	vector <vector <TH1D*> > AltNCCOHPlots; AltNCCOHPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
+	vector <vector <TH1D*> > AltNonNCCOHPlots; AltNonNCCOHPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
 	vector <vector <TH1D*> > AltBeamOnPlots; AltBeamOnPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
 	vector <vector <TH1D*> > AltBeamOffPlots; AltBeamOffPlots.resize(N1DPlots,vector<TH1D*>(NAltModels));
 
@@ -333,40 +331,40 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = MigrationMatrixPath+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root"; }
+		TString FileName = migration_matrices_path+Tune+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root";
+		if (BeamOnSample != "mcc9_10_BeamOn9") { FileName = migration_matrices_path+BeamOnSample+"WienerSVD_"+Syst+"_CovarianceMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root"; }
 
 		TFile* FileCovarianceMatrices = new TFile(FileName,"recreate");
 		
 		// Open base files
 
-		TString ExactFileLocation = PathToFiles+CutExtension;
-		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
-		TString TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
-		TString ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";
+		TString ExactFileLocation = event_selection_file_path+CutExtension;
+		TString TStringBaseMC = ExactFileLocation+"/"+Tune+"ncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+CutExtension+".root";
+		TString TrueTStringBaseMC = event_selection_file_path+"/"+Tune+"Truthncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root";
+		TString ResponseFileName = migration_matrices_path+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+".root";
 
 		if (Syst == "LY" || Syst == "TPC") { 
 
-			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV"+CutExtension+".root"; 
-			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV_"+UBCodeVersion+".root"; 
-			ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV_"+UBCodeVersion+".root";
+			TStringBaseMC = ExactFileLocation+"/"+Tune+"ncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV"+CutExtension+".root"; 
+			TrueTStringBaseMC = event_selection_file_path+"/"+Tune+"Truthncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV.root"; 
+			ResponseFileName = migration_matrices_path+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CV.root";
 
 		}
 
 		if (Syst == "SCERecomb2") { 
 
-			TStringBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra"+CutExtension+".root"; 
-			TrueTStringBaseMC = PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root"; 
-			ResponseFileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra_"+UBCodeVersion+".root";
+			TStringBaseMC = ExactFileLocation+"/"+Tune+"ncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra"+CutExtension+".root"; 
+			TrueTStringBaseMC = event_selection_file_path+"/"+Tune+"Truthncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra.root"; 
+			ResponseFileName = migration_matrices_path+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+"_CVextra.root";
 
 		}
 
 		TFile* FileResponseMatrices = new TFile(ResponseFileName,"readonly");
 		TrueMCFileSample[WhichRun] = TFile::Open(TrueTStringBaseMC,"readonly");
 		MCFileSample[WhichRun] = TFile::Open(TStringBaseMC,"readonly");
-		BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
-		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/STVStudies_"+BeamOffSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
-		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/ncpi0_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		BeamOffFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/ncpi0_"+BeamOffSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
+		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"ncpi0_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
 
 		// -------------------------------------------------------------------------------------
 
@@ -376,14 +374,14 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 			// Grab base plots
 
-			CC1pResponseMatrix[WhichPlot] = (TH2D*)(FileResponseMatrices->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
-			TrueCC1pPlots[WhichPlot] = (TH1D*)(TrueMCFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
-			CC1pPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("CC1pReco"+PlotNames[WhichPlot]));
-			NonCC1pPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NonCC1pReco"+PlotNames[WhichPlot]));
+			NCCOHResponseMatrix[WhichPlot] = (TH2D*)(FileResponseMatrices->Get("POTScaledNCCOHReco"+PlotNames[WhichPlot]+"2D"));
+			TrueNCCOHPlots[WhichPlot] = (TH1D*)(TrueMCFileSample[WhichRun]->Get("True"+PlotNames[WhichPlot]));
+			NCCOHPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NCCOHReco"+PlotNames[WhichPlot]));
+			NonNCCOHPlots[WhichPlot] = (TH1D*)(MCFileSample[WhichRun]->Get("NonNCCOHReco"+PlotNames[WhichPlot]));
 			BeamOnPlots[WhichPlot] = (TH1D*)(BeamOnFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
 			BeamOffPlots[WhichPlot] = (TH1D*)(BeamOffFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
 			DirtPlots[WhichPlot] = (TH1D*)(DirtFileSample[WhichRun]->Get("Reco"+PlotNames[WhichPlot]));
-			ClosureTestCC1pPlots[WhichPlot] = Multiply(TrueCC1pPlots[WhichPlot],CC1pResponseMatrix[WhichPlot]);
+			ClosureTestNCCOHPlots[WhichPlot] = Multiply(TrueNCCOHPlots[WhichPlot],NCCOHResponseMatrix[WhichPlot]);
 
 			// -------------------------------------------------------------------------------------------------------
 
@@ -391,31 +389,31 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 			for (int alt = 0; alt < NAltModels; alt++ ) {
 
-				if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+				if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 					{ continue;}
 
 				// Open Alternative MC files & ReAlternative Response Matrices
 
-				TString TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_"+BaseMC+"_"+xsec_Runs[WhichRun]+AltModels[alt]+CutExtension+".root";
-				if (Syst == "NuWro") { TStringAltBaseMC = ExactFileLocation+"/"+Tune+"STVStudies_mcc_9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+CutExtension+".root"; }
+				TString TStringAltBaseMC = ExactFileLocation+"/"+Tune+"ncpi0_"+BaseMC+"_"+xsec_Runs[WhichRun]+AltModels[alt]+CutExtension+".root";
+				if (Syst == "NuWro") { TStringAltBaseMC = ExactFileLocation+"/"+Tune+"ncpi0_mcc_9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+CutExtension+".root"; }
 				AltMCFileSample[WhichRun][alt] = TFile::Open(TStringAltBaseMC,"readonly");
 
-				AltCC1pPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("CC1pReco"+PlotNames[WhichPlot]));
-				AltNonCC1pPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("NonCC1pReco"+PlotNames[WhichPlot]));			
+				AltNCCOHPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("NCCOHReco"+PlotNames[WhichPlot]));
+				AltNonNCCOHPlots[WhichPlot][alt] = (TH1D*)(AltMCFileSample[WhichRun][alt]->Get("NonNCCOHReco"+PlotNames[WhichPlot]));			
 
-				TString TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+AltModels[alt]+"_"+UBCodeVersion+".root";
-				if (Syst == "NuWro") { TStringAltBaseMCResponseMatrix = MigrationMatrixPath+Tune+"FileResponseMatrices_mcc_9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root";}
+				TString TStringAltBaseMCResponseMatrix = migration_matrices_path+Tune+"FileResponseMatrices_"+BaseMC+"_"+xsec_Runs[WhichRun]+AltModels[alt]+".root";
+				if (Syst == "NuWro") { TStringAltBaseMCResponseMatrix = migration_matrices_path+Tune+"FileResponseMatrices_mcc_9_10_Overlay9NuWro_"+xsec_Runs[WhichRun]+".root";}
 				AltMCFileSampleResponseMatrix[WhichRun][alt] = TFile::Open(TStringAltBaseMCResponseMatrix,"readonly");
 
-				TH2D* AltResponseMatrix = (TH2D*)(AltMCFileSampleResponseMatrix[WhichRun][alt]->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
-				AltForwardFoldedCC1pPlots[WhichPlot][alt] = Multiply(TrueCC1pPlots[WhichPlot],AltResponseMatrix);
+				TH2D* AltResponseMatrix = (TH2D*)(AltMCFileSampleResponseMatrix[WhichRun][alt]->Get("POTScaledNCCOHReco"+PlotNames[WhichPlot]+"2D"));
+				AltForwardFoldedNCCOHPlots[WhichPlot][alt] = Multiply(TrueNCCOHPlots[WhichPlot],AltResponseMatrix);
 
-				AltCC1pPlots[WhichPlot][alt]->SetDirectory(0); // to decouple it from the open file directory
-				AltNonCC1pPlots[WhichPlot][alt]->SetDirectory(0); // to decouple it from the open file directory
+				AltNCCOHPlots[WhichPlot][alt]->SetDirectory(0); // to decouple it from the open file directory
+				AltNonNCCOHPlots[WhichPlot][alt]->SetDirectory(0); // to decouple it from the open file directory
 
 				AltMCFileSample[WhichRun][alt]->Close();
 
-				AltForwardFoldedCC1pPlots[WhichPlot][alt]->SetDirectory(0); // to decouple it from the open file directory
+				AltForwardFoldedNCCOHPlots[WhichPlot][alt]->SetDirectory(0); // to decouple it from the open file directory
 
 				AltMCFileSampleResponseMatrix[WhichRun][alt]->Close();
 
@@ -429,17 +427,17 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 			// For the statistical uncertainties, normalize to BeamOn - ExtBNB - Dirt
 			// For the systematic uncertainties, normalize to CV (MC signal + MC bkg)
 
-			TH1D* DataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
-			DataPlot->Add(NonCC1pPlots[WhichPlot]);
+			TH1D* DataPlot = (TH1D*)NCCOHPlots[WhichPlot]->Clone();
+			DataPlot->Add(NonNCCOHPlots[WhichPlot]);
 
-			TH1D* AltDataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
-			AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
+			TH1D* AltDataPlot = (TH1D*)NCCOHPlots[WhichPlot]->Clone();
+			AltDataPlot->Add(NonNCCOHPlots[WhichPlot]);
 
 			if ( string(Syst).find("Stat") != std::string::npos ) {
 
 				if (Syst == "Stat") {
 
-					// Don't forget to subtract the cosmic part, the dirt and the NonCC1p bkgs
+					// Don't forget to subtract the cosmic part, the dirt and the NonNCCOH bkgs
 					// The MC uncertainties have already been taken care of with the MC event rate covariances
 
 					DataPlot = (TH1D*)BeamOnPlots[WhichPlot]->Clone();
@@ -447,14 +445,14 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 					DataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 					DataPlot->Add(DirtPlots[WhichPlot],-1.);
-					DataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					DataPlot->Add(NonNCCOHPlots[WhichPlot],-1.);
 
 				}
 
 				if (Syst == "MC_Stat") {
 
-					DataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
-					AltDataPlot = (TH1D*)CC1pPlots[WhichPlot]->Clone();
+					DataPlot = (TH1D*)NCCOHPlots[WhichPlot]->Clone();
+					AltDataPlot = (TH1D*)NCCOHPlots[WhichPlot]->Clone();
 
 				}
 
@@ -465,20 +463,20 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
-					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 						{ continue;}
 
-					// Make a copy of the alternative "CC1p" plot
+					// Make a copy of the alternative "NCCOH" plot
 					// Which was derived via the multiplication of the 
 					// CV truth plot times the corresponding response matrix for a given universe 
 					// and then add the beam related backgrounds in the given universe
 
-					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
-					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonCC1pPlots[WhichPlot][alt]);
+					AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedNCCOHPlots[WhichPlot][alt]->Clone();
+					AltBeamOnPlots[WhichPlot][alt]->Add(AltNonNCCOHPlots[WhichPlot][alt]);
 
 					if (Syst == "MC_Stat") {
 
-						AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedCC1pPlots[WhichPlot][alt]->Clone();
+						AltBeamOnPlots[WhichPlot][alt] = (TH1D*)AltForwardFoldedNCCOHPlots[WhichPlot][alt]->Clone();
 
 					}					
 
@@ -499,11 +497,11 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 					// Add the alternative dirt sample
 					AltDataPlot->Add(DirtClone);
 
-					//AltDataPlot->Add(NonCC1pPlots[WhichPlot]);
+					//AltDataPlot->Add(NonNCCOHPlots[WhichPlot]);
 					//AltDataPlot->Add(BeamOffPlots[WhichPlot]);
 
 					// // Now subtract the CV bkgs
-					//AltDataPlot->Add(NonCC1pPlots[WhichPlot],-1.);
+					//AltDataPlot->Add(NonNCCOHPlots[WhichPlot],-1.);
 					//AltDataPlot->Add(BeamOffPlots[WhichPlot],-1.);
 					//AltDataPlot->Add(DirtPlots[WhichPlot],-1.);
 
@@ -566,7 +564,7 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 				for (int alt = 0; alt < NAltModels; alt++ ) {
 
-					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+					if ( (Syst == "LY" || Syst == "MC_LY"  || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 						{ continue;}
 
 					AltBeamOnPlots[WhichPlot][alt]->SetMarkerColor(Colors[alt]);
@@ -585,13 +583,13 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 				DataPlot->Draw("p0 hist same");
 
 				// // Closure Test 
-				//ClosureTestCC1pPlots[WhichPlot]->SetMarkerColor(kMagenta);
-				//ClosureTestCC1pPlots[WhichPlot]->Draw("p0 hist same");
+				//ClosureTestNCCOHPlots[WhichPlot]->SetMarkerColor(kMagenta);
+				//ClosureTestNCCOHPlots[WhichPlot]->Draw("p0 hist same");
 
 				leg->Draw();
 
-				TString EventRateCanvasName = "/"+Tune+"EventRate_WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
-				EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
+				TString EventRateCanvasName = "/"+Tune+"EventRate_WienerSVD_"+Syst+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+xsec_Runs[WhichRun]+".pdf";
+				EventRatePlotCanvas->SaveAs(plot_path+BaseMC+EventRateCanvasName);
 				delete EventRatePlotCanvas;
 
 			} // End of the cases where we overlay the event rates for GENIE CV  LY / TPC / SCERecomb systematics
@@ -671,13 +669,13 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 					DataPlot->Draw("p0 hist same");
 
 					// Closure Test 
-					ClosureTestCC1pPlots[WhichPlot]->SetMarkerColor(kMagenta);
-					//ClosureTestCC1pPlots[WhichPlot]->Draw("p0 hist same");
+					ClosureTestNCCOHPlots[WhichPlot]->SetMarkerColor(kMagenta);
+					//ClosureTestNCCOHPlots[WhichPlot]->Draw("p0 hist same");
 
 					leg->Draw();
 
-					TString EventRateCanvasName = "/"+Tune+"EventRate_WienerSVD_"+Syst+UniAltModels[unialt]+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+xsec_Runs[WhichRun]+"_"+UBCodeVersion+".pdf";
-					EventRatePlotCanvas->SaveAs(PlotPath+BaseMC+EventRateCanvasName);
+					TString EventRateCanvasName = "/"+Tune+"EventRate_WienerSVD_"+Syst+UniAltModels[unialt]+"_CovarianceMatrices_"+PlotNames[WhichPlot]+BaseMC+"_"+xsec_Runs[WhichRun]+".pdf";
+					EventRatePlotCanvas->SaveAs(plot_path+BaseMC+EventRateCanvasName);
 					delete EventRatePlotCanvas;
 
 				} // End of the loop over a specific universe name
@@ -783,6 +781,27 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 						CovFracError = 1E-8;
 						CovError = 1E-8;
 
+					} else if (Syst == "test_det") {
+
+						double detUncertainty = 0.3;
+
+						AltDataEntryX = (1+detUncertainty) * DataEntryX;
+						AltDataErrorX = (1+detUncertainty) * DataErrorX;
+
+						AltDataEntryY = (1+detUncertainty) * DataEntryY;
+						AltDataErrorY = (1+detUncertainty) * DataErrorY;
+
+						CovFracEntry = ( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY) > 0 ) ? \
+							       TMath::Max( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8) : \
+							       TMath::Min( ( (AltDataEntryX - DataEntryX) / DataEntryX) * ( (AltDataEntryY - DataEntryY) / DataEntryY),1E-8);
+
+						CovEntry = ( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY) > 0 ) ? \
+							   TMath::Max( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8) : \
+							   TMath::Min( (AltDataEntryX - DataEntryX) * (AltDataEntryY - DataEntryY),1E-8);
+
+						CovFracError = 1E-8;
+						CovError = 1E-8;						
+
 
 					} else if (Syst == "Dirt" || Syst == "MC_Dirt" || Syst == "SmEff_Dirt") {
 
@@ -856,11 +875,11 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 						
 							//----------------------------------------//
 
-							if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
+							if ( (Syst == "LY" || Syst == "MC_LY" || Syst == "SmEff_LY") && xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_LYAttenuation") 
 								{ continue;}
 
 							if ( (Syst == "SCERecomb2" || Syst == "MC_SCERecomb2" || Syst == "SmEff_SCERecomb2") 
-								&& Runs[WhichRun] == "Run1" && AltModels[alt] == "_CVextra") 
+								&& xsec_Runs[WhichRun] == "Run1" && AltModels[alt] == "_CVextra") 
 								{ continue;}	
 								
 							//----------------------------------------//	
@@ -952,13 +971,13 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 				// Store covariance matrices
 
-				StoreCanvas(Covariances[WhichRun][WhichPlot], "", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);
+				StoreCanvas(Covariances[WhichRun][WhichPlot], "", Syst, PlotNames[WhichPlot], BaseMC, xsec_Runs[WhichRun],Tune);
 
 				// -------------------------------------------------------------------------------------------	
 
 				// Store fractional covariance matrices
 
-				StoreCanvas(FracCovariances[WhichRun][WhichPlot], "Frac", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);
+				StoreCanvas(FracCovariances[WhichRun][WhichPlot], "Frac", Syst, PlotNames[WhichPlot], BaseMC, xsec_Runs[WhichRun],Tune);
 
 				// -------------------------------------------------------------------------------------------	
 
@@ -989,7 +1008,7 @@ void mcc9_10_covariances(TString Syst = "None",TString BaseMC = "mcc9_10_Overlay
 
 				}			
 
-				StoreCanvas(CorrMatrices[WhichRun][WhichPlot], "Corr", Syst, PlotNames[WhichPlot], BaseMC, Runs[WhichRun],Tune);				
+				StoreCanvas(CorrMatrices[WhichRun][WhichPlot], "Corr", Syst, PlotNames[WhichPlot], BaseMC, xsec_Runs[WhichRun],Tune);				
 
 				CorrMatrices[WhichRun][WhichPlot]->Write(Syst+"_CorrCovariance_"+PlotNames[WhichPlot]+"_"+xsec_Runs[WhichRun]);
 

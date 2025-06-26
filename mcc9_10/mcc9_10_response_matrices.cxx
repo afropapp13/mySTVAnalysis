@@ -6,10 +6,10 @@
 #include <TString.h>
 #include <TStyle.h>
 
-#include "../../myClasses/Constants.h"
+#include "../../../generators/constants.h"
 
 using namespace std;
-using namespace Constants;
+using namespace constants;
 
 void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TString Tune = "", bool NuWro = false) {
 
@@ -29,14 +29,12 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 	// -------------------------------------------------------------------------------------
 
 	int NEventsPassingSelectionCuts = 0;
-	TString CutExtension = "_NoCuts";
+	TString CutExtension = "_nocuts";
 
 	vector<TString> VectorCuts; VectorCuts.clear();
 	
 	VectorCuts.push_back("");
-	VectorCuts.push_back("_PID");
-	VectorCuts.push_back("_NuScore");
-	VectorCuts.push_back("_CRT");
+	//VectorCuts.push_back("_PID");
 
 	int NCuts = (int)(VectorCuts.size());	
 
@@ -87,36 +85,36 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 
 		// -------------------------------------------------------------------------------------
 
-		TString FileName = MigrationMatrixPath+Tune+"FileResponseMatrices_"+\
-				NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root";
+		TString FileName = migration_matrices_path+Tune+"FileResponseMatrices_"+\
+				NameOfSamples[0]+"_"+xsec_Runs[WhichRun]+OverlaySample+".root";
 		TFile* FileResponseMatrices = TFile::Open(FileName,"recreate");
 
 		for (int WhichSample = 0; WhichSample < NSamples; WhichSample ++) {
 		
-			TString ExactFileLocation = PathToFiles+CutExtension;
+			TString ExactFileLocation = event_selection_file_path+CutExtension;
 
-			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"STVStudies_"+NameOfSamples[WhichSample]+"_"+\
+			FileSample[WhichSample][WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"ncpi0_"+NameOfSamples[WhichSample]+"_"+\
 				xsec_Runs[WhichRun]+OverlaySample+CutExtension+".root","readonly");
 
 			// Jul 8 2021: after discussion with Xin, if flux variations, the truth level should always be the CV
 
 			if (string(OverlaySample).find("fluxes") != std::string::npos) {
 
-				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
-					xsec_Runs[WhichRun]+"_"+UBCodeVersion+".root","readonly");
+				TrueFileSample[WhichSample][WhichRun] = TFile::Open(event_selection_file_path+"/"+Tune+"Truthncpi0_"+NameOfSamples[WhichSample]+"_"+\
+					xsec_Runs[WhichRun]+".root","readonly");
 
 			}
 
 			else {
 
-				TrueFileSample[WhichSample][WhichRun] = TFile::Open(PathToFiles+"/"+Tune+"TruthSTVAnalysis_"+NameOfSamples[WhichSample]+"_"+\
-					xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".root","readonly");
+				TrueFileSample[WhichSample][WhichRun] = TFile::Open(event_selection_file_path+"/"+Tune+"Truthncpi0_"+NameOfSamples[WhichSample]+"_"+\
+					xsec_Runs[WhichRun]+OverlaySample+".root","readonly");
 
 			}
 
 			for (int WhichPlot = 0; WhichPlot < N2DPlots; WhichPlot ++) {
 
-				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample][WhichRun]->Get("POTScaledCC1pReco"+PlotNames[WhichPlot]+"2D"));
+				Plots[WhichSample][WhichPlot] = (TH2D*)(FileSample[WhichSample][WhichRun]->Get("POTScaledNCCOHReco"+PlotNames[WhichPlot]+"2D"));
 				TruePlots[WhichSample][WhichPlot] = (TH1D*)(TrueFileSample[WhichSample][WhichRun]->Get("True"+PlotNames[WhichPlot]));
 				
 				int NBinsX = Plots[WhichSample][WhichPlot]->GetXaxis()->GetNbins();
@@ -199,35 +197,12 @@ void mcc9_10_response_matrices(TString OverlaySample, bool DetVar = false, TStri
 
 					//------------------------------//
 
-					// The N-dimensional analysis has been developed based on the bin number, not the actual range
-
-					if (string(PlotNames[WhichPlot]).find("Serial") != std::string::npos) {	
-
-						TString XaxisTitle = Plots[WhichSample][WhichPlot]->GetXaxis()->GetTitle();
-						XaxisTitle.ReplaceAll("deg","bin #");
-						XaxisTitle.ReplaceAll("GeV/c","bin #");
-						XaxisTitle.ReplaceAll("GeV","bin #");				
-						Plots[WhichSample][WhichPlot]->GetXaxis()->SetTitle(XaxisTitle);
-
-						TString YaxisTitle = Plots[WhichSample][WhichPlot]->GetYaxis()->GetTitle();
-						YaxisTitle.ReplaceAll("deg","bin #");
-						YaxisTitle.ReplaceAll("GeV/c","bin #");
-						YaxisTitle.ReplaceAll("GeV","bin #");				
-						Plots[WhichSample][WhichPlot]->GetYaxis()->SetTitle(YaxisTitle);						
-
-						Plots[WhichSample][WhichPlot]->Draw("colz");						
-
-					} else {
-
-						//Plots[WhichSample][WhichPlot]->Draw("text colz e");
-						Plots[WhichSample][WhichPlot]->Draw("colz");
-
-					} 
+					Plots[WhichSample][WhichPlot]->Draw("colz");
 	
 					//------------------------------//
 				
-					PlotCanvas->SaveAs(PlotPath+NameOfSamples[0]+"/"+Tune+"ResponseMatrices_"+PlotNames[WhichPlot]
-						+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+"_"+UBCodeVersion+".pdf");
+					PlotCanvas->SaveAs(plot_path+NameOfSamples[0]+"/"+Tune+"ResponseMatrices_"+PlotNames[WhichPlot]
+						+NameOfSamples[WhichSample]+"_"+xsec_Runs[WhichRun]+OverlaySample+".pdf");
 					
 					delete PlotCanvas;				
 	
