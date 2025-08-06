@@ -159,6 +159,10 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			FileResponseName = migration_matrices_path+"RSFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root";
 		}
 
+		if (OverlaySample == "mcc9_10_fds_det_proton_rmOverlay9") { 
+			FileResponseName = migration_matrices_path+"fds_det_proton_rmFileResponseMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root";
+		}		
+
 		cout << "File Responses = " << FileResponseName << endl;
 		TFile* FileResponseMatrices = new TFile(FileResponseName,"readonly");
 
@@ -170,12 +174,20 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			FileCovarianceName = migration_matrices_path+"mcc9_10_RSWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+".root"; 
 		}
 
+		if (OverlaySample == "mcc9_10_fds_det_proton_rmOverlay9") { 
+			FileCovarianceName = migration_matrices_path+"mcc9_10_fds_det_proton_rmWienerSVD_Total_CovarianceMatrices_Overlay9_"+xsec_Runs[WhichRun]+".root"; 
+		}		
+
 		// For the fake data studies with the default overlay MC and alternative fake data
 		// we need only the stat, mc stat, and xsec uncertainties	
 
 		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_RSOverlay9") { 
 			FileCovarianceName = migration_matrices_path+"mcc9_10_RSOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; 
 		}		
+
+		if (OverlaySample == "mcc9_10_Overlay9" && BeamOnSample == "mcc9_10_fds_det_proton_rmOverlay9") { 
+			FileCovarianceName = migration_matrices_path+"mcc9_10_fds_det_proton_rmOverlay9WienerSVD_Total_CovarianceMatrices_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; 
+		}			
 
 		cout << "File Covariances = " << FileCovarianceName << endl;			
 		TFile* FileCovarianceMatrices = new TFile(FileCovarianceName,"readonly");
@@ -222,6 +234,13 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
 			
 			}	
+
+			if (NameOfSamples[WhichSample] == "mcc9_10_fds_det_proton_rmOverlay9") { 
+			
+				TString FileName = "fds_det_proton_rmncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root";
+				FileSample.push_back(TFile::Open(PathToFilesUBCodeExtension+"/"+FileName)); 
+			
+			}				
 			
 			if (NameOfSamples[WhichSample] == "mcc9_10_GenieOverlay") { 
 			
@@ -233,9 +252,15 @@ void mcc9_10_fds_extract_xsec(TString OverlaySample = "mcc9_10_Overlay9", TStrin
 			if (NameOfSamples[WhichSample] == "mcc9_10_AltEventGen") { 
 			
 				TString FileName = "Truthncpi0_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+OverlaySample+".root";
-				if (BeamOnSample == "mcc9_10_RSOverlay9") { FileName = "RSTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }		
+
+				if (BeamOnSample == "mcc9_10_RSOverlay9") { FileName = "RSTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }	
+				if (BeamOnSample == "mcc9_10_fds_det_proton_rmOverlay9") { FileName = "fds_det_proton_rmTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }					
+
 				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_RSOverlay9") 
-					{ FileName = "RSTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }						
+					{ FileName = "RSTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }	
+					
+				if (BeamOnSample == "mcc9_10_BeamOn9" && OverlaySample == "mcc9_10_fds_det_proton_rmOverlay9") 
+					{ FileName = "fds_det_proton_rmTruthncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+".root"; }						
 						
 				FileSample.push_back(TFile::Open(event_selection_file_path+FileName));  
 			

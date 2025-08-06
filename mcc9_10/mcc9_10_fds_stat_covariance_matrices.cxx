@@ -103,7 +103,9 @@ void mcc9_10_fds_stat_covariance_matrices(TString Syst = "None",TString BaseMC =
 		DirtFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/"+Tune+"ncpi0_"+DirtSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly");
 
 		if (BeamOnSample == "mcc9_10_RSOverlay9") 
-			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/RSncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }			
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/RSncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }	
+		else if (BeamOnSample == "mcc9_10_fds_det_proton_rmOverlay9") 
+			{ BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/fds_det_proton_rmncpi0_mcc9_10_Overlay9_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }						
 		else { BeamOnFileSample[WhichRun] = TFile::Open(ExactFileLocation+"/ncpi0_"+BeamOnSample+"_"+xsec_Runs[WhichRun]+CutExtension+".root","readonly"); }
 
 		// -------------------------------------------------------------------------------------

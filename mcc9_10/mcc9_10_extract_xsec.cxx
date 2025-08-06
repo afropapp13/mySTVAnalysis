@@ -1028,6 +1028,7 @@ void mcc9_10_extract_xsec(TString OverlaySample = "", bool ClosureTest = false, 
 				smear->SetMarkerColor(kWhite);
 				//smear->Draw("coltz text");
 				smear->Draw("coltz0");
+				if (PlotNames[WhichPlot].Contains("SingleBin")) { smear->Draw("colz text"); }
 
 				TString slice = "";
 				if (PlotNames[WhichPlot] == "SerialThetaVis_PMissPlot") { slice = ", p_{miss} slices"; }
